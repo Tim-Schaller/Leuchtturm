@@ -22,17 +22,20 @@ public struct SharedLocation: Sendable, Hashable {
     public let fogRadius: Int?
 
     public static let fogRadii: ClosedRange<Int> = 100 ... 100_000
+    /// Meters per second, only while the member is driving and shares trips.
+    public let speed: Double?
 
     /// Returns nil for coordinates, accuracies, battery levels or fog sizes that cannot be real.
     public init?(
         latitude: Double, longitude: Double, accuracy: Double, timestamp: Date,
-        battery: Int? = nil, isCharging: Bool = false, fogRadius: Int? = nil
+        battery: Int? = nil, isCharging: Bool = false, fogRadius: Int? = nil, speed: Double? = nil
     ) {
         guard (-90 ... 90).contains(latitude), (-180 ... 180).contains(longitude),
               accuracy.isFinite, (0 ... 200_000).contains(accuracy),
               timestamp.timeIntervalSince1970 > 0,
               battery.map({ (0 ... 100).contains($0) }) ?? true,
-              fogRadius.map({ Self.fogRadii.contains($0) && accuracy >= Double($0) }) ?? true
+              fogRadius.map({ Self.fogRadii.contains($0) && accuracy >= Double($0) }) ?? true,
+              speed.map({ (0 ..< 150).contains($0) }) ?? true
         else { return nil }
         self.latitude = latitude
         self.longitude = longitude
@@ -41,6 +44,7 @@ public struct SharedLocation: Sendable, Hashable {
         self.battery = battery
         self.isCharging = isCharging
         self.fogRadius = fogRadius
+        self.speed = speed
     }
 
     /// The same moment, but only the center of a fixed grid cell of about
@@ -71,6 +75,8 @@ private struct LocationPayload: Codable {
     var chg: Bool?
     /// Fog size in meters while only an approximate area is shared.
     var fog: Int?
+    /// Speed in m/s while driving.
+    var spd: Double?
 }
 
 extension CircleCrypto {
@@ -78,7 +84,8 @@ extension CircleCrypto {
         let payload = LocationPayload(
             lat: location.latitude, lon: location.longitude, acc: location.accuracy,
             t: Int64(location.timestamp.timeIntervalSince1970),
-            bat: location.battery, chg: location.battery == nil ? nil : location.isCharging, fog: location.fogRadius
+            bat: location.battery, chg: location.battery == nil ? nil : location.isCharging, fog: location.fogRadius,
+            spd: location.speed.map { ($0 * 10).rounded() / 10 }
         )
         return try sealContent(JSONEncoder().encode(payload), key: key, epoch: epoch, context: locationContext(circleID: circleID, deviceID: deviceID))
     }
@@ -92,7 +99,7 @@ extension CircleCrypto {
         let p = try JSONDecoder().decode(LocationPayload.self, from: plain)
         guard let location = SharedLocation(
             latitude: p.lat, longitude: p.lon, accuracy: p.acc, timestamp: Date(timeIntervalSince1970: TimeInterval(p.t)),
-            battery: p.bat, isCharging: p.chg ?? false, fogRadius: p.fog
+            battery: p.bat, isCharging: p.chg ?? false, fogRadius: p.fog, speed: p.spd
         ) else { throw ProtocolError.malformed }
         return (location, epoch)
     }

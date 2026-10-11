@@ -148,7 +148,7 @@ final class SimulatedWorld {
             }
             guard let position = SharedLocation(
                 latitude: latitude, longitude: longitude, accuracy: index == 1 ? 25 : 10, timestamp: now,
-                battery: battery, isCharging: charging
+                battery: battery, isCharging: charging, speed: index == 1 ? 2 * .pi * 1500 / 600 : nil
             ) else { continue }
             lastMoved[person.id] = now
             lastPositions[person.id] = position
@@ -212,10 +212,36 @@ final class SimulatedWorld {
             let a = t / 600 * 2 * .pi
             return (500 + 350 * sin(a), 450 + 350 * cos(a))
         case 1:
-            let a = t / 240 * 2 * .pi
+            let a = t / 600 * 2 * .pi
             return (-900 + 1500 * sin(a), 700 + 1500 * cos(a))
         default:
             return (-300, -1100)
+        }
+    }
+
+    /// Ben and Clara share their trips; here are some from the past week.
+    func addDemoTrips(near location: CLLocation?) async throws {
+        let home = self.home ?? location?.coordinate ?? Self.fallbackHome
+        self.home = home
+        let now = Date()
+        let plan: [(person: Person, daysAgo: Double, laps: Double, top: Double, brakes: Int, accels: Int)] = [
+            (people[1], 0.2, 1.0, 16, 0, 0), (people[1], 1.3, 2.0, 19, 1, 0), (people[1], 3.4, 1.5, 17, 0, 0),
+            (people[1], 5.1, 3.0, 22, 0, 1), (people[2], 0.9, 1.2, 25, 2, 1), (people[2], 4.2, 2.5, 38, 1, 2),
+        ]
+        for (i, entry) in plan.enumerated() {
+            let start = now.addingTimeInterval(-entry.daysAgo * 86400)
+            let duration = entry.laps * 600
+            let route = stride(from: 0.0, through: duration, by: 30).map { dt in
+                let (n, e) = Self.route(1, at: dt + Double(i) * 97)
+                let (lat, lon) = Self.offset(home, north: n, east: e)
+                return HistoryDay.Point(latitude: lat, longitude: lon, timestamp: start.addingTimeInterval(dt))
+            }
+            let trip = Trip(
+                id: CircleCrypto.newCircleID(), deviceID: entry.person.client.deviceID, start: start,
+                end: start.addingTimeInterval(duration), distance: entry.laps * 2 * .pi * 1500, topSpeed: entry.top,
+                hardBrakes: entry.brakes, rapidAccelerations: entry.accels, route: route
+            )
+            try await entry.person.client.shareTrip(trip)
         }
     }
 

@@ -98,6 +98,17 @@ struct SimulationTests {
         #expect(await model.run { try await $0.history(of: clara, in: ref) }?.isEmpty == true)
     }
 
+    @Test func demoWeekHasALeaderboard() async throws {
+        let (model, world) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        _ = await model.mapDetails(for: ref) // the owner's device confirms the new members
+        let trips = try #require(await model.run { try await $0.trips(in: ref, since: Date().addingTimeInterval(-7 * 86400)) })
+        #expect(trips.count == 6)
+        let board = DriverStats.leaderboard(trips)
+        #expect(board.map(\.deviceID) == [world.people[1].client.deviceID, world.people[2].client.deviceID])
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

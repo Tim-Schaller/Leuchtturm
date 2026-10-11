@@ -84,11 +84,11 @@ struct SharePolicy {
 }
 
 extension SharedLocation {
-    init?(_ location: CLLocation, battery: Int? = nil, isCharging: Bool = false) {
+    init?(_ location: CLLocation, battery: Int? = nil, isCharging: Bool = false, speed: Double? = nil) {
         self.init(
             latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
             accuracy: location.horizontalAccuracy, timestamp: location.timestamp,
-            battery: battery, isCharging: isCharging
+            battery: battery, isCharging: isCharging, speed: speed
         )
     }
 

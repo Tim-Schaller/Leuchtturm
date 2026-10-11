@@ -74,10 +74,11 @@ Not planned, because they would need a company server, a call center or third pa
 - [ ] Export (GPX) of your own history
 
 ## M6: Trips and driving
+- [x] Trip detection on the device (speed-based), opt-in sharing
+- [x] Trip records: route, distance, duration, top speed, hard braking, rapid acceleration, score
+- [x] Live speed (km/h) while driving
+- [x] Weekly summary with leaderboards ("Sicher gefahren", "Am meisten unterwegs")
 - [ ] CoreMotion automotive detection, driver/passenger toggle
-- [ ] Trip records: route, distance, duration, top speed, hard braking, rapid acceleration
-- [ ] Live speed (km/h) while driving
-- [ ] Weekly driving summary in the circle
 - [ ] Flight detection
 - [ ] Battery profiling and tuning
 
@@ -87,7 +88,8 @@ Not planned, because they would need a company server, a call center or third pa
 
 ## M8: Friends, groups, fun and polish
 - [ ] Temporary circles, friend requests, multiple circles and groups
-- [ ] Opt-in weekly circle leaderboard and badges
+- [x] Opt-in weekly circle leaderboards (driving, distance)
+- [ ] Badges
 - [ ] Liquid Glass UI polish, accessibility, localization (DE, EN)
 - [ ] Multi-device support and key backup
 - [ ] Owner succession if the owner's device is lost

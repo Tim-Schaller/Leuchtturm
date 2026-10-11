@@ -6,6 +6,8 @@ import SwiftUI
 enum DrawerRoute: Hashable {
     case member(String)
     case history(String)
+    case week
+    case trip(Trip)
     case manage(CircleRef)
 }
 
@@ -41,6 +43,10 @@ struct PeopleSheet: View {
                         if let member = details?.members.first(where: { $0.id == id }), let ref = circle?.ref {
                             HistoryView(member: member, ref: ref)
                         }
+                    case .week:
+                        if let details { WeekView(details: details) }
+                    case let .trip(trip):
+                        TripView(trip: trip, member: details?.members.first { $0.id == trip.deviceID })
                     case let .manage(ref):
                         CircleDetailView(ref: ref)
                     }
@@ -82,6 +88,11 @@ struct PeopleSheet: View {
                             PersonRow(member: member)
                         }
                         .tint(.primary)
+                    }
+                }
+                Section {
+                    NavigationLink(value: DrawerRoute.week) {
+                        Label("Wochenrückblick und Bestenliste", systemImage: "trophy")
                     }
                 }
                 NewsSection(details: details, onShowPlace: onShowPlace)
@@ -217,6 +228,9 @@ enum LocationStatus {
             : location.timestamp.formatted(.relative(presentation: .named))
         guard let distance = distance(to: location, from: model.tracker.location) else { return ago }
         if location.fogRadius != nil { return String(localized: "\(ago) · im Nebel") }
+        if let speed = location.speed, speed >= 2 {
+            return String(localized: "Fährt · \(Int((speed * 3.6).rounded())) km/h · \(distance)")
+        }
         return "\(ago) · \(distance)"
     }
 

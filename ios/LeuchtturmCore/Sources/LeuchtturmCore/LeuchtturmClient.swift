@@ -79,6 +79,7 @@ enum RecordType {
     static let note = "Note"
     static let place = "Place"
     static let history = "History"
+    static let trip = "Trip"
 }
 
 enum RecordName {
@@ -93,6 +94,8 @@ enum RecordName {
     static func place(_ id: String) -> String { "place-\(id)" }
     static let placePrefix = "place-"
     static func history(_ deviceID: String, _ day: String) -> String { "hist-\(deviceID)-\(day)" }
+    static func trip(_ id: String) -> String { "trip-\(id)" }
+    static let tripPrefix = "trip-"
 }
 
 /// High-level client. Everything is encrypted or signed here, before it
@@ -191,11 +194,11 @@ public actor LeuchtturmClient {
         try await backend.modify(ref, save: [record], delete: [], removeParticipants: [])
     }
 
-    /// Leaves a circle you do not own. Your location and history go with you.
+    /// Leaves a circle you do not own. Your location, history and trips go with you.
     public func leave(_ ref: CircleRef) async throws {
         guard !ref.isOwned else { throw ClientError.ownerMustDelete }
         let history = (try? await backend.snapshot(of: ref))?.records
-            .filter { $0.type == RecordType.history && $0.string("from") == deviceID }.map(\.name) ?? []
+            .filter { ($0.type == RecordType.history || $0.type == RecordType.trip) && $0.string("from") == deviceID }.map(\.name) ?? []
         try? await backend.modify(ref, save: [], delete: [RecordName.location(deviceID)] + history, removeParticipants: [])
         try await backend.leave(ref)
         try? secrets.deleteAll(prefix: Self.prefix(ref.circleID))
@@ -529,6 +532,67 @@ public actor LeuchtturmClient {
         }
     }
 
+    // MARK: Trips
+
+    /// Shares a finished trip with every circle and deletes this device's
+    /// trips that ended more than `keepDays` days ago.
+    public func shareTrip(_ trip: Trip, keepDays: Int = 30) async throws {
+        let cutoff = now().addingTimeInterval(-Double(keepDays) * 86400)
+        for ref in try await backend.listCircles() {
+            let p = try parse(try await backend.snapshot(of: ref))
+            guard let key = ensureKey(p) else { continue }
+            let blob = try CircleCrypto.sealTrip(trip, key: key, epoch: p.epoch, circleID: p.circleID)
+            let sig = try identity.sign(CircleCrypto.tripRecordStatement(circleID: p.circleID, tripID: trip.id, deviceID: deviceID, blob: blob))
+            let record = StoredRecord(type: RecordType.trip, name: RecordName.trip(trip.id), fields: [
+                "from": .string(deviceID), "blob": .bytes(blob), "sig": .bytes(sig),
+            ])
+            let expired = p.trips.filter { r in
+                guard r.string("from") == deviceID else { return false }
+                guard let mine = try? openTrip(r, p) else { return true }
+                return mine.end < cutoff
+            }.map(\.name)
+            try await backend.modify(ref, save: [record], delete: expired, removeParticipants: [])
+        }
+    }
+
+    /// Deletes all of this device's trips from every circle.
+    public func deleteTrips() async throws {
+        for ref in try await backend.listCircles() {
+            let p = try parse(try await backend.snapshot(of: ref))
+            let mine = p.trips.filter { $0.string("from") == deviceID }.map(\.name)
+            if !mine.isEmpty { try await backend.modify(ref, save: [], delete: mine, removeParticipants: []) }
+        }
+    }
+
+    /// Trips of admitted members (and this device) that ended after `since`,
+    /// newest first.
+    public func trips(in ref: CircleRef, since: Date) async throws -> [Trip] {
+        let p = try parse(try await backend.snapshot(of: ref))
+        _ = ensureKey(p)
+        let meta = try? CircleCrypto.openCircleMeta(p.metaBlob, circleID: p.circleID, keyForEpoch: keyLookup(p.circleID))
+        let roster = Set(meta?.meta.members ?? []).union([p.ownerDeviceID, deviceID])
+        return p.trips.compactMap { r -> Trip? in
+            let from = r.string("from")
+            let id = String(r.name.dropFirst(RecordName.tripPrefix.count))
+            guard roster.contains(from), let m = p.members[from],
+                  CircleCrypto.verifySignature(
+                      r.bytes("sig"), publicKey: m.signingKey,
+                      message: CircleCrypto.tripRecordStatement(circleID: p.circleID, tripID: id, deviceID: from, blob: r.bytes("blob"))
+                  ),
+                  let trip = try? openTrip(r, p), trip.end > since
+            else { return nil }
+            return trip
+        }
+        .sorted { $0.end > $1.end }
+    }
+
+    nonisolated func openTrip(_ r: StoredRecord, _ p: Parsed) throws -> Trip? {
+        try CircleCrypto.openTrip(
+            r.bytes("blob"), id: String(r.name.dropFirst(RecordName.tripPrefix.count)), deviceID: r.string("from"),
+            circleID: p.circleID, keyForEpoch: keyLookup(p.circleID)
+        )
+    }
+
     // MARK: Account
 
     /// Deletes owned circles, leaves all others and wipes local keys.
@@ -575,6 +639,8 @@ public actor LeuchtturmClient {
         let places: [StoredRecord]
         /// History records (not verified yet).
         let history: [StoredRecord]
+        /// Trip records (not verified yet).
+        let trips: [StoredRecord]
         var circleID: String { snapshot.ref.circleID }
         var ownerDeviceID: String { DeviceID.derive(signingPublicKey: ownerSigningKey) }
     }
@@ -619,10 +685,11 @@ public actor LeuchtturmClient {
         let notes = snapshot.records.filter { $0.type == RecordType.note && $0.name.hasPrefix(RecordName.notePrefix) }
         let places = snapshot.records.filter { $0.type == RecordType.place && $0.name.hasPrefix(RecordName.placePrefix) }
         let history = snapshot.records.filter { $0.type == RecordType.history }
+        let trips = snapshot.records.filter { $0.type == RecordType.trip && $0.name.hasPrefix(RecordName.tripPrefix) }
         return Parsed(
             snapshot: snapshot, ownerSigningKey: ownerSigning, ownerAgreementKey: ownerAgreement,
             epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations, notes: notes,
-            places: places, history: history
+            places: places, history: history, trips: trips
         )
     }
 
@@ -676,7 +743,7 @@ public actor LeuchtturmClient {
                     newRoster.remove(m.deviceID)
                     delete.append(m.deviceID)
                     if p.locations[m.deviceID] != nil { delete.append(RecordName.location(m.deviceID)) }
-                    delete += (p.notes + p.places + p.history).filter { $0.string("from") == m.deviceID }.map(\.name)
+                    delete += (p.notes + p.places + p.history + p.trips).filter { $0.string("from") == m.deviceID }.map(\.name)
                 } else if !newRoster.contains(m.deviceID), hasValidInvite(m, p) {
                     newRoster.insert(m.deviceID)
                 }

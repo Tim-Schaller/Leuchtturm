@@ -26,6 +26,8 @@ final class AppModel {
         static let placeTracker = "placeTracker"
         static let sharesHistory = "sharesHistory"
         static let historyDays = "historyDays"
+        static let sharesTrips = "sharesTrips"
+        static let tripDetector = "tripDetector"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -71,6 +73,9 @@ final class AppModel {
     private(set) var sharesHistory = false
     private(set) var historyDays = 7
     @ObservationIgnored private var historyRecorder = HistoryRecorder(persistent: false)
+    /// Detects drives on this device and shares them (and live speed).
+    private(set) var sharesTrips = false
+    @ObservationIgnored private var tripDetector = TripDetector()
 
     /// Says "good morning" to the circles on the first movement of the day.
     private(set) var sendsMorningGreeting = false
@@ -128,6 +133,9 @@ final class AppModel {
         sharesHistory = !isSimulation && defaults.bool(forKey: Keys.sharesHistory)
         historyDays = isSimulation ? 7 : (defaults.object(forKey: Keys.historyDays) as? Int ?? 7)
         historyRecorder = HistoryRecorder(persistent: !isSimulation)
+        sharesTrips = !isSimulation && defaults.bool(forKey: Keys.sharesTrips)
+        tripDetector = isSimulation ? TripDetector() : defaults.data(forKey: Keys.tripDetector)
+            .flatMap { try? JSONDecoder().decode(TripDetector.self, from: $0) } ?? TripDetector()
         placeTracker = isSimulation ? PlaceTracker() : defaults.data(forKey: Keys.placeTracker)
             .flatMap { try? JSONDecoder().decode(PlaceTracker.self, from: $0) } ?? PlaceTracker()
         fog = isSimulation ? nil : defaults.data(forKey: Keys.fog).flatMap { try? JSONDecoder().decode(Fog.self, from: $0) }
@@ -271,13 +279,17 @@ final class AppModel {
     private func share(_ location: CLLocation) async {
         guard isSharingLocation, let client, (0 ... 1000).contains(location.horizontalAccuracy) else { return }
         await watchPlaces(location)
+        await watchTrips(location)
         let inBackground = UIApplication.shared.applicationState != .active
         let policy: SharePolicy = inBackground ? .background : .foreground
         let device = UIDevice.current
         let battery = device.batteryLevel >= 0 ? Int((device.batteryLevel * 100).rounded()) : nil
         let charging = device.batteryState == .charging || device.batteryState == .full
         guard policy.shouldShare(location, after: lastShared),
-              let exact = SharedLocation(location, battery: battery, isCharging: charging)
+              let exact = SharedLocation(
+                  location, battery: battery, isCharging: charging,
+                  speed: sharesTrips && tripDetector.isDriving && location.speed >= 0 ? location.speed : nil
+              )
         else { return }
         // In fog the exact position never leaves the device.
         let shared = activeFog.flatMap { exact.inFog(radius: $0.radius) } ?? exact
@@ -378,6 +390,41 @@ final class AppModel {
         }
     }
 
+    // MARK: Trips
+
+    private func watchTrips(_ location: CLLocation) async {
+        guard sharesTrips, let client else { return }
+        let trip = tripDetector.update(
+            latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
+            speed: location.speed, at: location.timestamp, deviceID: client.deviceID
+        )
+        saveTripDetector()
+        if let trip { try? await client.shareTrip(trip) }
+    }
+
+    /// After parking iOS pauses updates; end the trip when the app wakes up.
+    private func finishStaleTrip() async {
+        guard sharesTrips, let client, let trip = tripDetector.finishIfStale(now: Date(), deviceID: client.deviceID) else { return }
+        saveTripDetector()
+        try? await client.shareTrip(trip)
+    }
+
+    private func saveTripDetector() {
+        guard !isSimulation else { return }
+        UserDefaults.standard.set(try? JSONEncoder().encode(tripDetector), forKey: Keys.tripDetector)
+    }
+
+    /// Turning trips off deletes them from every circle right away.
+    func setSharesTrips(_ on: Bool) async {
+        sharesTrips = on
+        if !isSimulation { UserDefaults.standard.set(on, forKey: Keys.sharesTrips) }
+        if !on {
+            tripDetector = TripDetector()
+            saveTripDetector()
+            await run { try await $0.deleteTrips() }
+        }
+    }
+
     // MARK: History
 
     /// Turning history off deletes it from every circle right away.
@@ -436,6 +483,7 @@ final class AppModel {
     /// Loads every circle and notifies about new notes.
     func checkForNews() async {
         guard let client else { return }
+        await finishStaleTrip()
         for circle in (try? await client.circles()) ?? [] {
             if let details = try? await client.circle(circle.ref) { deliverNews(details) }
         }
@@ -544,6 +592,7 @@ final class AppModel {
                 try await world.join(person, using: link)
             }
             try await world.addDemoPlaces(circleID: ref.circleID, near: here)
+            try await world.addDemoTrips(near: here)
         }
     }
 

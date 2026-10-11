@@ -72,10 +72,14 @@ struct SettingsView: View {
                             }
                         }
                     }
+                    Toggle("Fahrten teilen", isOn: Binding(
+                        get: { model.sharesTrips },
+                        set: { on in Task { await model.setSharesTrips(on) } }
+                    ))
                 } header: {
-                    Text("Verlauf")
+                    Text("Verlauf und Fahrten")
                 } footer: {
-                    Text("Aus, solange du es nicht einschaltest. Dann sehen deine Kreise, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.")
+                    Text("Aus, solange du es nicht einschaltest. Dann sehen deine Kreise, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h. Teilst du sie, sieht dein Kreis Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.")
                 }
 
                 Section {

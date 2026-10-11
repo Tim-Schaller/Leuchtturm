@@ -50,6 +50,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 | Someone not admitted shares a location | Only devices in the signed roster appear on the map | M2 |
 | Last position stays behind | Pausing, leaving and removal delete the location record | M2 |
 | A member wants privacy for a while without leaving | Fog mode: only a grid cell of 2 to 50 km is shared; the exact position stays on the device | M3 |
+| Someone fakes a member's trips or driving score | Trips are signed by the driver's device; scores are computed by each reader from verified trips | M6 |
 | Someone fakes or extends a member's history | History days are signed by the member's device; only the device itself writes and deletes them | M5 |
 | History kept longer than wanted | The writing device deletes days past its retention, and everything when history is turned off or the member leaves | M5 |
 | Member plants a fake place or fakes an arrival | Places and arrival notes are signed by the creating or arriving device | M4 |

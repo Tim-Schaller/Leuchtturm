@@ -469,6 +469,43 @@ struct ClientTests {
         #expect(!cloud.rawRecords(circleID: ref.circleID).contains { $0.type == "History" && $0.string("from") == bob.deviceID })
     }
 
+    @Test func tripsAreSignedAndExpire() async throws {
+        let clock = TestClock()
+        let alice = try client("alice", "Alice", now: { clock.now })
+        let bob = try client("bob", "Bob", now: { clock.now })
+        let ref = try await alice.createCircle(name: "Familie")
+        let bobRef = try await bob.join(try await alice.createInvite(for: ref))
+        _ = try await alice.circle(ref)
+        func trip(_ id: String, endingAgo: TimeInterval) -> Trip {
+            Trip(id: id, deviceID: bob.deviceID, start: clock.now - endingAgo - 900, end: clock.now - endingAgo, distance: 12000,
+                 topSpeed: 25, hardBrakes: 1, rapidAccelerations: 0, route: [HistoryDay.Point(latitude: 53.5, longitude: 9.9, timestamp: clock.now)])
+        }
+        let week = clock.now - 7 * 86400
+
+        try await bob.shareTrip(trip("t1", endingAgo: 3600))
+        #expect(try await alice.trips(in: ref, since: week).map(\.id) == ["t1"])
+        #expect(try await alice.trips(in: ref, since: week).first?.score == 92)
+
+        // 31 days later the old trip goes when a new one is shared.
+        clock.advance(by: 31 * 86400)
+        try await bob.shareTrip(trip("t2", endingAgo: 60))
+        #expect(cloud.rawRecords(circleID: ref.circleID).filter { $0.type == "Trip" }.map(\.name) == ["trip-t2"])
+
+        // Alice forges a trip "by Bob": ignored.
+        let key = try #require(alice.loadKey(circleID: ref.circleID, epoch: 1))
+        let fake = trip("t3", endingAgo: 10)
+        let blob = try CircleCrypto.sealTrip(fake, key: key, epoch: 1, circleID: ref.circleID)
+        let sig = try alice.identity.sign(CircleCrypto.tripRecordStatement(circleID: ref.circleID, tripID: "t3", deviceID: bob.deviceID, blob: blob))
+        try await cloud.backend(for: "alice").modify(ref, save: [StoredRecord(type: "Trip", name: "trip-t3", fields: [
+            "from": .string(bob.deviceID), "blob": .bytes(blob), "sig": .bytes(sig),
+        ])], delete: [], removeParticipants: [])
+        #expect(try await alice.trips(in: ref, since: clock.now - 86400).map(\.id) == ["t2"])
+
+        try await bob.deleteTrips()
+        #expect(try await alice.trips(in: ref, since: .distantPast).isEmpty)
+        try await bob.leave(bobRef)
+    }
+
     @Test func namesAreValidated() async throws {
         let alice = try client("alice", "Alice")
         await #expect(throws: ClientError.invalidName) { try await alice.createCircle(name: "   ") }

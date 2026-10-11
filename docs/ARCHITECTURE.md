@@ -91,7 +91,7 @@ Recipients accept only wraps from the pinned owner device.
 
 | Field | Content |
 |-------|---------|
-| `blob` | encrypted `{"lat": …, "lon": …, "acc": …, "t": …, "bat": …, "chg": …, "fog": …}` (degrees, accuracy in meters, Unix seconds, optional battery percent and charging flag, optional fog size) |
+| `blob` | encrypted `{"lat": …, "lon": …, "acc": …, "t": …, "bat": …, "chg": …, "fog": …, "spd": …}` (degrees, accuracy in meters, Unix seconds, optional battery percent and charging flag, optional fog size, speed while driving) |
 | `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/location-record", circleID, deviceID) ‖ blob` |
 
 Readers show a location only for devices in the signed roster, verify `sig` with the key from that device's member record and keep the newest timestamp seen per device, so a participant cannot fake a position or replay an older one. Pending members' locations are ignored until the owner confirms them. Pausing, leaving the circle and being removed delete the record; the owner's device also deletes it when it cleans up a departed member.
@@ -137,6 +137,18 @@ Opt-in, off by default.
 | `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/history-record", circleID, deviceID, day) ‖ blob` |
 
 The device records a point when it uploads its location and has moved at least 40 m or 5 minutes passed (never while in fog), keeps today's points in a protected file and rewrites today's record together with the location record in one operation. It deletes its own days older than the chosen retention (1, 7 or 30 days) on the same occasion. Turning history off, leaving a circle and removal delete all of the device's history records. Readers show history only for roster members with a valid signature. Context: `ctx("leuchtturm/v1/history", circleID, deviceID, day)`.
+
+### `Trip` (record name `trip-<tripID>`)
+
+Opt-in ("Fahrten teilen"), off by default.
+
+| Field | Content |
+|-------|---------|
+| `from` | device ID of the driver |
+| `blob` | encrypted `{"s": start, "e": end, "d": meters, "v": top speed m/s, "hb": hard brakes, "ra": rapid accelerations, "p": [[lat, lon, t], …] (at most 300)}` |
+| `sig` | Ed25519 by the **driver's device** over `ctx("leuchtturm/v1/trip-record", circleID, tripID, from) ‖ blob` |
+
+`TripDetector` runs on the driver's device: a trip starts after two samples at 25 km/h or more within a minute and ends three minutes after the last sample at 4 m/s or more; trips under 1 km or 2 minutes are dropped. A hard brake is a deceleration of 3.5 m/s² or more, a rapid acceleration 3 m/s² or more (at most one event per 10 s). Score per trip: 100 − 8 per hard brake − 5 per rapid acceleration − 10 above 130 km/h. While a trip is running and trips are shared, the location record carries the speed (`spd`). The leaderboard is computed on each reader's device from the trips of the last 7 days (distance-weighted score). The driver's device deletes its trips after 30 days, all of them when trip sharing is turned off, and on leaving. Context: `ctx("leuchtturm/v1/trip", circleID, tripID)`.
 
 ## Push
 

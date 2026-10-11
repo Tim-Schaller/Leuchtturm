@@ -55,6 +55,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 - A Life360-style map: everyone in the circle as a pin, a people drawer with "3 min ago · 1.2 km", a circle switcher
 - Live location, end-to-end encrypted and signed by each member's own iPhone, also while the app is closed (pauses when you stand still to save battery); pause sharing any time
 - Battery level of everyone in the circle
+- Bubbles: share only the rough area for a few hours
 - Emoji reactions, quick notes ("Bin auf dem Weg"), check-ins and an opt-in good-morning greeting, all end-to-end encrypted and signed
 - Circles with encrypted names and display names
 - Invites via link or QR code, with expiry

@@ -60,7 +60,7 @@ Not planned, because they need a company server, a call center or third parties:
 - [x] Opt-in morning greeting on the first movement of the day
 - [x] Local notifications when the app fetches new notes (open or while sharing in the background)
 - [ ] Instant delivery by push while the app is closed (see M2)
-- [ ] Bubbles: approximate area for a limited time
+- [x] Bubbles: approximate area for a limited time
 
 ## M4: Places
 - [ ] Create and share places (encrypted)

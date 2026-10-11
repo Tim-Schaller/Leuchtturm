@@ -32,6 +32,10 @@ struct SettingsView: View {
                         get: { model.isSharingLocation },
                         set: { on in Task { await model.setSharingLocation(on) } }
                     ))
+                    Toggle("Guten-Morgen-Gruß", isOn: Binding(
+                        get: { model.sendsMorningGreeting },
+                        set: { model.setMorningGreeting($0) }
+                    ))
                     if model.isSharingLocation, let lastSharedAt = model.lastSharedAt {
                         LabeledContent("Zuletzt geteilt") {
                             Text(lastSharedAt, format: .relative(presentation: .named))
@@ -50,7 +54,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Standort")
                 } footer: {
-                    Text("Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Kreisen geteilt. Mit Standortzugriff „Immer“ sehen sie dich auch, wenn die App geschlossen ist. Steht dein iPhone still, pausiert die Ortung und spart Akku. Ausschalten entfernt deinen Standort sofort aus allen Kreisen.")
+                    Text("Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Kreisen geteilt. Mit Standortzugriff „Immer“ sehen sie dich auch, wenn die App geschlossen ist. Steht dein iPhone still, pausiert die Ortung und spart Akku. Ausschalten entfernt deinen Standort sofort aus allen Kreisen. Der Guten-Morgen-Gruß sagt deinen Kreisen Bescheid, wenn du morgens zum ersten Mal unterwegs bist.")
                 }
 
                 Section {

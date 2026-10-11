@@ -43,6 +43,8 @@ public struct CircleDetails: Sendable, Identifiable, Hashable {
     /// Owner only: iCloud participants without a valid membership, e.g.
     /// someone who obtained the share link but not the invite secret.
     public let unverifiedUserIDs: [String]
+    /// Reactions, notes and check-ins of the last 7 days, newest first.
+    public let notes: [CircleNote]
 }
 
 public enum ClientError: Error, Sendable, Equatable {
@@ -60,6 +62,8 @@ public enum ClientError: Error, Sendable, Equatable {
     case tampered
     /// Owners cannot leave; they delete the circle instead.
     case ownerMustDelete
+    /// A note is too long.
+    case invalidNote
 }
 
 enum RecordType {
@@ -68,6 +72,7 @@ enum RecordType {
     static let keyWrap = "KeyWrap"
     static let invite = "Invite"
     static let location = "Location"
+    static let note = "Note"
 }
 
 enum RecordName {
@@ -77,6 +82,8 @@ enum RecordName {
     static let invitePrefix = "invite-"
     static func location(_ deviceID: String) -> String { "loc-\(deviceID)" }
     static let locationPrefix = "loc-"
+    static func note(_ id: String) -> String { "note-\(id)" }
+    static let notePrefix = "note-"
 }
 
 /// High-level client. Everything is encrypted or signed here, before it
@@ -348,6 +355,69 @@ public actor LeuchtturmClient {
         return location
     }
 
+    // MARK: Notes
+
+    /// Sends a reaction, quick note, check-in or good-morning to a circle,
+    /// optionally addressed to one member. Cleans up own notes older than two days.
+    @discardableResult
+    public func send(
+        _ kind: CircleNote.Kind, text: String = "", to recipientID: String? = nil,
+        location: SharedLocation? = nil, in ref: CircleRef
+    ) async throws -> CircleNote {
+        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard text.count <= CircleNote.maxTextLength else { throw ClientError.invalidNote }
+        let p = try parse(try await backend.snapshot(of: ref))
+        guard let key = ensureKey(p) else { throw ClientError.missingCircleKey }
+        let timestamp = Date(timeIntervalSince1970: now().timeIntervalSince1970.rounded(.down))
+        let note = CircleNote(
+            id: CircleCrypto.newCircleID(), senderID: deviceID, recipientID: recipientID, kind: kind, text: text,
+            // A check-in carries only the place, stamped with the note's time.
+            location: location.flatMap {
+                SharedLocation(latitude: $0.latitude, longitude: $0.longitude, accuracy: $0.accuracy, timestamp: timestamp)
+            },
+            timestamp: timestamp
+        )
+        let blob = try CircleCrypto.sealNote(note, key: key, epoch: p.epoch, circleID: p.circleID)
+        let sig = try identity.sign(CircleCrypto.noteRecordStatement(circleID: p.circleID, noteID: note.id, senderID: deviceID, blob: blob))
+        let record = StoredRecord(type: RecordType.note, name: RecordName.note(note.id), fields: [
+            "from": .string(deviceID), "blob": .bytes(blob), "sig": .bytes(sig),
+        ])
+        let expired = p.notes.compactMap { r -> String? in
+            guard r.string("from") == deviceID else { return nil }
+            guard let mine = try? openNote(r, p) else { return r.name }
+            return mine.timestamp < now().addingTimeInterval(-2 * 24 * 3600) ? r.name : nil
+        }
+        try await backend.modify(ref, save: [record], delete: expired, removeParticipants: [])
+        return note
+    }
+
+    nonisolated func openNote(_ r: StoredRecord, _ p: Parsed) throws -> CircleNote? {
+        try CircleCrypto.openNote(
+            r.bytes("blob"), id: String(r.name.dropFirst(RecordName.notePrefix.count)), senderID: r.string("from"),
+            circleID: p.circleID, keyForEpoch: keyLookup(p.circleID)
+        )
+    }
+
+    /// Notes from admitted members (and this device) with a valid signature,
+    /// newer than `CircleNote.lifetime`.
+    private func verifiedNotes(_ p: Parsed, roster: Set<String>) -> [CircleNote] {
+        let cutoff = now().addingTimeInterval(-CircleNote.lifetime)
+        var notes: [CircleNote] = []
+        for r in p.notes {
+            let sender = r.string("from")
+            let noteID = String(r.name.dropFirst(RecordName.notePrefix.count))
+            guard let m = p.members[sender], roster.contains(sender) || sender == deviceID,
+                  CircleCrypto.verifySignature(
+                      r.bytes("sig"), publicKey: m.signingKey,
+                      message: CircleCrypto.noteRecordStatement(circleID: p.circleID, noteID: noteID, senderID: sender, blob: r.bytes("blob"))
+                  ),
+                  let note = try? openNote(r, p), note.timestamp > cutoff
+            else { continue }
+            notes.append(note)
+        }
+        return notes.sorted { $0.timestamp > $1.timestamp }
+    }
+
     // MARK: Account
 
     /// Deletes owned circles, leaves all others and wipes local keys.
@@ -388,6 +458,8 @@ public actor LeuchtturmClient {
         let invites: [String: StoredRecord]
         /// Location records by device ID (not verified yet).
         let locations: [String: StoredRecord]
+        /// Note records (not verified yet).
+        let notes: [StoredRecord]
         var circleID: String { snapshot.ref.circleID }
         var ownerDeviceID: String { DeviceID.derive(signingPublicKey: ownerSigningKey) }
     }
@@ -429,9 +501,10 @@ public actor LeuchtturmClient {
         for r in snapshot.records where r.type == RecordType.location && r.name.hasPrefix(RecordName.locationPrefix) {
             locations[String(r.name.dropFirst(RecordName.locationPrefix.count))] = r
         }
+        let notes = snapshot.records.filter { $0.type == RecordType.note && $0.name.hasPrefix(RecordName.notePrefix) }
         return Parsed(
             snapshot: snapshot, ownerSigningKey: ownerSigning, ownerAgreementKey: ownerAgreement,
-            epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations
+            epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations, notes: notes
         )
     }
 
@@ -485,6 +558,7 @@ public actor LeuchtturmClient {
                     newRoster.remove(m.deviceID)
                     delete.append(m.deviceID)
                     if p.locations[m.deviceID] != nil { delete.append(RecordName.location(m.deviceID)) }
+                    delete += p.notes.filter { $0.string("from") == m.deviceID }.map(\.name)
                 } else if !newRoster.contains(m.deviceID), hasValidInvite(m, p) {
                     newRoster.insert(m.deviceID)
                 }
@@ -550,7 +624,7 @@ public actor LeuchtturmClient {
         }
         return CircleDetails(
             ref: ref, name: meta?.name, epoch: p.epoch, isOwner: iAmOwner, hasKey: key != nil,
-            members: members, unverifiedUserIDs: unverified
+            members: members, unverifiedUserIDs: unverified, notes: verifiedNotes(p, roster: roster)
         )
     }
 

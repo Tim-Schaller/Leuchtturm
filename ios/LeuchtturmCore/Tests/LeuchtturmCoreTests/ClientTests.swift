@@ -1,6 +1,14 @@
 import Foundation
+import Synchronization
 import Testing
 @testable import LeuchtturmCore
+
+/// A clock the tests can move forward.
+final class TestClock: Sendable {
+    private let time = Mutex(Date())
+    var now: Date { time.withLock { $0 } }
+    func advance(by seconds: TimeInterval) { time.withLock { $0 += seconds } }
+}
 
 /// End-to-end flows against the in-memory CloudKit stand-in. The stand-in
 /// allows everything CloudKit allows (any participant can overwrite any
@@ -300,6 +308,71 @@ struct ClientTests {
         let daveOnBobsList = try await bob.circle(bobRef).members.first { $0.name == "Dave" }
         #expect(daveOnBobsList?.isPending == true)
         #expect(daveOnBobsList?.location == nil)
+    }
+
+    @Test func notesAreEncryptedSignedAndOnlyFromMembers() async throws {
+        let alice = try client("alice", "Alice")
+        let bob = try client("bob", "Bob")
+        let carol = try client("carol", "Carol")
+        let ref = try await alice.createCircle(name: "Familie")
+        let link = try await alice.createInvite(for: ref)
+        let bobRef = try await bob.join(link)
+        let carolRef = try await carol.join(link)
+        _ = try await alice.circle(ref)
+
+        let heart = try await bob.send(.reaction, text: "❤️", to: alice.deviceID, in: bobRef)
+        #expect(try await alice.circle(ref).notes == [heart])
+        let checkIn = try await carol.send(.checkIn, location: try location(53.55, 9.99), in: carolRef)
+        let notes = try await alice.circle(ref).notes
+        #expect(notes.map(\.id) == [checkIn.id, heart.id] || notes.map(\.id) == [heart.id, checkIn.id])
+        #expect(notes.first { $0.kind == .checkIn }?.location?.latitude == 53.55)
+
+        // Apple sees neither the emoji nor the place.
+        for record in cloud.rawRecords(circleID: ref.circleID) where record.type == "Note" {
+            for case let .bytes(bytes) in record.fields.values {
+                #expect(bytes.range(of: Data("❤️".utf8)) == nil)
+                #expect(bytes.range(of: Data("53.55".utf8)) == nil)
+            }
+        }
+
+        // Bob writes a note "from" Carol, signed by himself: ignored.
+        let key = try #require(bob.loadKey(circleID: ref.circleID, epoch: 1))
+        let fake = CircleNote(
+            id: CircleCrypto.newCircleID(), senderID: carol.deviceID, recipientID: nil, kind: .text, text: "Ich schulde Bob 100 €",
+            location: nil, timestamp: Date(timeIntervalSince1970: Date().timeIntervalSince1970.rounded(.down))
+        )
+        let blob = try CircleCrypto.sealNote(fake, key: key, epoch: 1, circleID: ref.circleID)
+        let sig = try bob.identity.sign(CircleCrypto.noteRecordStatement(circleID: ref.circleID, noteID: fake.id, senderID: carol.deviceID, blob: blob))
+        try await cloud.backend(for: "bob").modify(bobRef, save: [StoredRecord(type: "Note", name: "note-\(fake.id)", fields: [
+            "from": .string(carol.deviceID), "blob": .bytes(blob), "sig": .bytes(sig),
+        ])], delete: [], removeParticipants: [])
+        #expect(!(try await alice.circle(ref).notes.contains { $0.id == fake.id }))
+
+        // A newcomer the owner has not confirmed yet cannot post.
+        let dave = try client("dave", "Dave")
+        let daveRef = try await dave.join(link)
+        let early = try await dave.send(.text, text: "Hallo", in: daveRef)
+        #expect(!(try await bob.circle(bobRef).notes.contains { $0.id == early.id }))
+
+        await #expect(throws: ClientError.invalidNote) {
+            try await bob.send(.text, text: String(repeating: "x", count: CircleNote.maxTextLength + 1), in: bobRef)
+        }
+    }
+
+    @Test func oldNotesFadeAndAreCleanedUp() async throws {
+        let clock = TestClock()
+        let alice = try client("alice", "Alice", now: { clock.now })
+        let bob = try client("bob", "Bob", now: { clock.now })
+        let ref = try await alice.createCircle(name: "Familie")
+        let bobRef = try await bob.join(try await alice.createInvite(for: ref))
+        _ = try await alice.circle(ref)
+
+        try await bob.send(.reaction, text: "👋", in: bobRef)
+        clock.advance(by: 8 * 24 * 3600)
+        #expect(try await alice.circle(ref).notes.isEmpty)
+        let fresh = try await bob.send(.reaction, text: "👍", in: bobRef)
+        let names = cloud.rawRecords(circleID: ref.circleID).filter { $0.type == "Note" }.map(\.name)
+        #expect(names == ["note-\(fresh.id)"])
     }
 
     @Test func namesAreValidated() async throws {

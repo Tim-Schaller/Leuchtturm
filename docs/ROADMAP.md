@@ -55,9 +55,11 @@ Researched October 2026. Almost every family feature of Life360 works on the dev
 Not planned, because they need a company server, a call center or third parties: emergency dispatch, roadside assistance, insurance and reimbursement, ID-theft services, crime and safety-incident data, Tile/pet GPS hardware, Uber. Never: ads, data sales, insurer data sharing (Life360's Arity program). Maybe later: a web link for people without the app (static page, key in the URL fragment), an Apple Watch app, weather alerts via WeatherKit.
 
 ## M3: Reactions and check-ins
-- [ ] Emoji reactions and quick notes, end-to-end encrypted, delivered by push
-- [ ] Check-in with the current place
-- [ ] Opt-in morning check-in
+- [x] Emoji reactions and quick notes, end-to-end encrypted, signed by the sender
+- [x] Check-in with the current place
+- [x] Opt-in morning greeting on the first movement of the day
+- [x] Local notifications when the app fetches new notes (open or while sharing in the background)
+- [ ] Instant delivery by push while the app is closed (see M2)
 - [ ] Bubbles: approximate area for a limited time
 
 ## M4: Places

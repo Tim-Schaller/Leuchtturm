@@ -20,6 +20,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 
 - **Metadata at Apple.** Apple knows which iCloud accounts (real identities) share a circle, who owns it, when records are written and their approximate sizes. This is the main privacy cost of using CloudKit instead of a self-hosted server.
 - **Movement patterns from timing.** Location records are written while someone moves (more often with the app open) and not while they stand still, also in the background. Apple can therefore tell when a member is on the move, though not where. A fixed update cadence could hide this later.
+- **Note timing.** Apple sees when a note record is written (not what it says or for whom).
 - **Map tiles.** The map comes from Apple Maps, which sees the map areas the app loads. These are usually where the circle's members are.
 - **Data location.** iCloud data is stored in Apple's data centers; Apple is a US company. EU-only storage is not guaranteed.
 - **Apple as an active attacker on the app itself.** Apple distributes the app binary and operating system.
@@ -47,6 +48,9 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 | Member replays an older location | Readers keep the newest timestamp per device; the shown age reveals stale data. The memory is lost when the app restarts | M2 |
 | Someone not admitted shares a location | Only devices in the signed roster appear on the map | M2 |
 | Last position stays behind | Pausing, leaving and removal delete the location record | M2 |
+| Member sends a note in someone else's name | Notes are signed by the sending device and checked against its member record | M3 |
+| Someone not admitted posts notes | Only notes from roster devices are shown or notified | M3 |
+| Old notes replayed | Note ID is bound into the encryption and the signature; readers notify each ID once and ignore notes older than 7 days | M3 |
 | Supply chain | App uses Apple frameworks only (CryptoKit, CloudKit). swift-crypto is used only for Linux tests | M1 |
 
 ## Known limitations

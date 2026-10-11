@@ -3,6 +3,7 @@ import Foundation
 import LeuchtturmCore
 import Observation
 import UIKit
+import UserNotifications
 
 /// App-wide state. Owns the client once setup is done.
 @MainActor
@@ -17,6 +18,10 @@ final class AppModel {
         static let displayName = "displayName"
         static let locationPaused = "locationPaused"
         static let lastSharedAt = "lastSharedAt"
+        static let seenNotes = "seenNotes"
+        static let newsSince = "newsSince"
+        static let morningGreeting = "morningGreeting"
+        static let lastMorningGreeting = "lastMorningGreeting"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -54,12 +59,22 @@ final class AppModel {
     }
 
     private let keychain = KeychainSecretStore()
-    /// Off in unit tests, which must not start CoreLocation.
-    private let tracksLocation: Bool
+    /// Says "good morning" to the circles on the first movement of the day.
+    private(set) var sendsMorningGreeting = false
+    /// Notes already notified (or sent by me), so each one notifies once.
+    @ObservationIgnored private var seenNotes: [String] = []
+    /// Notes older than this never notify, e.g. from before the setup.
+    @ObservationIgnored private var newsSince = Date()
+    @ObservationIgnored private var lastMorningGreeting: Date?
+    @ObservationIgnored private let notificationPresenter = NotificationPresenter()
 
-    init(tracksLocation: Bool = true) {
-        self.tracksLocation = tracksLocation
+    /// Off in unit tests, which must not start CoreLocation or ask for notifications.
+    private let usesDeviceServices: Bool
+
+    init(usesDeviceServices: Bool = true) {
+        self.usesDeviceServices = usesDeviceServices
         UIDevice.current.isBatteryMonitoringEnabled = true
+        if usesDeviceServices { UNUserNotificationCenter.current().delegate = notificationPresenter }
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         if arguments.contains(SimulatedWorld.demoArgument) {
@@ -87,6 +102,12 @@ final class AppModel {
         lastShared = nil
         isSharingLocation = isSimulation || !UserDefaults.standard.bool(forKey: Keys.locationPaused)
         lastSharedAt = isSimulation ? nil : UserDefaults.standard.object(forKey: Keys.lastSharedAt) as? Date
+        let defaults = UserDefaults.standard
+        seenNotes = isSimulation ? [] : defaults.stringArray(forKey: Keys.seenNotes) ?? []
+        newsSince = isSimulation ? Date() : defaults.object(forKey: Keys.newsSince) as? Date ?? Date()
+        if !isSimulation { defaults.set(newsSince, forKey: Keys.newsSince) }
+        sendsMorningGreeting = !isSimulation && defaults.bool(forKey: Keys.morningGreeting)
+        lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
         phase = .onboarding
         if !displayName.isEmpty, let client = try? makeClient(name: displayName) {
             self.client = client
@@ -199,7 +220,9 @@ final class AppModel {
         await simulation?.move(near: tracker.location)
         #endif
         await simulateOthers()
-        return try? await client.circle(ref)
+        guard let details = try? await client.circle(ref) else { return nil }
+        deliverNews(details)
+        return details
     }
 
     // MARK: Location
@@ -207,11 +230,12 @@ final class AppModel {
     /// Tracks while set up: in the background while sharing (also after iOS
     /// relaunched the app for a location event), else only for the map.
     private func updateTracking() {
-        guard tracksLocation else { return }
+        guard usesDeviceServices else { return }
         guard phase == .ready else {
             tracker.stop()
             return
         }
+        Task { _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) }
         tracker.start(background: isSharingLocation && !isSimulation) { [weak self] location in
             Task { await self?.share(location) }
         }
@@ -219,7 +243,8 @@ final class AppModel {
 
     private func share(_ location: CLLocation) async {
         guard isSharingLocation, let client, (0 ... 1000).contains(location.horizontalAccuracy) else { return }
-        let policy: SharePolicy = UIApplication.shared.applicationState == .active ? .foreground : .background
+        let inBackground = UIApplication.shared.applicationState != .active
+        let policy: SharePolicy = inBackground ? .background : .foreground
         let device = UIDevice.current
         let battery = device.batteryLevel >= 0 ? Int((device.batteryLevel * 100).rounded()) : nil
         let charging = device.batteryState == .charging || device.batteryState == .full
@@ -232,6 +257,9 @@ final class AppModel {
         if (try? await client.shareLocation(shared)) != nil {
             lastSharedAt = Date()
             if !isSimulation { UserDefaults.standard.set(lastSharedAt, forKey: Keys.lastSharedAt) }
+            await greetMorningIfDue()
+            // While the app is closed, this is when news arrives (until push).
+            if inBackground { await checkForNews() }
         }
         UIApplication.shared.endBackgroundTask(backgroundTask)
     }
@@ -251,6 +279,76 @@ final class AppModel {
         } else {
             await run { try await $0.stopSharingLocation() }
         }
+    }
+
+    // MARK: Notes
+
+    /// Sends a reaction, note, check-in (with the current position) or
+    /// good-morning. Returns false and shows the error on failure.
+    @discardableResult
+    func send(_ kind: CircleNote.Kind, text: String = "", to recipientID: String? = nil, in ref: CircleRef) async -> Bool {
+        let location = kind == .checkIn ? tracker.location.flatMap { SharedLocation($0) } : nil
+        if kind == .checkIn && location == nil {
+            errorMessage = "Dein Standort ist noch nicht bekannt. Bitte versuch es gleich noch einmal."
+            return false
+        }
+        guard let note = await run({ try await $0.send(kind, text: text, to: recipientID, location: location, in: ref) })
+        else { return false }
+        markSeen([note.id])
+        return true
+    }
+
+    func setMorningGreeting(_ on: Bool) {
+        sendsMorningGreeting = on
+        if !isSimulation { UserDefaults.standard.set(on, forKey: Keys.morningGreeting) }
+    }
+
+    private func greetMorningIfDue() async {
+        let now = Date()
+        guard sendsMorningGreeting, let client, (5 ..< 12).contains(Calendar.current.component(.hour, from: now)),
+              !(lastMorningGreeting.map { Calendar.current.isDate($0, inSameDayAs: now) } ?? false)
+        else { return }
+        lastMorningGreeting = now
+        if !isSimulation { UserDefaults.standard.set(now, forKey: Keys.lastMorningGreeting) }
+        for circle in (try? await client.circles()) ?? [] {
+            _ = try? await client.send(.morning, in: circle.ref)
+        }
+    }
+
+    /// Loads every circle and notifies about new notes.
+    func checkForNews() async {
+        guard let client else { return }
+        for circle in (try? await client.circles()) ?? [] {
+            if let details = try? await client.circle(circle.ref) { deliverNews(details) }
+        }
+    }
+
+    /// Notifies once about each new note from others that is for me or for
+    /// everyone.
+    func deliverNews(_ details: CircleDetails) {
+        guard let me = client?.deviceID else { return }
+        let fresh = details.notes.filter {
+            $0.senderID != me && ($0.recipientID == nil || $0.recipientID == me)
+                && $0.timestamp > newsSince && !seenNotes.contains($0.id)
+        }
+        guard !fresh.isEmpty else { return }
+        markSeen(fresh.map(\.id))
+        guard usesDeviceServices else { return }
+        for note in fresh.reversed() {
+            let sender = details.members.first { $0.id == note.senderID }?.name ?? "Jemand"
+            let content = UNMutableNotificationContent()
+            content.title = sender
+            content.subtitle = details.name ?? ""
+            content.body = NoteText.body(note, members: details.members, myID: me)
+            content.sound = .default
+            content.threadIdentifier = details.id
+            UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: note.id, content: content, trigger: nil))
+        }
+    }
+
+    private func markSeen(_ ids: [String]) {
+        seenNotes = Array((seenNotes + ids).suffix(500))
+        if !isSimulation { UserDefaults.standard.set(seenNotes, forKey: Keys.seenNotes) }
     }
 
     /// Runs a client operation and reports errors. Returns nil on failure.
@@ -382,6 +480,7 @@ final class AppModel {
             case .untrustedCircle: return "Dieses Gerät kann den Kreis nicht prüfen, z. B. nach einer Neuinstallation. Lass dich neu einladen."
             case .tampered: return "Die Kreisdaten wurden verändert und sind nicht vom Besitzer signiert."
             case .ownerMustDelete: return "Als Besitzer kannst du den Kreis nicht verlassen, nur löschen."
+            case .invalidNote: return "Die Nachricht ist zu lang."
             }
         case is ProtocolError:
             return "Die Daten konnten nicht entschlüsselt oder geprüft werden."

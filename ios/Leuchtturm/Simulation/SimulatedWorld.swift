@@ -42,6 +42,9 @@ final class SimulatedWorld {
     /// Where the people hang out; fixed on the first move.
     private var home: CLLocationCoordinate2D?
     private var lastMoved: [String: Date] = [:]
+    private var lastPositions: [String: SharedLocation] = [:]
+    /// Notes the people already answered.
+    private var answered: Set<String> = []
 
     /// Used when your own position is unknown (e.g. no simulator location).
     static let fallbackHome = CLLocationCoordinate2D(latitude: 53.5502, longitude: 9.9920)
@@ -58,12 +61,26 @@ final class SimulatedWorld {
     }
 
     /// The people open their app: owners confirm new members, everyone picks
-    /// up new keys and keeps their member card current.
+    /// up new keys and keeps their member card current. Notes sent to them
+    /// get a friendly answer.
     func tick() async {
         for person in people {
             for circle in (try? await person.client.circles()) ?? [] {
-                _ = try? await person.client.circle(circle.ref)
+                guard let details = try? await person.client.circle(circle.ref) else { continue }
+                for note in details.notes where note.recipientID == person.client.deviceID && !answered.contains(note.id) {
+                    answered.insert(note.id)
+                    _ = try? await person.client.send(.reaction, text: note.kind == .text ? "👍" : "😊", to: note.senderID, in: circle.ref)
+                }
             }
+        }
+    }
+
+    /// The person sends a note to all their circles, optionally addressed to
+    /// someone. A check-in uses their current position.
+    func send(_ kind: CircleNote.Kind, text: String = "", from person: Person, to recipientID: String? = nil) async throws {
+        let location = kind == .checkIn ? lastPositions[person.id] : nil
+        for circle in try await person.client.circles() {
+            try await person.client.send(kind, text: text, to: recipientID, location: location, in: circle.ref)
         }
     }
 
@@ -140,6 +157,7 @@ final class SimulatedWorld {
                 battery: battery, isCharging: charging
             ) else { continue }
             lastMoved[person.id] = now
+            lastPositions[person.id] = position
             try? await person.client.shareLocation(position)
         }
     }

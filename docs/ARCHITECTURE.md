@@ -98,7 +98,21 @@ Readers show a location only for devices in the signed roster, verify `sig` with
 
 The app writes the record when the device moved (see Tracking strategy) and reads the selected circle every 30 seconds while the map is open (push updates come later).
 
-### Encrypted content (meta, cards, tokens, locations)
+### `Note` (record name `note-<noteID>`)
+
+Reactions, quick notes, check-ins and good-mornings (Life360's "Quick Notes" and "Check-in").
+
+| Field | Content |
+|-------|---------|
+| `from` | device ID of the sender |
+| `blob` | encrypted `{"k": kind, "x": text, "to": recipient device ID or null, "t": Unix seconds, "loc": {"lat", "lon", "acc"} for check-ins}` |
+| `sig` | Ed25519 by the **sending device** over `ctx("leuchtturm/v1/note-record", circleID, noteID, from) ‖ blob` |
+
+Readers accept notes only from devices in the signed roster (or their own), check `sig` against the sender's member record and ignore notes older than 7 days. Text is at most 120 characters. A sender deletes its own notes older than 2 days when it sends a new one; removal and the owner's cleanup delete a departed member's notes. Every member can read every note of the circle, including those addressed to someone else.
+
+Notifications are posted locally by the receiving app after it fetched and decrypted the note (while open, or when it uploads its location in the background). Nothing readable goes through Apple's push service.
+
+### Encrypted content (meta, cards, tokens, locations, notes)
 
 ```
 blob      = 0x01 | epoch (u64) | ChaCha20-Poly1305 combined (nonce 12 | ciphertext | tag 16)
@@ -106,7 +120,7 @@ aad       = context | 0x01 | epoch
 plaintext = u16 length | data | zero padding to a multiple of 64 bytes
 ```
 
-Contexts: `ctx("leuchtturm/v1/circle-meta", circleID)`, `ctx("leuchtturm/v1/member-card", circleID, deviceID)`, `ctx("leuchtturm/v1/invite-token", circleID, inviteID)`, `ctx("leuchtturm/v1/location", circleID, deviceID)`. Padding hides name lengths.
+Contexts: `ctx("leuchtturm/v1/circle-meta", circleID)`, `ctx("leuchtturm/v1/member-card", circleID, deviceID)`, `ctx("leuchtturm/v1/invite-token", circleID, inviteID)`, `ctx("leuchtturm/v1/location", circleID, deviceID)`, `ctx("leuchtturm/v1/note", circleID, noteID)`. Padding hides name lengths.
 
 ## Invites
 

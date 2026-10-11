@@ -7,7 +7,7 @@ import Testing
 @MainActor
 struct SimulationTests {
     private func simulatedModel() async throws -> (AppModel, SimulatedWorld) {
-        let model = AppModel(tracksLocation: false)
+        let model = AppModel(usesDeviceServices: false)
         model.startSimulation()
         let world = try #require(model.simulation)
         #expect(await model.setUp(name: "Tim"))
@@ -62,6 +62,19 @@ struct SimulationTests {
         let ben = try #require(details.members.first { $0.name == "Ben" }?.location)
         let home = SimulatedWorld.fallbackHome
         #expect(abs(ben.latitude - home.latitude) < 0.05 && abs(ben.longitude - home.longitude) < 0.05)
+    }
+
+    @Test func peopleAnswerReactions() async throws {
+        let (model, world) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        let anna = world.people[0]
+        #expect(await model.send(.reaction, text: "❤️", to: anna.client.deviceID, in: ref))
+
+        let details = try #require(await model.mapDetails(for: ref))
+        let me = try #require(model.client?.deviceID)
+        #expect(details.notes.contains { $0.senderID == anna.client.deviceID && $0.recipientID == me && $0.text == "😊" })
+        #expect(details.notes.contains { $0.senderID == me && $0.text == "❤️" })
     }
 
     @Test func strangerWithShareLinkIsUnverified() async throws {

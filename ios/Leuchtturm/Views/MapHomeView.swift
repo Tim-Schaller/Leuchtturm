@@ -82,7 +82,7 @@ struct MapHomeView: View {
         .sheet(isPresented: .constant(true)) {
             PeopleSheet(
                 details: details, circle: selected, sheet: $sheet, path: $drawerPath,
-                onFocus: { focus($0) }, onSelectCircle: { selectedCircleID = $0.circleID }
+                onFocus: { focus($0) }, onShowPlace: showPlace, onSelectCircle: { selectedCircleID = $0.circleID }
             )
             .presentationDetents([PeopleSheet.peek, .medium, .large], selection: $detent)
             .presentationBackgroundInteraction(.enabled(upThrough: .medium))
@@ -157,6 +157,14 @@ struct MapHomeView: View {
         guard let coordinate else { return }
         withAnimation(.smooth(duration: 0.6)) {
             camera = .region(MKCoordinateRegion(center: coordinate, latitudinalMeters: 900, longitudinalMeters: 900))
+        }
+    }
+
+    private func showPlace(_ place: SharedLocation) {
+        focusedID = nil
+        detent = PeopleSheet.peek
+        withAnimation(.smooth(duration: 0.6)) {
+            camera = .region(MKCoordinateRegion(center: place.coordinate, latitudinalMeters: 600, longitudinalMeters: 600))
         }
     }
 

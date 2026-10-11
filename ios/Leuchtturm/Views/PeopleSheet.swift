@@ -19,6 +19,7 @@ struct PeopleSheet: View {
     @Binding var sheet: HomeSheet?
     @Binding var path: [DrawerRoute]
     let onFocus: (CircleMember) -> Void
+    let onShowPlace: (SharedLocation) -> Void
     let onSelectCircle: (CircleRef) -> Void
     /// An invite from the simulation, shown once its sheet has closed.
     @State private var receivedInvite: InviteLink?
@@ -33,7 +34,7 @@ struct PeopleSheet: View {
                     switch route {
                     case let .member(id):
                         if let member = details?.members.first(where: { $0.id == id }) {
-                            MemberDetailView(member: member)
+                            MemberDetailView(member: member, ref: circle?.ref)
                         }
                     case let .manage(ref):
                         CircleDetailView(ref: ref)
@@ -78,7 +79,12 @@ struct PeopleSheet: View {
                         .tint(.primary)
                     }
                 }
+                NewsSection(details: details, onShowPlace: onShowPlace)
                 Section {
+                    Button("Einchecken: „Ich bin hier“", systemImage: "mappin.and.ellipse") {
+                        Task { await model.send(.checkIn, in: circle.ref) }
+                    }
+                    .disabled(!details.hasKey)
                     Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(circle.ref) }
                         .disabled(!details.hasKey)
                     NavigationLink(value: DrawerRoute.manage(circle.ref)) {
@@ -198,6 +204,7 @@ enum LocationStatus {
 struct MemberDetailView: View {
     @Environment(AppModel.self) private var model
     let member: CircleMember
+    let ref: CircleRef?
 
     var body: some View {
         List {
@@ -209,6 +216,10 @@ struct MemberDetailView: View {
                 }
             }
             .listRowBackground(Color.clear)
+
+            if !member.isMe, !member.isPending, let ref {
+                ReactionPicker(member: member, ref: ref)
+            }
 
             if let location = member.location, !member.isMe {
                 Section {

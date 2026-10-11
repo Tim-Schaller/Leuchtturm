@@ -30,6 +30,23 @@ struct SimulationView: View {
                     }
 
                     Section {
+                        let me = model.client?.deviceID
+                        Button("Anna schickt dir ❤️", systemImage: "heart") {
+                            Task { await model.simulate { try await $0.send(.reaction, text: "❤️", from: world.people[0], to: me) } }
+                        }
+                        Button("Ben checkt ein", systemImage: "mappin.and.ellipse") {
+                            Task { await model.simulate { try await $0.send(.checkIn, from: world.people[1]) } }
+                        }
+                        Button("Clara sagt Guten Morgen", systemImage: "sun.max") {
+                            Task { await model.simulate { try await $0.send(.morning, from: world.people[2]) } }
+                        }
+                    } header: {
+                        Text("Nachrichten")
+                    } footer: {
+                        Text("Schickst du jemandem eine Reaktion, antwortet die Person kurz darauf.")
+                    }
+
+                    Section {
                         ForEach(world.people) { person in
                             Button("\(person.name) lädt dich ein", systemImage: "envelope") {
                                 invite(from: person)

@@ -43,7 +43,9 @@ jobs:
         shell: bash
         run: |
           cd server
-          go build -o /tmp/leuchtturmd ./cmd/leuchtturmd
+          # The container runs as another user than the checkout owner, so git
+          # refuses the repo and Go's VCS stamping fails; it is not needed here.
+          go build -buildvcs=false -o /tmp/leuchtturmd ./cmd/leuchtturmd
           LEUCHTTURM_ADDR=127.0.0.1:8080 LEUCHTTURM_DATA_DIR=/tmp/lt-data nohup /tmp/leuchtturmd > /tmp/leuchtturmd.log 2>&1 &
           for i in $(seq 1 30); do (echo > /dev/tcp/127.0.0.1/8080) 2>/dev/null && exit 0; sleep 1; done
           cat /tmp/leuchtturmd.log; exit 1
@@ -54,7 +56,7 @@ jobs:
         run: swift test
       - name: Server log
         if: failure()
-        run: cat /tmp/leuchtturmd.log
+        run: cat /tmp/leuchtturmd.log || true
 
   ios:
     name: iOS (core on CryptoKit, app build + test)
@@ -115,4 +117,4 @@ jobs:
             CODE_SIGNING_ALLOWED=NO
       - name: Server log
         if: failure()
-        run: cat /tmp/leuchtturmd.log
+        run: cat /tmp/leuchtturmd.log || true

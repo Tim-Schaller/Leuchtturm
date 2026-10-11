@@ -4,9 +4,19 @@
 
 Leuchtturm is a native iOS app (SwiftUI, Liquid Glass) for sharing your location with the people you choose, without handing your movements to a company that monetizes them. The server only ever sees ciphertext.
 
-> **Status:** early development. Nothing here is released or audited yet. Do not rely on Leuchtturm for safety-critical use.
+> **Status:** early development. Milestone M1 (encrypted circles and invites, no location yet) is implemented and tested; nothing is released or audited. Do not rely on Leuchtturm for safety-critical use.
 
-## Features (planned)
+## Features
+
+Working now (M1):
+
+- Circles with encrypted names and display names
+- Invites via link or QR code, with expiry and use limits
+- Removing members rotates the circle key
+- Safety codes to verify members in person
+- No accounts or passwords: each device signs its requests with its own key
+
+Planned:
 
 - Live location in circles and groups, with friend requests and invite codes / QR
 - Places (geofences) with arrival and departure alerts, evaluated **on your device**
@@ -14,13 +24,13 @@ Leuchtturm is a native iOS app (SwiftUI, Liquid Glass) for sharing your location
 - SOS and check-in, **opt-in**
 - Drive detection with live speed (km/h)
 - Adaptive tracking to keep battery drain low (idle = rare updates, driving = frequent)
-- Sign in with Apple, device-key identity, or invite code. Email and Google may follow.
+- Multi-device support, with Sign in with Apple, email or Google as optional anchors
 
 Safety features (live location, circles, SOS, check-in) will always be free. Optional in-app purchases only cover convenience (e.g. longer history, extra themes), with no ads and no intrusive paywalls.
 
 ## Privacy model
 
-- **End-to-end encryption.** Each device generates its own key pair (Secure Enclave / CryptoKit). Each circle has a symmetric key that is distributed to members encrypted to their public keys. Locations, places and history are encrypted before upload.
+- **End-to-end encryption.** Each device generates its own keys (CryptoKit, stored in the Keychain on this device only). Each circle has a symmetric key that is distributed to members with HPKE. Names today, and locations, places and history later, are encrypted before upload.
 - **Geofences run on the device.** The server never learns where "Home" is.
 - **No tracking, no ads, no third-party analytics SDKs.**
 - **EU hosting.** The reference backend runs on Hetzner Cloud in Germany.
@@ -28,21 +38,22 @@ Safety features (live location, circles, SOS, check-in) will always be free. Opt
 
 ### What the server can still see
 
-End-to-end encryption protects content, not metadata. A server operator can see: which accounts exist, which devices belong to which circle, when a device uploads data, approximate payload sizes, IP addresses at connection time, and push notification tokens. See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) for what we protect against and what we do not.
+End-to-end encryption protects content, not metadata. A server operator can see: which devices exist (public keys only), which devices belong to which circle and who owns it, when a device makes requests, padded payload sizes, IP addresses at connection time, and later push notification tokens. The server does not log IP addresses. See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) for what we protect against and what we do not.
 
 ## Repository layout
 
 | Path | Contents | License |
 |------|----------|---------|
-| `ios/` | SwiftUI app (iOS 26+) | MPL-2.0 |
+| `ios/Leuchtturm` | SwiftUI app (iOS 26+) | MPL-2.0 |
+| `ios/LeuchtturmCore` | Crypto, protocol and API client (Swift package, also builds on Linux) | MPL-2.0 |
 | `server/` | Go backend, Dockerfile | AGPL-3.0 |
-| `docs/` | Architecture, threat model, roadmap | AGPL-3.0 |
+| `docs/` | Architecture, API, threat model, roadmap, test vectors | AGPL-3.0 |
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/ROADMAP.md](docs/ROADMAP.md).
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/API.md](docs/API.md) and [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Building
 
-**Server** (Go 1.24+):
+**Server** (Go 1.26+):
 
 ```sh
 cd server
@@ -57,6 +68,16 @@ cd server
 docker compose up --build
 ```
 
+Settings: `LEUCHTTURM_ADDR` (default `:8080`), `LEUCHTTURM_DATA_DIR` (default `./data`), `LEUCHTTURM_MAX_MEMBERS` (default 500). Put it behind a TLS reverse proxy (e.g. Caddy) at the root of a (sub)domain.
+
+**Core library** (Swift 6, macOS or Linux), including end-to-end tests against a running server:
+
+```sh
+cd ios/LeuchtturmCore
+swift test                                            # unit tests
+LEUCHTTURM_TEST_SERVER=http://127.0.0.1:8080 swift test   # plus end-to-end
+```
+
 **iOS app** (macOS, Xcode 26+):
 
 ```sh
@@ -65,6 +86,8 @@ cd ios
 xcodegen generate
 open Leuchtturm.xcodeproj
 ```
+
+For testing on a real iPhone against a server on your Mac, enter `http://<your-mac-ip>:8080` during setup (plain HTTP is only allowed for local network addresses).
 
 ## Licenses
 

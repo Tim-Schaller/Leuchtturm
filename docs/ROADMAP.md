@@ -9,11 +9,17 @@ Each milestone should be usable and testable on its own. Dates are intentionally
 - [x] SwiftUI project skeleton (iOS 26+), CI workflow
 
 ## M1: Identity and key exchange
-- [ ] Device key generation (CryptoKit, Keychain/Secure Enclave)
-- [ ] Server: accounts, devices, public key registry (SQLite)
-- [ ] Sign in with Apple and anonymous device identity
-- [ ] Circle creation, invite code / QR, wrapped circle keys
-- [ ] Test vectors and crypto unit tests
+- [x] Device keys (Ed25519 + X25519, CryptoKit, Keychain this-device-only)
+- [x] Signed requests instead of accounts/passwords; public key registry (SQLite)
+- [x] Circles with encrypted names and member cards
+- [x] Invite links and QR codes; circle key released only on redeem
+- [x] Member removal with atomic key rotation (HPKE auth mode)
+- [x] Safety codes per member
+- [x] Shared Go/Swift test vectors, unit tests, end-to-end tests in CI
+- [x] App: setup, circle list, circle details, invite, join, settings
+- [ ] First run on a real iPhone (owner, Mac required)
+
+Sign in with Apple moved to M6: with one device per person it would only add an Apple ID to the server without any benefit. It becomes useful together with multi-device support.
 
 ## M2: Live location
 - [ ] Encrypted location upload and WebSocket stream
@@ -38,7 +44,9 @@ Each milestone should be usable and testable on its own. Dates are intentionally
 ## M6: Friends, groups and polish
 - [ ] Friend requests, multiple circles and groups
 - [ ] Liquid Glass UI polish, accessibility, localization (DE, EN)
-- [ ] Email and Google sign-in (optional anchors)
+- [ ] Multi-device support and key backup
+- [ ] Sign in with Apple, email or Google as optional account anchors for multi-device
+- [ ] Warning when an unverified member appears in a circle
 
 ## M7: Monetization and release
 - [ ] StoreKit 2: non-intrusive convenience purchases (safety features stay free)

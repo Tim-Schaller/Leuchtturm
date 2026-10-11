@@ -13,7 +13,10 @@ Thanks for helping. A few ground rules keep the project healthy and its privacy 
 
 1. Open an issue before starting larger work.
 2. Fork, create a branch, make your change, add tests.
-3. Server: `cd server && go vet ./... && go test ./...`
+3. Run the tests:
+   - Server: `cd server && go vet ./... && go test -race ./...`
+   - Core: `cd ios/LeuchtturmCore && swift test` (add `LEUCHTTURM_TEST_SERVER=http://127.0.0.1:8080` with a running server for end-to-end tests)
+   - Protocol changes must update [docs/API.md](docs/API.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and, if signing or key derivation changes, the test vectors.
 4. Open a pull request with a clear description.
 
 ## Licensing of contributions

@@ -21,6 +21,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
       - name: Format check
         run: test -z "$(gofmt -l .)"
       - run: go vet ./...
@@ -28,24 +29,90 @@ jobs:
       - name: Docker build
         run: docker build -t leuchtturmd:ci .
 
+  core-linux:
+    name: Core (Swift on Linux) + end-to-end
+    runs-on: ubuntu-latest
+    container: swift:6.2-noble
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - name: Start server
+        shell: bash
+        run: |
+          cd server
+          go build -o /tmp/leuchtturmd ./cmd/leuchtturmd
+          LEUCHTTURM_ADDR=127.0.0.1:8080 LEUCHTTURM_DATA_DIR=/tmp/lt-data nohup /tmp/leuchtturmd > /tmp/leuchtturmd.log 2>&1 &
+          for i in $(seq 1 30); do (echo > /dev/tcp/127.0.0.1/8080) 2>/dev/null && exit 0; sleep 1; done
+          cat /tmp/leuchtturmd.log; exit 1
+      - name: Swift tests (unit + end-to-end)
+        working-directory: ios/LeuchtturmCore
+        env:
+          LEUCHTTURM_TEST_SERVER: http://127.0.0.1:8080
+        run: swift test
+      - name: Server log
+        if: failure()
+        run: cat /tmp/leuchtturmd.log
+
   ios:
-    name: iOS (build + test)
+    name: iOS (core on CryptoKit, app build + test)
     # Liquid Glass needs the iOS 26 SDK (Xcode 26). If this runner label is not
     # available on your account yet, adjust it to the newest macOS image.
     runs-on: macos-26
-    defaults:
-      run:
-        working-directory: ios
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - name: Start server
+        run: |
+          cd server
+          go build -o /tmp/leuchtturmd ./cmd/leuchtturmd
+          LEUCHTTURM_ADDR=127.0.0.1:8080 LEUCHTTURM_DATA_DIR=/tmp/lt-data nohup /tmp/leuchtturmd > /tmp/leuchtturmd.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8080/healthz && exit 0; sleep 1; done
+          cat /tmp/leuchtturmd.log; exit 1
+      - name: Core tests on macOS (CryptoKit) incl. end-to-end
+        working-directory: ios/LeuchtturmCore
+        env:
+          LEUCHTTURM_TEST_SERVER: http://127.0.0.1:8080
+        run: swift test
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate Xcode project
+        working-directory: ios
         run: xcodegen generate
-      - name: Build and test
+      - name: Build and test app
+        working-directory: ios
         run: |
+          # Newest iPhone simulator whose iOS version the active Xcode SDK supports.
+          SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
+          UDID=$(xcrun simctl list devices available -j | SDK_VERSION="$SDK_VERSION" python3 -c '
+          import json, os, re, sys
+          sdk = tuple(int(x) for x in os.environ["SDK_VERSION"].split(".")[:2])
+          best = None
+          for runtime, items in json.load(sys.stdin)["devices"].items():
+              m = re.search(r"\.iOS-(\d+)-(\d+)$", runtime)
+              if not m:
+                  continue
+              v = (int(m.group(1)), int(m.group(2)))
+              if v > sdk:
+                  continue
+              for d in items:
+                  if d["name"].startswith("iPhone") and (best is None or v > best[0]):
+                      best = (v, d["udid"])
+          if best is None:
+              sys.exit("no iPhone simulator for iOS " + os.environ["SDK_VERSION"])
+          print(best[1])
+          ')
+          echo "Using simulator $UDID (SDK $SDK_VERSION)"
           xcodebuild test \
             -project Leuchtturm.xcodeproj \
             -scheme Leuchtturm \
-            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -destination "id=$UDID" \
             CODE_SIGNING_ALLOWED=NO
+      - name: Server log
+        if: failure()
+        run: cat /tmp/leuchtturmd.log

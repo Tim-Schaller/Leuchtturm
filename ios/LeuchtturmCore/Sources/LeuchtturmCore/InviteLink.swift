@@ -7,8 +7,10 @@ import Foundation
 /// The secret never reaches the server; only a hash of a key derived from
 /// it does. Anyone holding the link can join until it expires or is used up,
 /// so it should only be shared through a private channel.
-public struct InviteLink: Sendable, Equatable {
+public struct InviteLink: Sendable, Equatable, Identifiable {
     public static let scheme = "leuchtturm"
+
+    public var id: String { inviteID }
 
     public let server: URL
     public let inviteID: String

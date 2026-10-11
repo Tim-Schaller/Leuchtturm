@@ -2,6 +2,7 @@ name: Leuchtturm
 options:
   bundleIdPrefix: de.timschaller
   createIntermediateGroups: true
+  developmentLanguage: de
   deploymentTarget:
     iOS: "26.0"
 settings:
@@ -9,12 +10,17 @@ settings:
     SWIFT_VERSION: "6.0"
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
+packages:
+  LeuchtturmCore:
+    path: LeuchtturmCore
 targets:
   Leuchtturm:
     type: application
     platform: iOS
     sources:
       - Leuchtturm
+    dependencies:
+      - package: LeuchtturmCore
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: de.timschaller.leuchtturm
@@ -23,6 +29,8 @@ targets:
       path: Leuchtturm/Info.plist
       properties:
         CFBundleDisplayName: Leuchtturm
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
@@ -30,6 +38,13 @@ targets:
           - UIInterfaceOrientationPortrait
         UIBackgroundModes:
           - location
+        CFBundleURLTypes:
+          - CFBundleURLName: de.timschaller.leuchtturm.invite
+            CFBundleURLSchemes:
+              - leuchtturm
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        NSLocalNetworkUsageDescription: Leuchtturm connects to a server in your local network if you entered one during setup (for testing).
         NSLocationWhenInUseUsageDescription: Leuchtturm shows your location to the circles you choose, end-to-end encrypted.
         NSLocationAlwaysAndWhenInUseUsageDescription: Leuchtturm needs background location so the people in your circles can see where you are, even when the app is closed. Your location is encrypted on your device before it is sent.
         NSMotionUsageDescription: Leuchtturm uses motion data to detect when you are driving, so it can show your speed and save battery while you are standing still.

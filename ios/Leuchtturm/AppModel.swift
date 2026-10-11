@@ -79,6 +79,7 @@ final class AppModel {
     /// Detects drives on this device and shares them (and live speed).
     private(set) var sharesTrips = false
     @ObservationIgnored private var tripDetector = TripDetector()
+    @ObservationIgnored private let motion = MotionMonitor()
     /// Asks "Are you OK?" after an abrupt stop while driving. On by default.
     private(set) var detectsCrashes = true
     /// Set while the "Are you OK?" countdown runs: when the SOS goes out.
@@ -298,8 +299,10 @@ final class AppModel {
         guard usesDeviceServices else { return }
         guard phase == .ready else {
             tracker.stop()
+            motion.stop()
             return
         }
+        if sharesTrips && !isSimulation { motion.start() } else { motion.stop() }
         Task { _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) }
         tracker.start(background: isSharingLocation && !isSimulation) { [weak self] location in
             Task { await self?.share(location) }
@@ -428,7 +431,7 @@ final class AppModel {
         guard sharesTrips || detectsCrashes, let client else { return }
         let trip = tripDetector.update(
             latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
-            speed: location.speed, at: location.timestamp, deviceID: client.deviceID
+            speed: location.speed, at: location.timestamp, deviceID: client.deviceID, automotive: motion.automotive
         )
         saveTripDetector()
         if tripDetector.takeCrash() != nil, detectsCrashes { startCrashCheck() }
@@ -451,6 +454,7 @@ final class AppModel {
     func setSharesTrips(_ on: Bool) async {
         sharesTrips = on
         if !isSimulation { UserDefaults.standard.set(on, forKey: Keys.sharesTrips) }
+        updateTracking()
         if !on {
             tripDetector = TripDetector()
             saveTripDetector()

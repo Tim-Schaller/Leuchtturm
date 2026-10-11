@@ -48,6 +48,19 @@ struct TripTests {
         #expect(detector.takeCrash() == nil) // reported once
     }
 
+    @Test func noTripWhenMotionSaysNotDriving() {
+        var detector = TripDetector()
+        var north = 0.0
+        for (i, v) in Array(repeating: 9.0, count: 300).enumerated() { // 32 km/h on a bike or train
+            north += v
+            _ = detector.update(latitude: 53.5 + north / 111_320, longitude: 9.9, speed: v, at: start.addingTimeInterval(Double(i)), deviceID: "me", automotive: false)
+        }
+        #expect(!detector.isDriving)
+        _ = detector.update(latitude: 53.6, longitude: 9.9, speed: 9, at: start.addingTimeInterval(400), deviceID: "me", automotive: true)
+        _ = detector.update(latitude: 53.6001, longitude: 9.9, speed: 9, at: start.addingTimeInterval(401), deviceID: "me", automotive: true)
+        #expect(detector.isDriving)
+    }
+
     @Test func ignoresShortHopsAndWalking() {
         var detector = TripDetector()
         var north = 0.0

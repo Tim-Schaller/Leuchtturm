@@ -80,7 +80,7 @@ Not planned, because they would need a company server, a call center or third pa
 - [x] Live speed (km/h) while driving
 - [x] Weekly summary with leaderboards ("Sicher gefahren", "Am meisten unterwegs")
 - [x] Passenger: remove a trip you only rode along on
-- [ ] CoreMotion automotive detection
+- [x] CoreMotion automotive detection (a trip only starts in a car)
 - [ ] Flight detection
 - [ ] Battery profiling and tuning
 

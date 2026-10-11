@@ -92,14 +92,18 @@ public struct TripDetector: Sendable, Codable, Equatable {
     static let crashDeceleration = 12.0
 
     /// Feeds one sample. Returns a trip when one just ended. `speed` is in
-    /// m/s; pass a negative value if unknown.
-    public mutating func update(latitude: Double, longitude: Double, speed: Double, at time: Date, deviceID: String) -> Trip? {
+    /// m/s; pass a negative value if unknown. `automotive` is the motion
+    /// coprocessor's opinion, if available: a trip only starts when it is
+    /// not `false` (so cycling or a train do not count).
+    public mutating func update(
+        latitude: Double, longitude: Double, speed: Double, at time: Date, deviceID: String, automotive: Bool? = nil
+    ) -> Trip? {
         var finished: Trip?
         if let r = running, time.timeIntervalSince(r.lastFast) > Self.endAfter {
             finished = finish(deviceID: deviceID)
         }
         guard var r = running else {
-            if speed >= Self.startSpeed {
+            if speed >= Self.startSpeed, automotive != false {
                 if let first = pendingFast, time.timeIntervalSince(first) <= 60 {
                     running = Running(
                         start: first, lastFast: time, lastTime: time, lastSpeed: speed, lastLatitude: latitude,

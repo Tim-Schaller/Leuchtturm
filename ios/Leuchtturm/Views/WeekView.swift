@@ -24,6 +24,7 @@ struct WeekView: View {
                     ForEach(Array(board.enumerated()), id: \.element.id) { rank, stats in
                         HStack(spacing: 12) {
                             Text(Self.medal(rank)).font(.title2).frame(width: 34)
+                                .accessibilityLabel("Platz \(rank + 1)")
                             Avatar(name: member(stats.deviceID)?.name, id: stats.deviceID, size: 38)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(member(stats.deviceID)?.name ?? String(localized: "Mitglied")).font(.headline)
@@ -34,6 +35,7 @@ struct WeekView: View {
                             Spacer()
                             ScoreBadge(score: stats.score)
                         }
+                        .accessibilityElement(children: .combine)
                     }
                 } header: {
                     Text("🏆 Sicher gefahren")
@@ -67,12 +69,14 @@ struct WeekView: View {
                         ForEach(Array(walkers.enumerated()), id: \.element.member.id) { rank, entry in
                             HStack(spacing: 12) {
                                 Text(Self.medal(rank)).font(.title2).frame(width: 34)
+                                .accessibilityLabel("Platz \(rank + 1)")
                                 Avatar(name: entry.member.name, id: entry.member.id, size: 38)
                                 Text(entry.member.isMe ? String(localized: "Du") : entry.member.name ?? String(localized: "Mitglied"))
                                     .font(.headline)
                                 Spacer()
                                 Text(Self.km(entry.meters)).monospacedDigit().foregroundStyle(.secondary)
                             }
+                            .accessibilityElement(children: .combine)
                         }
                     } header: {
                         Text("👟 Am meisten unterwegs")

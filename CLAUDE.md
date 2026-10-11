@@ -77,4 +77,4 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
    - `recordZoneChanges` returning all records of a shared zone,
    - silent pushes from the database subscriptions arriving on the other device.
 3. Tim has not yet tested the builds since "Background location sharing" on his iPhone (he was asleep); background sharing, push and the "no indicator" tracker need a real-device test. Ask before installing on his iPhone.
-4. Open items, in this order: accessibility pass, polish (accessibility, English localization), multi-device and key backup, owner succession, then release work (privacy policy, App Privacy labels, CloudKit schema to Production, TestFlight). See `docs/ROADMAP.md`.
+4. Open items, in this order: polish (accessibility, English localization), multi-device and key backup, owner succession, then release work (privacy policy, App Privacy labels, CloudKit schema to Production, TestFlight). See `docs/ROADMAP.md`.

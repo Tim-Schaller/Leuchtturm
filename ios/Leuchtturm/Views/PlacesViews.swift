@@ -64,6 +64,7 @@ struct PlacesSection: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
+                    .accessibilityElement(children: .combine)
                 }
                 .tint(.primary)
                 .swipeActions {

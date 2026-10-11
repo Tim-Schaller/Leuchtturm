@@ -70,7 +70,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- Accessibility pass, multi-device support, key backup, opt-in history with your own retention period, opt-in SOS and check-in
+- Multi-device support, key backup, owner succession, opt-in history with your own retention period, opt-in SOS and check-in
 - Drive detection with live speed (km/h)
 - Adaptive tracking to keep battery drain low
 

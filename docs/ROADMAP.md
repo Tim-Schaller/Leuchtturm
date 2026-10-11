@@ -95,7 +95,8 @@ Not planned, because they would need a company server, a call center or third pa
 - [x] Opt-in weekly circle leaderboards (driving, distance)
 - [x] Weekly badges (safe driving, long distances, explorer)
 - [x] Localization: German source, English string catalog (app and permission texts), region-aware units
-- [ ] Liquid Glass UI polish, accessibility pass
+- [x] Accessibility pass: VoiceOver rows read as one, rank labels, Reduce Motion for map flights, map buttons scale with text size
+- [ ] Liquid Glass UI polish
 - [ ] Multi-device support and key backup
 - [ ] Owner succession if the owner's device is lost
 - [x] Warning when a new key appears in a circle; members can be marked as verified

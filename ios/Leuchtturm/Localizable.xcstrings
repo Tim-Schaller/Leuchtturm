@@ -2111,6 +2111,16 @@
         }
       }
     },
+    "Platz %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rank %lld"
+          }
+        }
+      }
+    },
     "Punkte": {
       "localizations": {
         "en": {

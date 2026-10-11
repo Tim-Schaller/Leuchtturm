@@ -94,6 +94,7 @@ struct NewsSection: View {
                     .accessibilityLabel("Auf der Karte zeigen")
             }
         }
+        .accessibilityElement(children: .combine)
     }
 }
 

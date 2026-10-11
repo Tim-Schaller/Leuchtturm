@@ -38,6 +38,7 @@ struct MapHomeView: View {
     @Environment(AppModel.self) private var model
     @SceneStorage("selectedCircle") private var selectedCircleID = ""
     @AppStorage("mapSatellite") private var satellite = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var details: CircleDetails?
     @State private var camera: MapCameraPosition = .userLocation(fallback: .automatic)
     /// How many people were on the map when it last framed everyone. It
@@ -176,7 +177,7 @@ struct MapHomeView: View {
             center: CLLocationCoordinate2D(latitude: (south + north) / 2, longitude: (west + east) / 2),
             span: MKCoordinateSpan(latitudeDelta: max(0.015, (north - south) * 1.6), longitudeDelta: max(0.015, (east - west) * 1.6))
         )
-        withAnimation(.smooth(duration: 0.6)) { camera = .region(region) }
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.6)) { camera = .region(region) }
         framedCount = points.count
     }
 
@@ -186,7 +187,7 @@ struct MapHomeView: View {
         if showDetails { detent = .medium }
         let coordinate = member.isMe ? model.tracker.location?.coordinate : member.location?.coordinate
         guard let coordinate else { return }
-        withAnimation(.smooth(duration: 0.6)) {
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.6)) {
             camera = .region(MKCoordinateRegion(center: coordinate, latitudinalMeters: 900, longitudinalMeters: 900))
         }
     }
@@ -194,7 +195,7 @@ struct MapHomeView: View {
     private func showPlace(_ place: SharedLocation) {
         focusedID = nil
         detent = PeopleSheet.peek
-        withAnimation(.smooth(duration: 0.6)) {
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.6)) {
             camera = .region(MKCoordinateRegion(center: place.coordinate, latitudinalMeters: 600, longitudinalMeters: 600))
         }
     }
@@ -275,6 +276,8 @@ private struct MapButton: View {
     let systemImage: String
     var tint: Color?
     let action: () -> Void
+    /// Grows with the text size setting.
+    @ScaledMetric(relativeTo: .title3) private var size = 30
 
     init(_ label: String, systemImage: String, tint: Color? = nil, action: @escaping () -> Void) {
         self.label = label
@@ -287,7 +290,7 @@ private struct MapButton: View {
         Button(action: action) {
             Image(systemName: systemImage)
                 .font(.title3)
-                .frame(width: 30, height: 30)
+                .frame(width: size, height: size)
         }
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)

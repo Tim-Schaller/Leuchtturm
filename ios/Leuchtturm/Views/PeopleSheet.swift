@@ -218,6 +218,7 @@ private struct PersonRow: View {
         }
         .padding(.vertical, 4)
         .contentShape(.rect)
+        .accessibilityElement(children: .combine)
     }
 }
 

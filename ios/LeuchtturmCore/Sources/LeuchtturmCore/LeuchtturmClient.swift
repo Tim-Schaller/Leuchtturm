@@ -78,6 +78,7 @@ enum RecordType {
     static let location = "Location"
     static let note = "Note"
     static let place = "Place"
+    static let history = "History"
 }
 
 enum RecordName {
@@ -91,6 +92,7 @@ enum RecordName {
     static let notePrefix = "note-"
     static func place(_ id: String) -> String { "place-\(id)" }
     static let placePrefix = "place-"
+    static func history(_ deviceID: String, _ day: String) -> String { "hist-\(deviceID)-\(day)" }
 }
 
 /// High-level client. Everything is encrypted or signed here, before it
@@ -189,10 +191,12 @@ public actor LeuchtturmClient {
         try await backend.modify(ref, save: [record], delete: [], removeParticipants: [])
     }
 
-    /// Leaves a circle you do not own. Your location goes with you.
+    /// Leaves a circle you do not own. Your location and history go with you.
     public func leave(_ ref: CircleRef) async throws {
         guard !ref.isOwned else { throw ClientError.ownerMustDelete }
-        try? await backend.modify(ref, save: [], delete: [RecordName.location(deviceID)], removeParticipants: [])
+        let history = (try? await backend.snapshot(of: ref))?.records
+            .filter { $0.type == RecordType.history && $0.string("from") == deviceID }.map(\.name) ?? []
+        try? await backend.modify(ref, save: [], delete: [RecordName.location(deviceID)] + history, removeParticipants: [])
         try await backend.leave(ref)
         try? secrets.deleteAll(prefix: Self.prefix(ref.circleID))
     }
@@ -314,9 +318,10 @@ public actor LeuchtturmClient {
 
     // MARK: Location
 
-    /// Shares this device's position with every circle it has a key for.
+    /// Shares this device's position with every circle it has a key for,
+    /// and today's history if it is on (deleting days past the retention).
     /// Tries all circles and throws the first error afterwards.
-    public func shareLocation(_ location: SharedLocation) async throws {
+    public func shareLocation(_ location: SharedLocation, history: HistoryUpdate? = nil) async throws {
         var firstError: (any Error)?
         for ref in try await backend.listCircles() {
             do {
@@ -324,10 +329,16 @@ public actor LeuchtturmClient {
                 guard let key = ensureKey(p) else { throw ClientError.missingCircleKey }
                 let blob = try CircleCrypto.sealLocation(location, key: key, epoch: p.epoch, circleID: p.circleID, deviceID: deviceID)
                 let sig = try identity.sign(CircleCrypto.locationRecordStatement(circleID: p.circleID, deviceID: deviceID, blob: blob))
-                let record = StoredRecord(type: RecordType.location, name: RecordName.location(deviceID), fields: [
+                var save = [StoredRecord(type: RecordType.location, name: RecordName.location(deviceID), fields: [
                     "blob": .bytes(blob), "sig": .bytes(sig),
-                ])
-                try await backend.modify(ref, save: [record], delete: [], removeParticipants: [])
+                ])]
+                var delete: [String] = []
+                if let history {
+                    save.append(try historyRecord(history.today, circleID: p.circleID, epoch: p.epoch, key: key))
+                    let oldest = HistoryDay.dayKey(for: now().addingTimeInterval(-Double(history.keepDays - 1) * 86400))
+                    delete = p.history.filter { $0.string("from") == deviceID && $0.string("day") < oldest }.map(\.name)
+                }
+                try await backend.modify(ref, save: save, delete: delete, removeParticipants: [])
                 newestLocations[Self.locationKey(p.circleID, deviceID)] = location
             } catch {
                 firstError = firstError ?? error
@@ -345,6 +356,48 @@ public actor LeuchtturmClient {
     }
 
     static func locationKey(_ circleID: String, _ deviceID: String) -> String { "\(circleID)/\(deviceID)" }
+
+    // MARK: History
+
+    /// Deletes this device's whole history from every circle.
+    public func deleteHistory() async throws {
+        for ref in try await backend.listCircles() {
+            let p = try parse(try await backend.snapshot(of: ref))
+            let mine = p.history.filter { $0.string("from") == deviceID }.map(\.name)
+            if !mine.isEmpty { try await backend.modify(ref, save: [], delete: mine, removeParticipants: []) }
+        }
+    }
+
+    /// The history a member shares in a circle, newest day first. Only from
+    /// admitted members (or this device), with a valid signature.
+    public func history(of memberID: String, in ref: CircleRef) async throws -> [HistoryDay] {
+        let p = try parse(try await backend.snapshot(of: ref))
+        _ = ensureKey(p)
+        guard let m = p.members[memberID] else { return [] }
+        if memberID != deviceID {
+            let meta = try? CircleCrypto.openCircleMeta(p.metaBlob, circleID: p.circleID, keyForEpoch: keyLookup(p.circleID))
+            guard meta?.meta.members.contains(memberID) == true || memberID == p.ownerDeviceID else { return [] }
+        }
+        return p.history.compactMap { r -> HistoryDay? in
+            let day = r.string("day")
+            guard r.string("from") == memberID, HistoryDay.isDayKey(day), r.name == RecordName.history(memberID, day),
+                  CircleCrypto.verifySignature(
+                      r.bytes("sig"), publicKey: m.signingKey,
+                      message: CircleCrypto.historyRecordStatement(circleID: p.circleID, deviceID: memberID, day: day, blob: r.bytes("blob"))
+                  )
+            else { return nil }
+            return try? CircleCrypto.openHistory(r.bytes("blob"), deviceID: memberID, day: day, circleID: p.circleID, keyForEpoch: keyLookup(p.circleID))
+        }
+        .sorted { $0.day > $1.day }
+    }
+
+    private nonisolated func historyRecord(_ day: HistoryDay, circleID: String, epoch: Int64, key: SymmetricKey) throws -> StoredRecord {
+        let blob = try CircleCrypto.sealHistory(day, key: key, epoch: epoch, circleID: circleID)
+        let sig = try identity.sign(CircleCrypto.historyRecordStatement(circleID: circleID, deviceID: deviceID, day: day.day, blob: blob))
+        return StoredRecord(type: RecordType.history, name: RecordName.history(deviceID, day.day), fields: [
+            "from": .string(deviceID), "day": .string(day.day), "blob": .bytes(blob), "sig": .bytes(sig),
+        ])
+    }
 
     /// Verifies and decrypts a member's location record. Records that are
     /// unsigned, signed by someone else or older than one seen before are
@@ -520,6 +573,8 @@ public actor LeuchtturmClient {
         let notes: [StoredRecord]
         /// Place records (not verified yet).
         let places: [StoredRecord]
+        /// History records (not verified yet).
+        let history: [StoredRecord]
         var circleID: String { snapshot.ref.circleID }
         var ownerDeviceID: String { DeviceID.derive(signingPublicKey: ownerSigningKey) }
     }
@@ -563,10 +618,11 @@ public actor LeuchtturmClient {
         }
         let notes = snapshot.records.filter { $0.type == RecordType.note && $0.name.hasPrefix(RecordName.notePrefix) }
         let places = snapshot.records.filter { $0.type == RecordType.place && $0.name.hasPrefix(RecordName.placePrefix) }
+        let history = snapshot.records.filter { $0.type == RecordType.history }
         return Parsed(
             snapshot: snapshot, ownerSigningKey: ownerSigning, ownerAgreementKey: ownerAgreement,
             epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations, notes: notes,
-            places: places
+            places: places, history: history
         )
     }
 
@@ -620,7 +676,7 @@ public actor LeuchtturmClient {
                     newRoster.remove(m.deviceID)
                     delete.append(m.deviceID)
                     if p.locations[m.deviceID] != nil { delete.append(RecordName.location(m.deviceID)) }
-                    delete += (p.notes + p.places).filter { $0.string("from") == m.deviceID }.map(\.name)
+                    delete += (p.notes + p.places + p.history).filter { $0.string("from") == m.deviceID }.map(\.name)
                 } else if !newRoster.contains(m.deviceID), hasValidInvite(m, p) {
                     newRoster.insert(m.deviceID)
                 }

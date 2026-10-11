@@ -86,6 +86,18 @@ struct SimulationTests {
         #expect(details.members.count == 4)
     }
 
+    @Test func simulatedPeopleShareHistory() async throws {
+        let (model, world) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        _ = await model.mapDetails(for: ref)
+        let anna = world.people[0].client.deviceID
+        let clara = world.people[2].client.deviceID
+        let annasDays = try #require(await model.run { try await $0.history(of: anna, in: ref) })
+        #expect(annasDays.first?.points.count ?? 0 > 10)
+        #expect(await model.run { try await $0.history(of: clara, in: ref) }?.isEmpty == true)
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

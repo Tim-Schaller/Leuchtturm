@@ -419,6 +419,56 @@ struct ClientTests {
         #expect(try await alice.circle(ref).places.isEmpty)
     }
 
+    @Test func historyIsOptInSignedAndExpires() async throws {
+        let clock = TestClock()
+        let alice = try client("alice", "Alice", now: { clock.now })
+        let bob = try client("bob", "Bob", now: { clock.now })
+        let ref = try await alice.createCircle(name: "Familie")
+        let bobRef = try await bob.join(try await alice.createInvite(for: ref))
+        _ = try await alice.circle(ref)
+        func day(_ offset: Double, _ points: Int) -> HistoryDay {
+            let date = clock.now.addingTimeInterval(offset * 86400)
+            return HistoryDay(deviceID: bob.deviceID, day: HistoryDay.dayKey(for: date), points: (0 ..< points).map {
+                HistoryDay.Point(latitude: 53.5 + Double($0) / 1000, longitude: 9.9, timestamp: date.addingTimeInterval(Double($0) * 60))
+            })
+        }
+        let here = try location(53.5, 9.9)
+
+        // Without history only the location is shared.
+        try await bob.shareLocation(here)
+        #expect(try await alice.history(of: bob.deviceID, in: ref).isEmpty)
+
+        let today = day(0, 3)
+        try await bob.shareLocation(here, history: HistoryUpdate(today: today, keepDays: 7))
+        #expect(try await alice.history(of: bob.deviceID, in: ref) == [today])
+        for record in cloud.rawRecords(circleID: ref.circleID) where record.type == "History" {
+            for case let .bytes(bytes) in record.fields.values { #expect(bytes.range(of: Data("53.5".utf8)) == nil) }
+        }
+
+        // Eight days later, with 7 days kept, the old day is gone.
+        clock.advance(by: 8 * 86400)
+        let later = day(0, 2)
+        try await bob.shareLocation(here, history: HistoryUpdate(today: later, keepDays: 7))
+        #expect(try await alice.history(of: bob.deviceID, in: ref).map(\.day) == [later.day])
+
+        // Alice forges a day for Bob: ignored.
+        let key = try #require(alice.loadKey(circleID: ref.circleID, epoch: 1))
+        let fake = HistoryDay(deviceID: bob.deviceID, day: "2026-01-01", points: [HistoryDay.Point(latitude: 1, longitude: 1, timestamp: clock.now)])
+        let blob = try CircleCrypto.sealHistory(fake, key: key, epoch: 1, circleID: ref.circleID)
+        let sig = try alice.identity.sign(CircleCrypto.historyRecordStatement(circleID: ref.circleID, deviceID: bob.deviceID, day: fake.day, blob: blob))
+        try await cloud.backend(for: "alice").modify(ref, save: [StoredRecord(type: "History", name: "hist-\(bob.deviceID)-2026-01-01", fields: [
+            "from": .string(bob.deviceID), "day": .string("2026-01-01"), "blob": .bytes(blob), "sig": .bytes(sig),
+        ])], delete: [], removeParticipants: [])
+        #expect(try await alice.history(of: bob.deviceID, in: ref).map(\.day) == [later.day])
+
+        // Turning history off deletes it; leaving deletes it too.
+        try await bob.deleteHistory()
+        #expect(cloud.rawRecords(circleID: ref.circleID).filter { $0.type == "History" && $0.string("from") == bob.deviceID }.isEmpty)
+        try await bob.shareLocation(here, history: HistoryUpdate(today: later, keepDays: 1))
+        try await bob.leave(bobRef)
+        #expect(!cloud.rawRecords(circleID: ref.circleID).contains { $0.type == "History" && $0.string("from") == bob.deviceID })
+    }
+
     @Test func namesAreValidated() async throws {
         let alice = try client("alice", "Alice")
         await #expect(throws: ClientError.invalidName) { try await alice.createCircle(name: "   ") }

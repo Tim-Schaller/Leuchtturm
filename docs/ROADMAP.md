@@ -69,7 +69,9 @@ Not planned, because they would need a company server, a call center or third pa
 - [ ] No-show alerts and place suggestions
 
 ## M5: History
-- [ ] Opt-in history with user-chosen retention, deleted by the writing device, exportable
+- [x] Opt-in history with user-chosen retention (1, 7, 30 days), deleted by the writing device
+- [x] History view per member: path on the map, distance, time span
+- [ ] Export (GPX) of your own history
 
 ## M6: Trips and driving
 - [ ] CoreMotion automotive detection, driver/passenger toggle

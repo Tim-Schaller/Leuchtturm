@@ -126,6 +126,18 @@ Readers accept places only from roster devices and check `sig`. After a key rota
 
 **Arrivals and departures** are detected on each member's own device (`PlaceTracker`): inside when the position is within the radius, outside again only beyond the radius plus max(50 m, accuracy), and nothing while the accuracy is worse than the radius. The first look at a place only records the state. A transition is sent as a `Note` of kind `arrival` or `departure` with the place name; the other members are woken by the silent push and notify locally. Nothing is detected while fog mode is on. Contexts: `ctx("leuchtturm/v1/place", circleID, placeID)`.
 
+### `History` (record name `hist-<deviceID>-<day>`, one per device and UTC day)
+
+Opt-in, off by default.
+
+| Field | Content |
+|-------|---------|
+| `from`, `day` | device ID and UTC day `yyyy-MM-dd` (plaintext, needed for deletion) |
+| `blob` | encrypted `{"p": [[lat, lon, unix seconds], …]}`, at most 2000 points |
+| `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/history-record", circleID, deviceID, day) ‖ blob` |
+
+The device records a point when it uploads its location and has moved at least 40 m or 5 minutes passed (never while in fog), keeps today's points in a protected file and rewrites today's record together with the location record in one operation. It deletes its own days older than the chosen retention (1, 7 or 30 days) on the same occasion. Turning history off, leaving a circle and removal delete all of the device's history records. Readers show history only for roster members with a valid signature. Context: `ctx("leuchtturm/v1/history", circleID, deviceID, day)`.
+
 ## Push
 
 Each device saves two `CKDatabaseSubscription`s (private and shared database) with `shouldSendContentAvailable` only: a silent push without title, text or record data. When it arrives, iOS wakes the app briefly; the app loads its circles, decrypts and verifies new notes and posts local notifications. iOS throttles silent pushes, so delivery can be delayed; the app also checks for news when it uploads its location in the background and every 30 seconds while the map is open. CloudKit does not push a change to the device that made it.
@@ -173,7 +185,7 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 | Which iCloud accounts share a circle | n/a | **yes**, with real identities |
 | When records are written | n/a | yes |
 | Live location | yes | ciphertext, padded size, **when and how often it is updated** |
-| Places, history, trips, reactions (M3+) | yes | ciphertext, size, time |
+| Places, history, trips, reactions (M3+) | yes | ciphertext, size, time; for history also the days with records |
 | Map area you look at | n/a | Apple Maps sees which map tiles are loaded |
 
 ## Tracking strategy (battery, M2)

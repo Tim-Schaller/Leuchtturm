@@ -44,6 +44,8 @@ final class SimulatedWorld {
     private var lastMoved: [String: Date] = [:]
     private var lastPositions: [String: SharedLocation] = [:]
     private var placeTrackers: [String: PlaceTracker] = [:]
+    /// Anna's and Ben's paths today; they share their history.
+    private var paths: [String: [HistoryDay.Point]] = [:]
     /// People who currently share only an approximate area.
     var inFog: Set<String> = []
     /// Notes the people already answered.
@@ -136,17 +138,7 @@ final class SimulatedWorld {
             if let last = lastMoved[person.id], now.timeIntervalSince(last) < interval { continue }
             // Not in a circle yet: report as soon as they join one.
             if (try? await person.client.circles())?.isEmpty ?? true { continue }
-            let (north, east): (Double, Double)
-            switch index {
-            case 0:
-                let a = t / 600 * 2 * .pi
-                (north, east) = (500 + 350 * sin(a), 450 + 350 * cos(a))
-            case 1:
-                let a = t / 240 * 2 * .pi
-                (north, east) = (-900 + 1500 * sin(a), 700 + 1500 * cos(a))
-            default:
-                (north, east) = (-300, -1100)
-            }
+            let (north, east) = Self.route(index, at: t)
             let (latitude, longitude) = Self.offset(home, north: north, east: east)
             // Anna's battery drains, Ben charges in the car, Clara runs low.
             let (battery, charging): (Int, Bool) = switch index {
@@ -161,7 +153,23 @@ final class SimulatedWorld {
             lastMoved[person.id] = now
             lastPositions[person.id] = position
             let shared = inFog.contains(person.id) ? position.inFog(radius: 1000) ?? position : position
-            try? await person.client.shareLocation(shared)
+            var history: HistoryUpdate?
+            if index < 2 && !inFog.contains(person.id) {
+                // The last half hour of the route, then every move.
+                var path = paths[person.id] ?? stride(from: -1800.0, to: 0, by: 30).map { dt in
+                    let (n, e) = Self.route(index, at: t + dt)
+                    let (lat, lon) = Self.offset(home, north: n, east: e)
+                    return HistoryDay.Point(latitude: lat, longitude: lon, timestamp: now.addingTimeInterval(dt))
+                }
+                path.append(HistoryDay.Point(latitude: latitude, longitude: longitude, timestamp: now))
+                paths[person.id] = path
+                let today = HistoryDay(
+                    deviceID: person.client.deviceID, day: HistoryDay.dayKey(for: now),
+                    points: path.filter { HistoryDay.dayKey(for: $0.timestamp) == HistoryDay.dayKey(for: now) }
+                )
+                history = HistoryUpdate(today: today, keepDays: 7)
+            }
+            try? await person.client.shareLocation(shared, history: history)
             if !inFog.contains(person.id) { await watchPlaces(of: person, at: position) }
         }
     }
@@ -194,6 +202,20 @@ final class SimulatedWorld {
             guard let ref = try await person.client.circles().first(where: { $0.id == circleID })?.ref else { continue }
             let (latitude, longitude) = Self.offset(home, north: north, east: east)
             try await person.client.addPlace(name: name, emoji: emoji, latitude: latitude, longitude: longitude, radius: radius, in: ref)
+        }
+    }
+
+    /// Meters north and east of home: Anna walks a loop, Ben drives a bigger one, Clara stays put.
+    static func route(_ index: Int, at t: TimeInterval) -> (Double, Double) {
+        switch index {
+        case 0:
+            let a = t / 600 * 2 * .pi
+            return (500 + 350 * sin(a), 450 + 350 * cos(a))
+        case 1:
+            let a = t / 240 * 2 * .pi
+            return (-900 + 1500 * sin(a), 700 + 1500 * cos(a))
+        default:
+            return (-300, -1100)
         }
     }
 

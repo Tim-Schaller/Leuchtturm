@@ -5,6 +5,7 @@ import SwiftUI
 
 enum DrawerRoute: Hashable {
     case member(String)
+    case history(String)
     case manage(CircleRef)
 }
 
@@ -35,6 +36,10 @@ struct PeopleSheet: View {
                     case let .member(id):
                         if let member = details?.members.first(where: { $0.id == id }) {
                             MemberDetailView(member: member, ref: circle?.ref)
+                        }
+                    case let .history(id):
+                        if let member = details?.members.first(where: { $0.id == id }), let ref = circle?.ref {
+                            HistoryView(member: member, ref: ref)
                         }
                     case let .manage(ref):
                         CircleDetailView(ref: ref)
@@ -241,6 +246,14 @@ struct MemberDetailView: View {
 
             if !member.isMe, !member.isPending, let ref {
                 ReactionPicker(member: member, ref: ref)
+            }
+
+            if !member.isPending {
+                Section {
+                    NavigationLink(value: DrawerRoute.history(member.id)) {
+                        Label("Verlauf", systemImage: "point.topleft.down.to.point.bottomright.curvepath")
+                    }
+                }
             }
 
             if let location = member.location, let radius = location.fogRadius, !member.isMe {

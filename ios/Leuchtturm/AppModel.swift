@@ -24,6 +24,8 @@ final class AppModel {
         static let lastMorningGreeting = "lastMorningGreeting"
         static let fog = "fog"
         static let placeTracker = "placeTracker"
+        static let sharesHistory = "sharesHistory"
+        static let historyDays = "historyDays"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -64,6 +66,11 @@ final class AppModel {
     /// While set and not expired, only an approximate area is shared.
     private(set) var fog: Fog?
     var activeFog: Fog? { fog.flatMap { $0.until > Date() ? $0 : nil } }
+
+    /// Shares today's path (and keeps `historyDays` days) with the circles.
+    private(set) var sharesHistory = false
+    private(set) var historyDays = 7
+    @ObservationIgnored private var historyRecorder = HistoryRecorder(persistent: false)
 
     /// Says "good morning" to the circles on the first movement of the day.
     private(set) var sendsMorningGreeting = false
@@ -118,6 +125,9 @@ final class AppModel {
         sendsMorningGreeting = !isSimulation && defaults.bool(forKey: Keys.morningGreeting)
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
         knownPlaces = [:]
+        sharesHistory = !isSimulation && defaults.bool(forKey: Keys.sharesHistory)
+        historyDays = isSimulation ? 7 : (defaults.object(forKey: Keys.historyDays) as? Int ?? 7)
+        historyRecorder = HistoryRecorder(persistent: !isSimulation)
         placeTracker = isSimulation ? PlaceTracker() : defaults.data(forKey: Keys.placeTracker)
             .flatMap { try? JSONDecoder().decode(PlaceTracker.self, from: $0) } ?? PlaceTracker()
         fog = isSimulation ? nil : defaults.data(forKey: Keys.fog).flatMap { try? JSONDecoder().decode(Fog.self, from: $0) }
@@ -273,8 +283,15 @@ final class AppModel {
         let shared = activeFog.flatMap { exact.inFog(radius: $0.radius) } ?? exact
         lastShared = location
         // Finish the upload even if iOS suspends the app right after this update.
+        // History: exact points, but never while in fog.
+        let history = sharesHistory && activeFog == nil
+            ? HistoryUpdate(
+                today: historyRecorder.add(latitude: exact.latitude, longitude: exact.longitude, at: exact.timestamp, deviceID: client.deviceID),
+                keepDays: historyDays
+            )
+            : nil
         let backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "share-location")
-        if (try? await client.shareLocation(shared)) != nil {
+        if (try? await client.shareLocation(shared, history: history)) != nil {
             lastSharedAt = Date()
             if !isSimulation { UserDefaults.standard.set(lastSharedAt, forKey: Keys.lastSharedAt) }
             await greetMorningIfDue()
@@ -359,6 +376,26 @@ final class AppModel {
             else { continue }
             markSeen([note.id])
         }
+    }
+
+    // MARK: History
+
+    /// Turning history off deletes it from every circle right away.
+    func setSharesHistory(_ on: Bool) async {
+        sharesHistory = on
+        if !isSimulation { UserDefaults.standard.set(on, forKey: Keys.sharesHistory) }
+        if on {
+            await shareLocationNow()
+        } else {
+            historyRecorder.clear()
+            await run { try await $0.deleteHistory() }
+        }
+    }
+
+    func setHistoryDays(_ days: Int) async {
+        historyDays = days
+        if !isSimulation { UserDefaults.standard.set(days, forKey: Keys.historyDays) }
+        await shareLocationNow()
     }
 
     // MARK: Fog
@@ -474,6 +511,7 @@ final class AppModel {
             try? secrets.delete(account)
         }
         savedName = nil
+        historyRecorder.clear()
         client = nil
         circles = []
         hasLoadedCircles = false

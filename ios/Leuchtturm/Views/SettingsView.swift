@@ -58,6 +58,27 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Toggle("Verlauf teilen", isOn: Binding(
+                        get: { model.sharesHistory },
+                        set: { on in Task { await model.setSharesHistory(on) } }
+                    ))
+                    if model.sharesHistory {
+                        Picker("Aufbewahren", selection: Binding(
+                            get: { model.historyDays },
+                            set: { days in Task { await model.setHistoryDays(days) } }
+                        )) {
+                            ForEach(HistoryDay.retentions, id: \.self) { days in
+                                Text(days == 1 ? "Nur heute" : "\(days) Tage").tag(days)
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Verlauf")
+                } footer: {
+                    Text("Aus, solange du es nicht einschaltest. Dann sehen deine Kreise, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.")
+                }
+
+                Section {
                     if let client = model.client {
                         LabeledContent("Sicherheitscode") {
                             Text(client.safetyCode).font(.body.monospaced())

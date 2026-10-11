@@ -1,14 +1,14 @@
 services:
-  tandemd:
+  leuchtturmd:
     build: .
     restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
-      TANDEM_ADDR: ":8080"
-      TANDEM_DATA_DIR: /data
+      LEUCHTTURM_ADDR: ":8080"
+      LEUCHTTURM_DATA_DIR: /data
     volumes:
-      - tandem-data:/data
+      - leuchtturm-data:/data
     read_only: true
     security_opt:
       - no-new-privileges:true
@@ -16,4 +16,4 @@ services:
       - ALL
 
 volumes:
-  tandem-data:
+  leuchtturm-data:

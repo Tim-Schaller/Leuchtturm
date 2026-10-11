@@ -6,7 +6,7 @@ Status: draft v0. Details will change as the protocol is implemented. Nothing he
 
 ```
 ┌────────────┐   HTTPS (TLS 1.3)    ┌──────────────────────┐
-│ iOS app    │ ───────────────────► │ tandemd (Go)         │
+│ iOS app    │ ───────────────────► │ leuchtturmd (Go)         │
 │ SwiftUI    │ ◄─────────────────── │ SQLite, blob store   │
 │ CryptoKit  │   WebSocket (live)   │ Hetzner, Germany     │
 └─────┬──────┘                      └──────────┬───────────┘
@@ -15,7 +15,7 @@ Status: draft v0. Details will change as the protocol is implemented. Nothing he
 ```
 
 - **iOS app:** SwiftUI, iOS 26+, Liquid Glass. CoreLocation (tracking), CoreMotion (drive detection), CryptoKit (crypto), Keychain/Secure Enclave (keys), StoreKit 2 (in-app purchases).
-- **Server (`tandemd`):** single Go binary. SQLite (WAL mode) for storage, so no separate database service is needed. Runs on the smallest Hetzner Cloud instance.
+- **Server (`leuchtturmd`):** single Go binary. SQLite (WAL mode) for storage, so no separate database service is needed. Runs on the smallest Hetzner Cloud instance.
 - **Push:** APNs with a Notification Service Extension that decrypts the payload on the device.
 
 ## Identity and keys

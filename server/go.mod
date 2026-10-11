@@ -1,3 +1,3 @@
-module github.com/Tim-Schaller/tandem/server
+module github.com/Tim-Schaller/leuchtturm/server
 
 go 1.24

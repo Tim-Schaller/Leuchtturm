@@ -26,7 +26,7 @@ jobs:
       - run: go vet ./...
       - run: go test -race ./...
       - name: Docker build
-        run: docker build -t tandemd:ci .
+        run: docker build -t leuchtturmd:ci .
 
   ios:
     name: iOS (build + test)
@@ -45,7 +45,7 @@ jobs:
       - name: Build and test
         run: |
           xcodebuild test \
-            -project Tandem.xcodeproj \
-            -scheme Tandem \
+            -project Leuchtturm.xcodeproj \
+            -scheme Leuchtturm \
             -destination 'platform=iOS Simulator,name=iPhone 17' \
             CODE_SIGNING_ALLOWED=NO

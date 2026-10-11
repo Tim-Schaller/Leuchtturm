@@ -14,7 +14,7 @@ Status: draft v0.
 - **Metadata.** The server sees who belongs to which circle, when devices upload, message sizes, IP addresses and push tokens.
 - **A compromised device.** Malware or physical access with an unlocked phone defeats client-side encryption.
 - **A malicious circle member.** Anyone in a circle can read what the circle shares and can screenshot or export it.
-- **Coercion and stalking by a trusted person.** Location sharing can be abused. Tandem shows clear sharing indicators and lets users leave a circle or pause sharing at any time, but cannot prevent misuse by someone with physical access to the victim's phone.
+- **Coercion and stalking by a trusted person.** Location sharing can be abused. Leuchtturm shows clear sharing indicators and lets users leave a circle or pause sharing at any time, but cannot prevent misuse by someone with physical access to the victim's phone.
 - **Traffic analysis by a global network observer.**
 - **Apple.** APNs and the App Store are operated by Apple. Push payloads are opaque to Apple, but delivery timing is visible.
 

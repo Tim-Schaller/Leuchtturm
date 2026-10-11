@@ -1,9 +1,9 @@
 import Testing
-@testable import Tandem
+@testable import Leuchtturm
 
 struct AppInfoTests {
-    @Test func appNameIsTandem() {
-        #expect(AppInfo.name == "Tandem")
+    @Test func appNameIsLeuchtturm() {
+        #expect(AppInfo.name == "Leuchtturm")
     }
 
     @Test func defaultServerUsesHTTPS() {

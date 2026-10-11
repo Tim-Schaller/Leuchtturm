@@ -1,10 +1,10 @@
-# Contributing to Tandem
+# Contributing to Leuchtturm
 
 Thanks for helping. A few ground rules keep the project healthy and its privacy promises intact.
 
 ## Privacy rules for contributions
 
-- No analytics, tracking or advertising SDKs. No third-party network calls from the app other than the Tandem server and Apple services (APNs, StoreKit).
+- No analytics, tracking or advertising SDKs. No third-party network calls from the app other than the Leuchtturm server and Apple services (APNs, StoreKit).
 - Location, places and history must be encrypted on the device before upload. Never send plaintext location data to the server.
 - Geofence evaluation stays on the device.
 - Do not log personal data on the server (no coordinates, no names, no full IP addresses).
@@ -23,7 +23,7 @@ Thanks for helping. A few ground rules keep the project healthy and its privacy 
 
 ## Contributor License Agreement (CLA)
 
-Because the iOS app is distributed through the Apple App Store, and the project owner may need to relicense or dual-license code in the future, every contributor must agree to the following by stating **"I agree to the Tandem CLA"** in their first pull request:
+Because the iOS app is distributed through the Apple App Store, and the project owner may need to relicense or dual-license code in the future, every contributor must agree to the following by stating **"I agree to the Leuchtturm CLA"** in their first pull request:
 
 1. You confirm that you wrote the contribution or have the right to submit it.
 2. You keep the copyright in your contribution.

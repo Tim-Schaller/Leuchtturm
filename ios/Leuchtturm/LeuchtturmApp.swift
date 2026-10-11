@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct TandemApp: App {
+struct LeuchtturmApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

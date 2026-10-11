@@ -47,7 +47,7 @@ Each milestone should be usable and testable on its own. Dates are intentionally
 - [ ] Independent security review
 
 ## Setup tasks only the owner can do (Mac required)
-- Bundle ID (e.g. `de.timschaller.tandem`), signing and provisioning
+- Bundle ID (e.g. `de.timschaller.leuchtturm`), signing and provisioning
 - App Store Connect record, TestFlight
 - Hetzner account and server, DNS
-- Check that the name "Tandem" is usable in the App Store
+- Check that the name "Leuchtturm" is usable in the App Store

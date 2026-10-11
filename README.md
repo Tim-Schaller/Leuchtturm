@@ -1,10 +1,10 @@
-# Tandem
+# Leuchtturm
 
 **Privacy-first location sharing for friends and family. End-to-end encrypted, EU-hosted, open source.**
 
-Tandem is a native iOS app (SwiftUI, Liquid Glass) for sharing your location with the people you choose, without handing your movements to a company that monetizes them. The server only ever sees ciphertext.
+Leuchtturm is a native iOS app (SwiftUI, Liquid Glass) for sharing your location with the people you choose, without handing your movements to a company that monetizes them. The server only ever sees ciphertext.
 
-> **Status:** early development. Nothing here is released or audited yet. Do not rely on Tandem for safety-critical use.
+> **Status:** early development. Nothing here is released or audited yet. Do not rely on Leuchtturm for safety-critical use.
 
 ## Features (planned)
 
@@ -47,7 +47,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/ROADMAP.md](docs/ROAD
 ```sh
 cd server
 go test ./...
-go run ./cmd/tandemd
+go run ./cmd/leuchtturmd
 ```
 
 or with Docker:
@@ -63,14 +63,14 @@ docker compose up --build
 brew install xcodegen
 cd ios
 xcodegen generate
-open Tandem.xcodeproj
+open Leuchtturm.xcodeproj
 ```
 
 ## Licenses
 
 - Everything outside `ios/` is licensed under the [GNU AGPL-3.0](LICENSE).
 - The iOS app in `ios/` is licensed under the [Mozilla Public License 2.0](ios/LICENSE).
-- The name "Tandem" and the logo are trademarks of the project owner; see [TRADEMARKS.md](TRADEMARKS.md).
+- The name "Leuchtturm" and the logo are trademarks of the project owner; see [TRADEMARKS.md](TRADEMARKS.md).
 
 ## Contributing
 

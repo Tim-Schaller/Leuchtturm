@@ -1,4 +1,4 @@
-// Command tandemd is the Tandem server.
+// Command leuchtturmd is the Leuchtturm server.
 package main
 
 import (
@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Tim-Schaller/tandem/server/internal/api"
-	"github.com/Tim-Schaller/tandem/server/internal/config"
+	"github.com/Tim-Schaller/leuchtturm/server/internal/api"
+	"github.com/Tim-Schaller/leuchtturm/server/internal/config"
 )
 
 func main() {
@@ -39,7 +39,7 @@ func main() {
 
 	errCh := make(chan error, 1)
 	go func() {
-		log.Info("tandemd listening", "addr", cfg.Addr)
+		log.Info("leuchtturmd listening", "addr", cfg.Addr)
 		errCh <- srv.ListenAndServe()
 	}()
 

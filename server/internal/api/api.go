@@ -1,4 +1,4 @@
-// Package api contains the HTTP handlers of the Tandem server.
+// Package api contains the HTTP handlers of the Leuchtturm server.
 //
 // Privacy rule: handlers must never log request bodies, coordinates,
 // names or full client IP addresses.
@@ -26,10 +26,10 @@ func healthz(w http.ResponseWriter, _ *http.Request) {
 
 func info(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{
-		"name":    "tandem",
+		"name":    "leuchtturm",
 		"api":     Version,
 		"license": "AGPL-3.0",
-		"source":  "https://github.com/Tim-Schaller/tandem",
+		"source":  "https://github.com/Tim-Schaller/leuchtturm",
 	})
 }
 

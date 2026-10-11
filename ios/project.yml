@@ -26,6 +26,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: de.timschaller.leuchtturm
         TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
     entitlements:
       path: Leuchtturm/Leuchtturm.entitlements
       properties:
@@ -50,9 +52,9 @@ targets:
           - CFBundleURLName: de.timschaller.leuchtturm.invite
             CFBundleURLSchemes:
               - leuchtturm
-        NSLocationWhenInUseUsageDescription: Leuchtturm shows your location to the circles you choose, end-to-end encrypted.
-        NSLocationAlwaysAndWhenInUseUsageDescription: Leuchtturm needs background location so the people in your circles can see where you are, even when the app is closed. Your location is encrypted on your device before it is sent.
-        NSMotionUsageDescription: Leuchtturm uses motion data to detect when you are driving, so it can show your speed and save battery while you are standing still.
+        NSLocationWhenInUseUsageDescription: Leuchtturm zeigt deinen Standort den Kreisen, die du auswählst. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt.
+        NSLocationAlwaysAndWhenInUseUsageDescription: Damit deine Kreise dich auch sehen, wenn die App geschlossen ist, braucht Leuchtturm den Standort im Hintergrund. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt.
+        NSMotionUsageDescription: Leuchtturm erkennt mit Bewegungsdaten, wann du fährst, um Akku zu sparen und deine Geschwindigkeit zu zeigen.
   LeuchtturmTests:
     type: bundle.unit-test
     platform: iOS
@@ -72,3 +74,12 @@ schemes:
     test:
       targets:
         - LeuchtturmTests
+  # Debug build without iCloud: made-up people, everything in memory.
+  Leuchtturm Simulation:
+    build:
+      targets:
+        Leuchtturm: all
+    run:
+      config: Debug
+      commandLineArguments:
+        "-simulation": true

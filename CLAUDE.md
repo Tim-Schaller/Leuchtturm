@@ -25,7 +25,16 @@ cd ios && xcodebuild test -project Leuchtturm.xcodeproj -scheme Leuchtturm \
 # Build for running with signing (team TW877YHM7Q is set in project.yml)
 cd ios && xcodebuild -project Leuchtturm.xcodeproj -scheme Leuchtturm \
   -destination 'platform=iOS Simulator,name=iPhone 18 Pro' -allowProvisioningUpdates build
+
+# Start in the simulation mode (debug builds only, no iCloud needed)
+xcrun simctl launch 'iPhone 18 Pro' de.timschaller.leuchtturm -simulation
+
+# Tim's iPhone ("iPhone 17 Pro von Tim", paired): build with -destination 'id=00008150-001C182226FB801C', then
+xcrun devicectl device install app --device 00008150-001C182226FB801C <path>/Debug-iphoneos/Leuchtturm.app
+xcrun devicectl device process launch --device 00008150-001C182226FB801C de.timschaller.leuchtturm
 ```
+
+Simulator text input: the simulator tool's `text` action does not fill the clipboard. Use `printf 'Text' | xcrun simctl pbcopy booted`, then long-press the field and tap „Einsetzen“.
 
 CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (CryptoKit, also compiles CloudKitBackend), app build + tests on an iOS simulator. Keep it green.
 
@@ -40,16 +49,19 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 
 ## Current state (2026-10-11)
 
-- M1 done in code: identity, circles, invites (link + QR), admission proofs, removal with key rotation, safety codes, settings. 27 core tests green, CI green.
+- M1 done in code: identity, circles, invites (link + QR), admission proofs, removal with key rotation, safety codes, settings.
+- M2 started: signed + encrypted `Location` records (`SharedLocation.swift`, `LeuchtturmClient.shareLocation`), foreground updates via `LocationTracker` (CLLocationUpdate), home screen is the map (`MapHomeView` + `PeopleSheet` drawer, Life360-style). Polls every 30 s; no background tracking or push yet. 29 core tests and 8 app tests green.
+- Design: green, landscape, cute lighthouse. Palette and assets in `docs/assets` and `ios/Leuchtturm/Assets.xcassets`; app colors and avatars in `Views/Theme.swift`; rounded font app-wide.
+- Simulation mode (debug builds, `ios/Leuchtturm/Simulation`): `SimulatedWorld` runs Anna, Ben and Clara as real `LeuchtturmClient`s on `InMemoryCloud`, with an in-memory key store and name. Activated by `-simulation`, the setup screen or settings; the orange „Simulation“ button controls the people. Everything is `#if DEBUG`; check that release builds stay free of it.
 - Storage switched from a self-hosted Go server to **CloudKit** (server is in git history before commit `415663a`).
-- iCloud container: `iCloud.de.timschaller.leuchtturm` (entitlement in project.yml). Signing works (automatic, team TW877YHM7Q) and the container is registered. The app has not been run against real iCloud yet. The CloudKit schema is created just-in-time in the Development environment on first save; deploy it to Production before TestFlight.
+- iCloud container: `iCloud.de.timschaller.leuchtturm` (entitlement in project.yml). Signing works (automatic, team TW877YHM7Q) and the container is registered. The app runs on Tim's iPhone against real iCloud (Development environment, one account). The CloudKit schema is created just-in-time in the Development environment on first save; deploy it to Production before TestFlight.
 
 ## Next steps
 
-1. Run the app against real iCloud (simulator signed in to an Apple Account, or Tim's iPhone).
-2. Verify on real CloudKit with **two** iCloud accounts (cannot be tested in the simulation):
+1. Tim has no second Apple Account, so use the simulation mode for day-to-day testing.
+2. Verify on real CloudKit with **two** iCloud accounts (cannot be tested in the simulation; needs a second Apple Account, e.g. from a family member):
    - creator/lastModified user IDs of records and `CKCurrentUserDefaultName` normalization in `CloudKitBackend.normalize`,
    - removing a public-link participant via `share.removeParticipant`,
    - leaving a share by deleting the `CKShare` from the shared database,
    - `recordZoneChanges` returning all records of a shared zone.
-3. M2: encrypted location records, CloudKit subscriptions (silent push), MapKit view, adaptive background location. See `docs/ROADMAP.md`.
+3. M2 rest: CloudKit subscriptions (silent push) instead of polling, adaptive background location, then M3 places. See `docs/ROADMAP.md`.

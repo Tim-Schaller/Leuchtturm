@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 720 720">
+  <title>Leuchtturm</title>
+  <defs><linearGradient id="beamL" x1="500" y1="0" x2="200" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFDC8C" stop-opacity="0.95"/><stop offset="0.55" stop-color="#FFDC8C" stop-opacity="0.36"/><stop offset="1" stop-color="#FFDC8C" stop-opacity="0"/></linearGradient><linearGradient id="beamR" x1="524" y1="0" x2="824" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFDC8C" stop-opacity="0.95"/><stop offset="0.55" stop-color="#FFDC8C" stop-opacity="0.36"/><stop offset="1" stop-color="#FFDC8C" stop-opacity="0"/></linearGradient><linearGradient id="mound" x1="0" y1="780" x2="0" y2="900" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8ACB88"/><stop offset="1" stop-color="#5DAE76"/></linearGradient>
+    <linearGradient id="shade" x1="347" y1="0" x2="677" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F2A20" stop-opacity="0.08"/>
+      <stop offset="0.12" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.28" stop-color="#FFFFFF" stop-opacity="0.25"/>
+      <stop offset="0.46" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.6" stop-color="#0F2A20" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0F2A20" stop-opacity="0.16"/>
+    </linearGradient>
+    <linearGradient id="topsh" x1="0" y1="504" x2="0" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F2A20" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#0F2A20" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="roof" x1="408" y1="0" x2="616" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2B7556"/><stop offset="0.6" stop-color="#1F5E43"/><stop offset="1" stop-color="#1A5039"/>
+    </linearGradient>
+    <radialGradient id="lamp" cx="512" cy="414" r="84" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFEF4"/><stop offset="0.45" stop-color="#FFF0BC"/><stop offset="1" stop-color="#FFD27A"/>
+    </radialGradient>
+    <clipPath id="tower"><path d="M346,806 Q354,650 402,500 L622,500 Q670,650 678,806 Q512,842 346,806 Z"/></clipPath></defs>
+  <g transform="translate(-152,-190)">
+  <path d="M466,393 L206,354 Q190,414 206,474 L466,435 Z" fill="url(#beamL)"/><path d="M558,393 L818,354 Q834,414 818,474 L558,435 Z" fill="url(#beamR)"/>
+  <path d="M206,880 C230,812 360,790 512,790 C664,790 794,812 818,880 Q820,896 800,896 L224,896 Q204,896 206,880 Z" fill="url(#mound)"/>
+  <ellipse cx="512" cy="818" rx="200" ry="20" fill="#3E9462" opacity="0.35"/>
+  
+    <path d="M346,806 Q354,650 402,500 L622,500 Q670,650 678,806 Q512,842 346,806 Z" fill="#FFFDF7"/>
+    <g clip-path="url(#tower)">
+      <path d="M320,558 Q512,574 704,558 L704,614 Q512,630 320,614 Z" fill="#F2786B"/>
+      <path d="M320,720 Q512,736 704,720 L704,776 Q512,792 320,776 Z" fill="#F2786B"/>
+      <rect x="330" y="500" width="364" height="44" fill="url(#topsh)"/>
+      <rect x="330" y="490" width="364" height="360" fill="url(#shade)"/>
+    </g>
+    <ellipse cx="447" cy="688" rx="20" ry="12" fill="#F59C92" opacity="0.65"/>
+    <ellipse cx="577" cy="688" rx="20" ry="12" fill="#F59C92" opacity="0.65"/>
+    <circle cx="477" cy="658" r="14.5" fill="#23453A"/>
+    <circle cx="547" cy="658" r="14.5" fill="#23453A"/>
+    <circle cx="482" cy="653" r="4.5" fill="#FFFFFF"/>
+    <circle cx="552" cy="653" r="4.5" fill="#FFFFFF"/>
+    <path d="M494,682 Q512,700 530,682" fill="none" stroke="#23453A" stroke-width="9" stroke-linecap="round"/>
+    <rect x="378" y="470" width="268" height="36" rx="18" fill="#1F5E43"/>
+    <rect x="396" y="475" width="232" height="7" rx="3.5" fill="#FFFFFF" opacity="0.2"/>
+    <rect x="420" y="346" width="184" height="134" rx="24" fill="#1F5E43"/>
+    <rect x="436" y="360" width="152" height="108" rx="15" fill="url(#lamp)"/>
+    <rect x="482" y="360" width="8" height="108" fill="#1F5E43" opacity="0.4"/>
+    <rect x="534" y="360" width="8" height="108" fill="#1F5E43" opacity="0.4"/>
+    <path d="M402,338 A110,90 0 0 1 622,338 Z" fill="url(#roof)"/>
+    <rect x="390" y="330" width="244" height="28" rx="14" fill="#1F5E43"/>
+    <path d="M440,314 Q450,282 488,266" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" opacity="0.2"/>
+    <rect x="505" y="226" width="14" height="36" rx="7" fill="#1F5E43"/>
+    <circle cx="512" cy="222" r="18" fill="#F2786B"/>
+  </g>
+</svg>

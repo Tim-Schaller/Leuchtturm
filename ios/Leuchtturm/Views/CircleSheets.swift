@@ -2,92 +2,6 @@ import LeuchtturmCore
 import SwiftUI
 import UIKit
 
-struct CirclesView: View {
-    @Environment(AppModel.self) private var model
-    @State private var path: [CircleRef] = []
-    @State private var showCreate = false
-    @State private var showJoin = false
-    @State private var showSettings = false
-
-    var body: some View {
-        @Bindable var bindable = model
-        NavigationStack(path: $path) {
-            List {
-                ForEach(model.circles) { circle in
-                    NavigationLink(value: circle.ref) {
-                        CircleRow(circle: circle)
-                    }
-                }
-            }
-            .overlay {
-                if model.circles.isEmpty && model.hasLoadedCircles {
-                    ContentUnavailableView {
-                        Label("Noch keine Kreise", systemImage: "person.3")
-                    } description: {
-                        Text("Erstelle einen Kreis für deine Familie oder Freunde, oder tritt über eine Einladung bei.")
-                    } actions: {
-                        Button("Kreis erstellen") { showCreate = true }
-                            .buttonStyle(.glassProminent)
-                        Button("Einladung einfügen") { showJoin = true }
-                            .buttonStyle(.glass)
-                    }
-                }
-            }
-            .navigationTitle("Kreise")
-            .navigationDestination(for: CircleRef.self) { ref in
-                CircleDetailView(ref: ref)
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Einstellungen", systemImage: "gearshape") { showSettings = true }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu("Hinzufügen", systemImage: "plus") {
-                        Button("Kreis erstellen", systemImage: "plus.circle") { showCreate = true }
-                        Button("Einladung einfügen", systemImage: "link") { showJoin = true }
-                    }
-                }
-            }
-            .refreshable { await model.refresh() }
-            .task { await model.refresh() }
-            .sheet(isPresented: $showCreate) {
-                CreateCircleSheet { ref in path.append(ref) }
-            }
-            .sheet(isPresented: $showJoin) {
-                JoinSheet(link: nil) { ref in path.append(ref) }
-            }
-            .sheet(item: $bindable.pendingInvite) { link in
-                JoinSheet(link: link) { ref in path.append(ref) }
-            }
-            .sheet(isPresented: $showSettings) {
-                SettingsView()
-            }
-        }
-    }
-}
-
-private struct CircleRow: View {
-    let circle: CircleSummary
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "person.3.fill")
-                .foregroundStyle(.tint)
-                .frame(width: 32)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(circle.name ?? "Unbekannter Kreis")
-                    .font(.headline)
-                if circle.isOwner {
-                    Text("Besitzer")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-        .padding(.vertical, 4)
-    }
-}
-
 struct CreateCircleSheet: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
@@ -169,7 +83,7 @@ struct JoinSheet: View {
                     Section {
                         Label("Du wurdest in einen Kreis eingeladen.", systemImage: "envelope.open")
                     } footer: {
-                        Text("Nach dem Beitritt sehen die Mitglieder deinen Namen. Standortfreigabe kommt in einem späteren Update.")
+                        Text("Nach dem Beitritt sehen die Mitglieder deinen Namen und deinen Standort, Ende-zu-Ende-verschlüsselt. Das Teilen kannst du in den Einstellungen jederzeit pausieren.")
                     }
                 }
                 Section {

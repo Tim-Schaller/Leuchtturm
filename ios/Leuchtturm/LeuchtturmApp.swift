@@ -22,9 +22,10 @@ struct RootView: View {
             case .onboarding:
                 OnboardingView()
             case .ready:
-                CirclesView()
+                MapHomeView()
             }
         }
+        .fontDesign(.rounded)
         .errorAlert()
     }
 }

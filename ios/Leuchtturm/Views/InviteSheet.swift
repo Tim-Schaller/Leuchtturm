@@ -53,6 +53,11 @@ struct InviteSheet: View {
                     } footer: {
                         Text("Wer diesen Link oder QR-Code hat, kann beitreten. Teile ihn nur privat, z. B. persönlich oder per verschlüsselter Nachricht.")
                     }
+                    #if DEBUG
+                    if model.isSimulation {
+                        SimulatedRecipients(circleID: ref.circleID, link: link)
+                    }
+                    #endif
                 } else {
                     Section {
                         Picker("Gültig für", selection: $validity) {

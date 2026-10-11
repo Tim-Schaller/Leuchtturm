@@ -18,13 +18,16 @@ Each milestone should be usable and testable on its own. Dates are intentionally
 - [x] Safety codes per member; unverified iCloud participants flagged to the owner
 - [x] Known-answer vectors, unit tests, full flow and attack tests against a CloudKit simulation
 - [x] App: setup, circle list, circle details, invite, join, settings
+- [x] Simulation mode in debug builds: made-up members on the in-memory backend, no iCloud needed
 - [ ] First run against real iCloud with two accounts (owner, Mac + iPhone)
 
 History: M1 was first built with a self-hosted Go server (EU, anonymous device keys). It was replaced by CloudKit so nobody has to run hardware. See the README for the privacy trade-off.
 
 ## M2: Live location
-- [ ] Encrypted location records and CloudKit subscriptions (silent push) for updates
-- [ ] Map view with circle members (MapKit)
+- [x] Encrypted, device-signed location records (while the app is open, 2 min / 25 m)
+- [x] Map view with circle members (MapKit), Life360-style people drawer, circle switcher
+- [x] Moving simulated members in the debug simulation
+- [ ] CloudKit subscriptions (silent push) for updates instead of 30-second polling
 - [ ] Background location with adaptive tracking (significant changes, presence-based frequency)
 - [ ] Push entitlement and subscription handling
 

@@ -4,6 +4,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @State private var name = ""
     @State private var confirmDelete = false
     @State private var confirmReset = false
@@ -27,6 +28,22 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Toggle("Standort teilen", isOn: Binding(
+                        get: { model.isSharingLocation },
+                        set: { on in Task { await model.setSharingLocation(on) } }
+                    ))
+                    if model.tracker.isDenied {
+                        Button("Standortzugriff erlauben", systemImage: "location") {
+                            if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                        }
+                    }
+                } header: {
+                    Text("Standort")
+                } footer: {
+                    Text("Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Kreisen geteilt, solange die App geöffnet ist. Ausschalten entfernt ihn sofort aus allen Kreisen.")
+                }
+
+                Section {
                     if let client = model.client {
                         LabeledContent("Sicherheitscode") {
                             Text(client.safetyCode).font(.body.monospaced())
@@ -39,7 +56,7 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Text("Leuchtturm speichert in iCloud (Apple). Kreisnamen, Namen und Standorte werden vorher auf dem iPhone verschlüsselt, Apple kann sie nicht lesen. Apple sieht aber, welche iCloud-Konten zusammen in einem Kreis sind und wann Daten geschrieben werden. Die Daten liegen in Apples Rechenzentren, nicht zwingend in der EU.")
+                    Text("Leuchtturm speichert in iCloud (Apple). Kreisnamen, Namen und Standorte werden vorher auf dem iPhone verschlüsselt, Apple kann sie nicht lesen. Apple sieht aber, welche iCloud-Konten zusammen in einem Kreis sind und wann Daten geschrieben werden. Die Daten liegen in Apples Rechenzentren, nicht zwingend in der EU. Die Karte selbst kommt von Apple Karten: Beim Laden sieht Apple, welchen Kartenausschnitt du ansiehst, aber nicht, wer wo ist.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 } header: {
@@ -52,6 +69,26 @@ struct SettingsView: View {
                 } footer: {
                     Text("Löschen entfernt deine eigenen Kreise für alle, verlässt alle anderen und löscht deine Schlüssel. Das lässt sich nicht rückgängig machen.")
                 }
+
+                #if DEBUG
+                Section {
+                    if model.isSimulation {
+                        Button("Simulation beenden", systemImage: "xmark.circle") {
+                            model.endSimulation()
+                            dismiss()
+                        }
+                    } else {
+                        Button("Simulation starten", systemImage: "testtube.2") {
+                            model.startSimulation()
+                            dismiss()
+                        }
+                    }
+                } header: {
+                    Text("Entwicklung")
+                } footer: {
+                    Text("Nur in Test-Builds. Die Simulation nutzt weder iCloud noch die echten Schlüssel dieses Geräts, deine echten Daten bleiben unberührt.")
+                }
+                #endif
 
                 Section {
                     Link(destination: URL(string: "https://github.com/Tim-Schaller/leuchtturm")!) {

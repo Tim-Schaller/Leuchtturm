@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="260" viewBox="0 0 1200 520">
+  <title>Leuchtturm landscape</title>
+  <defs><radialGradient id="glow" cx="930" cy="199.8" r="190" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFF1BF" stop-opacity="1"/><stop offset="0.28" stop-color="#FFE8A3" stop-opacity="0.62"/><stop offset="1" stop-color="#FFE8A3" stop-opacity="0"/></radialGradient><linearGradient id="beamL" x1="918" y1="0" x2="510" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFDC8C" stop-opacity="0.95"/><stop offset="0.55" stop-color="#FFDC8C" stop-opacity="0.36"/><stop offset="1" stop-color="#FFDC8C" stop-opacity="0"/></linearGradient><linearGradient id="beamR" x1="942" y1="0" x2="1180" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFDC8C" stop-opacity="0.95"/><stop offset="0.55" stop-color="#FFDC8C" stop-opacity="0.36"/><stop offset="1" stop-color="#FFDC8C" stop-opacity="0"/></linearGradient><linearGradient id="far" x1="0" y1="260" x2="0" y2="520" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B2E0AD"/><stop offset="1" stop-color="#97D195"/></linearGradient><linearGradient id="mid" x1="0" y1="330" x2="0" y2="520" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8ACB88"/><stop offset="1" stop-color="#5DAE76"/></linearGradient><linearGradient id="front" x1="0" y1="352" x2="0" y2="520" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8ACB88"/><stop offset="1" stop-color="#5DAE76"/></linearGradient><linearGradient id="fore" x1="0" y1="420" x2="0" y2="520" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4E9F6E"/><stop offset="1" stop-color="#2F8F5B"/></linearGradient>
+    <linearGradient id="shade" x1="347" y1="0" x2="677" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F2A20" stop-opacity="0.08"/>
+      <stop offset="0.12" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.28" stop-color="#FFFFFF" stop-opacity="0.25"/>
+      <stop offset="0.46" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.6" stop-color="#0F2A20" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0F2A20" stop-opacity="0.16"/>
+    </linearGradient>
+    <linearGradient id="topsh" x1="0" y1="504" x2="0" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F2A20" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#0F2A20" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="roof" x1="408" y1="0" x2="616" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2B7556"/><stop offset="0.6" stop-color="#1F5E43"/><stop offset="1" stop-color="#1A5039"/>
+    </linearGradient>
+    <radialGradient id="lamp" cx="512" cy="414" r="84" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFEF4"/><stop offset="0.45" stop-color="#FFF0BC"/><stop offset="1" stop-color="#FFD27A"/>
+    </radialGradient>
+    <clipPath id="tower"><path d="M346,806 Q354,650 402,500 L622,500 Q670,650 678,806 Q512,842 346,806 Z"/></clipPath></defs>
+  
+  <circle cx="930" cy="199.8" r="190" fill="url(#glow)"/>
+  
+    <g transform="translate(170,128)">
+      <defs><linearGradient id="cloud7" x1="0" y1="-84.8" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#F7FCF9"/><stop offset="0.6" stop-color="#F7FCF9"/><stop offset="1" stop-color="#D9EEE3"/>
+      </linearGradient></defs>
+      <rect x="0" y="-35.2" width="144.0" height="35.2" rx="17.6" fill="url(#cloud7)"/>
+      <circle cx="38.4" cy="-35.2" r="27.2" fill="url(#cloud7)"/>
+      <circle cx="81.6" cy="-48.0" r="36.8" fill="url(#cloud7)"/>
+      <circle cx="118.4" cy="-30.4" r="24.0" fill="url(#cloud7)"/>
+    </g>
+    <g transform="translate(470,82)">
+      <defs><linearGradient id="cloud8" x1="0" y1="-63.6" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#F7FCF9"/><stop offset="0.6" stop-color="#F7FCF9"/><stop offset="1" stop-color="#D9EEE3"/>
+      </linearGradient></defs>
+      <rect x="0" y="-26.4" width="108.0" height="26.4" rx="13.2" fill="url(#cloud8)"/>
+      <circle cx="28.8" cy="-26.4" r="20.4" fill="url(#cloud8)"/>
+      <circle cx="61.2" cy="-36.0" r="27.6" fill="url(#cloud8)"/>
+      <circle cx="88.8" cy="-22.8" r="18.0" fill="url(#cloud8)"/>
+    </g>
+    <g transform="translate(1060,104)">
+      <defs><linearGradient id="cloud9" x1="0" y1="-47.7" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#F7FCF9"/><stop offset="0.6" stop-color="#F7FCF9"/><stop offset="1" stop-color="#D9EEE3"/>
+      </linearGradient></defs>
+      <rect x="0" y="-19.8" width="81.0" height="19.8" rx="9.9" fill="url(#cloud9)"/>
+      <circle cx="21.6" cy="-19.8" r="15.3" fill="url(#cloud9)"/>
+      <circle cx="45.9" cy="-27.0" r="20.7" fill="url(#cloud9)"/>
+      <circle cx="66.6" cy="-17.1" r="13.5" fill="url(#cloud9)"/>
+    </g>
+  <path d="M884,190.8 L510,143.8 Q492,199.8 510,255.8 L884,208.8 Z" fill="url(#beamL)"/><path d="M976,190.8 L1180,143.8 Q1198,199.8 1180,255.8 L976,208.8 Z" fill="url(#beamR)"/>
+  <path d="M0,330 C110,288 230,282 340,312 C430,336 500,352 590,338 C660,326 700,300 770,292 C850,284 900,300 960,312 C1060,332 1140,322 1200,300 L1200,520 L0,520 Z" fill="url(#far)"/>
+  <rect x="146.9" y="273.0" width="6.1" height="31.0" rx="3.1" fill="#8C7B5A"/><circle cx="150" cy="270.3" r="18" fill="#5DAE76"/><circle cx="144.1" cy="264.4" r="7.2" fill="#7CC28B"/><rect x="181.8" y="278.5" width="4.4" height="23.5" rx="2.2" fill="#8C7B5A"/><circle cx="184" cy="276.6" r="13" fill="#6DB77E"/><rect x="637.3" y="300.0" width="5.4" height="28.0" rx="2.7" fill="#8C7B5A"/><circle cx="640" cy="297.6" r="16" fill="#5DAE76"/><circle cx="634.7" cy="292.3" r="6.4" fill="#7CC28B"/><rect x="1147.5" y="295.5" width="5.1" height="26.5" rx="2.6" fill="#8C7B5A"/><circle cx="1150" cy="293.2" r="15" fill="#6DB77E"/>
+  <path d="M0,412 C120,370 270,360 400,392 C500,416 640,448 760,520 L0,520 Z" fill="url(#mid)"/>
+  <path d="M500,520 C580,436 740,368 930,368 C1060,368 1150,388 1200,398 L1200,520 Z" fill="url(#front)"/>
+  <ellipse cx="930" cy="371" rx="84.0" ry="8.4" fill="#3E9462" opacity="0.35"/>
+  <path d="M921,372 C914,412 860,442 846,520 L890,520 C896,452 940,412 939,372 Z" fill="#F4EACB" opacity="0.9"/>
+  <g transform="translate(714.96,25.92) scale(0.42)">
+    <path d="M346,806 Q354,650 402,500 L622,500 Q670,650 678,806 Q512,842 346,806 Z" fill="#FFFDF7"/>
+    <g clip-path="url(#tower)">
+      <path d="M320,558 Q512,574 704,558 L704,614 Q512,630 320,614 Z" fill="#F2786B"/>
+      <path d="M320,720 Q512,736 704,720 L704,776 Q512,792 320,776 Z" fill="#F2786B"/>
+      <rect x="330" y="500" width="364" height="44" fill="url(#topsh)"/>
+      <rect x="330" y="490" width="364" height="360" fill="url(#shade)"/>
+    </g>
+    <ellipse cx="447" cy="688" rx="20" ry="12" fill="#F59C92" opacity="0.65"/>
+    <ellipse cx="577" cy="688" rx="20" ry="12" fill="#F59C92" opacity="0.65"/>
+    <circle cx="477" cy="658" r="14.5" fill="#23453A"/>
+    <circle cx="547" cy="658" r="14.5" fill="#23453A"/>
+    <circle cx="482" cy="653" r="4.5" fill="#FFFFFF"/>
+    <circle cx="552" cy="653" r="4.5" fill="#FFFFFF"/>
+    <path d="M494,682 Q512,700 530,682" fill="none" stroke="#23453A" stroke-width="9" stroke-linecap="round"/>
+    <rect x="378" y="470" width="268" height="36" rx="18" fill="#1F5E43"/>
+    <rect x="396" y="475" width="232" height="7" rx="3.5" fill="#FFFFFF" opacity="0.2"/>
+    <rect x="420" y="346" width="184" height="134" rx="24" fill="#1F5E43"/>
+    <rect x="436" y="360" width="152" height="108" rx="15" fill="url(#lamp)"/>
+    <rect x="482" y="360" width="8" height="108" fill="#1F5E43" opacity="0.4"/>
+    <rect x="534" y="360" width="8" height="108" fill="#1F5E43" opacity="0.4"/>
+    <path d="M402,338 A110,90 0 0 1 622,338 Z" fill="url(#roof)"/>
+    <rect x="390" y="330" width="244" height="28" rx="14" fill="#1F5E43"/>
+    <path d="M440,314 Q450,282 488,266" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" opacity="0.2"/>
+    <rect x="505" y="226" width="14" height="36" rx="7" fill="#1F5E43"/>
+    <circle cx="512" cy="222" r="18" fill="#F2786B"/>
+  </g>
+  <path d="M0,470 C140,446 300,452 430,476 C520,492 580,506 640,520 L0,520 Z" fill="url(#fore)"/>
+  <circle cx="120" cy="488" r="6" fill="#FFFDF7"/><circle cx="120" cy="488" r="2.4" fill="#FFD27A"/><circle cx="210" cy="474" r="4.7" fill="#F2786B"/><circle cx="330" cy="490" r="6" fill="#FFFDF7"/><circle cx="330" cy="490" r="2.4" fill="#FFD27A"/><circle cx="520" cy="436" r="4.2" fill="#F2786B"/><circle cx="820" cy="470" r="6" fill="#FFFDF7"/><circle cx="820" cy="470" r="2.4" fill="#FFD27A"/><circle cx="1000" cy="450" r="4.7" fill="#F2786B"/><circle cx="1110" cy="482" r="6" fill="#FFFDF7"/><circle cx="1110" cy="482" r="2.4" fill="#FFD27A"/>
+</svg>

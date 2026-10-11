@@ -97,7 +97,7 @@ struct CircleDetailView: View {
         }
         .navigationTitle(details?.name ?? "Kreis")
         .refreshable { await load() }
-        .task { await load() }
+        .task(id: model.externalChanges) { await load() }
         .sheet(isPresented: $showInvite) {
             InviteSheet(ref: ref, circleName: details?.name)
         }
@@ -171,10 +171,7 @@ private struct MemberRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Text(initials)
-                .font(.subheadline.bold())
-                .frame(width: 36, height: 36)
-                .glassEffect(.regular.tint(.accentColor.opacity(0.35)), in: .circle)
+            Avatar(name: member.name, id: member.id, size: 36)
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
                     Text(member.name ?? "Unbekannt")
@@ -203,10 +200,5 @@ private struct MemberRow: View {
             }
         }
         .padding(.vertical, 2)
-    }
-
-    private var initials: String {
-        let parts = (member.name ?? "?").split(separator: " ").prefix(2)
-        return parts.compactMap(\.first).map(String.init).joined().uppercased()
     }
 }

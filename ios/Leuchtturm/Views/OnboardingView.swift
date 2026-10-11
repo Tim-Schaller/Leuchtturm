@@ -9,11 +9,15 @@ struct OnboardingView: View {
             Form {
                 Section {
                     VStack(spacing: 12) {
-                        Image(systemName: "light.beacon.max")
-                            .font(.system(size: 52))
-                            .foregroundStyle(.tint)
+                        Image("Logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 120)
+                            .accessibilityHidden(true)
                         Text("Willkommen bei Leuchtturm")
-                            .font(.title2.bold())
+                            .font(.title.bold())
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
                         Text("Teile deinen Standort mit den Menschen, die dir wichtig sind. Alles wird auf deinem iPhone verschlüsselt, bevor es dein Gerät verlässt.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -37,9 +41,11 @@ struct OnboardingView: View {
 
                 Section {
                     Label {
-                        Text("Gespeichert wird in deiner iCloud. Apple sieht nur verschlüsselte Daten, aber welche iCloud-Konten gemeinsam in einem Kreis sind. Alle Mitglieder brauchen ein iCloud-Konto.")
+                        model.isSimulation
+                            ? Text("Simulation: Alles bleibt im Speicher dieser App, nichts geht an iCloud. Beendest du die App, ist alles weg.")
+                            : Text("Gespeichert wird in deiner iCloud. Apple sieht nur verschlüsselte Daten, aber welche iCloud-Konten gemeinsam in einem Kreis sind. Alle Mitglieder brauchen ein iCloud-Konto.")
                     } icon: {
-                        Image(systemName: "icloud")
+                        Image(systemName: model.isSimulation ? "testtube.2" : "icloud")
                     }
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -64,9 +70,31 @@ struct OnboardingView: View {
                 }
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
+
+                #if DEBUG
+                if !model.isSimulation {
+                    Section {
+                        Button("Ohne iCloud ausprobieren", systemImage: "testtube.2") { model.startSimulation() }
+                            .frame(maxWidth: .infinity)
+                    } footer: {
+                        Text("Nur in Test-Builds: eine Simulation mit erfundenen Personen. Nichts geht an iCloud.")
+                    }
+                }
+                #endif
             }
-            .navigationTitle(AppInfo.name)
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.hidden)
+            .background {
+                // Mint sky with green hills along the bottom.
+                ZStack(alignment: .bottom) {
+                    Theme.sky
+                    Image("Hills")
+                        .resizable()
+                        .scaledToFit()
+                        .accessibilityHidden(true)
+                }
+                .ignoresSafeArea()
+            }
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 

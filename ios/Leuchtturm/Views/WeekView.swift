@@ -153,6 +153,8 @@ struct ScoreBadge: View {
 
 /// One trip: the route and how it went.
 struct TripView: View {
+    @Environment(AppModel.self) private var model
+    @Environment(\.dismiss) private var dismiss
     let trip: Trip
     let member: CircleMember?
 
@@ -185,6 +187,18 @@ struct TripView: View {
                 LabeledContent("Schnell beschleunigt", value: "\(trip.rapidAccelerations)×")
             } footer: {
                 Text("Erkannt auf dem iPhone von \(member?.name ?? "diesem Mitglied"). Ende-zu-Ende-verschlüsselt.")
+            }
+            if member?.isMe == true {
+                Section {
+                    Button("Ich bin nur mitgefahren", systemImage: "person.2.badge.minus", role: .destructive) {
+                        let id = trip.id
+                        Task {
+                            if await model.run({ try await $0.deleteTrip(id) }) != nil { dismiss() }
+                        }
+                    }
+                } footer: {
+                    Text("Entfernt die Fahrt für alle, sie zählt dann nicht für deine Punkte.")
+                }
             }
         }
         .navigationTitle(trip.start.formatted(.dateTime.weekday(.wide).hour().minute()))

@@ -570,6 +570,17 @@ public actor LeuchtturmClient {
         }
     }
 
+    /// Deletes one of this device's trips everywhere, e.g. when the member
+    /// was only a passenger.
+    public func deleteTrip(_ id: String) async throws {
+        for ref in try await backend.listCircles() {
+            let p = try parse(try await backend.snapshot(of: ref))
+            if p.trips.contains(where: { $0.name == RecordName.trip(id) && $0.string("from") == deviceID }) {
+                try await backend.modify(ref, save: [], delete: [RecordName.trip(id)], removeParticipants: [])
+            }
+        }
+    }
+
     /// Deletes all of this device's trips from every circle.
     public func deleteTrips() async throws {
         for ref in try await backend.listCircles() {

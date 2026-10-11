@@ -78,7 +78,8 @@ Not planned, because they would need a company server, a call center or third pa
 - [x] Trip records: route, distance, duration, top speed, hard braking, rapid acceleration, score
 - [x] Live speed (km/h) while driving
 - [x] Weekly summary with leaderboards ("Sicher gefahren", "Am meisten unterwegs")
-- [ ] CoreMotion automotive detection, driver/passenger toggle
+- [x] Passenger: remove a trip you only rode along on
+- [ ] CoreMotion automotive detection
 - [ ] Flight detection
 - [ ] Battery profiling and tuning
 

@@ -501,6 +501,11 @@ struct ClientTests {
         ])], delete: [], removeParticipants: [])
         #expect(try await alice.trips(in: ref, since: clock.now - 86400).map(\.id) == ["t2"])
 
+        try await alice.deleteTrip("t2") // not hers: nothing happens
+        #expect(try await alice.trips(in: ref, since: .distantPast).map(\.id) == ["t2"])
+        try await bob.deleteTrip("t2") // Bob was a passenger
+        #expect(try await alice.trips(in: ref, since: .distantPast).isEmpty)
+        try await bob.shareTrip(trip("t4", endingAgo: 60))
         try await bob.deleteTrips()
         #expect(try await alice.trips(in: ref, since: .distantPast).isEmpty)
         try await bob.leave(bobRef)

@@ -69,7 +69,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- Region monitoring for places, temporary circles, opt-in history with your own retention period, opt-in SOS and check-in
+- Temporary circles, "not arrived yet" alerts, badges, opt-in history with your own retention period, opt-in SOS and check-in
 - Drive detection with live speed (km/h)
 - Adaptive tracking to keep battery drain low
 

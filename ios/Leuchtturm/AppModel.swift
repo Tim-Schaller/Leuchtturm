@@ -601,7 +601,12 @@ final class AppModel {
     /// Notifies once about each new note from others that is for me or for
     /// everyone.
     func deliverNews(_ details: CircleDetails) {
+        let placesChanged = knownPlaces[details.id]?.places != details.places
         knownPlaces[details.id] = (details.ref, details.places)
+        if placesChanged, usesDeviceServices {
+            let all = knownPlaces.values.flatMap(\.places)
+            Task { await tracker.monitor(places: all) }
+        }
         guard let me = client?.deviceID else { return }
         let fresh = details.notes.filter {
             $0.senderID != me && ($0.recipientID == nil || $0.recipientID == me)

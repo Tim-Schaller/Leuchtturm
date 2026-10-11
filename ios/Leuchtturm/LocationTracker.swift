@@ -26,6 +26,10 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
     @ObservationIgnored private var wantsBackground = false
     @ObservationIgnored private var paused = false
     @ObservationIgnored private var observers: [any NSObjectProtocol] = []
+    /// Wakes the app at the edges of the circles' places (iOS allows 20).
+    @ObservationIgnored private var monitor: CLMonitor?
+    @ObservationIgnored private var monitored: Set<String> = []
+    @ObservationIgnored private var monitorTask: Task<Void, Never>?
 
     override init() {
         super.init()
@@ -48,6 +52,31 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
         running = true
         if manager.authorizationStatus == .notDetermined { manager.requestWhenInUseAuthorization() }
         configure()
+    }
+
+    /// Region monitoring for places, only with "Always" access. An event
+    /// just resumes location updates; arrivals are judged by `PlaceTracker`.
+    func monitor(places: [CirclePlace]) async {
+        guard isAlwaysAllowed else { return }
+        if monitor == nil {
+            let monitor = await CLMonitor("places")
+            self.monitor = monitor
+            monitorTask = Task { [weak self] in
+                do {
+                    for try await _ in await monitor.events {
+                        self?.resumeIfPaused()
+                    }
+                } catch {}
+            }
+        }
+        guard let monitor else { return }
+        let wanted = Dictionary(places.prefix(20).map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        for id in monitored.subtracting(wanted.keys) { await monitor.remove(id) }
+        for (id, place) in wanted where !monitored.contains(id) {
+            let condition = CLMonitor.CircularGeographicCondition(center: place.coordinate, radius: Double(place.radius))
+            await monitor.add(condition, identifier: id)
+        }
+        monitored = Set(wanted.keys)
     }
 
     func stop() {

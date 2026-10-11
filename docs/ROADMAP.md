@@ -65,7 +65,7 @@ Not planned, because they would need a company server, a call center or third pa
 - [x] Create and share places (encrypted, signed, re-encrypted after key rotation)
 - [x] On-device arrival and departure detection with a leaving margin
 - [x] Arrival and departure notifications (signed notes, silent push, local notification)
-- [ ] Region monitoring (CLMonitor) so arrivals are detected even while iOS pauses location updates
+- [x] Region monitoring (CLMonitor, up to 20 places, "Always" only) wakes the app at place edges while iOS pauses location updates
 - [ ] No-show alerts and place suggestions
 
 ## M5: History

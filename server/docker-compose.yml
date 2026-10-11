@@ -1,0 +1,19 @@
+services:
+  tandemd:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      TANDEM_ADDR: ":8080"
+      TANDEM_DATA_DIR: /data
+    volumes:
+      - tandem-data:/data
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  tandem-data:

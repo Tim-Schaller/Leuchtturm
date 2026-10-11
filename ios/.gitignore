@@ -1,0 +1,8 @@
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+.build/
+.swiftpm/
+Tandem/Info.plist
+.DS_Store

@@ -1,0 +1,54 @@
+name: Tandem
+options:
+  bundleIdPrefix: de.timschaller
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  Tandem:
+    type: application
+    platform: iOS
+    sources:
+      - Tandem
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.timschaller.tandem
+        TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: Tandem/Info.plist
+      properties:
+        CFBundleDisplayName: Tandem
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIBackgroundModes:
+          - location
+        NSLocationWhenInUseUsageDescription: Tandem shows your location to the circles you choose, end-to-end encrypted.
+        NSLocationAlwaysAndWhenInUseUsageDescription: Tandem needs background location so the people in your circles can see where you are, even when the app is closed. Your location is encrypted on your device before it is sent.
+        NSMotionUsageDescription: Tandem uses motion data to detect when you are driving, so it can show your speed and save battery while you are standing still.
+  TandemTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - TandemTests
+    dependencies:
+      - target: Tandem
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.timschaller.tandem.tests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Tandem:
+    build:
+      targets:
+        Tandem: all
+    test:
+      targets:
+        - TandemTests

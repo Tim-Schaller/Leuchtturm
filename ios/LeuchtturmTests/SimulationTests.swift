@@ -7,7 +7,7 @@ import Testing
 @MainActor
 struct SimulationTests {
     private func simulatedModel() async throws -> (AppModel, SimulatedWorld) {
-        let model = AppModel()
+        let model = AppModel(tracksLocation: false)
         model.startSimulation()
         let world = try #require(model.simulation)
         #expect(await model.setUp(name: "Tim"))

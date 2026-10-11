@@ -24,11 +24,12 @@ Each milestone should be usable and testable on its own. Dates are intentionally
 History: M1 was first built with a self-hosted Go server (EU, anonymous device keys). It was replaced by CloudKit so nobody has to run hardware. See the README for the privacy trade-off.
 
 ## M2: Live location
-- [x] Encrypted, device-signed location records (while the app is open, 2 min / 25 m)
+- [x] Encrypted, device-signed location records
 - [x] Map view with circle members (MapKit), Life360-style people drawer, circle switcher
 - [x] Moving simulated members in the debug simulation
 - [ ] CloudKit subscriptions (silent push) for updates instead of 30-second polling
-- [ ] Background location with adaptive tracking (significant changes, presence-based frequency)
+- [x] Background location: live updates with a background activity session, stationary pause, fewer uploads while the app is closed
+- [ ] Smarter tracking: visits, geofence wake-ups, presence-based frequency
 - [ ] Push entitlement and subscription handling
 
 ## M3: Places

@@ -24,7 +24,7 @@ Leuchtturm is a native iOS app (SwiftUI, Liquid Glass) for sharing your location
 </p>
 
 > [!NOTE]
-> **Status:** early development. Milestone M1 (encrypted circles and invites) is implemented and tested, and M2 (live location on a map) has started: locations are shared while the app is open; background tracking and push updates are next. Nothing is released or audited. Do not rely on Leuchtturm for safety-critical use.
+> **Status:** early development. Milestone M1 (encrypted circles and invites) is implemented and tested, and M2 (live location on a map) is under way: locations are shared, also in the background; push updates are next. Nothing is released or audited. Do not rely on Leuchtturm for safety-critical use.
 
 ## 🌿 At a glance
 
@@ -53,7 +53,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 **Working now:**
 
 - A Life360-style map: everyone in the circle as a pin, a people drawer with "3 min ago · 1.2 km", a circle switcher
-- Live location, end-to-end encrypted and signed by each member's own iPhone, shared while the app is open; pause any time
+- Live location, end-to-end encrypted and signed by each member's own iPhone, also while the app is closed (pauses when you stand still to save battery); pause sharing any time
 - Circles with encrypted names and display names
 - Invites via link or QR code, with expiry
 - Removing members rotates the circle key and revokes their iCloud access
@@ -62,7 +62,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- Background location and push updates, places (geofences) evaluated **on the device**, opt-in history with your own retention period, opt-in SOS and check-in
+- Push updates, places (geofences) evaluated **on the device**, opt-in history with your own retention period, opt-in SOS and check-in
 - Drive detection with live speed (km/h)
 - Adaptive tracking to keep battery drain low
 

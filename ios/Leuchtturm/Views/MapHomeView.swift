@@ -92,7 +92,6 @@ struct MapHomeView: View {
         .onChange(of: model.hasLoadedCircles && model.circles.isEmpty, initial: true) { _, empty in
             if empty { detent = .medium }
         }
-        .task { model.startLocationUpdates() }
         .task(id: model.externalChanges) { await model.refresh() }
         .task(id: "\(selected?.id ?? "")|\(model.externalChanges)") { await follow(selected?.ref) }
     }

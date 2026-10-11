@@ -19,7 +19,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 ## Non-goals (not protected against)
 
 - **Metadata at Apple.** Apple knows which iCloud accounts (real identities) share a circle, who owns it, when records are written and their approximate sizes. This is the main privacy cost of using CloudKit instead of a self-hosted server.
-- **Movement patterns from timing.** Location records are written more often while someone moves (every 25 m, at most every 2 minutes) than while they stand still. Apple can therefore tell when a member is on the move, though not where. A fixed update cadence could hide this later.
+- **Movement patterns from timing.** Location records are written while someone moves (more often with the app open) and not while they stand still, also in the background. Apple can therefore tell when a member is on the move, though not where. A fixed update cadence could hide this later.
 - **Map tiles.** The map comes from Apple Maps, which sees the map areas the app loads. These are usually where the circle's members are.
 - **Data location.** iCloud data is stored in Apple's data centers; Apple is a US company. EU-only storage is not guaranteed.
 - **Apple as an active attacker on the app itself.** Apple distributes the app binary and operating system.
@@ -51,7 +51,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 
 ## Known limitations
 
-- **Location only while the app is open.** Background tracking and push updates are not built yet; the map polls every 30 seconds.
+- **Background tracking depends on iOS.** Without "Always" access, sharing stops once iOS terminates the app; a user who force-quits the app stops sharing until they open it again. Push updates are not built yet; the map polls every 30 seconds.
 - **Single device per person.** A second iPhone or iPad needs its own invite.
 - **The owner device is a single point of failure.** If the owner loses their iPhone, the circle can no longer be managed (no new admissions, removals or renames); members can still read it. Ownership transfer is not possible with CloudKit zones.
 - **Pending members need the owner.** New members are visible as pending right away, but enter the signed roster only when the owner opens the app. Their admission is verified against the invite record, so if an invite expires and is cleaned up first, the owner must re-invite them.

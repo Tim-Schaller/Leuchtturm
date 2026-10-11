@@ -15,6 +15,7 @@ struct LeuchtturmApp: App {
 
 struct RootView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Group {
@@ -27,6 +28,9 @@ struct RootView: View {
         }
         .fontDesign(.rounded)
         .errorAlert()
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { model.tracker.refreshAuthorization() }
+        }
     }
 }
 

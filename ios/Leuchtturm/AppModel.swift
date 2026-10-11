@@ -2,6 +2,7 @@ import CoreLocation
 import Foundation
 import LeuchtturmCore
 import Observation
+import UIKit
 
 /// App-wide state. Owns the client once setup is done.
 @MainActor
@@ -15,6 +16,7 @@ final class AppModel {
     private enum Keys {
         static let displayName = "displayName"
         static let locationPaused = "locationPaused"
+        static let lastSharedAt = "lastSharedAt"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -34,6 +36,8 @@ final class AppModel {
     let tracker = LocationTracker()
     /// The user's choice in settings. On by default.
     private(set) var isSharingLocation = true
+    /// Last successful upload, so the user can check that background sharing works.
+    private(set) var lastSharedAt: Date?
     @ObservationIgnored private var lastShared: CLLocation?
 
     #if DEBUG
@@ -50,8 +54,11 @@ final class AppModel {
     }
 
     private let keychain = KeychainSecretStore()
+    /// Off in unit tests, which must not start CoreLocation.
+    private let tracksLocation: Bool
 
-    init() {
+    init(tracksLocation: Bool = true) {
+        self.tracksLocation = tracksLocation
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains(SimulatedWorld.launchArgument) {
             startSimulation()
@@ -70,11 +77,13 @@ final class AppModel {
         pendingInvite = nil
         lastShared = nil
         isSharingLocation = isSimulation || !UserDefaults.standard.bool(forKey: Keys.locationPaused)
+        lastSharedAt = isSimulation ? nil : UserDefaults.standard.object(forKey: Keys.lastSharedAt) as? Date
         phase = .onboarding
         if !displayName.isEmpty, let client = try? makeClient(name: displayName) {
             self.client = client
             phase = .ready
         }
+        updateTracking()
     }
 
     private func makeClient(name: String) throws -> LeuchtturmClient {
@@ -134,6 +143,7 @@ final class AppModel {
             self.client = client
             displayName = trimmed
             phase = .ready
+            updateTracking()
             await refresh()
             return true
         } catch {
@@ -185,21 +195,31 @@ final class AppModel {
 
     // MARK: Location
 
-    func startLocationUpdates() {
-        tracker.start { [weak self] location in
+    /// Tracks while set up: in the background while sharing (also after iOS
+    /// relaunched the app for a location event), else only for the map.
+    private func updateTracking() {
+        guard tracksLocation else { return }
+        guard phase == .ready else {
+            tracker.stop()
+            return
+        }
+        tracker.start(background: isSharingLocation && !isSimulation) { [weak self] location in
             Task { await self?.share(location) }
         }
     }
 
-    /// Uploads at most every 2 minutes, or sooner after moving 25 m.
     private func share(_ location: CLLocation) async {
         guard isSharingLocation, let client, (0 ... 1000).contains(location.horizontalAccuracy) else { return }
-        if let last = lastShared, location.distance(from: last) < 25, location.timestamp.timeIntervalSince(last.timestamp) < 120 {
-            return
-        }
-        guard let shared = SharedLocation(location) else { return }
+        let policy: SharePolicy = UIApplication.shared.applicationState == .active ? .foreground : .background
+        guard policy.shouldShare(location, after: lastShared), let shared = SharedLocation(location) else { return }
         lastShared = location
-        try? await client.shareLocation(shared)
+        // Finish the upload even if iOS suspends the app right after this update.
+        let backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "share-location")
+        if (try? await client.shareLocation(shared)) != nil {
+            lastSharedAt = Date()
+            if !isSimulation { UserDefaults.standard.set(lastSharedAt, forKey: Keys.lastSharedAt) }
+        }
+        UIApplication.shared.endBackgroundTask(backgroundTask)
     }
 
     private func shareLocationNow() async {
@@ -211,6 +231,7 @@ final class AppModel {
     func setSharingLocation(_ on: Bool) async {
         isSharingLocation = on
         if !isSimulation { UserDefaults.standard.set(!on, forKey: Keys.locationPaused) }
+        updateTracking()
         if on {
             await shareLocationNow()
         } else {
@@ -264,6 +285,7 @@ final class AppModel {
         hasLoadedCircles = false
         displayName = ""
         phase = .onboarding
+        updateTracking()
     }
 
     // MARK: Simulation

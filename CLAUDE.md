@@ -50,7 +50,7 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 ## Current state (2026-10-11)
 
 - M1 done in code: identity, circles, invites (link + QR), admission proofs, removal with key rotation, safety codes, settings.
-- M2 started: signed + encrypted `Location` records (`SharedLocation.swift`, `LeuchtturmClient.shareLocation`), foreground updates via `LocationTracker` (CLLocationUpdate), home screen is the map (`MapHomeView` + `PeopleSheet` drawer, Life360-style). Polls every 30 s; no background tracking or push yet. 29 core tests and 8 app tests green.
+- M2 started: signed + encrypted `Location` records (`SharedLocation.swift`, `LeuchtturmClient.shareLocation`), `LocationTracker` (CLLocationUpdate + CLBackgroundActivitySession, started by `AppModel.updateTracking()` so it also runs after a background relaunch; upload rules in `SharePolicy`), home screen is the map (`MapHomeView` + `PeopleSheet` drawer, Life360-style). The map polls every 30 s; no push yet. Background sharing still needs a real-device test (Settings shows "Zuletzt geteilt"). 29 core tests and 11 app tests green.
 - Design: green, landscape, cute lighthouse. Palette and assets in `docs/assets` and `ios/Leuchtturm/Assets.xcassets`; app colors and avatars in `Views/Theme.swift`; rounded font app-wide.
 - Simulation mode (debug builds, `ios/Leuchtturm/Simulation`): `SimulatedWorld` runs Anna, Ben and Clara as real `LeuchtturmClient`s on `InMemoryCloud`, with an in-memory key store and name. Activated by `-simulation`, the setup screen or settings; the orange „Simulation“ button controls the people. Everything is `#if DEBUG`; check that release builds stay free of it.
 - Storage switched from a self-hosted Go server to **CloudKit** (server is in git history before commit `415663a`).
@@ -64,4 +64,4 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
    - removing a public-link participant via `share.removeParticipant`,
    - leaving a share by deleting the `CKShare` from the shared database,
    - `recordZoneChanges` returning all records of a shared zone.
-3. M2 rest: CloudKit subscriptions (silent push) instead of polling, adaptive background location, then M3 places. See `docs/ROADMAP.md`.
+3. M2 rest: CloudKit subscriptions (silent push) instead of polling, smarter tracking (visits, geofence wake-ups), then M3 places. See `docs/ROADMAP.md`.

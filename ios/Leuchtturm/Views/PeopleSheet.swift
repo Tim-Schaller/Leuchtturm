@@ -172,7 +172,10 @@ enum LocationStatus {
         if member.isMe {
             if !model.isSharingLocation { return "Teilen pausiert" }
             if model.tracker.isDenied { return "Standortzugriff ist aus" }
-            return model.tracker.location == nil ? "Suche Standort …" : "Dein Standort wird geteilt"
+            if model.tracker.location == nil { return "Suche Standort …" }
+            return model.tracker.isAlwaysAllowed || model.isSimulation
+                ? "Wird geteilt, auch bei geschlossener App"
+                : "Wird geteilt, solange die App läuft"
         }
         if member.isPending { return "Wartet auf Bestätigung" }
         guard let location = member.location else { return "Teilt noch keinen Standort" }

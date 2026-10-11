@@ -96,7 +96,7 @@ Recipients accept only wraps from the pinned owner device.
 
 Readers show a location only for devices in the signed roster, verify `sig` with the key from that device's member record and keep the newest timestamp seen per device, so a participant cannot fake a position or replay an older one. Pending members' locations are ignored until the owner confirms them. Pausing, leaving the circle and being removed delete the record; the owner's device also deletes it when it cleans up a departed member.
 
-The app writes the record while it is open, at most every 2 minutes or after moving 25 m, and reads the selected circle every 30 seconds (push updates come later).
+The app writes the record when the device moved (see Tracking strategy) and reads the selected circle every 30 seconds while the map is open (push updates come later).
 
 ### Encrypted content (meta, cards, tokens, locations)
 
@@ -154,7 +154,10 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 
 Updates will be delivered through CloudKit subscriptions (silent push), so near-real-time rather than instant.
 
-Current state: only while the app is open (When In Use), throttled to 2 minutes / 25 m, and the map polls every 30 seconds. Background tracking and push are next.
+Current state:
+- `CLLocationUpdate.liveUpdates` with a `CLBackgroundActivitySession` while sharing is on. iOS pauses updates while the device is stationary and resumes them on movement; with "Always" access it relaunches a terminated app, which restarts tracking at launch.
+- Uploads: app open, after 25 m but at most every 15 s, at least every 2 min while moving; app closed, after 100 m but at most every minute, at least every 10 min while moving. Each upload runs inside a background task so a suspension does not cut it off.
+- Not yet: driving mode, visits, geofence wake-ups (CLMonitor, M3) and push.
 
 ## License
 

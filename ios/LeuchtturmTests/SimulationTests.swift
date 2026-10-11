@@ -143,6 +143,20 @@ struct SimulationTests {
         #expect(warnings.map(\.text) == ["9"])
     }
 
+    @Test func arrivalWatchesCanBeSetAndRemoved() async throws {
+        let (model, world) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        let details = try #require(await model.mapDetails(for: ref))
+        let ben = try #require(details.members.first { $0.id == world.people[1].client.deviceID })
+        let office = try #require(model.places(inCircle: ref.circleID).first { $0.name == "Büro" })
+
+        await model.addArrivalWatch(member: ben, place: office, circleID: ref.circleID, hour: 8, minute: 15, repeats: .weekdays)
+        #expect(model.arrivalWatches.map(\.placeID) == [office.id])
+        await model.removeArrivalWatch(model.arrivalWatches[0].id)
+        #expect(model.arrivalWatches.isEmpty)
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

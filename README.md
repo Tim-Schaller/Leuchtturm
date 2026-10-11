@@ -55,7 +55,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 - A family map: everyone in the circle as a pin, a people drawer with "3 min ago · 1.2 km", a circle switcher
 - Live location, end-to-end encrypted and signed by each member's own iPhone, also while the app is closed (pauses when you stand still to save battery); pause sharing any time
 - Battery level of everyone in the circle, with a heads-up when someone's battery is almost empty
-- Places like home or school with arrival and departure alerts, checked on each iPhone itself
+- Places like home or school with arrival and departure alerts, checked on each iPhone itself, and a "not arrived yet" alert ("Ben is not at school by 8:15")
 - SOS to your circles with your exact position, and an "Are you OK?" check after an abrupt stop while driving (no call center; call 112 in danger)
 - Opt-in trips with live speed, a driving score and a weekly leaderboard for the circle
 - Opt-in history: your path of the last days for your circle, kept only as long as you choose
@@ -69,7 +69,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- "Not arrived yet" alerts, driving detection with motion sensors, English localization, opt-in history with your own retention period, opt-in SOS and check-in
+- Driving detection with motion sensors, English localization, place suggestions, opt-in history with your own retention period, opt-in SOS and check-in
 - Drive detection with live speed (km/h)
 - Adaptive tracking to keep battery drain low
 

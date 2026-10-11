@@ -95,6 +95,101 @@ struct PlacesSection: View {
     }
 }
 
+/// "Tell me if … has not arrived by …" for one member.
+struct ArrivalWatchSection: View {
+    @Environment(AppModel.self) private var model
+    let member: CircleMember
+    let circleID: String
+    @State private var adding = false
+
+    var body: some View {
+        let places = model.places(inCircle: circleID)
+        Section {
+            ForEach(model.arrivalWatches.filter { $0.memberID == member.id && $0.circleID == circleID }) { watch in
+                let place = places.first { $0.id == watch.placeID }
+                HStack {
+                    Text(place?.emoji ?? "📍")
+                    Text("\(place?.name ?? String(localized: "Ort")) bis \(String(format: "%02d:%02d", watch.hour, watch.minute))")
+                    Spacer()
+                    Text(Self.label(watch.repeats)).foregroundStyle(.secondary)
+                }
+                .swipeActions {
+                    Button("Löschen", role: .destructive) { Task { await model.removeArrivalWatch(watch.id) } }
+                }
+            }
+            Button("Melden, wenn nicht angekommen", systemImage: "alarm") { adding = true }
+                .disabled(places.isEmpty)
+        } header: {
+            Text("Ankunft")
+        } footer: {
+            Text(places.isEmpty
+                ? "Lege zuerst einen Ort an, z. B. die Schule."
+                : "Nur auf deinem iPhone gespeichert. Kommt die Meldung über die Ankunft zu spät an, kann der Hinweis auch einmal zu Unrecht kommen.")
+        }
+        .sheet(isPresented: $adding) {
+            ArrivalWatchSheet(member: member, circleID: circleID, places: places)
+        }
+    }
+
+    static func label(_ repeats: ArrivalWatch.Repeat) -> String {
+        switch repeats {
+        case .once: String(localized: "einmal")
+        case .weekdays: String(localized: "werktags")
+        case .daily: String(localized: "täglich")
+        }
+    }
+}
+
+private struct ArrivalWatchSheet: View {
+    @Environment(AppModel.self) private var model
+    @Environment(\.dismiss) private var dismiss
+    let member: CircleMember
+    let circleID: String
+    let places: [CirclePlace]
+
+    @State private var placeID = ""
+    @State private var time = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: Date()) ?? Date()
+    @State private var repeats = ArrivalWatch.Repeat.weekdays
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Picker("Ort", selection: $placeID) {
+                    ForEach(places) { Text("\($0.emoji) \($0.name)").tag($0.id) }
+                }
+                DatePicker("Bis", selection: $time, displayedComponents: .hourAndMinute)
+                Picker("Wiederholen", selection: $repeats) {
+                    ForEach(ArrivalWatch.Repeat.allCases, id: \.self) { Text(ArrivalWatchSection.label($0)).tag($0) }
+                }
+                .pickerStyle(.segmented)
+            }
+            .navigationTitle("Ankunft von \(member.name ?? "Mitglied")")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Abbrechen", role: .cancel) { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Sichern") {
+                        guard let place = places.first(where: { $0.id == placeID }) else { return }
+                        let parts = Calendar.current.dateComponents([.hour, .minute], from: time)
+                        Task {
+                            await model.addArrivalWatch(
+                                member: member, place: place, circleID: circleID,
+                                hour: parts.hour ?? 8, minute: parts.minute ?? 0, repeats: repeats
+                            )
+                            dismiss()
+                        }
+                    }
+                    .disabled(placeID.isEmpty)
+                }
+            }
+            .onAppear { if placeID.isEmpty { placeID = places.first?.id ?? "" } }
+        }
+        .presentationDetents([.medium])
+    }
+}
+
 /// Creates a place: move the map until the pin sits on the right spot.
 struct AddPlaceSheet: View {
     @Environment(AppModel.self) private var model

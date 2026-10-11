@@ -30,6 +30,7 @@ final class AppModel {
         static let tripDetector = "tripDetector"
         static let detectsCrashes = "detectsCrashes"
         static let lowBatteryWarned = "lowBatteryWarned"
+        static let arrivalWatches = "arrivalWatches"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -93,6 +94,10 @@ final class AppModel {
     @ObservationIgnored private var newsSince = Date()
     @ObservationIgnored private var lastMorningGreeting: Date?
     @ObservationIgnored private let notificationPresenter = NotificationPresenter()
+    /// "Not arrived yet" alerts set on this device.
+    private(set) var arrivalWatches: [ArrivalWatch] = []
+    /// Every circle as last loaded, for arrival checks.
+    @ObservationIgnored private var latestDetails: [String: CircleDetails] = [:]
     /// Places of every circle, from the last time each circle was loaded.
     @ObservationIgnored private var knownPlaces: [String: (ref: CircleRef, places: [CirclePlace])] = [:]
     @ObservationIgnored private var placeTracker = PlaceTracker()
@@ -150,6 +155,9 @@ final class AppModel {
         sendsMorningGreeting = !isSimulation && defaults.bool(forKey: Keys.morningGreeting)
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
         knownPlaces = [:]
+        latestDetails = [:]
+        arrivalWatches = isSimulation ? [] : defaults.data(forKey: Keys.arrivalWatches)
+            .flatMap { try? JSONDecoder().decode([ArrivalWatch].self, from: $0) } ?? []
         sharesHistory = !isSimulation && defaults.bool(forKey: Keys.sharesHistory)
         historyDays = isSimulation ? 7 : (defaults.object(forKey: Keys.historyDays) as? Int ?? 7)
         historyRecorder = HistoryRecorder(persistent: !isSimulation)
@@ -450,6 +458,74 @@ final class AppModel {
         }
     }
 
+    // MARK: Arrival watches
+
+    func places(inCircle circleID: String) -> [CirclePlace] {
+        latestDetails[circleID]?.places ?? knownPlaces[circleID]?.places ?? []
+    }
+
+    func addArrivalWatch(member: CircleMember, place: CirclePlace, circleID: String, hour: Int, minute: Int, repeats: ArrivalWatch.Repeat) async {
+        arrivalWatches.append(ArrivalWatch(
+            id: CircleCrypto.newCircleID(), circleID: circleID, memberID: member.id, placeID: place.id,
+            hour: hour, minute: minute, repeats: repeats, created: Date()
+        ))
+        saveArrivalWatches()
+        await scheduleArrivalWatches()
+    }
+
+    func removeArrivalWatch(_ id: String) async {
+        arrivalWatches.removeAll { $0.id == id }
+        saveArrivalWatches()
+        await scheduleArrivalWatches()
+    }
+
+    private func saveArrivalWatches() {
+        guard !isSimulation else { return }
+        UserDefaults.standard.set(try? JSONEncoder().encode(arrivalWatches), forKey: Keys.arrivalWatches)
+    }
+
+    /// Keeps one local notification per open deadline in the next 7 days
+    /// and withdraws it as soon as the member is known to have arrived.
+    func scheduleArrivalWatches() async {
+        let calendar = Calendar.current
+        let now = Date()
+        // One-off watches whose deadline has passed are done.
+        let finished = arrivalWatches.filter { $0.repeats == .once && $0.deadlines(after: $0.created, days: 2, calendar: calendar).allSatisfy { $0 < now } }
+        if !finished.isEmpty {
+            arrivalWatches.removeAll { w in finished.contains { $0.id == w.id } }
+            saveArrivalWatches()
+        }
+        guard usesDeviceServices else { return }
+
+        var desired: [String: UNNotificationRequest] = [:]
+        for watch in arrivalWatches {
+            guard let details = latestDetails[watch.circleID],
+                  let place = details.places.first(where: { $0.id == watch.placeID }),
+                  let member = details.members.first(where: { $0.id == watch.memberID })
+            else { continue }
+            for deadline in watch.deadlines(after: now, days: 7, calendar: calendar)
+            where !watch.isSatisfied(deadline: deadline, place: place, location: member.location, notes: details.notes, calendar: calendar) {
+                let id = "watch-\(watch.id)-\(Int(deadline.timeIntervalSince1970))"
+                let content = UNMutableNotificationContent()
+                content.title = String(localized: "⏰ \(member.name ?? "Jemand") ist noch nicht angekommen")
+                content.body = String(localized: "Bis \(deadline.formatted(date: .omitted, time: .shortened)) gab es keine Ankunft bei „\(place.name)“.")
+                content.sound = .default
+                content.interruptionLevel = .timeSensitive
+                content.threadIdentifier = details.id
+                let trigger = UNCalendarNotificationTrigger(
+                    dateMatching: calendar.dateComponents([.year, .month, .day, .hour, .minute], from: deadline), repeats: false
+                )
+                desired[id] = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+            }
+        }
+        let center = UNUserNotificationCenter.current()
+        let pending = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix("watch-") }
+        center.removePendingNotificationRequests(withIdentifiers: pending.filter { desired[$0] == nil })
+        for (id, request) in desired where !pending.contains(id) {
+            try? await center.add(request)
+        }
+    }
+
     // MARK: Battery
 
     static let lowBatteryLevel = 15
@@ -602,6 +678,8 @@ final class AppModel {
     /// Notifies once about each new note from others that is for me or for
     /// everyone.
     func deliverNews(_ details: CircleDetails) {
+        latestDetails[details.id] = details
+        if !arrivalWatches.isEmpty { Task { await scheduleArrivalWatches() } }
         let placesChanged = knownPlaces[details.id]?.places != details.places
         knownPlaces[details.id] = (details.ref, details.places)
         if placesChanged, usesDeviceServices {

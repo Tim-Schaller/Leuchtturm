@@ -269,6 +269,10 @@ struct MemberDetailView: View {
                 ReactionPicker(member: member, ref: ref)
             }
 
+            if !member.isMe, !member.isPending, let ref {
+                ArrivalWatchSection(member: member, circleID: ref.circleID)
+            }
+
             if !member.isPending {
                 Section {
                     NavigationLink(value: DrawerRoute.history(member.id)) {

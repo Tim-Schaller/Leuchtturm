@@ -150,6 +150,10 @@ Opt-in ("Fahrten teilen"), off by default.
 
 `TripDetector` runs on the driver's device: a trip starts after two samples at 25 km/h or more within a minute and ends three minutes after the last sample at 4 m/s or more; trips under 1 km or 2 minutes are dropped. A hard brake is a deceleration of 3.5 m/s² or more, a rapid acceleration 3 m/s² or more (at most one event per 10 s). Score per trip: 100 − 8 per hard brake − 5 per rapid acceleration − 10 above 130 km/h. While a trip is running and trips are shared, the location record carries the speed (`spd`). The leaderboard is computed on each reader's device from the trips of the last 7 days (distance-weighted score). The driver can delete a single trip ("Ich bin nur mitgefahren"). The driver's device deletes its trips after 30 days, all of them when trip sharing is turned off, and on leaving. Context: `ctx("leuchtturm/v1/trip", circleID, tripID)`.
 
+### "Not arrived yet" alerts
+
+An `ArrivalWatch` (member, place, time, once/weekdays/daily) is stored only on the device that set it, never in iCloud. That device schedules a local time-sensitive notification for every deadline in the next 7 days and withdraws it whenever it loads the circle and sees that the member is inside the place (exact position from today) or sent an arrival note for that place since the start of the day. If the arrival note reaches the device late (throttled silent pushes), the alert can come although the member arrived.
+
 ### Low battery
 
 When the device's battery drops to 15 % or less without charging, it sends a `Note` of kind `lowBattery` (text: the percentage) to every circle, once per discharge (again after charging or above 30 %).

@@ -92,7 +92,7 @@ Not planned, because they would need a company server, a call center or third pa
 - [x] Temporary circles (1 day, 1 week, 2 weeks)
 - [ ] Friend requests, multiple circles and groups
 - [x] Opt-in weekly circle leaderboards (driving, distance)
-- [ ] Badges
+- [x] Weekly badges (safe driving, long distances, explorer)
 - [ ] Liquid Glass UI polish, accessibility, localization (DE, EN)
 - [ ] Multi-device support and key backup
 - [ ] Owner succession if the owner's device is lost

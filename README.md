@@ -69,7 +69,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- "Not arrived yet" alerts, badges, opt-in history with your own retention period, opt-in SOS and check-in
+- "Not arrived yet" alerts, driving detection with motion sensors, English localization, opt-in history with your own retention period, opt-in SOS and check-in
 - Drive detection with live speed (km/h)
 - Adaptive tracking to keep battery drain low
 

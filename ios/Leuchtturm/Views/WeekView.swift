@@ -41,6 +41,27 @@ struct WeekView: View {
                     Text("100 Punkte pro Fahrt, Abzug für starkes Bremsen, schnelles Beschleunigen und über 130 km/h. Nach Strecke gewichtet. Nur wer „Fahrten teilen“ eingeschaltet hat.")
                 }
 
+                let badges = Badge.earned(
+                    trips: trips, distances: Dictionary(walkers.map { ($0.member.id, $0.meters) }, uniquingKeysWith: max)
+                )
+                if !badges.isEmpty {
+                    Section("Abzeichen der Woche") {
+                        ForEach(badges) { badge in
+                            HStack(spacing: 12) {
+                                Text(Self.badgeEmoji(badge.kind)).font(.title2).frame(width: 34)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(Self.badgeTitle(badge.kind)).font(.headline)
+                                    Text(member(badge.deviceID)?.isMe == true ? String(localized: "Du") : member(badge.deviceID)?.name ?? "")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Avatar(name: member(badge.deviceID)?.name, id: badge.deviceID, size: 30)
+                            }
+                        }
+                    }
+                }
+
                 if !walkers.isEmpty {
                     Section {
                         ForEach(Array(walkers.enumerated()), id: \.element.member.id) { rank, entry in
@@ -106,6 +127,22 @@ struct WeekView: View {
             if meters > 0 { entries.append((member, meters)) }
         }
         walkers = entries.sorted { $0.1 > $1.1 }.map { (member: $0.0, meters: $0.1) }
+    }
+
+    static func badgeEmoji(_ kind: Badge.Kind) -> String {
+        switch kind {
+        case .smoothDriver: "🛡️"
+        case .roadTripper: "🛣️"
+        case .explorer: "🧭"
+        }
+    }
+
+    static func badgeTitle(_ kind: Badge.Kind) -> String {
+        switch kind {
+        case .smoothDriver: String(localized: "Sicher unterwegs: 3 Fahrten mit 100 Punkten")
+        case .roadTripper: String(localized: "Weite Wege: über 100 km gefahren")
+        case .explorer: String(localized: "Entdecker: über 10 km unterwegs")
+        }
     }
 
     static func medal(_ rank: Int) -> String {

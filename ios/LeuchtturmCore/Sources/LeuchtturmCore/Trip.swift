@@ -207,6 +207,35 @@ public struct DriverStats: Sendable, Hashable, Identifiable {
     }
 }
 
+/// A small reward in the weekly view, computed on each device from the
+/// week's shared trips and distances.
+public struct Badge: Sendable, Hashable, Identifiable {
+    public var id: String { "\(deviceID)/\(kind.rawValue)" }
+    public enum Kind: String, Sendable, CaseIterable {
+        /// Three or more trips this week, all with 100 points.
+        case smoothDriver
+        /// 100 km or more driven.
+        case roadTripper
+        /// 10 km or more on the way, from the history.
+        case explorer
+    }
+
+    public let deviceID: String
+    public let kind: Kind
+
+    public static func earned(trips: [Trip], distances: [String: Double]) -> [Badge] {
+        var out: [Badge] = []
+        for (deviceID, trips) in Dictionary(grouping: trips, by: \.deviceID) {
+            if trips.count >= 3, trips.allSatisfy({ $0.score == 100 }) { out.append(Badge(deviceID: deviceID, kind: .smoothDriver)) }
+            if trips.reduce(0, { $0 + $1.distance }) >= 100_000 { out.append(Badge(deviceID: deviceID, kind: .roadTripper)) }
+        }
+        for (deviceID, meters) in distances where meters >= 10_000 {
+            out.append(Badge(deviceID: deviceID, kind: .explorer))
+        }
+        return out.sorted { ($0.kind.rawValue, $0.deviceID) < ($1.kind.rawValue, $1.deviceID) }
+    }
+}
+
 private struct TripPayload: Codable {
     let s: Double
     let e: Double

@@ -69,6 +69,16 @@ struct TripTests {
         #expect(board.last?.score == 88 && board.last?.trips == 2)
     }
 
+    @Test func badgesAreEarned() {
+        func trip(_ device: String, km: Double, brakes: Int = 0) -> Trip {
+            Trip(id: UUID().uuidString, deviceID: device, start: start, end: start + 600, distance: km * 1000,
+                 topSpeed: 20, hardBrakes: brakes, rapidAccelerations: 0, route: [])
+        }
+        let trips = [trip("ben", km: 40), trip("ben", km: 40), trip("ben", km: 30), trip("clara", km: 5, brakes: 1)]
+        let badges = Badge.earned(trips: trips, distances: ["anna": 12_000, "clara": 3_000])
+        #expect(Set(badges.map(\.id)) == ["ben/smoothDriver", "ben/roadTripper", "anna/explorer"])
+    }
+
     @Test func speedTravelsWithTheLocation() throws {
         let fast = try #require(SharedLocation(latitude: 53.5, longitude: 9.9, accuracy: 5, timestamp: start, speed: 13.94))
         let key = CircleCrypto.newCircleKey()

@@ -43,6 +43,7 @@ final class SimulatedWorld {
     private var home: CLLocationCoordinate2D?
     private var lastMoved: [String: Date] = [:]
     private var lastPositions: [String: SharedLocation] = [:]
+    private var placeTrackers: [String: PlaceTracker] = [:]
     /// People who currently share only an approximate area.
     var inFog: Set<String> = []
     /// Notes the people already answered.
@@ -146,8 +147,7 @@ final class SimulatedWorld {
             default:
                 (north, east) = (-300, -1100)
             }
-            let latitude = home.latitude + north / 111_320
-            let longitude = home.longitude + east / (111_320 * cos(home.latitude * .pi / 180))
+            let (latitude, longitude) = Self.offset(home, north: north, east: east)
             // Anna's battery drains, Ben charges in the car, Clara runs low.
             let (battery, charging): (Int, Bool) = switch index {
             case 0: (max(20, 82 - Int(t / 120)), false)
@@ -162,7 +162,43 @@ final class SimulatedWorld {
             lastPositions[person.id] = position
             let shared = inFog.contains(person.id) ? position.inFog(radius: 1000) ?? position : position
             try? await person.client.shareLocation(shared)
+            if !inFog.contains(person.id) { await watchPlaces(of: person, at: position) }
         }
+    }
+
+    /// Like the app does on a real iPhone: check the person's places and
+    /// tell the circle about arrivals and departures.
+    private func watchPlaces(of person: Person, at position: SharedLocation) async {
+        for circle in (try? await person.client.circles()) ?? [] {
+            guard let places = try? await person.client.circle(circle.ref).places else { continue }
+            var tracker = placeTrackers[person.id + circle.id] ?? PlaceTracker()
+            let events = tracker.update(latitude: position.latitude, longitude: position.longitude, accuracy: position.accuracy, places: places)
+            placeTrackers[person.id + circle.id] = tracker
+            for event in events {
+                switch event {
+                case let .arrived(place): _ = try? await person.client.send(.arrival, text: place.name, in: circle.ref)
+                case let .left(place): _ = try? await person.client.send(.departure, text: place.name, in: circle.ref)
+                }
+            }
+        }
+    }
+
+    /// Anna's café and Ben's office lie on their routes, so arrivals and
+    /// departures happen within a few minutes.
+    func addDemoPlaces(circleID: String, near location: CLLocation?) async throws {
+        let home = self.home ?? location?.coordinate ?? Self.fallbackHome
+        self.home = home
+        for (person, name, emoji, north, east, radius) in [
+            (people[0], "Café am See", "☕️", 850.0, 450.0, 120), (people[1], "Büro", "💼", 600.0, 700.0, 200),
+        ] {
+            guard let ref = try await person.client.circles().first(where: { $0.id == circleID })?.ref else { continue }
+            let (latitude, longitude) = Self.offset(home, north: north, east: east)
+            try await person.client.addPlace(name: name, emoji: emoji, latitude: latitude, longitude: longitude, radius: radius, in: ref)
+        }
+    }
+
+    static func offset(_ home: CLLocationCoordinate2D, north: Double, east: Double) -> (Double, Double) {
+        (home.latitude + north / 111_320, home.longitude + east / (111_320 * cos(home.latitude * .pi / 180)))
     }
 
     /// The people in each circle, by circle ID.

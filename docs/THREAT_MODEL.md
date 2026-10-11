@@ -49,6 +49,8 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 | Someone not admitted shares a location | Only devices in the signed roster appear on the map | M2 |
 | Last position stays behind | Pausing, leaving and removal delete the location record | M2 |
 | A member wants privacy for a while without leaving | Fog mode: only a grid cell of 2 to 50 km is shared; the exact position stays on the device | M3 |
+| Member plants a fake place or fakes an arrival | Places and arrival notes are signed by the creating or arriving device | M4 |
+| Apple learns where "Home" is | Places are encrypted; geofences are evaluated on the device | M4 |
 | Member sends a note in someone else's name | Notes are signed by the sending device and checked against its member record | M3 |
 | Someone not admitted posts notes | Only notes from roster devices are shown or notified | M3 |
 | Old notes replayed | Note ID is bound into the encryption and the signature; readers notify each ID once and ignore notes older than 7 days | M3 |

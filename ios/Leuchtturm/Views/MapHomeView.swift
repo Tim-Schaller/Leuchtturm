@@ -10,6 +10,7 @@ enum HomeSheet: Identifiable {
     case join
     case invite(CircleRef)
     case fog
+    case addPlace(CircleRef)
     #if DEBUG
     case simulation
     #endif
@@ -21,6 +22,7 @@ enum HomeSheet: Identifiable {
         case .join: "join"
         case let .invite(ref): "invite-\(ref.circleID)"
         case .fog: "fog"
+        case let .addPlace(ref): "place-\(ref.circleID)"
         #if DEBUG
         case .simulation: "simulation"
         #endif
@@ -55,6 +57,14 @@ struct MapHomeView: View {
 
     var body: some View {
         Map(position: $camera) {
+            ForEach(details?.places ?? []) { place in
+                MapCircle(center: place.coordinate, radius: Double(place.radius))
+                    .foregroundStyle(Color.accentColor.opacity(0.12))
+                    .stroke(Color.accentColor.opacity(0.5), lineWidth: 1.5)
+                Annotation(place.name, coordinate: place.coordinate) {
+                    PlaceBadge(emoji: place.emoji)
+                }
+            }
             // People in fog: only the approximate area.
             ForEach(details?.members ?? []) { member in
                 if !member.isMe, let location = member.location, let radius = location.fogRadius {

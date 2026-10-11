@@ -14,6 +14,10 @@ public struct CircleNote: Sendable, Hashable, Identifiable {
         case text
         case checkIn
         case morning
+        /// Arrived at a place; `text` is the place's name.
+        case arrival
+        /// Left a place; `text` is the place's name.
+        case departure
     }
 
     public let id: String

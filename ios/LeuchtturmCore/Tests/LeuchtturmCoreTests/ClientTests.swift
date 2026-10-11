@@ -375,6 +375,50 @@ struct ClientTests {
         #expect(names == ["note-\(fresh.id)"])
     }
 
+    @Test func placesAreSharedSignedAndSurviveKeyRotation() async throws {
+        let alice = try client("alice", "Alice")
+        let bob = try client("bob", "Bob")
+        let carol = try client("carol", "Carol")
+        let ref = try await alice.createCircle(name: "Familie")
+        let link = try await alice.createInvite(for: ref)
+        let bobRef = try await bob.join(link)
+        _ = try await carol.join(link)
+        _ = try await alice.circle(ref)
+
+        let home = try await alice.addPlace(name: "Zuhause", emoji: "🏠", latitude: 53.55, longitude: 9.99, radius: 150, in: ref)
+        #expect(try await bob.circle(bobRef).places == [home])
+        for record in cloud.rawRecords(circleID: ref.circleID) where record.type == "Place" {
+            for case let .bytes(bytes) in record.fields.values {
+                #expect(bytes.range(of: Data("Zuhause".utf8)) == nil)
+            }
+        }
+        await #expect(throws: ClientError.invalidPlace) {
+            try await bob.addPlace(name: "", emoji: "🏠", latitude: 0, longitude: 0, radius: 150, in: bobRef)
+        }
+
+        // Bob forges a place "by Alice": ignored.
+        let key = try #require(bob.loadKey(circleID: ref.circleID, epoch: 1))
+        let fake = try #require(CirclePlace(id: CircleCrypto.newCircleID(), creatorID: alice.deviceID, name: "Falle", emoji: "⚠️", latitude: 1, longitude: 1, radius: 100))
+        let blob = try CircleCrypto.sealPlace(fake, key: key, epoch: 1, circleID: ref.circleID)
+        let sig = try bob.identity.sign(CircleCrypto.placeRecordStatement(circleID: ref.circleID, placeID: fake.id, creatorID: alice.deviceID, blob: blob))
+        try await cloud.backend(for: "bob").modify(bobRef, save: [StoredRecord(type: "Place", name: "place-\(fake.id)", fields: [
+            "from": .string(alice.deviceID), "blob": .bytes(blob), "sig": .bytes(sig),
+        ])], delete: [], removeParticipants: [])
+        #expect(try await carol.circle(bobRef).places == [home])
+
+        // After removing Carol the key rotates; Alice re-encrypts her place
+        // and a newcomer with only the new key can read it.
+        try await alice.remove(userID: "carol", from: ref)
+        _ = try await alice.circle(ref)
+        let dave = try client("dave", "Dave")
+        let daveRef = try await dave.join(try await alice.createInvite(for: ref))
+        _ = try await alice.circle(ref)
+        #expect(try await dave.circle(daveRef).places.map(\.name) == ["Zuhause"])
+
+        try await bob.deletePlace(home.id, in: bobRef)
+        #expect(try await alice.circle(ref).places.isEmpty)
+    }
+
     @Test func namesAreValidated() async throws {
         let alice = try client("alice", "Alice")
         await #expect(throws: ClientError.invalidName) { try await alice.createCircle(name: "   ") }

@@ -80,6 +80,7 @@ struct PeopleSheet: View {
                     }
                 }
                 NewsSection(details: details, onShowPlace: onShowPlace)
+                PlacesSection(details: details, sheet: $sheet, onShowPlace: onShowPlace)
                 Section {
                     Button("Einchecken: „Ich bin hier“", systemImage: "mappin.and.ellipse") {
                         Task { await model.send(.checkIn, in: circle.ref) }
@@ -135,6 +136,8 @@ struct PeopleSheet: View {
             InviteSheet(ref: ref, circleName: details?.name)
         case .fog:
             FogSheet()
+        case let .addPlace(ref):
+            AddPlaceSheet(ref: ref)
         #if DEBUG
         case .simulation:
             SimulationView { receivedInvite = $0 }

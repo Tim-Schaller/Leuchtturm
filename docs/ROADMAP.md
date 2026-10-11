@@ -62,9 +62,10 @@ Not planned, because they would need a company server, a call center or third pa
 - [x] Fog mode: approximate area for a limited time
 
 ## M4: Places
-- [ ] Create and share places (encrypted)
-- [ ] On-device geofence evaluation
-- [ ] Arrival and departure notifications via encrypted push + Notification Service Extension
+- [x] Create and share places (encrypted, signed, re-encrypted after key rotation)
+- [x] On-device arrival and departure detection with a leaving margin
+- [x] Arrival and departure notifications (signed notes, silent push, local notification)
+- [ ] Region monitoring (CLMonitor) so arrivals are detected even while iOS pauses location updates
 - [ ] No-show alerts and place suggestions
 
 ## M5: History

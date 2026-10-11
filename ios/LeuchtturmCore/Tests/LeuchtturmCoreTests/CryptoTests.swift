@@ -266,3 +266,31 @@ struct LocationTests {
         #expect(opened.location == a)
     }
 }
+
+struct PlaceTrackerTests {
+    let school = CirclePlace(id: "school", creatorID: "x", name: "Schule", emoji: "🏫", latitude: 53.55, longitude: 9.99, radius: 150)!
+
+    /// A position `meters` north of the school.
+    func step(_ tracker: inout PlaceTracker, _ meters: Double, accuracy: Double = 10) -> [PlaceTracker.Event] {
+        tracker.update(latitude: 53.55 + meters / 111_320, longitude: 9.99, accuracy: accuracy, places: [school])
+    }
+
+    @Test func arrivalAndDepartureWithMargin() {
+        var tracker = PlaceTracker()
+        #expect(step(&tracker, 1000).isEmpty)
+        #expect(step(&tracker, 100) == [.arrived(school)])
+        #expect(step(&tracker, 120).isEmpty)
+        #expect(step(&tracker, 180).isEmpty) // within the leaving margin
+        #expect(step(&tracker, 300) == [.left(school)])
+    }
+
+    @Test func noArrivalWhenAlreadyThereOrInaccurate() {
+        var tracker = PlaceTracker()
+        #expect(step(&tracker, 0).isEmpty) // first look: already there
+        #expect(tracker.inside == ["school"])
+        var other = PlaceTracker()
+        _ = step(&other, 1000)
+        #expect(step(&other, 0, accuracy: 500).isEmpty) // too inaccurate to tell
+    }
+}
+

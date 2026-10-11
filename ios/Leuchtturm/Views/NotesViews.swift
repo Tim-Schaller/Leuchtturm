@@ -23,6 +23,10 @@ enum NoteText {
             return String(localized: "hat eingecheckt 📍")
         case .morning:
             return String(localized: "hat den Tag begonnen ☀️")
+        case .arrival:
+            return String(localized: "ist bei „\(note.text)“ angekommen")
+        case .departure:
+            return String(localized: "hat „\(note.text)“ verlassen")
         }
     }
 

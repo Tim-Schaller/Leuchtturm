@@ -77,6 +77,15 @@ struct SimulationTests {
         #expect(details.notes.contains { $0.senderID == me && $0.text == "❤️" })
     }
 
+    @Test func demoCircleHasPlaces() async throws {
+        let (model, _) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        let details = try #require(await model.mapDetails(for: ref))
+        #expect(Set(details.places.map(\.name)) == ["Zuhause", "Café am See", "Büro"])
+        #expect(details.members.count == 4)
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

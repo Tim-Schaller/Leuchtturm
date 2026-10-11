@@ -114,6 +114,18 @@ Readers accept notes only from devices in the signed roster (or their own), chec
 
 Notifications are posted locally by the receiving app after it fetched and decrypted the note. Nothing readable goes through Apple's push service.
 
+### `Place` (record name `place-<placeID>`)
+
+| Field | Content |
+|-------|---------|
+| `from` | device ID of the member who created it |
+| `blob` | encrypted `{"n": name, "e": emoji, "lat", "lon", "r": radius in meters (50 to 2000)}` |
+| `sig` | Ed25519 by the **creating device** over `ctx("leuchtturm/v1/place-record", circleID, placeID, from) ‖ blob` |
+
+Readers accept places only from roster devices and check `sig`. After a key rotation each creator re-encrypts its own places under the new key, so members who join later can read them. Places of a member who leaves or is removed disappear with them. The app lets the creator and the owner delete a place; iCloud cannot enforce that.
+
+**Arrivals and departures** are detected on each member's own device (`PlaceTracker`): inside when the position is within the radius, outside again only beyond the radius plus max(50 m, accuracy), and nothing while the accuracy is worse than the radius. The first look at a place only records the state. A transition is sent as a `Note` of kind `arrival` or `departure` with the place name; the other members are woken by the silent push and notify locally. Nothing is detected while fog mode is on. Contexts: `ctx("leuchtturm/v1/place", circleID, placeID)`.
+
 ## Push
 
 Each device saves two `CKDatabaseSubscription`s (private and shared database) with `shouldSendContentAvailable` only: a silent push without title, text or record data. When it arrives, iOS wakes the app briefly; the app loads its circles, decrypts and verifies new notes and posts local notifications. iOS throttles silent pushes, so delivery can be delayed; the app also checks for news when it uploads its location in the background and every 30 seconds while the map is open. CloudKit does not push a change to the device that made it.

@@ -45,6 +45,8 @@ public struct CircleDetails: Sendable, Identifiable, Hashable {
     public let unverifiedUserIDs: [String]
     /// Reactions, notes and check-ins of the last 7 days, newest first.
     public let notes: [CircleNote]
+    /// Places of the circle, by name.
+    public let places: [CirclePlace]
 }
 
 public enum ClientError: Error, Sendable, Equatable {
@@ -64,6 +66,8 @@ public enum ClientError: Error, Sendable, Equatable {
     case ownerMustDelete
     /// A note is too long.
     case invalidNote
+    /// A place has no name, a bad emoji or an unsupported radius.
+    case invalidPlace
 }
 
 enum RecordType {
@@ -73,6 +77,7 @@ enum RecordType {
     static let invite = "Invite"
     static let location = "Location"
     static let note = "Note"
+    static let place = "Place"
 }
 
 enum RecordName {
@@ -84,6 +89,8 @@ enum RecordName {
     static let locationPrefix = "loc-"
     static func note(_ id: String) -> String { "note-\(id)" }
     static let notePrefix = "note-"
+    static func place(_ id: String) -> String { "place-\(id)" }
+    static let placePrefix = "place-"
 }
 
 /// High-level client. Everything is encrypted or signed here, before it
@@ -423,6 +430,52 @@ public actor LeuchtturmClient {
         return notes.sorted { $0.timestamp > $1.timestamp }
     }
 
+    // MARK: Places
+
+    @discardableResult
+    public func addPlace(
+        name: String, emoji: String, latitude: Double, longitude: Double, radius: Int, in ref: CircleRef
+    ) async throws -> CirclePlace {
+        guard let place = CirclePlace(
+            id: CircleCrypto.newCircleID(), creatorID: deviceID, name: name, emoji: emoji,
+            latitude: latitude, longitude: longitude, radius: radius
+        ) else { throw ClientError.invalidPlace }
+        let p = try parse(try await backend.snapshot(of: ref))
+        guard let key = ensureKey(p) else { throw ClientError.missingCircleKey }
+        try await backend.modify(ref, save: [try placeRecord(place, circleID: p.circleID, epoch: p.epoch, key: key)], delete: [], removeParticipants: [])
+        return place
+    }
+
+    /// Deletes a place. The app offers this to its creator and the owner;
+    /// iCloud cannot enforce that (any member can delete records).
+    public func deletePlace(_ id: String, in ref: CircleRef) async throws {
+        try await backend.modify(ref, save: [], delete: [RecordName.place(id)], removeParticipants: [])
+    }
+
+    private nonisolated func placeRecord(_ place: CirclePlace, circleID: String, epoch: Int64, key: SymmetricKey) throws -> StoredRecord {
+        let blob = try CircleCrypto.sealPlace(place, key: key, epoch: epoch, circleID: circleID)
+        let sig = try identity.sign(CircleCrypto.placeRecordStatement(circleID: circleID, placeID: place.id, creatorID: deviceID, blob: blob))
+        return StoredRecord(type: RecordType.place, name: RecordName.place(place.id), fields: [
+            "from": .string(deviceID), "blob": .bytes(blob), "sig": .bytes(sig),
+        ])
+    }
+
+    /// Places created by admitted members (or this device) with a valid signature.
+    private nonisolated func verifiedPlaces(_ p: Parsed, roster: Set<String>) -> [(place: CirclePlace, record: StoredRecord)] {
+        p.places.compactMap { r in
+            let creator = r.string("from")
+            let id = String(r.name.dropFirst(RecordName.placePrefix.count))
+            guard let m = p.members[creator], roster.contains(creator) || creator == deviceID,
+                  CircleCrypto.verifySignature(
+                      r.bytes("sig"), publicKey: m.signingKey,
+                      message: CircleCrypto.placeRecordStatement(circleID: p.circleID, placeID: id, creatorID: creator, blob: r.bytes("blob"))
+                  ),
+                  let place = try? CircleCrypto.openPlace(r.bytes("blob"), id: id, creatorID: creator, circleID: p.circleID, keyForEpoch: keyLookup(p.circleID))
+            else { return nil }
+            return (place, r)
+        }
+    }
+
     // MARK: Account
 
     /// Deletes owned circles, leaves all others and wipes local keys.
@@ -465,6 +518,8 @@ public actor LeuchtturmClient {
         let locations: [String: StoredRecord]
         /// Note records (not verified yet).
         let notes: [StoredRecord]
+        /// Place records (not verified yet).
+        let places: [StoredRecord]
         var circleID: String { snapshot.ref.circleID }
         var ownerDeviceID: String { DeviceID.derive(signingPublicKey: ownerSigningKey) }
     }
@@ -507,9 +562,11 @@ public actor LeuchtturmClient {
             locations[String(r.name.dropFirst(RecordName.locationPrefix.count))] = r
         }
         let notes = snapshot.records.filter { $0.type == RecordType.note && $0.name.hasPrefix(RecordName.notePrefix) }
+        let places = snapshot.records.filter { $0.type == RecordType.place && $0.name.hasPrefix(RecordName.placePrefix) }
         return Parsed(
             snapshot: snapshot, ownerSigningKey: ownerSigning, ownerAgreementKey: ownerAgreement,
-            epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations, notes: notes
+            epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations, notes: notes,
+            places: places
         )
     }
 
@@ -563,7 +620,7 @@ public actor LeuchtturmClient {
                     newRoster.remove(m.deviceID)
                     delete.append(m.deviceID)
                     if p.locations[m.deviceID] != nil { delete.append(RecordName.location(m.deviceID)) }
-                    delete += p.notes.filter { $0.string("from") == m.deviceID }.map(\.name)
+                    delete += (p.notes + p.places).filter { $0.string("from") == m.deviceID }.map(\.name)
                 } else if !newRoster.contains(m.deviceID), hasValidInvite(m, p) {
                     newRoster.insert(m.deviceID)
                 }
@@ -593,6 +650,15 @@ public actor LeuchtturmClient {
                 || mine?.inviteID != (admission?.inviteID ?? "")
             if let name = myName, stale || forceCardUpdate {
                 save.append(try memberRecord(p.circleID, epoch: p.epoch, key: key, name: name, admission: admission))
+            }
+        }
+
+        // My places under an older key: re-encrypt, so members who joined
+        // after a key rotation can read them.
+        let places = verifiedPlaces(p, roster: roster)
+        if let key {
+            for (place, record) in places where place.creatorID == deviceID && CircleCrypto.contentEpoch(record.bytes("blob")) != p.epoch {
+                save.append(try placeRecord(place, circleID: p.circleID, epoch: p.epoch, key: key))
             }
         }
 
@@ -629,7 +695,9 @@ public actor LeuchtturmClient {
         }
         return CircleDetails(
             ref: ref, name: meta?.name, epoch: p.epoch, isOwner: iAmOwner, hasKey: key != nil,
-            members: members, unverifiedUserIDs: unverified, notes: verifiedNotes(p, roster: roster)
+            members: members, unverifiedUserIDs: unverified, notes: verifiedNotes(p, roster: roster),
+            places: places.map(\.place).filter { !delete.contains(RecordName.place($0.id)) }
+                .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
         )
     }
 

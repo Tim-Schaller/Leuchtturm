@@ -23,6 +23,7 @@ final class AppModel {
         static let morningGreeting = "morningGreeting"
         static let lastMorningGreeting = "lastMorningGreeting"
         static let fog = "fog"
+        static let placeTracker = "placeTracker"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -72,6 +73,9 @@ final class AppModel {
     @ObservationIgnored private var newsSince = Date()
     @ObservationIgnored private var lastMorningGreeting: Date?
     @ObservationIgnored private let notificationPresenter = NotificationPresenter()
+    /// Places of every circle, from the last time each circle was loaded.
+    @ObservationIgnored private var knownPlaces: [String: (ref: CircleRef, places: [CirclePlace])] = [:]
+    @ObservationIgnored private var placeTracker = PlaceTracker()
 
     /// Off in unit tests, which must not start CoreLocation or ask for notifications.
     private let usesDeviceServices: Bool
@@ -113,12 +117,17 @@ final class AppModel {
         if !isSimulation { defaults.set(newsSince, forKey: Keys.newsSince) }
         sendsMorningGreeting = !isSimulation && defaults.bool(forKey: Keys.morningGreeting)
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
+        knownPlaces = [:]
+        placeTracker = isSimulation ? PlaceTracker() : defaults.data(forKey: Keys.placeTracker)
+            .flatMap { try? JSONDecoder().decode(PlaceTracker.self, from: $0) } ?? PlaceTracker()
         fog = isSimulation ? nil : defaults.data(forKey: Keys.fog).flatMap { try? JSONDecoder().decode(Fog.self, from: $0) }
         phase = .onboarding
         if !displayName.isEmpty, let client = try? makeClient(name: displayName) {
             self.client = client
             phase = .ready
             subscribe(client)
+            // Also after a background relaunch: load places and news.
+            Task { await checkForNews() }
         }
         updateTracking()
     }
@@ -251,6 +260,7 @@ final class AppModel {
 
     private func share(_ location: CLLocation) async {
         guard isSharingLocation, let client, (0 ... 1000).contains(location.horizontalAccuracy) else { return }
+        await watchPlaces(location)
         let inBackground = UIApplication.shared.applicationState != .active
         let policy: SharePolicy = inBackground ? .background : .foreground
         let device = UIDevice.current
@@ -326,6 +336,31 @@ final class AppModel {
         return true
     }
 
+    // MARK: Places
+
+    /// Arrivals and departures are detected here, on the device, and told
+    /// to the circle as notes. Not while in fog: that would reveal the place.
+    private func watchPlaces(_ location: CLLocation) async {
+        guard activeFog == nil, let client, !knownPlaces.isEmpty else { return }
+        let events = placeTracker.update(
+            latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
+            accuracy: location.horizontalAccuracy, places: knownPlaces.values.flatMap(\.places)
+        )
+        if !isSimulation {
+            UserDefaults.standard.set(try? JSONEncoder().encode(placeTracker), forKey: Keys.placeTracker)
+        }
+        for event in events {
+            let (kind, place): (CircleNote.Kind, CirclePlace) = switch event {
+            case let .arrived(place): (.arrival, place)
+            case let .left(place): (.departure, place)
+            }
+            guard let ref = knownPlaces.values.first(where: { $0.places.contains(place) })?.ref,
+                  let note = try? await client.send(kind, text: place.name, in: ref)
+            else { continue }
+            markSeen([note.id])
+        }
+    }
+
     // MARK: Fog
 
     func startFog(radius: Int, hours: Double) async {
@@ -372,6 +407,7 @@ final class AppModel {
     /// Notifies once about each new note from others that is for me or for
     /// everyone.
     func deliverNews(_ details: CircleDetails) {
+        knownPlaces[details.id] = (details.ref, details.places)
         guard let me = client?.deviceID else { return }
         let fresh = details.notes.filter {
             $0.senderID != me && ($0.recipientID == nil || $0.recipientID == me)
@@ -462,10 +498,14 @@ final class AppModel {
         guard let ref = await createCircle(name: "Familie"),
               let link = await run({ try await $0.createInvite(for: ref) })
         else { return }
+        let here = tracker.location
+        let home = here?.coordinate ?? SimulatedWorld.fallbackHome
+        await run { try await $0.addPlace(name: "Zuhause", emoji: "🏠", latitude: home.latitude, longitude: home.longitude, radius: 150, in: ref) }
         await simulate { world in
             for person in world.people {
                 try await world.join(person, using: link)
             }
+            try await world.addDemoPlaces(circleID: ref.circleID, near: here)
         }
     }
 
@@ -527,6 +567,7 @@ final class AppModel {
             case .tampered: return "Die Kreisdaten wurden verändert und sind nicht vom Besitzer signiert."
             case .ownerMustDelete: return "Als Besitzer kannst du den Kreis nicht verlassen, nur löschen."
             case .invalidNote: return "Die Nachricht ist zu lang."
+            case .invalidPlace: return "Bitte gib dem Ort einen Namen mit höchstens \(CirclePlace.maxNameLength) Zeichen."
             }
         case is ProtocolError:
             return "Die Daten konnten nicht entschlüsselt oder geprüft werden."

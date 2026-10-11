@@ -23,6 +23,8 @@ public struct CircleNote: Sendable, Hashable, Identifiable {
         case sos
         /// All clear after an SOS.
         case safe
+        /// The sender's battery is almost empty; `text` is the percentage.
+        case lowBattery
     }
 
     public let id: String

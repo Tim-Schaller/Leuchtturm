@@ -29,6 +29,7 @@ final class AppModel {
         static let sharesTrips = "sharesTrips"
         static let tripDetector = "tripDetector"
         static let detectsCrashes = "detectsCrashes"
+        static let lowBatteryWarned = "lowBatteryWarned"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -305,6 +306,7 @@ final class AppModel {
         let device = UIDevice.current
         let battery = device.batteryLevel >= 0 ? Int((device.batteryLevel * 100).rounded()) : nil
         let charging = device.batteryState == .charging || device.batteryState == .full
+        await warnIfBatteryLow(battery, charging: charging)
         guard policy.shouldShare(location, after: lastShared),
               let exact = SharedLocation(
                   location, battery: battery, isCharging: charging,
@@ -445,6 +447,23 @@ final class AppModel {
             saveTripDetector()
             await run { try await $0.deleteTrips() }
         }
+    }
+
+    // MARK: Battery
+
+    static let lowBatteryLevel = 15
+
+    /// Tells the circles once per discharge when the battery gets low.
+    private func warnIfBatteryLow(_ level: Int?, charging: Bool) async {
+        guard let level, !isSimulation else { return }
+        let defaults = UserDefaults.standard
+        if charging || level > 30 {
+            defaults.set(false, forKey: Keys.lowBatteryWarned)
+            return
+        }
+        guard level <= Self.lowBatteryLevel, !defaults.bool(forKey: Keys.lowBatteryWarned) else { return }
+        defaults.set(true, forKey: Keys.lowBatteryWarned)
+        for circle in circles { await send(.lowBattery, text: "\(level)", in: circle.ref) }
     }
 
     // MARK: SOS and crash detection

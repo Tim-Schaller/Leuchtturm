@@ -31,7 +31,7 @@ History: M1 was first built with a self-hosted Go server (EU, anonymous device k
 - [x] Push: silent CloudKit database subscriptions wake the app, which decrypts on the device and notifies locally
 - [ ] Verify push delivery with two iCloud accounts
 - [x] Battery level and charging state, encrypted with the location
-- [ ] Low-battery alert
+- [x] Low-battery alert (once per discharge, at 15 %)
 - [ ] Pause sharing per circle
 - [ ] Smarter tracking: visits, geofence wake-ups, presence-based frequency
 

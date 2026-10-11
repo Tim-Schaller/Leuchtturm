@@ -40,6 +40,8 @@ enum NoteText {
             return note.text.isEmpty ? String(localized: "🆘 braucht Hilfe!") : String(localized: "🆘 braucht Hilfe: \(note.text)")
         case .safe:
             return String(localized: "✅ ist in Sicherheit")
+        case .lowBattery:
+            return String(localized: "hat nur noch \(note.text) % Akku 🪫")
         }
     }
 

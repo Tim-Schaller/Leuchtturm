@@ -150,6 +150,10 @@ Opt-in ("Fahrten teilen"), off by default.
 
 `TripDetector` runs on the driver's device: a trip starts after two samples at 25 km/h or more within a minute and ends three minutes after the last sample at 4 m/s or more; trips under 1 km or 2 minutes are dropped. A hard brake is a deceleration of 3.5 m/s² or more, a rapid acceleration 3 m/s² or more (at most one event per 10 s). Score per trip: 100 − 8 per hard brake − 5 per rapid acceleration − 10 above 130 km/h. While a trip is running and trips are shared, the location record carries the speed (`spd`). The leaderboard is computed on each reader's device from the trips of the last 7 days (distance-weighted score). The driver's device deletes its trips after 30 days, all of them when trip sharing is turned off, and on leaving. Context: `ctx("leuchtturm/v1/trip", circleID, tripID)`.
 
+### Low battery
+
+When the device's battery drops to 15 % or less without charging, it sends a `Note` of kind `lowBattery` (text: the percentage) to every circle, once per discharge (again after charging or above 30 %).
+
 ### SOS and crash detection
 
 An SOS is a `Note` of kind `sos` to every circle, with the exact position (also in fog mode) and optionally a reason; `safe` gives the all-clear. Receivers post a time-sensitive local notification. Crash detection runs in `TripDetector` on the driver's device: from 40 km/h or more to standstill within about a second (deceleration of 12 m/s² or more, far beyond braking). The app then asks "Alles okay?" in the app and as a time-sensitive notification with "Mir geht's gut" and "Hilfe rufen"; without an answer it sends an SOS with the reason "Möglicher Unfall erkannt" after 60 seconds. There is no call center; the SOS sheet offers a call to 112.

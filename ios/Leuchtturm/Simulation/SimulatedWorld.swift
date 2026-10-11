@@ -48,6 +48,8 @@ final class SimulatedWorld {
     private var paths: [String: [HistoryDay.Point]] = [:]
     /// People who currently share only an approximate area.
     var inFog: Set<String> = []
+    /// People who already warned about their battery.
+    private var batteryWarned: Set<String> = []
     /// Notes the people already answered.
     private var answered: Set<String> = []
 
@@ -152,6 +154,9 @@ final class SimulatedWorld {
             ) else { continue }
             lastMoved[person.id] = now
             lastPositions[person.id] = position
+            if battery <= 15, !charging, batteryWarned.insert(person.id).inserted {
+                try? await send(.lowBattery, text: "\(battery)", from: person)
+            }
             let shared = inFog.contains(person.id) ? position.inFog(radius: 1000) ?? position : position
             var history: HistoryUpdate?
             if index < 2 && !inFog.contains(person.id) {

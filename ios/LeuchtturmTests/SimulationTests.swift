@@ -132,6 +132,17 @@ struct SimulationTests {
         #expect(model.sosSentAt == nil)
     }
 
+    @Test func claraWarnsAboutHerBattery() async throws {
+        let (model, world) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        _ = await model.mapDetails(for: ref)
+        let details = try #require(await model.mapDetails(for: ref))
+        let clara = world.people[2].client.deviceID
+        let warnings = details.notes.filter { $0.kind == .lowBattery && $0.senderID == clara }
+        #expect(warnings.map(\.text) == ["9"])
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

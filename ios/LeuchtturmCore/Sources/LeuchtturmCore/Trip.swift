@@ -75,10 +75,21 @@ public struct TripDetector: Sendable, Codable, Equatable {
 
     private var running: Running?
     private var pendingFast: Date?
+    private var crash: Date?
 
     public init() {}
 
     public var isDriving: Bool { running != nil }
+
+    /// When a possible crash was seen (and forgets it): from 40 km/h or
+    /// more to standstill in about a second, far beyond braking.
+    public mutating func takeCrash() -> Date? {
+        defer { crash = nil }
+        return crash
+    }
+
+    static let crashFromSpeed = 11.0
+    static let crashDeceleration = 12.0
 
     /// Feeds one sample. Returns a trip when one just ended. `speed` is in
     /// m/s; pass a negative value if unknown.
@@ -111,6 +122,9 @@ public struct TripDetector: Sendable, Codable, Equatable {
         let speed = speed >= 0 ? speed : step / dt
         r.distance += step
         r.topSpeed = max(r.topSpeed, speed)
+        if dt <= 1.5, r.lastSpeed >= Self.crashFromSpeed, speed <= 1.5, (r.lastSpeed - speed) / dt >= Self.crashDeceleration {
+            crash = time
+        }
         if dt <= 10, time.timeIntervalSince(r.lastEvent) >= 10 {
             let acceleration = (speed - r.lastSpeed) / dt
             if acceleration <= Self.hardBrake {

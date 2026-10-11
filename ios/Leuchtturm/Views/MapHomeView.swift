@@ -11,6 +11,7 @@ enum HomeSheet: Identifiable {
     case invite(CircleRef)
     case fog
     case addPlace(CircleRef)
+    case sos
     #if DEBUG
     case simulation
     #endif
@@ -23,6 +24,7 @@ enum HomeSheet: Identifiable {
         case let .invite(ref): "invite-\(ref.circleID)"
         case .fog: "fog"
         case let .addPlace(ref): "place-\(ref.circleID)"
+        case .sos: "sos"
         #if DEBUG
         case .simulation: "simulation"
         #endif
@@ -224,6 +226,7 @@ struct MapHomeView: View {
                         MapButton("Simulation", systemImage: "testtube.2", tint: .orange) { sheet = .simulation }
                     }
                     #endif
+                    MapButton("SOS", systemImage: "sos", tint: .red) { sheet = .sos }
                     MapButton("Mein Standort", systemImage: "location.fill") {
                         if let me = details?.members.first(where: \.isMe) { focus(me, showDetails: false) }
                     }

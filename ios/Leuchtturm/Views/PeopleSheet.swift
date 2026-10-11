@@ -154,6 +154,8 @@ struct PeopleSheet: View {
             FogSheet()
         case let .addPlace(ref):
             AddPlaceSheet(ref: ref)
+        case .sos:
+            SOSSheet()
         #if DEBUG
         case .simulation:
             SimulationView { receivedInvite = $0 }

@@ -83,8 +83,9 @@ Not planned, because they would need a company server, a call center or third pa
 - [ ] Battery profiling and tuning
 
 ## M7: Safety
-- [ ] SOS to the circle (Critical Alerts entitlement)
-- [ ] Crash detection heuristics with an "Are you OK?" timer, alert to the circle
+- [x] SOS to every circle (hold 3 s), exact position, time-sensitive notification, call 112, all-clear
+- [x] Crash detection heuristic with an "Are you OK?" countdown (60 s), then SOS
+- [ ] Critical Alerts entitlement (needs Apple's approval)
 
 ## M8: Friends, groups, fun and polish
 - [ ] Temporary circles, friend requests, multiple circles and groups

@@ -18,6 +18,11 @@ public struct CircleNote: Sendable, Hashable, Identifiable {
         case arrival
         /// Left a place; `text` is the place's name.
         case departure
+        /// Emergency: the sender needs help. Carries the exact position;
+        /// `text` says why (empty, or a suspected crash).
+        case sos
+        /// All clear after an SOS.
+        case safe
     }
 
     public let id: String

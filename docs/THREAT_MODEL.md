@@ -28,6 +28,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 - **A compromised device.** Malware or physical access to an unlocked phone defeats client-side encryption.
 - **A malicious member reading or leaking.** Anyone in a circle can read what the circle shares and can screenshot it.
 - **Denial of service by a member.** Any participant can delete records in the zone (CloudKit permission model). Leuchtturm detects forgeries but cannot prevent deletion.
+- **Emergencies.** SOS and crash detection only alert the circle. They are not an emergency service, crash detection is a GPS heuristic with false alarms and misses, and an SOS reaches others only as fast as iOS delivers silent pushes.
 - **Coercion and stalking by a trusted person.** Location sharing can be abused. Leuchtturm will show clear sharing indicators and lets users leave at any time, but cannot prevent misuse by someone with access to the victim's phone.
 
 ## Threats and mitigations

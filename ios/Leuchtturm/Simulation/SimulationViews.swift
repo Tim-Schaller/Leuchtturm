@@ -40,6 +40,13 @@ struct SimulationView: View {
                         Button("Clara sagt Guten Morgen", systemImage: "sun.max") {
                             Task { await model.simulate { try await $0.send(.morning, from: world.people[2]) } }
                         }
+                        Button("Clara löst SOS aus", systemImage: "sos") {
+                            Task { await model.simulate { try await $0.send(.sos, from: world.people[2]) } }
+                        }
+                        Button("Unfall-Abfrage bei mir testen", systemImage: "car.side.rear.and.collision.and.car.side.front") {
+                            model.startCrashCheck()
+                            dismiss()
+                        }
                         Button("Anna: Nebel an/aus", systemImage: "circle.dashed") {
                             Task {
                                 await model.simulate { world in

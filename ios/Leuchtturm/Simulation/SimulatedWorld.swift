@@ -83,7 +83,7 @@ final class SimulatedWorld {
     /// The person sends a note to all their circles, optionally addressed to
     /// someone. A check-in uses their current position.
     func send(_ kind: CircleNote.Kind, text: String = "", from person: Person, to recipientID: String? = nil) async throws {
-        let location = kind == .checkIn ? lastPositions[person.id] : nil
+        let location = kind == .checkIn || kind == .sos ? lastPositions[person.id] : nil
         for circle in try await person.client.circles() {
             try await person.client.send(kind, text: text, to: recipientID, location: location, in: circle.ref)
         }

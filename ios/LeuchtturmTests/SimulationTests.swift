@@ -109,6 +109,29 @@ struct SimulationTests {
         #expect(board.map(\.deviceID) == [world.people[1].client.deviceID, world.people[2].client.deviceID])
     }
 
+    @Test func sosAndCrashCheck() async throws {
+        let (model, world) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        _ = await model.mapDetails(for: ref)
+
+        // "Mir geht's gut" stops the countdown: no SOS.
+        model.startCrashCheck()
+        #expect(model.crashCheckDeadline != nil)
+        model.cancelCrashCheck()
+        #expect(model.crashCheckDeadline == nil && model.sosSentAt == nil)
+
+        // "Hilfe rufen" alerts the circle; others see it with the reason.
+        await model.confirmCrashHelp()
+        #expect(model.sosSentAt != nil)
+        let annasView = try await world.people[0].client.circle(try #require(try await world.people[0].client.circles().first).ref)
+        let sos = try #require(annasView.notes.first { $0.kind == .sos })
+        #expect(sos.text == "Möglicher Unfall erkannt") // no GPS in unit tests, so no position here
+
+        await model.sendAllClear()
+        #expect(model.sosSentAt == nil)
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

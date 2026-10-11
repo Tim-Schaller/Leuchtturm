@@ -38,6 +38,16 @@ struct TripTests {
         #expect(trip.route.count > 5 && trip.route.count <= Trip.maxRoutePoints)
     }
 
+    @Test func suspectsACrashOnlyOnAnAbruptStop() {
+        var detector = TripDetector()
+        var north = 0.0
+        _ = drive(&detector, speeds: [0, 8, 11] + Array(repeating: 14.0, count: 60) + [12, 9, 6, 3, 0], north: &north)
+        #expect(detector.takeCrash() == nil) // normal stop
+        _ = drive(&detector, speeds: [8, 11, 14, 14, 15, 0], from: 100, north: &north)
+        #expect(detector.takeCrash() != nil)
+        #expect(detector.takeCrash() == nil) // reported once
+    }
+
     @Test func ignoresShortHopsAndWalking() {
         var detector = TripDetector()
         var north = 0.0

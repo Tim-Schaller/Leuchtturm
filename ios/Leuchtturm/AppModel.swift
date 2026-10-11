@@ -28,6 +28,7 @@ final class AppModel {
         static let historyDays = "historyDays"
         static let sharesTrips = "sharesTrips"
         static let tripDetector = "tripDetector"
+        static let detectsCrashes = "detectsCrashes"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -76,6 +77,12 @@ final class AppModel {
     /// Detects drives on this device and shares them (and live speed).
     private(set) var sharesTrips = false
     @ObservationIgnored private var tripDetector = TripDetector()
+    /// Asks "Are you OK?" after an abrupt stop while driving. On by default.
+    private(set) var detectsCrashes = true
+    /// Set while the "Are you OK?" countdown runs: when the SOS goes out.
+    private(set) var crashCheckDeadline: Date?
+    /// The last SOS this device sent, until the all-clear.
+    private(set) var sosSentAt: Date?
 
     /// Says "good morning" to the circles on the first movement of the day.
     private(set) var sendsMorningGreeting = false
@@ -95,7 +102,19 @@ final class AppModel {
     init(usesDeviceServices: Bool = true) {
         self.usesDeviceServices = usesDeviceServices
         UIDevice.current.isBatteryMonitoringEnabled = true
-        if usesDeviceServices { UNUserNotificationCenter.current().delegate = notificationPresenter }
+        if usesDeviceServices {
+            let center = UNUserNotificationCenter.current()
+            center.delegate = notificationPresenter
+            center.setNotificationCategories([UNNotificationCategory(
+                identifier: Self.crashCategory,
+                actions: [
+                    UNNotificationAction(identifier: Self.crashOK, title: String(localized: "Mir geht's gut")),
+                    UNNotificationAction(identifier: Self.crashHelp, title: String(localized: "Hilfe rufen"), options: [.destructive]),
+                ],
+                intentIdentifiers: []
+            )])
+            notificationPresenter.onAction = { [weak self] action in self?.handleNotificationAction(action) }
+        }
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         if arguments.contains(SimulatedWorld.demoArgument) {
@@ -134,6 +153,7 @@ final class AppModel {
         historyDays = isSimulation ? 7 : (defaults.object(forKey: Keys.historyDays) as? Int ?? 7)
         historyRecorder = HistoryRecorder(persistent: !isSimulation)
         sharesTrips = !isSimulation && defaults.bool(forKey: Keys.sharesTrips)
+        detectsCrashes = isSimulation || (defaults.object(forKey: Keys.detectsCrashes) as? Bool ?? true)
         tripDetector = isSimulation ? TripDetector() : defaults.data(forKey: Keys.tripDetector)
             .flatMap { try? JSONDecoder().decode(TripDetector.self, from: $0) } ?? TripDetector()
         placeTracker = isSimulation ? PlaceTracker() : defaults.data(forKey: Keys.placeTracker)
@@ -354,7 +374,8 @@ final class AppModel {
             errorMessage = "Im Nebel teilst du keinen genauen Ort. Beende den Nebel zuerst, um einzuchecken."
             return false
         }
-        let location = kind == .checkIn ? tracker.location.flatMap { SharedLocation($0) } : nil
+        // An SOS always carries the exact position, also in fog.
+        let location = kind == .checkIn || kind == .sos ? tracker.location.flatMap { SharedLocation($0) } : nil
         if kind == .checkIn && location == nil {
             errorMessage = "Dein Standort ist noch nicht bekannt. Bitte versuch es gleich noch einmal."
             return false
@@ -393,13 +414,14 @@ final class AppModel {
     // MARK: Trips
 
     private func watchTrips(_ location: CLLocation) async {
-        guard sharesTrips, let client else { return }
+        guard sharesTrips || detectsCrashes, let client else { return }
         let trip = tripDetector.update(
             latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
             speed: location.speed, at: location.timestamp, deviceID: client.deviceID
         )
         saveTripDetector()
-        if let trip { try? await client.shareTrip(trip) }
+        if tripDetector.takeCrash() != nil, detectsCrashes { startCrashCheck() }
+        if let trip, sharesTrips { try? await client.shareTrip(trip) }
     }
 
     /// After parking iOS pauses updates; end the trip when the app wakes up.
@@ -422,6 +444,74 @@ final class AppModel {
             tripDetector = TripDetector()
             saveTripDetector()
             await run { try await $0.deleteTrips() }
+        }
+    }
+
+    // MARK: SOS and crash detection
+
+    static let crashCategory = "crash"
+    static let crashOK = "crash-ok"
+    static let crashHelp = "crash-help"
+    static let crashCountdown: TimeInterval = 60
+
+    /// Alerts every circle with the exact position. Returns false if no circle got it.
+    @discardableResult
+    func sendSOS(reason: String = "") async -> Bool {
+        var sent = false
+        for circle in circles where await send(.sos, text: reason, in: circle.ref) { sent = true }
+        if sent { sosSentAt = Date() }
+        return sent
+    }
+
+    func sendAllClear() async {
+        for circle in circles { await send(.safe, in: circle.ref) }
+        sosSentAt = nil
+    }
+
+    func setDetectsCrashes(_ on: Bool) {
+        detectsCrashes = on
+        if !isSimulation { UserDefaults.standard.set(on, forKey: Keys.detectsCrashes) }
+    }
+
+    /// "Are you OK?": in the app and as a notification with answers. Without
+    /// an answer the SOS goes out after the countdown.
+    func startCrashCheck() {
+        guard crashCheckDeadline == nil else { return }
+        let deadline = Date().addingTimeInterval(Self.crashCountdown)
+        crashCheckDeadline = deadline
+        if usesDeviceServices {
+            let content = UNMutableNotificationContent()
+            content.title = String(localized: "Alles okay?")
+            content.body = String(localized: "Es sah nach einem Unfall aus. Ohne Antwort alarmiert Leuchtturm in 60 Sekunden deine Kreise.")
+            content.sound = .default
+            content.interruptionLevel = .timeSensitive
+            content.categoryIdentifier = Self.crashCategory
+            UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "crash-check", content: content, trigger: nil))
+        }
+        Task {
+            try? await Task.sleep(for: .seconds(Self.crashCountdown))
+            guard crashCheckDeadline == deadline else { return }
+            await confirmCrashHelp()
+        }
+    }
+
+    func cancelCrashCheck() {
+        crashCheckDeadline = nil
+        if usesDeviceServices {
+            UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["crash-check"])
+        }
+    }
+
+    func confirmCrashHelp() async {
+        cancelCrashCheck()
+        await sendSOS(reason: String(localized: "Möglicher Unfall erkannt"))
+    }
+
+    private func handleNotificationAction(_ action: String) {
+        switch action {
+        case Self.crashOK: cancelCrashCheck()
+        case Self.crashHelp: Task { await confirmCrashHelp() }
+        default: break
         }
     }
 
@@ -508,6 +598,13 @@ final class AppModel {
             content.subtitle = details.name ?? ""
             content.body = NoteText.body(note, members: details.members, myID: me)
             content.sound = .default
+            if note.kind == .sos {
+                content.title = String(localized: "🆘 \(sender) braucht Hilfe")
+                content.body = note.text.isEmpty
+                    ? String(localized: "Tippe, um den Ort zu sehen.")
+                    : String(localized: "\(note.text). Tippe, um den Ort zu sehen.")
+                content.interruptionLevel = .timeSensitive
+            }
             content.threadIdentifier = details.id
             UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: note.id, content: content, trigger: nil))
         }

@@ -48,6 +48,9 @@ struct RootView: View {
         }
         .fontDesign(.rounded)
         .errorAlert()
+        .fullScreenCover(isPresented: Binding(get: { model.crashCheckDeadline != nil }, set: { _ in })) {
+            CrashCheckView()
+        }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { model.tracker.refreshAuthorization() }
         }

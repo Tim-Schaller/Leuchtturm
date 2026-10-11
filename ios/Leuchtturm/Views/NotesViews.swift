@@ -2,12 +2,21 @@ import LeuchtturmCore
 import SwiftUI
 import UserNotifications
 
-/// Shows notifications as banners while the app is open, too.
+/// Shows notifications as banners while the app is open, too, and passes
+/// on answers like "Mir geht's gut".
+@MainActor
 final class NotificationPresenter: NSObject, UNUserNotificationCenterDelegate {
+    var onAction: ((String) -> Void)?
+
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter, willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
         [.banner, .list, .sound]
+    }
+
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        let action = response.actionIdentifier
+        await MainActor.run { onAction?(action) }
     }
 }
 
@@ -27,6 +36,10 @@ enum NoteText {
             return String(localized: "ist bei „\(note.text)“ angekommen")
         case .departure:
             return String(localized: "hat „\(note.text)“ verlassen")
+        case .sos:
+            return note.text.isEmpty ? String(localized: "🆘 braucht Hilfe!") : String(localized: "🆘 braucht Hilfe: \(note.text)")
+        case .safe:
+            return String(localized: "✅ ist in Sicherheit")
         }
     }
 

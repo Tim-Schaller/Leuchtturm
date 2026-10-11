@@ -36,6 +36,7 @@ targets:
         com.apple.developer.icloud-services:
           - CloudKit
         aps-environment: development
+        com.apple.developer.usernotifications.time-sensitive: true
     info:
       path: Leuchtturm/Info.plist
       properties:

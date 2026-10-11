@@ -56,6 +56,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 - Live location, end-to-end encrypted and signed by each member's own iPhone, also while the app is closed (pauses when you stand still to save battery); pause sharing any time
 - Battery level of everyone in the circle
 - Places like home or school with arrival and departure alerts, checked on each iPhone itself
+- SOS to your circles with your exact position, and an "Are you OK?" check after an abrupt stop while driving (no call center; call 112 in danger)
 - Opt-in trips with live speed, a driving score and a weekly leaderboard for the circle
 - Opt-in history: your path of the last days for your circle, kept only as long as you choose
 - Fog mode: share only the rough area for a few hours
@@ -68,7 +69,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- Region monitoring for places, SOS and crash detection, opt-in history with your own retention period, opt-in SOS and check-in
+- Region monitoring for places, low-battery alerts, GPX export, temporary circles, opt-in history with your own retention period, opt-in SOS and check-in
 - Drive detection with live speed (km/h)
 - Adaptive tracking to keep battery drain low
 

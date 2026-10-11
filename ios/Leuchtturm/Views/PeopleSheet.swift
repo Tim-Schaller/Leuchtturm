@@ -196,6 +196,12 @@ private struct PersonRow: View {
                             .foregroundStyle(.yellow)
                             .accessibilityLabel("Besitzer")
                     }
+                    if model.verifiedDevices.contains(member.id) {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.caption)
+                            .foregroundStyle(Color.accentColor)
+                            .accessibilityLabel("Sicherheitscode überprüft")
+                    }
                 }
                 Text(LocationStatus.text(for: member, model: model))
                     .font(.subheadline)
@@ -313,8 +319,19 @@ struct MemberDetailView: View {
                 LabeledContent("Sicherheitscode") {
                     Text(member.safetyCode).font(.body.monospaced())
                 }
+                if !member.isMe {
+                    if model.verifiedDevices.contains(member.id) {
+                        Label("Persönlich überprüft", systemImage: "checkmark.seal.fill")
+                            .foregroundStyle(Color.accentColor)
+                        Button("Markierung entfernen", role: .destructive) { model.setVerified(member.id, false) }
+                    } else {
+                        Button("Stimmt überein: als überprüft markieren", systemImage: "checkmark.seal") {
+                            model.setVerified(member.id, true)
+                        }
+                    }
+                }
             } footer: {
-                Text("Vergleicht den Code persönlich mit dem Gerät der Person. Stimmt er überein, kann niemand unbemerkt einen fremden Schlüssel unterschieben.")
+                Text("Vergleicht den Code persönlich mit dem Gerät der Person. Stimmt er überein, kann niemand unbemerkt einen fremden Schlüssel unterschieben. Installiert jemand die App neu, bekommt er einen neuen Code und muss neu überprüft werden.")
             }
         }
         .navigationTitle(member.name ?? "Mitglied")

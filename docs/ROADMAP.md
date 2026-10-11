@@ -97,7 +97,7 @@ Not planned, because they would need a company server, a call center or third pa
 - [ ] Liquid Glass UI polish, accessibility, localization (DE, EN)
 - [ ] Multi-device support and key backup
 - [ ] Owner succession if the owner's device is lost
-- [ ] Warning when an unverified key appears in a circle
+- [x] Warning when a new key appears in a circle; members can be marked as verified
 
 ## M9: Monetization and release
 - [ ] StoreKit 2: non-intrusive convenience purchases (safety features stay free)

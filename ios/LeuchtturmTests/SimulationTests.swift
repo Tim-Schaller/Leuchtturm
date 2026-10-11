@@ -166,6 +166,28 @@ struct SimulationTests {
         #expect(suggestions.map(\.visits) == [3])
     }
 
+    @Test func newKeysAreNoticedAndCanBeVerified() async throws {
+        let (model, world) = try await simulatedModel()
+        let ref = try #require(await model.createCircle(name: "Familie"))
+        var details = try #require(await model.mapDetails(for: ref))
+        #expect(model.newMembers(in: details).isEmpty) // first look
+
+        let link = try #require(await model.run { try await $0.createInvite(for: ref) })
+        await model.simulate { try await $0.join(world.people[0], using: link) }
+        details = try #require(await model.mapDetails(for: ref))
+        _ = details // mapDetails already announced Anna
+        await model.simulate { try await $0.join(world.people[1], using: link) }
+        details = try #require(await model.run { try await $0.circle(ref) })
+        #expect(model.newMembers(in: details).map(\.name) == ["Ben"])
+        #expect(model.newMembers(in: details).isEmpty)
+
+        let ben = world.people[1].client.deviceID
+        model.setVerified(ben, true)
+        #expect(model.verifiedDevices == [ben])
+        model.setVerified(ben, false)
+        #expect(model.verifiedDevices.isEmpty)
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

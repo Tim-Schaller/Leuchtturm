@@ -31,6 +31,8 @@ final class AppModel {
         static let detectsCrashes = "detectsCrashes"
         static let lowBatteryWarned = "lowBatteryWarned"
         static let arrivalWatches = "arrivalWatches"
+        static let verifiedDevices = "verifiedDevices"
+        static let knownMembers = "knownMembers"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -96,6 +98,10 @@ final class AppModel {
     @ObservationIgnored private var newsSince = Date()
     @ObservationIgnored private var lastMorningGreeting: Date?
     @ObservationIgnored private let notificationPresenter = NotificationPresenter()
+    /// Devices whose safety code the user compared in person.
+    private(set) var verifiedDevices: Set<String> = []
+    /// Member devices seen per circle, to notice new keys.
+    @ObservationIgnored private var knownMembers: [String: Set<String>] = [:]
     /// "Not arrived yet" alerts set on this device.
     private(set) var arrivalWatches: [ArrivalWatch] = []
     /// Every circle as last loaded, for arrival checks.
@@ -158,6 +164,9 @@ final class AppModel {
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
         knownPlaces = [:]
         latestDetails = [:]
+        verifiedDevices = isSimulation ? [] : Set(defaults.stringArray(forKey: Keys.verifiedDevices) ?? [])
+        knownMembers = isSimulation ? [:] : (defaults.dictionary(forKey: Keys.knownMembers) as? [String: [String]] ?? [:])
+            .mapValues { Set($0) }
         visitStore = VisitStore(persistent: !isSimulation)
         arrivalWatches = isSimulation ? [] : defaults.data(forKey: Keys.arrivalWatches)
             .flatMap { try? JSONDecoder().decode([ArrivalWatch].self, from: $0) } ?? []
@@ -465,6 +474,42 @@ final class AppModel {
         }
     }
 
+    // MARK: Safety codes
+
+    func setVerified(_ deviceID: String, _ verified: Bool) {
+        if verified { verifiedDevices.insert(deviceID) } else { verifiedDevices.remove(deviceID) }
+        if !isSimulation { UserDefaults.standard.set(Array(verifiedDevices), forKey: Keys.verifiedDevices) }
+    }
+
+    /// Members that joined (or got a new key, e.g. after reinstalling) since
+    /// this device last looked at the circle. Records them as known.
+    func newMembers(in details: CircleDetails) -> [CircleMember] {
+        let current = Set(details.members.filter { !$0.isMe && !$0.isPending }.map(\.id))
+        defer {
+            knownMembers[details.id] = current
+            if !isSimulation {
+                UserDefaults.standard.set(knownMembers.mapValues { Array($0) }, forKey: Keys.knownMembers)
+            }
+        }
+        // The first look at a circle only records who is there.
+        guard let known = knownMembers[details.id] else { return [] }
+        return details.members.filter { current.contains($0.id) && !known.contains($0.id) }
+    }
+
+    /// "New in Familie: Dave. Compare the safety code."
+    private func announceNewMembers(_ details: CircleDetails) {
+        let fresh = newMembers(in: details)
+        guard usesDeviceServices, !fresh.isEmpty else { return }
+        for member in fresh {
+            let content = UNMutableNotificationContent()
+            content.title = String(localized: "Neu in „\(details.name ?? "deinem Kreis")“: \(member.name ?? "Unbekannt")")
+            content.body = String(localized: "Vergleicht den Sicherheitscode persönlich, bevor ihr euch darauf verlasst: \(member.safetyCode)")
+            content.sound = .default
+            content.threadIdentifier = details.id
+            UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "member-\(member.id)", content: content, trigger: nil))
+        }
+    }
+
     // MARK: Arrival watches
 
     func places(inCircle circleID: String) -> [CirclePlace] {
@@ -692,6 +737,7 @@ final class AppModel {
     /// everyone.
     func deliverNews(_ details: CircleDetails) {
         latestDetails[details.id] = details
+        announceNewMembers(details)
         if !arrivalWatches.isEmpty { Task { await scheduleArrivalWatches() } }
         let placesChanged = knownPlaces[details.id]?.places != details.places
         knownPlaces[details.id] = (details.ref, details.places)

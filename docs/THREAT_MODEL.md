@@ -68,7 +68,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 - **The owner device is a single point of failure.** If the owner loses their iPhone, the circle can no longer be managed (no new admissions, removals or renames); members can still read it. Ownership transfer is not possible with CloudKit zones.
 - **Pending members need the owner.** New members are visible as pending right away, but enter the signed roster only when the owner opens the app. Their admission is verified against the invite record, so if an invite expires and is cleaned up first, the owner must re-invite them.
 - **No use limits on invites.** CloudKit cannot enforce them; a link works for anyone until it expires. Owners see every new member.
-- **Safety codes are manual.** Nothing warns yet when an unverified key appears.
+- **Safety codes are manual.** The app warns when a new key appears in a circle and shows which members were verified, but comparing codes is still up to the people.
 - **No forward secrecy within an epoch.** Anyone with a circle key can decrypt everything under that epoch. Periodic rotation may be added later.
 
 ## Open questions

@@ -226,23 +226,23 @@ enum LocationStatus {
     @MainActor
     static func text(for member: CircleMember, model: AppModel) -> String {
         if member.isMe {
-            if !model.isSharingLocation { return "Teilen pausiert" }
+            if !model.isSharingLocation { return String(localized: "Teilen pausiert") }
             if let fog = model.activeFog {
                 return String(localized: "Nebel bis \(fog.until.formatted(.dateTime.hour().minute()))")
             }
-            if model.tracker.isDenied { return "Standortzugriff ist aus" }
-            if model.tracker.location == nil { return "Suche Standort …" }
-            return model.tracker.isAlwaysAllowed || model.isSimulation ? "Wird geteilt" : "Nur solange die App läuft"
+            if model.tracker.isDenied { return String(localized: "Standortzugriff ist aus") }
+            if model.tracker.location == nil { return String(localized: "Suche Standort …") }
+            return model.tracker.isAlwaysAllowed || model.isSimulation ? String(localized: "Wird geteilt") : String(localized: "Nur solange die App läuft")
         }
-        if member.isPending { return "Wartet auf Bestätigung" }
-        guard let location = member.location else { return "Teilt noch keinen Standort" }
+        if member.isPending { return String(localized: "Wartet auf Bestätigung") }
+        guard let location = member.location else { return String(localized: "Teilt noch keinen Standort") }
         let ago = location.timestamp.timeIntervalSinceNow > -60
             ? String(localized: "Gerade eben")
             : location.timestamp.formatted(.relative(presentation: .named))
         guard let distance = distance(to: location, from: model.tracker.location) else { return ago }
         if location.fogRadius != nil { return String(localized: "\(ago) · im Nebel") }
         if let speed = location.speed, speed >= 2 {
-            return String(localized: "Fährt · \(Int((speed * 3.6).rounded())) km/h · \(distance)")
+            return String(localized: "Fährt · \(Theme.speed(speed)) · \(distance)")
         }
         return "\(ago) · \(distance)"
     }

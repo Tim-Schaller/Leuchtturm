@@ -28,6 +28,8 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     entitlements:
       path: Leuchtturm/Leuchtturm.entitlements
       properties:
@@ -41,6 +43,10 @@ targets:
       path: Leuchtturm/Info.plist
       properties:
         CFBundleDisplayName: Leuchtturm
+        CFBundleDevelopmentRegion: de
+        CFBundleLocalizations:
+          - de
+          - en
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}

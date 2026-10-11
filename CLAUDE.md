@@ -4,7 +4,7 @@ Privacy-first location sharing for families on iOS. Owner: Tim (GitHub `Tim-Scha
 
 ## Layout
 
-- `ios/Leuchtturm/` – SwiftUI app (iOS 26+, Liquid Glass). UI text in **German**.
+- `ios/Leuchtturm/` – SwiftUI app (iOS 26+, Liquid Glass). UI text in **German** (source), English in `Localizable.xcstrings` / `InfoPlist.xcstrings`. After changing UI text: build, run `python3 ios/scripts/check-strings.py`, add the missing English entries. Text outside SwiftUI views needs `String(localized:)`.
 - `ios/LeuchtturmCore/` – Swift package: crypto, record formats, `CircleBackend` (CloudKit + in-memory simulation), `LeuchtturmClient`. Builds and tests on macOS and Linux.
 - `ios/project.yml` – XcodeGen spec. `Leuchtturm.xcodeproj`, `Info.plist` and `.entitlements` are **generated and gitignored**.
 - `docs/` – `ARCHITECTURE.md` (record formats, the source of truth), `THREAT_MODEL.md`, `ROADMAP.md`, `test-vectors/`.
@@ -77,4 +77,4 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
    - `recordZoneChanges` returning all records of a shared zone,
    - silent pushes from the database subscriptions arriving on the other device.
 3. Tim has not yet tested the builds since "Background location sharing" on his iPhone (he was asleep); background sharing, push and the "no indicator" tracker need a real-device test. Ask before installing on his iPhone.
-4. Open items, in this order: polish (accessibility, English localization), multi-device and key backup, owner succession, then release work (privacy policy, App Privacy labels, CloudKit schema to Production, TestFlight). See `docs/ROADMAP.md`.
+4. Open items, in this order: accessibility pass, polish (accessibility, English localization), multi-device and key backup, owner succession, then release work (privacy policy, App Privacy labels, CloudKit schema to Production, TestFlight). See `docs/ROADMAP.md`.

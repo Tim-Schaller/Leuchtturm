@@ -236,7 +236,7 @@ final class AppModel {
     func setUp(name: String) async -> Bool {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, trimmed.count <= LeuchtturmClient.maxNameLength else {
-            errorMessage = "Bitte gib einen Namen mit höchstens \(LeuchtturmClient.maxNameLength) Zeichen ein."
+            errorMessage = String(localized: "Bitte gib einen Namen mit höchstens \(LeuchtturmClient.maxNameLength) Zeichen ein.")
             return false
         }
         isLoading = true
@@ -397,13 +397,13 @@ final class AppModel {
     @discardableResult
     func send(_ kind: CircleNote.Kind, text: String = "", to recipientID: String? = nil, in ref: CircleRef) async -> Bool {
         if kind == .checkIn && activeFog != nil {
-            errorMessage = "Im Nebel teilst du keinen genauen Ort. Beende den Nebel zuerst, um einzuchecken."
+            errorMessage = String(localized: "Im Nebel teilst du keinen genauen Ort. Beende den Nebel zuerst, um einzuchecken.")
             return false
         }
         // An SOS always carries the exact position, also in fog.
         let location = kind == .checkIn || kind == .sos ? tracker.location.flatMap { SharedLocation($0) } : nil
         if kind == .checkIn && location == nil {
-            errorMessage = "Dein Standort ist noch nicht bekannt. Bitte versuch es gleich noch einmal."
+            errorMessage = String(localized: "Dein Standort ist noch nicht bekannt. Bitte versuch es gleich noch einmal.")
             return false
         }
         guard let note = await run({ try await $0.send(kind, text: text, to: recipientID, location: location, in: ref) })
@@ -754,7 +754,7 @@ final class AppModel {
         markSeen(fresh.map(\.id))
         guard usesDeviceServices else { return }
         for note in fresh.reversed() {
-            let sender = details.members.first { $0.id == note.senderID }?.name ?? "Jemand"
+            let sender = details.members.first { $0.id == note.senderID }?.name ?? String(localized: "Jemand")
             let content = UNMutableNotificationContent()
             content.title = sender
             content.subtitle = details.name ?? ""
@@ -900,32 +900,32 @@ final class AppModel {
         case let error as BackendError:
             switch error {
             case .noAccount:
-                return "Bitte melde dich in den Einstellungen bei iCloud an. Leuchtturm speichert seine verschlüsselten Daten in deiner iCloud."
-            case .notFound: return "Nicht gefunden. Vielleicht wurde der Kreis gelöscht oder du wurdest entfernt."
-            case .permissionDenied: return "Dafür fehlen dir die Rechte."
-            case .network: return "Keine Verbindung zu iCloud. Bitte versuch es gleich noch einmal."
-            case .quotaExceeded: return "Dein iCloud-Speicher ist voll."
-            case let .other(message): return "iCloud-Fehler: \(message)"
+                return String(localized: "Bitte melde dich in den Einstellungen bei iCloud an. Leuchtturm speichert seine verschlüsselten Daten in deiner iCloud.")
+            case .notFound: return String(localized: "Nicht gefunden. Vielleicht wurde der Kreis gelöscht oder du wurdest entfernt.")
+            case .permissionDenied: return String(localized: "Dafür fehlen dir die Rechte.")
+            case .network: return String(localized: "Keine Verbindung zu iCloud. Bitte versuch es gleich noch einmal.")
+            case .quotaExceeded: return String(localized: "Dein iCloud-Speicher ist voll.")
+            case let .other(message): return String(localized: "iCloud-Fehler: \(message)")
             }
         case let error as ClientError:
             switch error {
-            case .missingCircleKey: return "Auf diesem Gerät fehlt noch der Schlüssel für den Kreis. Der Besitzer muss die App einmal öffnen."
-            case .notOwner: return "Das darf nur der Besitzer des Kreises."
-            case .unknownMember: return "Dieses Mitglied gibt es nicht."
-            case .invalidName: return "Namen müssen 1 bis \(LeuchtturmClient.maxNameLength) Zeichen lang sein."
-            case .invalidDuration: return "Ungültige Gültigkeitsdauer."
-            case .inviteInvalid: return "Die Einladung ist ungültig oder wurde zurückgezogen."
-            case .inviteExpired: return "Die Einladung ist abgelaufen. Bitte um eine neue."
-            case .untrustedCircle: return "Dieses Gerät kann den Kreis nicht prüfen, z. B. nach einer Neuinstallation. Lass dich neu einladen."
-            case .tampered: return "Die Kreisdaten wurden verändert und sind nicht vom Besitzer signiert."
-            case .ownerMustDelete: return "Als Besitzer kannst du den Kreis nicht verlassen, nur löschen."
-            case .invalidNote: return "Die Nachricht ist zu lang."
-            case .invalidPlace: return "Bitte gib dem Ort einen Namen mit höchstens \(CirclePlace.maxNameLength) Zeichen."
+            case .missingCircleKey: return String(localized: "Auf diesem Gerät fehlt noch der Schlüssel für den Kreis. Der Besitzer muss die App einmal öffnen.")
+            case .notOwner: return String(localized: "Das darf nur der Besitzer des Kreises.")
+            case .unknownMember: return String(localized: "Dieses Mitglied gibt es nicht.")
+            case .invalidName: return String(localized: "Namen müssen 1 bis \(LeuchtturmClient.maxNameLength) Zeichen lang sein.")
+            case .invalidDuration: return String(localized: "Ungültige Gültigkeitsdauer.")
+            case .inviteInvalid: return String(localized: "Die Einladung ist ungültig oder wurde zurückgezogen.")
+            case .inviteExpired: return String(localized: "Die Einladung ist abgelaufen. Bitte um eine neue.")
+            case .untrustedCircle: return String(localized: "Dieses Gerät kann den Kreis nicht prüfen, z. B. nach einer Neuinstallation. Lass dich neu einladen.")
+            case .tampered: return String(localized: "Die Kreisdaten wurden verändert und sind nicht vom Besitzer signiert.")
+            case .ownerMustDelete: return String(localized: "Als Besitzer kannst du den Kreis nicht verlassen, nur löschen.")
+            case .invalidNote: return String(localized: "Die Nachricht ist zu lang.")
+            case .invalidPlace: return String(localized: "Bitte gib dem Ort einen Namen mit höchstens \(CirclePlace.maxNameLength) Zeichen.")
             }
         case is ProtocolError:
-            return "Die Daten konnten nicht entschlüsselt oder geprüft werden."
+            return String(localized: "Die Daten konnten nicht entschlüsselt oder geprüft werden.")
         default:
-            return "Unbekannter Fehler."
+            return String(localized: "Unbekannter Fehler.")
         }
     }
 }

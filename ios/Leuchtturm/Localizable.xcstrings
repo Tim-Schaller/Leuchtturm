@@ -1,0 +1,3076 @@
+{
+  "sourceLanguage": "de",
+  "strings": {
+    "%@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ %@"
+          }
+        }
+      }
+    },
+    "%@ bis %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ by %@"
+          }
+        }
+      }
+    },
+    "%@ entfernen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove %@?"
+          }
+        }
+      }
+    },
+    "%@ lädt dich ein": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ invites you"
+          }
+        }
+      }
+    },
+    "%@ löscht den Kreis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ deletes the circle"
+          }
+        }
+      }
+    },
+    "%@ teilt keinen Verlauf.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ does not share their history."
+          }
+        }
+      }
+    },
+    "%@ verlässt den Kreis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ leaves the circle"
+          }
+        }
+      }
+    },
+    "%@ · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@"
+          }
+        }
+      }
+    },
+    "%@ · im Nebel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · in fog"
+          }
+        }
+      }
+    },
+    "%@ öffnet den Link": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ opens the link"
+          }
+        }
+      }
+    },
+    "%@ – %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ – %@"
+          }
+        }
+      }
+    },
+    "%@. Tippe, um den Ort zu sehen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@. Tap to see where."
+          }
+        }
+      }
+    },
+    "%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld %%": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %%"
+          }
+        }
+      }
+    },
+    "%lld Besuche, zusammen %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld visits, %@ in total"
+          }
+        }
+      }
+    },
+    "%lld Fahrten · %@ · %lld× stark gebremst": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld trips · %@ · %lld× hard braking"
+          }
+        }
+      }
+    },
+    "%lld Tage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld days"
+          }
+        }
+      }
+    },
+    "%lld von 100 Punkten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of 100 points"
+          }
+        }
+      }
+    },
+    "1 Std.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 hr"
+          }
+        }
+      }
+    },
+    "1 Tag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 day"
+          }
+        }
+      }
+    },
+    "1 Woche": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 week"
+          }
+        }
+      }
+    },
+    "100 Punkte pro Fahrt, Abzug für starkes Bremsen, schnelles Beschleunigen und über 130 km/h. Nach Strecke gewichtet. Nur wer „Fahrten teilen“ eingeschaltet hat.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 points per trip, minus points for hard braking, rapid acceleration and more than 130 km/h. Weighted by distance. Only people who turned on “Share trips”."
+          }
+        }
+      }
+    },
+    "2 Wochen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 weeks"
+          }
+        }
+      }
+    },
+    "3 Std.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3 hrs"
+          }
+        }
+      }
+    },
+    "8 Std.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 hrs"
+          }
+        }
+      }
+    },
+    "Abbrechen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Abzeichen der Woche": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Badges of the week"
+          }
+        }
+      }
+    },
+    "Akku": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery"
+          }
+        }
+      }
+    },
+    "Akku %lld Prozent": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery %lld percent"
+          }
+        }
+      }
+    },
+    "Akku %lld Prozent, lädt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery %lld percent, charging"
+          }
+        }
+      }
+    },
+    "Aktualisiert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated"
+          }
+        }
+      }
+    },
+    "Alle erfundenen Personen sind schon im Kreis.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All made-up people are already in the circle."
+          }
+        }
+      }
+    },
+    "Alle gespeicherten Tage als GPX-Datei, z. B. für Karten- und Sport-Apps. Die Datei ist nicht verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All stored days as a GPX file, e.g. for map and sports apps. The file is not encrypted."
+          }
+        }
+      }
+    },
+    "Alle meine Daten löschen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete all my data"
+          }
+        }
+      }
+    },
+    "Alles löschen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete everything"
+          }
+        }
+      }
+    },
+    "Alles okay?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Are you OK?"
+          }
+        }
+      }
+    },
+    "Als Besitzer kannst du den Kreis nicht verlassen, nur löschen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As the owner you cannot leave the circle, only delete it."
+          }
+        }
+      }
+    },
+    "Als GPX exportieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export as GPX"
+          }
+        }
+      }
+    },
+    "An %@ senden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send to %@"
+          }
+        }
+      }
+    },
+    "Ankunft": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrival"
+          }
+        }
+      }
+    },
+    "Ankunft von %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@'s arrival"
+          }
+        }
+      }
+    },
+    "Anna schickt dir ❤️": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anna sends you ❤️"
+          }
+        }
+      }
+    },
+    "Anna, Ben und Clara sind erfunden, rechnen aber mit echter Verschlüsselung wie ein zweites iPhone. Nichts geht an iCloud, deine echten Daten bleiben unberührt. Beendest du die App, ist alles weg.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anna, Ben and Clara are made up, but they use real encryption like a second iPhone. Nothing goes to iCloud and your real data stays untouched. When you quit the app, everything is gone."
+          }
+        }
+      }
+    },
+    "Anna: Nebel an/aus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anna: fog on/off"
+          }
+        }
+      }
+    },
+    "Apple Karten bekommt dabei diesen Ort. In Leuchtturm selbst sieht Apple die Standorte nicht.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Maps receives this place. Inside Leuchtturm, Apple does not see locations."
+          }
+        }
+      }
+    },
+    "Auch bei geschlossener App": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Also when the app is closed"
+          }
+        }
+      }
+    },
+    "Auf der Karte zeigen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show on the map"
+          }
+        }
+      }
+    },
+    "Auf diesem Gerät fehlt noch der Schlüssel für den Kreis. Der Besitzer muss die App einmal öffnen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This device does not have the circle's key yet. The owner needs to open the app once."
+          }
+        }
+      }
+    },
+    "Auf „Immer“ stellen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set to “Always”"
+          }
+        }
+      }
+    },
+    "Aufbewahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep"
+          }
+        }
+      }
+    },
+    "Aus Zwischenablage einfügen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste from clipboard"
+          }
+        }
+      }
+    },
+    "Aus, solange du es nicht einschaltest. Dann sehen deine Kreise, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Kreis Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt Leuchtturm „Alles okay?“. Ohne Antwort bekommen deine Kreise nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off until you turn it on. Then your circles see where you went in the last days, end-to-end encrypted. Your iPhone deletes older days itself. Turning it off deletes the whole history right away.\n\nYour iPhone detects trips itself from 25 km/h on and with the motion sensor, so bikes and trains do not count. If you share them, your circle sees route, distance, top speed, hard braking and acceleration, your speed while driving, and you in the weekly leaderboard. Trips are deleted after 30 days, or right away when you turn this off.\n\nCrash detection: if the car stops abruptly, Leuchtturm asks “Are you OK?”. Without an answer your circles get an SOS with your location after 60 seconds. This is an estimate from GPS data, not an emergency service."
+          }
+        }
+      }
+    },
+    "Beispielkreis „Familie“ mit allen anlegen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create sample circle “Familie” with everyone"
+          }
+        }
+      }
+    },
+    "Beitreten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join"
+          }
+        }
+      }
+    },
+    "Ben checkt ein": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ben checks in"
+          }
+        }
+      }
+    },
+    "Besitzer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owner"
+          }
+        }
+      }
+    },
+    "Bis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By"
+          }
+        }
+      }
+    },
+    "Bis %@ gab es keine Ankunft bei „%@“.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No arrival at “%2$@” by %1$@."
+          }
+        }
+      }
+    },
+    "Bitte gib dem Ort einen Namen mit höchstens %lld Zeichen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please give the place a name of at most %lld characters."
+          }
+        }
+      }
+    },
+    "Bitte gib einen Namen mit höchstens %lld Zeichen ein.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please enter a name of at most %lld characters."
+          }
+        }
+      }
+    },
+    "Bitte melde dich in den Einstellungen bei iCloud an. Leuchtturm speichert seine verschlüsselten Daten in deiner iCloud.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please sign in to iCloud in Settings. Leuchtturm stores its encrypted data in your iCloud."
+          }
+        }
+      }
+    },
+    "Clara löst SOS aus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clara sends an SOS"
+          }
+        }
+      }
+    },
+    "Clara sagt Guten Morgen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clara says good morning"
+          }
+        }
+      }
+    },
+    "Da: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Here: %@"
+          }
+        }
+      }
+    },
+    "Dafür fehlen dir die Rechte.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are not allowed to do that."
+          }
+        }
+      }
+    },
+    "Das darf nur der Besitzer des Kreises.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only the circle's owner can do that."
+          }
+        }
+      }
+    },
+    "Das ist kein gültiger Leuchtturm-Einladungslink.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is not a valid Leuchtturm invite link."
+          }
+        }
+      }
+    },
+    "Dauer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duration"
+          }
+        }
+      }
+    },
+    "Dauerhaft": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanent"
+          }
+        }
+      }
+    },
+    "Dein Name": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your name"
+          }
+        }
+      }
+    },
+    "Dein Standort ist noch nicht bekannt. Bitte versuch es gleich noch einmal.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your location is not known yet. Please try again in a moment."
+          }
+        }
+      }
+    },
+    "Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Kreisen geteilt. Mit Standortzugriff „Immer“ sehen sie dich auch, wenn die App geschlossen ist, ohne dauerhaften blauen Hinweis in der Statusleiste. Mit „Beim Verwenden“ teilt Leuchtturm nur, solange die App offen ist, weil iOS sonst den Hinweis ständig zeigen würde. Steht dein iPhone still, pausiert die Ortung und spart Akku. Ausschalten entfernt deinen Standort sofort aus allen Kreisen. Der Guten-Morgen-Gruß sagt deinen Kreisen Bescheid, wenn du morgens zum ersten Mal unterwegs bist.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your location is encrypted on this iPhone and shared only with your circles. With location access “Always” they see you even when the app is closed, without a permanent blue indicator in the status bar. With “While Using” Leuchtturm shares only while the app is open, because iOS would otherwise show the indicator all the time. When your iPhone stands still, tracking pauses to save battery. Turning sharing off removes your location from all circles right away. The good-morning greeting tells your circles when you first head out in the morning."
+          }
+        }
+      }
+    },
+    "Dein iCloud-Speicher ist voll.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your iCloud storage is full."
+          }
+        }
+      }
+    },
+    "Deine Kreise wurden %@ alarmiert.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your circles were alerted %@."
+          }
+        }
+      }
+    },
+    "Deine Schlüssel liegen nur auf diesem iPhone und werden nicht mit iCloud synchronisiert.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your keys stay on this iPhone only and are not synced with iCloud."
+          }
+        }
+      }
+    },
+    "Der Fremde hat den iCloud-Freigabelink, aber nicht den Schlüssel aus der Einladung. Er erscheint bei dir unter „Nicht bestätigt“ und sieht nur verschlüsselte Daten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The stranger has the iCloud share link but not the key from the invite. They appear under “Not confirmed” and see only encrypted data."
+          }
+        }
+      }
+    },
+    "Der Kreis bekommt einen neuen Schlüssel. Die Person verliert den Zugriff und kann nichts mehr lesen, was danach geteilt wird.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The circle gets a new key. The person loses access and cannot read anything shared afterwards."
+          }
+        }
+      }
+    },
+    "Der Kreis liegt in deiner iCloud. Löschst du ihn, ist er für alle Mitglieder weg.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The circle is stored in your iCloud. If you delete it, it is gone for all members."
+          }
+        }
+      }
+    },
+    "Der Kreis liegt verschlüsselt in der iCloud des Besitzers. Mit dem Beitritt sieht Apple, dass dein iCloud-Konto dazugehört.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The circle is stored encrypted in the owner's iCloud. When you join, Apple sees that your iCloud account belongs to it."
+          }
+        }
+      }
+    },
+    "Der Name ist verschlüsselt und nur für Mitglieder sichtbar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The name is encrypted and visible only to members."
+          }
+        }
+      }
+    },
+    "Die Daten konnten nicht entschlüsselt oder geprüft werden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The data could not be decrypted or verified."
+          }
+        }
+      }
+    },
+    "Die Einladung ist abgelaufen. Bitte um eine neue.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The invite has expired. Ask for a new one."
+          }
+        }
+      }
+    },
+    "Die Einladung ist ungültig oder wurde zurückgezogen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The invite is invalid or was withdrawn."
+          }
+        }
+      }
+    },
+    "Die Kreisdaten wurden verändert und sind nicht vom Besitzer signiert.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The circle data was changed and is not signed by the owner."
+          }
+        }
+      }
+    },
+    "Die Nachricht ist zu lang.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The message is too long."
+          }
+        }
+      }
+    },
+    "Die Person lädt dich in ihren eigenen Kreis ein. Damit jemand deinem Kreis beitritt: Kreis öffnen, „Jemanden einladen“, Einladung erstellen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The person invites you to their own circle. To have someone join your circle: open the circle, “Invite someone”, create an invite."
+          }
+        }
+      }
+    },
+    "Diese Woche": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This week"
+          }
+        }
+      }
+    },
+    "Diese iCloud-Konten haben den Freigabelink geöffnet, aber keine gültige Einladung. Sie sehen nur verschlüsselte Daten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These iCloud accounts opened the share link but have no valid invite. They see only encrypted data."
+          }
+        }
+      }
+    },
+    "Dieses Gerät": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This device"
+          }
+        }
+      }
+    },
+    "Dieses Gerät kann den Kreis nicht prüfen, z. B. nach einer Neuinstallation. Lass dich neu einladen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This device cannot verify the circle, e.g. after reinstalling. Ask for a new invite."
+          }
+        }
+      }
+    },
+    "Dieses Mitglied gibt es nicht.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This member does not exist."
+          }
+        }
+      }
+    },
+    "Drei Sekunden gedrückt halten, um deine Kreise zu alarmieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold for three seconds to alert your circles"
+          }
+        }
+      }
+    },
+    "Du": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You"
+          }
+        }
+      }
+    },
+    "Du kannst nur über eine neue Einladung zurückkommen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can only come back with a new invite."
+          }
+        }
+      }
+    },
+    "Du wurdest in einen Kreis eingeladen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You were invited to a circle."
+          }
+        }
+      }
+    },
+    "Ein Kreis auf Zeit, z. B. für einen Ausflug, endet von selbst: Danach ist er für alle weg, samt Standorten und Nachrichten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A temporary circle, e.g. for a trip, ends by itself: afterwards it is gone for everyone, including locations and messages."
+          }
+        }
+      }
+    },
+    "Einchecken: „Ich bin hier“": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check in: “I'm here”"
+          }
+        }
+      }
+    },
+    "Einladen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite"
+          }
+        }
+      }
+    },
+    "Einladung einfügen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste invite"
+          }
+        }
+      }
+    },
+    "Einladung erstellen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create invite"
+          }
+        }
+      }
+    },
+    "Einladungen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites"
+          }
+        }
+      }
+    },
+    "Einladungslink": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite link"
+          }
+        }
+      }
+    },
+    "Einstellungen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "Ende-zu-Ende-verschlüsselt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End-to-end encrypted"
+          }
+        }
+      }
+    },
+    "Ende-zu-Ende-verschlüsselt · Schlüsselversion %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End-to-end encrypted · key version %lld"
+          }
+        }
+      }
+    },
+    "Ende-zu-Ende-verschlüsselt. Alle im Kreis können es lesen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End-to-end encrypted. Everyone in the circle can read it."
+          }
+        }
+      }
+    },
+    "Ende-zu-Ende-verschlüsselt. Wie lange der Verlauf aufbewahrt wird, legt %@ selbst fest.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End-to-end encrypted. How long the history is kept is up to %@."
+          }
+        }
+      }
+    },
+    "Entdecker: über 10 km unterwegs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explorer: more than 10 km on the way"
+          }
+        }
+      }
+    },
+    "Entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "Entfernt die Fahrt für alle, sie zählt dann nicht für deine Punkte.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removes the trip for everyone; it no longer counts for your score."
+          }
+        }
+      }
+    },
+    "Entfernung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distance"
+          }
+        }
+      }
+    },
+    "Entwarnung senden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send all-clear"
+          }
+        }
+      }
+    },
+    "Entwicklung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Development"
+          }
+        }
+      }
+    },
+    "Erkannt auf dem iPhone von %@. Ende-zu-Ende-verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detected on %@'s iPhone. End-to-end encrypted."
+          }
+        }
+      }
+    },
+    "Erstelle einen Kreis für deine Familie oder Freunde, oder tritt über eine Einladung bei.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create a circle for your family or friends, or join with an invite."
+          }
+        }
+      }
+    },
+    "Erstellen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create"
+          }
+        }
+      }
+    },
+    "Es sah nach einem Unfall aus. In %lld Sekunden alarmiert Leuchtturm deine Kreise.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It looked like a crash. Leuchtturm alerts your circles in %lld seconds."
+          }
+        }
+      }
+    },
+    "Es sah nach einem Unfall aus. Ohne Antwort alarmiert Leuchtturm in 60 Sekunden deine Kreise.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It looked like a crash. Without an answer, Leuchtturm alerts your circles in 60 seconds."
+          }
+        }
+      }
+    },
+    "Fahrten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trips"
+          }
+        }
+      }
+    },
+    "Fahrten teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share trips"
+          }
+        }
+      }
+    },
+    "Fertig": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Fremder öffnet den iCloud-Link": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stranger opens the iCloud link"
+          }
+        }
+      }
+    },
+    "Fährt · %@ · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Driving · %@ · %@"
+          }
+        }
+      }
+    },
+    "Genauigkeit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accuracy"
+          }
+        }
+      }
+    },
+    "Gerade eben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Just now"
+          }
+        }
+      }
+    },
+    "Gerade niemand da": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody here right now"
+          }
+        }
+      }
+    },
+    "Gespeichert wird in deiner iCloud. Apple sieht nur verschlüsselte Daten, aber welche iCloud-Konten gemeinsam in einem Kreis sind. Alle Mitglieder brauchen ein iCloud-Konto.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data is stored in your iCloud. Apple sees only encrypted data, but also which iCloud accounts share a circle. All members need an iCloud account."
+          }
+        }
+      }
+    },
+    "Gestern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yesterday"
+          }
+        }
+      }
+    },
+    "Gib zuerst deinen Namen ein, dann geht es hier los.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter your name first, then you can start here."
+          }
+        }
+      }
+    },
+    "Groß": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Large"
+          }
+        }
+      }
+    },
+    "Größe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Size"
+          }
+        }
+      }
+    },
+    "Guten-Morgen-Gruß": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good-morning greeting"
+          }
+        }
+      }
+    },
+    "Gültig für": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valid for"
+          }
+        }
+      }
+    },
+    "Halte den Knopf 3 Sekunden gedrückt. Alle deine Kreise bekommen eine dringende Nachricht mit deinem genauen Ort, auch im Nebel.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold the button for 3 seconds. All your circles get an urgent message with your exact location, even in fog."
+          }
+        }
+      }
+    },
+    "Heute": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
+        }
+      }
+    },
+    "Hilfe rufen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call for help"
+          }
+        }
+      }
+    },
+    "Hoppla": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oops"
+          }
+        }
+      }
+    },
+    "Höchsttempo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top speed"
+          }
+        }
+      }
+    },
+    "Ich bin nur mitgefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I was only a passenger"
+          }
+        }
+      }
+    },
+    "Im Nebel teilst du keinen genauen Ort. Beende den Nebel zuerst, um einzuchecken.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In fog you don't share an exact location. End the fog first to check in."
+          }
+        }
+      }
+    },
+    "In Apple Karten öffnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in Apple Maps"
+          }
+        }
+      }
+    },
+    "Jeder mit dem Link kann beitreten, bis er abläuft. Neue Mitglieder siehst du in der Mitgliederliste und kannst sie jederzeit entfernen. Entfernst du jemanden, werden alle offenen Einladungen ungültig.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anyone with the link can join until it expires. You see new members in the member list and can remove them at any time. Removing someone makes all open invites invalid."
+          }
+        }
+      }
+    },
+    "Jemand": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Someone"
+          }
+        }
+      }
+    },
+    "Jemanden einladen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite someone"
+          }
+        }
+      }
+    },
+    "Kein Verlauf": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No history"
+          }
+        }
+      }
+    },
+    "Keine Verbindung zu iCloud. Bitte versuch es gleich noch einmal.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No connection to iCloud. Please try again in a moment."
+          }
+        }
+      }
+    },
+    "Klein": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small"
+          }
+        }
+      }
+    },
+    "Komm in meinen Leuchtturm-Kreis %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join my Leuchtturm circle %@"
+          }
+        }
+      }
+    },
+    "Kommt jemand an oder geht, bekommt der Kreis Bescheid. Das prüft jedes iPhone selbst, kein Server kennt eure Orte. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When someone arrives or leaves, the circle is told. Each iPhone checks this itself; no server knows your places. Suggestions come from your stays, which are stored only on this iPhone."
+          }
+        }
+      }
+    },
+    "Kreis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Circle"
+          }
+        }
+      }
+    },
+    "Kreis auf Zeit · endet %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temporary circle · ends %@"
+          }
+        }
+      }
+    },
+    "Kreis beitreten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join circle"
+          }
+        }
+      }
+    },
+    "Kreis erstellen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create circle"
+          }
+        }
+      }
+    },
+    "Kreis für alle löschen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete circle for everyone?"
+          }
+        }
+      }
+    },
+    "Kreis löschen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete circle"
+          }
+        }
+      }
+    },
+    "Kreis umbenennen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rename circle"
+          }
+        }
+      }
+    },
+    "Kreis verlassen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave circle"
+          }
+        }
+      }
+    },
+    "Kreis verlassen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave circle?"
+          }
+        }
+      }
+    },
+    "Kreis verwalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage circle"
+          }
+        }
+      }
+    },
+    "Kreis wählen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose circle"
+          }
+        }
+      }
+    },
+    "Lege zuerst einen Ort an, z. B. die Schule.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a place first, e.g. the school."
+          }
+        }
+      }
+    },
+    "Leuchtturm ist kein Notrufdienst. In Lebensgefahr ruf direkt die 112 an.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm is not an emergency service. If a life is in danger, call 112 directly."
+          }
+        }
+      }
+    },
+    "Leuchtturm speichert in iCloud (Apple). Kreisnamen, Namen und Standorte werden vorher auf dem iPhone verschlüsselt, Apple kann sie nicht lesen. Apple sieht aber, welche iCloud-Konten zusammen in einem Kreis sind und wann Daten geschrieben werden. Die Daten liegen in Apples Rechenzentren, nicht zwingend in der EU. Die Karte selbst kommt von Apple Karten: Beim Laden sieht Apple, welchen Kartenausschnitt du ansiehst, aber nicht, wer wo ist.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm stores data in iCloud (Apple). Circle names, names and locations are encrypted on the iPhone first; Apple cannot read them. Apple does see which iCloud accounts are in a circle together and when data is written. The data is in Apple's data centers, not necessarily in the EU. The map itself comes from Apple Maps: when it loads, Apple sees which map area you look at, but not who is where."
+          }
+        }
+      }
+    },
+    "Leuchtturm-Verlauf.gpx": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm-History.gpx"
+          }
+        }
+      }
+    },
+    "Link teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share link"
+          }
+        }
+      }
+    },
+    "Los geht's": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let's go"
+          }
+        }
+      }
+    },
+    "Löschen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "Löschen entfernt deine eigenen Kreise für alle, verlässt alle anderen und löscht deine Schlüssel. Das lässt sich nicht rückgängig machen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleting removes your own circles for everyone, leaves all others and deletes your keys. This cannot be undone."
+          }
+        }
+      }
+    },
+    "Löscht die Schlüssel auf diesem iPhone. Deine Kreise in iCloud bleiben bestehen, du kannst sie danach aber nicht mehr lesen und brauchst neue Einladungen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deletes the keys on this iPhone. Your circles in iCloud remain, but you can no longer read them and need new invites."
+          }
+        }
+      }
+    },
+    "Markierung entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove mark"
+          }
+        }
+      }
+    },
+    "Mein Leuchtturm-Verlauf": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My Leuchtturm history"
+          }
+        }
+      }
+    },
+    "Melden, wenn nicht angekommen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tell me if not arrived"
+          }
+        }
+      }
+    },
+    "Mir geht's gut": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'm OK"
+          }
+        }
+      }
+    },
+    "Mitglied": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Member"
+          }
+        }
+      }
+    },
+    "Mitglieder (%lld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Members (%lld)"
+          }
+        }
+      }
+    },
+    "Mittel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medium"
+          }
+        }
+      }
+    },
+    "Möglicher Unfall erkannt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Possible crash detected"
+          }
+        }
+      }
+    },
+    "Nach dem Beitritt sehen die Mitglieder deinen Namen und deinen Standort, Ende-zu-Ende-verschlüsselt. Das Teilen kannst du in den Einstellungen jederzeit pausieren.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After joining, members see your name and location, end-to-end encrypted. You can pause sharing in Settings at any time."
+          }
+        }
+      }
+    },
+    "Nachrichten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        }
+      }
+    },
+    "Name speichern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save name"
+          }
+        }
+      }
+    },
+    "Name, z. B. Zuhause": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name, e.g. Home"
+          }
+        }
+      }
+    },
+    "Namen müssen 1 bis %lld Zeichen lang sein.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Names must be 1 to %lld characters long."
+          }
+        }
+      }
+    },
+    "Nebel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fog"
+          }
+        }
+      }
+    },
+    "Nebel bis %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fog until %@"
+          }
+        }
+      }
+    },
+    "Nebel bis %@ · beenden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fog until %@ · end"
+          }
+        }
+      }
+    },
+    "Nebel: nur ungefähre Gegend teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fog: share only the rough area"
+          }
+        }
+      }
+    },
+    "Neu beigetreten, noch nicht vom Besitzer bestätigt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Just joined, not yet confirmed by the owner"
+          }
+        }
+      }
+    },
+    "Neu in „%@“: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New in “%@”: %@"
+          }
+        }
+      }
+    },
+    "Neuer Kreis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New circle"
+          }
+        }
+      }
+    },
+    "Neuer Ort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New place"
+          }
+        }
+      }
+    },
+    "Neuigkeiten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "News"
+          }
+        }
+      }
+    },
+    "Nicht bestätigt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not confirmed"
+          }
+        }
+      }
+    },
+    "Nicht gefunden. Vielleicht wurde der Kreis gelöscht oder du wurdest entfernt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not found. Maybe the circle was deleted or you were removed."
+          }
+        }
+      }
+    },
+    "Noch keine Kreise": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No circles yet"
+          }
+        }
+      }
+    },
+    "Noch keine geteilten Fahrten diese Woche.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No shared trips this week yet."
+          }
+        }
+      }
+    },
+    "Notruf 112 anrufen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call 112"
+          }
+        }
+      }
+    },
+    "Nur auf deinem iPhone gespeichert. Kommt die Meldung über die Ankunft zu spät an, kann der Hinweis auch einmal zu Unrecht kommen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stored only on your iPhone. If the arrival message arrives late, the alert may occasionally come although they arrived."
+          }
+        }
+      }
+    },
+    "Nur dieses Gerät zurücksetzen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset this device only"
+          }
+        }
+      }
+    },
+    "Nur dieses Gerät zurücksetzen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset this device only?"
+          }
+        }
+      }
+    },
+    "Nur heute": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today only"
+          }
+        }
+      }
+    },
+    "Nur in Test-Builds. Die Simulation nutzt weder iCloud noch die echten Schlüssel dieses Geräts, deine echten Daten bleiben unberührt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test builds only. The simulation uses neither iCloud nor this device's real keys; your real data stays untouched."
+          }
+        }
+      }
+    },
+    "Nur in Test-Builds: eine Simulation mit erfundenen Personen. Nichts geht an iCloud.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test builds only: a simulation with made-up people. Nothing goes to iCloud."
+          }
+        }
+      }
+    },
+    "Nur solange die App läuft": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only while the app is running"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "Ohne iCloud ausprobieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try without iCloud"
+          }
+        }
+      }
+    },
+    "Ort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Place"
+          }
+        }
+      }
+    },
+    "Ort hinzufügen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add place"
+          }
+        }
+      }
+    },
+    "Ort, Name und Symbol sind Ende-zu-Ende-verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location, name and symbol are end-to-end encrypted."
+          }
+        }
+      }
+    },
+    "Orte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Places"
+          }
+        }
+      }
+    },
+    "Persönlich überprüft": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verified in person"
+          }
+        }
+      }
+    },
+    "Punkte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points"
+          }
+        }
+      }
+    },
+    "QR-Code der Einladung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite QR code"
+          }
+        }
+      }
+    },
+    "Quellcode auf GitHub": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source code on GitHub"
+          }
+        }
+      }
+    },
+    "Region (ca. 50 km)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Region (about 50 km)"
+          }
+        }
+      }
+    },
+    "SOS": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SOS"
+          }
+        }
+      }
+    },
+    "Schalte „Verlauf teilen“ in den Einstellungen ein.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn on “Share history” in Settings."
+          }
+        }
+      }
+    },
+    "Schickst du jemandem eine Reaktion, antwortet die Person kurz darauf.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you send someone a reaction, they answer shortly after."
+          }
+        }
+      }
+    },
+    "Schließen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "Schnell beschleunigt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rapid acceleration"
+          }
+        }
+      }
+    },
+    "Sicher unterwegs: 3 Fahrten mit 100 Punkten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smooth driver: 3 trips with 100 points"
+          }
+        }
+      }
+    },
+    "Sicherheitscode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safety code"
+          }
+        }
+      }
+    },
+    "Sicherheitscode %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safety code %@"
+          }
+        }
+      }
+    },
+    "Sicherheitscode überprüft": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safety code verified"
+          }
+        }
+      }
+    },
+    "Sichern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "Simulation": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulation"
+          }
+        }
+      }
+    },
+    "Simulation beenden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End simulation"
+          }
+        }
+      }
+    },
+    "Simulation starten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start simulation"
+          }
+        }
+      }
+    },
+    "Simulation: Alles bleibt im Speicher dieser App, nichts geht an iCloud. Beendest du die App, ist alles weg.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulation: everything stays in this app's memory, nothing goes to iCloud. When you quit the app, everything is gone."
+          }
+        }
+      }
+    },
+    "So sehen dich die Mitglieder deiner Kreise. Nur sie können ihn lesen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is how members of your circles see you. Only they can read it."
+          }
+        }
+      }
+    },
+    "Solange der Nebel aktiv ist, verlässt dein genauer Standort dein iPhone nicht. Dein Kreis sieht nur die Gegend und deinen Akkustand. Check-ins sind so lange aus. Danach wird automatisch wieder genau geteilt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "While fog is on, your exact location does not leave your iPhone. Your circle sees only the area and your battery level. Check-ins are off meanwhile. Afterwards, exact sharing resumes automatically."
+          }
+        }
+      }
+    },
+    "Speichern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "Spielt durch, dass die Person diesen Link bekommt und damit beitritt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plays through the person receiving this link and joining with it."
+          }
+        }
+      }
+    },
+    "Stadt (ca. 10 km)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "City (about 10 km)"
+          }
+        }
+      }
+    },
+    "Stadtteil (ca. 2 km)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neighborhood (about 2 km)"
+          }
+        }
+      }
+    },
+    "Standort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location"
+          }
+        }
+      }
+    },
+    "Standort teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share location"
+          }
+        }
+      }
+    },
+    "Standortzugriff erlauben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow location access"
+          }
+        }
+      }
+    },
+    "Standortzugriff ist aus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location access is off"
+          }
+        }
+      }
+    },
+    "Stark gebremst": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hard braking"
+          }
+        }
+      }
+    },
+    "Starten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start"
+          }
+        }
+      }
+    },
+    "Stimmt überein: als überprüft markieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It matches: mark as verified"
+          }
+        }
+      }
+    },
+    "Strecke": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distance"
+          }
+        }
+      }
+    },
+    "Strecke aus dem geteilten Verlauf, auch zu Fuß und mit dem Rad.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distance from the shared history, including walking and cycling."
+          }
+        }
+      }
+    },
+    "Suche Standort …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finding location …"
+          }
+        }
+      }
+    },
+    "Symbol": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Symbol"
+          }
+        }
+      }
+    },
+    "Tag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day"
+          }
+        }
+      }
+    },
+    "Teile deinen Standort mit den Menschen, die dir wichtig sind. Alles wird auf deinem iPhone verschlüsselt, bevor es dein Gerät verlässt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share your location with the people who matter to you. Everything is encrypted on your iPhone before it leaves your device."
+          }
+        }
+      }
+    },
+    "Teilen pausiert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sharing paused"
+          }
+        }
+      }
+    },
+    "Teilt gerade nur eine ungefähre Gegend (ca. %lld km).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Currently shares only a rough area (about %lld km)."
+          }
+        }
+      }
+    },
+    "Teilt noch keinen Standort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not sharing a location yet"
+          }
+        }
+      }
+    },
+    "Tippe, um den Ort zu sehen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap to see where."
+          }
+        }
+      }
+    },
+    "Umbenennen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rename"
+          }
+        }
+      }
+    },
+    "Unbekannter Fehler.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown error."
+          }
+        }
+      }
+    },
+    "Unbekannter Teilnehmer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown participant"
+          }
+        }
+      }
+    },
+    "Unfall-Abfrage bei mir testen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test the crash check on me"
+          }
+        }
+      }
+    },
+    "Unfallerkennung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crash detection"
+          }
+        }
+      }
+    },
+    "Ungültige Gültigkeitsdauer.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid validity period."
+          }
+        }
+      }
+    },
+    "Unterwegs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the way"
+          }
+        }
+      }
+    },
+    "Vergleicht den Code persönlich mit dem Gerät der Person. Stimmt er überein, kann niemand unbemerkt einen fremden Schlüssel unterschieben. Installiert jemand die App neu, bekommt er einen neuen Code und muss neu überprüft werden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare the code in person with the person's device. If it matches, nobody can slip in a foreign key unnoticed. Anyone who reinstalls the app gets a new code and needs to be verified again."
+          }
+        }
+      }
+    },
+    "Vergleicht den Sicherheitscode persönlich, bevor ihr euch darauf verlasst: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare the safety code in person before relying on it: %@"
+          }
+        }
+      }
+    },
+    "Vergleicht den Sicherheitscode unter jedem Namen persönlich mit dem Gerät der Person. Stimmt er überein, kann niemand unbemerkt einen fremden Schlüssel unterschieben.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare the safety code under each name in person with that person's device. If it matches, nobody can slip in a foreign key unnoticed."
+          }
+        }
+      }
+    },
+    "Verlassen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave"
+          }
+        }
+      }
+    },
+    "Verlauf": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History"
+          }
+        }
+      }
+    },
+    "Verlauf teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share history"
+          }
+        }
+      }
+    },
+    "Verlauf und Fahrten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History and trips"
+          }
+        }
+      }
+    },
+    "Verlauf von %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History of %@"
+          }
+        }
+      }
+    },
+    "Verschiebe die Karte, bis der Ort in der Mitte liegt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move the map until the place is in the middle."
+          }
+        }
+      }
+    },
+    "Vorschlag: Hier bist du oft": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggestion: you are here often"
+          }
+        }
+      }
+    },
+    "Warte auf den Schlüssel vom Besitzer. Er wird übertragen, sobald der Besitzer die App öffnet.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for the key from the owner. It is sent as soon as the owner opens the app."
+          }
+        }
+      }
+    },
+    "Wartet auf Bestätigung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for confirmation"
+          }
+        }
+      }
+    },
+    "Weite Wege: über 100 km gefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Road tripper: more than 100 km driven"
+          }
+        }
+      }
+    },
+    "Wer diesen Link oder QR-Code hat, kann beitreten. Teile ihn nur privat, z. B. persönlich oder per verschlüsselter Nachricht.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anyone with this link or QR code can join. Share it only privately, e.g. in person or by encrypted message."
+          }
+        }
+      }
+    },
+    "Wie lange?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How long?"
+          }
+        }
+      }
+    },
+    "Wie ungenau?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How rough?"
+          }
+        }
+      }
+    },
+    "Wiederholen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat"
+          }
+        }
+      }
+    },
+    "Willkommen bei Leuchtturm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome to Leuchtturm"
+          }
+        }
+      }
+    },
+    "Wird geteilt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shared"
+          }
+        }
+      }
+    },
+    "Wird in allen deinen Kreisen verschlüsselt aktualisiert.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated, encrypted, in all your circles."
+          }
+        }
+      }
+    },
+    "Wirklich alles löschen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Really delete everything?"
+          }
+        }
+      }
+    },
+    "Wo liegen meine Daten?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where is my data?"
+          }
+        }
+      }
+    },
+    "Wochenrückblick und Bestenliste": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekly review and leaderboard"
+          }
+        }
+      }
+    },
+    "Zuletzt geteilt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last shared"
+          }
+        }
+      }
+    },
+    "Zurücksetzen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset"
+          }
+        }
+      }
+    },
+    "an %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "to %@"
+          }
+        }
+      }
+    },
+    "an dich": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "to you"
+          }
+        }
+      }
+    },
+    "einmal": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "once"
+          }
+        }
+      }
+    },
+    "hat den Tag begonnen ☀️": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "has started the day ☀️"
+          }
+        }
+      }
+    },
+    "hat eingecheckt 📍": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "checked in 📍"
+          }
+        }
+      }
+    },
+    "hat nur noch %@ %% Akku 🪫": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "has only %@ %% battery left 🪫"
+          }
+        }
+      }
+    },
+    "hat „%@“ verlassen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "left “%@”"
+          }
+        }
+      }
+    },
+    "iCloud-Fehler: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud error: %@"
+          }
+        }
+      }
+    },
+    "ist bei „%@“ angekommen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "arrived at “%@”"
+          }
+        }
+      }
+    },
+    "jemanden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "someone"
+          }
+        }
+      }
+    },
+    "leuchtturm://join?…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "leuchtturm://join?…"
+          }
+        }
+      }
+    },
+    "neu": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "new"
+          }
+        }
+      }
+    },
+    "täglich": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "daily"
+          }
+        }
+      }
+    },
+    "werktags": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "weekdays"
+          }
+        }
+      }
+    },
+    "z. B. Familie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g. Family"
+          }
+        }
+      }
+    },
+    "„%@“ gesendet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” sent"
+          }
+        }
+      }
+    },
+    "⏰ %@ ist noch nicht angekommen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⏰ %@ has not arrived yet"
+          }
+        }
+      }
+    },
+    "✅ ist in Sicherheit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "✅ is safe"
+          }
+        }
+      }
+    },
+    "🆘 %@ braucht Hilfe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🆘 %@ needs help"
+          }
+        }
+      }
+    },
+    "🆘 braucht Hilfe!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🆘 needs help!"
+          }
+        }
+      }
+    },
+    "🆘 braucht Hilfe: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🆘 needs help: %@"
+          }
+        }
+      }
+    },
+    "🏆 Sicher gefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🏆 Safest drivers"
+          }
+        }
+      }
+    },
+    "👟 Am meisten unterwegs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "👟 Most on the move"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

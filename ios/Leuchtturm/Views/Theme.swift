@@ -51,6 +51,13 @@ enum Theme {
         ? UIColor(red: 0.09, green: 0.23, blue: 0.18, alpha: 1)
         : UIColor(red: 0.93, green: 0.98, blue: 0.94, alpha: 1)
     })
+    /// "57 km/h" or "35 mph", depending on the region.
+    static func speed(_ metersPerSecond: Double) -> String {
+        let unit: UnitSpeed = Locale.current.measurementSystem == .metric ? .kilometersPerHour : .milesPerHour
+        return Measurement(value: metersPerSecond, unit: UnitSpeed.metersPerSecond).converted(to: unit)
+            .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0))))
+    }
+
     static var sky: LinearGradient {
         LinearGradient(colors: [skyTop, skyBottom], startPoint: .top, endPoint: .bottom)
     }

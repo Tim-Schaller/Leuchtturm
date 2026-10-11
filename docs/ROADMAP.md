@@ -94,7 +94,8 @@ Not planned, because they would need a company server, a call center or third pa
 - [ ] Friend requests, multiple circles and groups
 - [x] Opt-in weekly circle leaderboards (driving, distance)
 - [x] Weekly badges (safe driving, long distances, explorer)
-- [ ] Liquid Glass UI polish, accessibility, localization (DE, EN)
+- [x] Localization: German source, English string catalog (app and permission texts), region-aware units
+- [ ] Liquid Glass UI polish, accessibility pass
 - [ ] Multi-device support and key backup
 - [ ] Owner succession if the owner's device is lost
 - [x] Warning when a new key appears in a circle; members can be marked as verified

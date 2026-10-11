@@ -219,7 +219,7 @@ struct TripView: View {
                 LabeledContent("Punkte") { ScoreBadge(score: trip.score) }
                 LabeledContent("Strecke", value: WeekView.km(trip.distance))
                 LabeledContent("Dauer", value: WeekView.minutes(trip.duration))
-                LabeledContent("Höchsttempo", value: "\(Int((trip.topSpeed * 3.6).rounded())) km/h")
+                LabeledContent("Höchsttempo", value: Theme.speed(trip.topSpeed))
                 LabeledContent("Stark gebremst", value: "\(trip.hardBrakes)×")
                 LabeledContent("Schnell beschleunigt", value: "\(trip.rapidAccelerations)×")
             } footer: {

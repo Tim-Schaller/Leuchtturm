@@ -62,6 +62,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 - Fog mode: share only the rough area for a few hours
 - Emoji reactions, quick notes ("Bin auf dem Weg"), check-ins and an opt-in good-morning greeting, all end-to-end encrypted and signed
 - Circles with encrypted names and display names, also as temporary circles that end by themselves
+- In German and English
 - Invites via link or QR code, with expiry
 - Removing members rotates the circle key and revokes their iCloud access
 - People who only obtained the iCloud share link (without the invite secret) are not admitted and are flagged to the owner
@@ -69,7 +70,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- English localization, multi-device support, key backup, opt-in history with your own retention period, opt-in SOS and check-in
+- Accessibility pass, multi-device support, key backup, opt-in history with your own retention period, opt-in SOS and check-in
 - Drive detection with live speed (km/h)
 - Adaptive tracking to keep battery drain low
 

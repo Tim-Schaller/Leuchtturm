@@ -84,7 +84,20 @@ struct PeopleSheet: View {
                     Button("Einchecken: „Ich bin hier“", systemImage: "mappin.and.ellipse") {
                         Task { await model.send(.checkIn, in: circle.ref) }
                     }
-                    .disabled(!details.hasKey)
+                    .disabled(!details.hasKey || model.activeBubble != nil)
+                    if let bubble = model.activeBubble {
+                        Button {
+                            Task { await model.endBubble() }
+                        } label: {
+                            Label {
+                                Text("Blase bis \(bubble.until, format: .dateTime.hour().minute()) · beenden")
+                            } icon: {
+                                Image(systemName: "circle.dashed")
+                            }
+                        }
+                    } else {
+                        Button("Blase: nur ungefähre Gegend teilen", systemImage: "circle.dashed") { sheet = .bubble }
+                    }
                     Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(circle.ref) }
                         .disabled(!details.hasKey)
                     NavigationLink(value: DrawerRoute.manage(circle.ref)) {
@@ -120,6 +133,8 @@ struct PeopleSheet: View {
             JoinSheet(link: nil, onJoined: onSelectCircle)
         case let .invite(ref):
             InviteSheet(ref: ref, circleName: details?.name)
+        case .bubble:
+            BubbleSheet()
         #if DEBUG
         case .simulation:
             SimulationView { receivedInvite = $0 }
@@ -180,6 +195,9 @@ enum LocationStatus {
     static func text(for member: CircleMember, model: AppModel) -> String {
         if member.isMe {
             if !model.isSharingLocation { return "Teilen pausiert" }
+            if let bubble = model.activeBubble {
+                return String(localized: "Blase bis \(bubble.until.formatted(.dateTime.hour().minute()))")
+            }
             if model.tracker.isDenied { return "Standortzugriff ist aus" }
             if model.tracker.location == nil { return "Suche Standort …" }
             return model.tracker.isAlwaysAllowed || model.isSimulation ? "Wird geteilt" : "Nur solange die App läuft"
@@ -190,6 +208,7 @@ enum LocationStatus {
             ? String(localized: "Gerade eben")
             : location.timestamp.formatted(.relative(presentation: .named))
         guard let distance = distance(to: location, from: model.tracker.location) else { return ago }
+        if location.bubbleRadius != nil { return String(localized: "\(ago) · in einer Blase") }
         return "\(ago) · \(distance)"
     }
 
@@ -221,7 +240,11 @@ struct MemberDetailView: View {
                 ReactionPicker(member: member, ref: ref)
             }
 
-            if let location = member.location, !member.isMe {
+            if let location = member.location, let radius = location.bubbleRadius, !member.isMe {
+                Section {
+                    Label("Teilt gerade nur eine ungefähre Gegend (ca. \(radius * 2 / 1000) km).", systemImage: "circle.dashed")
+                }
+            } else if let location = member.location, !member.isMe {
                 Section {
                     LabeledContent("Aktualisiert") {
                         Text(location.timestamp, format: .dateTime.hour().minute())

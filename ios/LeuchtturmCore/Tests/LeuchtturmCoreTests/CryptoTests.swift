@@ -246,3 +246,23 @@ struct InviteLinkTests {
         #expect(InviteLink(string: "leuchtturm://join?v=2&share=\(s)&id=\(id)&k=\(k)") != nil)
     }
 }
+
+struct LocationTests {
+    @Test func bubbleHidesThePosition() throws {
+        let home = try #require(SharedLocation(latitude: 53.55120, longitude: 9.99370, accuracy: 10, timestamp: Date(), battery: 50))
+        let nextDoor = try #require(SharedLocation(latitude: 53.55160, longitude: 9.99410, accuracy: 10, timestamp: Date()))
+        let a = try #require(home.inBubble(radius: 2000))
+        let b = try #require(nextDoor.inBubble(radius: 2000))
+        // Same cell, same reported point: nothing to average.
+        #expect(a.latitude == b.latitude && a.longitude == b.longitude)
+        #expect(a.bubbleRadius == 2000 && a.accuracy >= 2000 && a.battery == 50)
+        // Within the cell, but not the real position.
+        #expect(abs(a.latitude - home.latitude) < 0.04 && a.latitude != home.latitude)
+        #expect(home.inBubble(radius: 10) == nil)
+
+        let key = CircleCrypto.newCircleKey()
+        let blob = try CircleCrypto.sealLocation(a, key: key, epoch: 1, circleID: "c", deviceID: "d")
+        let opened = try #require(try CircleCrypto.openLocation(blob, circleID: "c", deviceID: "d", keyForEpoch: { _ in key }))
+        #expect(opened.location == a)
+    }
+}

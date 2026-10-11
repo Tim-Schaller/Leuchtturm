@@ -77,6 +77,17 @@ struct SimulationTests {
         #expect(details.notes.contains { $0.senderID == me && $0.text == "❤️" })
     }
 
+    @Test func bubbleBlocksCheckIns() async throws {
+        let (model, _) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        await model.startBubble(radius: 1000, hours: 1)
+        #expect(model.activeBubble?.radius == 1000)
+        #expect(!(await model.send(.checkIn, in: ref)))
+        await model.endBubble()
+        #expect(model.activeBubble == nil)
+    }
+
     @Test func strangerWithShareLinkIsUnverified() async throws {
         let (model, _) = try await simulatedModel()
         let ref = try #require(await model.createCircle(name: "Familie"))

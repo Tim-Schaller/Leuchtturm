@@ -13,7 +13,7 @@ enum Theme {
         Color(red: 0.36, green: 0.55, blue: 0.85), // sky
         Color(red: 0.58, green: 0.47, blue: 0.80), // heather
         Color(red: 0.62, green: 0.45, blue: 0.30), // earth
-        Color(red: 0.12, green: 0.42, blue: 0.29), // pine
+        Color(red: 0.80, green: 0.33, blue: 0.52), // berry
     ]
 
     static func color(for id: String) -> Color {

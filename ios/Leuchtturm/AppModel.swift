@@ -22,6 +22,7 @@ final class AppModel {
         static let newsSince = "newsSince"
         static let morningGreeting = "morningGreeting"
         static let lastMorningGreeting = "lastMorningGreeting"
+        static let bubble = "bubble"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -59,6 +60,10 @@ final class AppModel {
     }
 
     private let keychain = KeychainSecretStore()
+    /// While set and not expired, only an approximate area is shared.
+    private(set) var bubble: Bubble?
+    var activeBubble: Bubble? { bubble.flatMap { $0.until > Date() ? $0 : nil } }
+
     /// Says "good morning" to the circles on the first movement of the day.
     private(set) var sendsMorningGreeting = false
     /// Notes already notified (or sent by me), so each one notifies once.
@@ -108,6 +113,7 @@ final class AppModel {
         if !isSimulation { defaults.set(newsSince, forKey: Keys.newsSince) }
         sendsMorningGreeting = !isSimulation && defaults.bool(forKey: Keys.morningGreeting)
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
+        bubble = isSimulation ? nil : defaults.data(forKey: Keys.bubble).flatMap { try? JSONDecoder().decode(Bubble.self, from: $0) }
         phase = .onboarding
         if !displayName.isEmpty, let client = try? makeClient(name: displayName) {
             self.client = client
@@ -249,8 +255,10 @@ final class AppModel {
         let battery = device.batteryLevel >= 0 ? Int((device.batteryLevel * 100).rounded()) : nil
         let charging = device.batteryState == .charging || device.batteryState == .full
         guard policy.shouldShare(location, after: lastShared),
-              let shared = SharedLocation(location, battery: battery, isCharging: charging)
+              let exact = SharedLocation(location, battery: battery, isCharging: charging)
         else { return }
+        // In a bubble the exact position never leaves the device.
+        let shared = activeBubble.flatMap { exact.inBubble(radius: $0.radius) } ?? exact
         lastShared = location
         // Finish the upload even if iOS suspends the app right after this update.
         let backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "share-location")
@@ -287,6 +295,10 @@ final class AppModel {
     /// good-morning. Returns false and shows the error on failure.
     @discardableResult
     func send(_ kind: CircleNote.Kind, text: String = "", to recipientID: String? = nil, in ref: CircleRef) async -> Bool {
+        if kind == .checkIn && activeBubble != nil {
+            errorMessage = "Während einer Blase teilst du keinen genauen Ort. Beende sie zuerst, um einzuchecken."
+            return false
+        }
         let location = kind == .checkIn ? tracker.location.flatMap { SharedLocation($0) } : nil
         if kind == .checkIn && location == nil {
             errorMessage = "Dein Standort ist noch nicht bekannt. Bitte versuch es gleich noch einmal."
@@ -296,6 +308,24 @@ final class AppModel {
         else { return false }
         markSeen([note.id])
         return true
+    }
+
+    // MARK: Bubble
+
+    func startBubble(radius: Int, hours: Double) async {
+        setBubble(Bubble(radius: radius, until: Date().addingTimeInterval(hours * 3600)))
+        await shareLocationNow()
+    }
+
+    func endBubble() async {
+        setBubble(nil)
+        await shareLocationNow()
+    }
+
+    private func setBubble(_ new: Bubble?) {
+        bubble = new
+        guard !isSimulation else { return }
+        UserDefaults.standard.set(new.flatMap { try? JSONEncoder().encode($0) }, forKey: Keys.bubble)
     }
 
     func setMorningGreeting(_ on: Bool) {
@@ -488,4 +518,15 @@ final class AppModel {
             return "Unbekannter Fehler."
         }
     }
+}
+
+/// Sharing only an approximate area until a given time (Life360's "Bubble").
+struct Bubble: Codable, Equatable {
+    /// Meters; see `SharedLocation.inBubble(radius:)`.
+    let radius: Int
+    let until: Date
+
+    static let sizes: [(radius: Int, label: LocalizedStringResource)] = [
+        (1000, "Stadtteil (ca. 2 km)"), (5000, "Stadt (ca. 10 km)"), (25000, "Region (ca. 50 km)"),
+    ]
 }

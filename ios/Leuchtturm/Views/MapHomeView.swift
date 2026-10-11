@@ -9,6 +9,7 @@ enum HomeSheet: Identifiable {
     case createCircle
     case join
     case invite(CircleRef)
+    case bubble
     #if DEBUG
     case simulation
     #endif
@@ -19,6 +20,7 @@ enum HomeSheet: Identifiable {
         case .createCircle: "create"
         case .join: "join"
         case let .invite(ref): "invite-\(ref.circleID)"
+        case .bubble: "bubble"
         #if DEBUG
         case .simulation: "simulation"
         #endif
@@ -49,8 +51,25 @@ struct MapHomeView: View {
 
     private var myID: String { model.client?.deviceID ?? "" }
 
+    private var memberColors: [String: Color] { Theme.colors(for: details?.members.map(\.id) ?? []) }
+
     var body: some View {
         Map(position: $camera) {
+            // People in a bubble: only the approximate area.
+            ForEach(details?.members ?? []) { member in
+                if !member.isMe, let location = member.location, let radius = location.bubbleRadius {
+                    let color = memberColors[member.id] ?? Theme.color(for: member.id)
+                    MapCircle(center: location.coordinate, radius: Double(radius))
+                        .foregroundStyle(color.opacity(0.15))
+                        .stroke(color.opacity(0.6), style: StrokeStyle(lineWidth: 2, dash: [6, 4]))
+                }
+            }
+            if let bubble = model.activeBubble,
+               let mine = model.tracker.location.flatMap({ SharedLocation($0)?.inBubble(radius: bubble.radius) }) {
+                MapCircle(center: mine.coordinate, radius: Double(bubble.radius))
+                    .foregroundStyle(Color.accentColor.opacity(0.12))
+                    .stroke(Color.accentColor.opacity(0.6), style: StrokeStyle(lineWidth: 2, dash: [6, 4]))
+            }
             ForEach(details?.members ?? []) { member in
                 if !member.isMe, let location = member.location {
                     Annotation(member.name ?? "Unbekannt", coordinate: location.coordinate, anchor: .bottom) {
@@ -93,7 +112,7 @@ struct MapHomeView: View {
         .onChange(of: model.hasLoadedCircles && model.circles.isEmpty, initial: true) { _, empty in
             detent = empty ? .medium : PeopleSheet.peek
         }
-        .environment(\.memberColors, Theme.colors(for: details?.members.map(\.id) ?? []))
+        .environment(\.memberColors, memberColors)
         .task(id: model.externalChanges) { await model.refresh() }
         .task(id: "\(selected?.id ?? "")|\(model.externalChanges)") { await follow(selected?.ref) }
     }

@@ -59,6 +59,8 @@ func (e *env) newClient() *client {
 	return &client{e: e, priv: priv, agr: rnd(32)}
 }
 
+func newCircleID() string { return b64.EncodeToString(rnd(16)) }
+
 func rnd(n int) []byte {
 	b := make([]byte, n)
 	_, _ = rand.Read(b)
@@ -227,6 +229,11 @@ func TestCircleInviteRotateFlow(t *testing.T) {
 		Epoch    int64  `json:"epoch"`
 	}
 	expect(t, alice.do("POST", "/v1/circles", map[string]string{
+		"circle_id": "bad",
+		"meta_blob": "AA", "member_blob": "AA", "wrapped_key": "AA",
+	}, nil), 400, "invalid circle id")
+	expect(t, alice.do("POST", "/v1/circles", map[string]string{
+		"circle_id":   newCircleID(),
 		"meta_blob":   b64.EncodeToString([]byte("meta-1")),
 		"member_blob": b64.EncodeToString([]byte("alice-card")),
 		"wrapped_key": b64.EncodeToString([]byte("k1-alice")),
@@ -236,7 +243,7 @@ func TestCircleInviteRotateFlow(t *testing.T) {
 		t.Fatalf("epoch = %d", created.Epoch)
 	}
 
-	expect(t, alice.do("POST", "/v1/circles", map[string]string{"meta_blob": "AA", "member_blob": "", "wrapped_key": "AA"}, nil), 400, "empty blob")
+	expect(t, alice.do("POST", "/v1/circles", map[string]string{"circle_id": newCircleID(), "meta_blob": "AA", "member_blob": "", "wrapped_key": "AA"}, nil), 400, "empty blob")
 	expect(t, mallory.do("GET", "/v1/circles/"+cid, nil, nil), 404, "non-member get")
 
 	invite := func(maxUses int) (string, []byte) {
@@ -245,7 +252,12 @@ func TestCircleInviteRotateFlow(t *testing.T) {
 		var out struct {
 			InviteID string `json:"invite_id"`
 		}
+		var d struct {
+			Epoch int64 `json:"epoch"`
+		}
+		alice.do("GET", "/v1/circles/"+cid, nil, &d)
 		expect(t, alice.do("POST", "/v1/circles/"+cid+"/invites", map[string]any{
+			"epoch":              d.Epoch,
 			"auth_token_hash":    b64.EncodeToString(h[:]),
 			"sealed_circle_key":  b64.EncodeToString([]byte("sealed-k1")),
 			"expires_in_seconds": 3600,
@@ -254,8 +266,11 @@ func TestCircleInviteRotateFlow(t *testing.T) {
 		return out.InviteID, token
 	}
 	expect(t, mallory.do("POST", "/v1/circles/"+cid+"/invites", map[string]any{
-		"auth_token_hash": b64.EncodeToString(rnd(32)), "sealed_circle_key": "AA",
+		"epoch": 1, "auth_token_hash": b64.EncodeToString(rnd(32)), "sealed_circle_key": "AA",
 	}, nil), 404, "non-member invite")
+	expect(t, alice.do("POST", "/v1/circles/"+cid+"/invites", map[string]any{
+		"epoch": 7, "auth_token_hash": b64.EncodeToString(rnd(32)), "sealed_circle_key": "AA",
+	}, nil), 409, "stale epoch invite")
 	expect(t, alice.do("POST", "/v1/circles/"+cid+"/invites", map[string]any{
 		"auth_token_hash": b64.EncodeToString(rnd(32)), "sealed_circle_key": "AA", "max_uses": 51,
 	}, nil), 400, "too many uses")
@@ -373,14 +388,14 @@ func TestExpiredInviteViaAPI(t *testing.T) {
 	var created struct {
 		CircleID string `json:"circle_id"`
 	}
-	alice.do("POST", "/v1/circles", map[string]string{"meta_blob": "AA", "member_blob": "AA", "wrapped_key": "AA"}, &created)
+	alice.do("POST", "/v1/circles", map[string]string{"circle_id": newCircleID(), "meta_blob": "AA", "member_blob": "AA", "wrapped_key": "AA"}, &created)
 	token := rnd(32)
 	h := sha256.Sum256(token)
 	var inv struct {
 		InviteID string `json:"invite_id"`
 	}
 	expect(t, alice.do("POST", "/v1/circles/"+created.CircleID+"/invites", map[string]any{
-		"auth_token_hash": b64.EncodeToString(h[:]), "sealed_circle_key": "AA", "expires_in_seconds": 60,
+		"epoch": 1, "auth_token_hash": b64.EncodeToString(h[:]), "sealed_circle_key": "AA", "expires_in_seconds": 60,
 	}, &inv), 201, "invite")
 
 	e.now = e.now.Add(61 * time.Second)

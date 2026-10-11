@@ -148,6 +148,7 @@ func (s *Server) deleteDevice(w http.ResponseWriter, r *http.Request, dev store.
 // --- circles ---------------------------------------------------------------
 
 type createCircleReq struct {
+	CircleID   string   `json:"circle_id"`
 	MetaBlob   bytesB64 `json:"meta_blob"`
 	MemberBlob bytesB64 `json:"member_blob"`
 	WrappedKey bytesB64 `json:"wrapped_key"`
@@ -163,7 +164,11 @@ func (s *Server) createCircle(w http.ResponseWriter, r *http.Request, dev store.
 		!sizeOK(w, "wrapped_key", req.WrappedKey, 1, maxWrappedKey) {
 		return
 	}
-	id, epoch, err := s.store.CreateCircle(r.Context(), dev.ID, req.MetaBlob, req.MemberBlob, req.WrappedKey)
+	if !store.ValidID(req.CircleID) {
+		writeError(w, http.StatusBadRequest, "bad_request", "circle_id must be 16 bytes, base64url")
+		return
+	}
+	id, epoch, err := s.store.CreateCircle(r.Context(), req.CircleID, dev.ID, req.MetaBlob, req.MemberBlob, req.WrappedKey)
 	if err != nil {
 		s.storeError(w, err)
 		return
@@ -303,6 +308,7 @@ func (s *Server) removeMember(w http.ResponseWriter, r *http.Request, dev store.
 // --- invites ---------------------------------------------------------------
 
 type createInviteReq struct {
+	Epoch           int64    `json:"epoch"`
 	AuthTokenHash   bytesB64 `json:"auth_token_hash"`
 	SealedCircleKey bytesB64 `json:"sealed_circle_key"`
 	ExpiresIn       int64    `json:"expires_in_seconds"`
@@ -337,7 +343,7 @@ func (s *Server) createInvite(w http.ResponseWriter, r *http.Request, dev store.
 		writeError(w, http.StatusBadRequest, "bad_request", "max_uses must be between 1 and 50")
 		return
 	}
-	inv, err := s.store.CreateInvite(r.Context(), r.PathValue("id"), dev.ID, req.AuthTokenHash, req.SealedCircleKey, ttl, uses)
+	inv, err := s.store.CreateInvite(r.Context(), r.PathValue("id"), dev.ID, req.Epoch, req.AuthTokenHash, req.SealedCircleKey, ttl, uses)
 	if err != nil {
 		s.storeError(w, err)
 		return

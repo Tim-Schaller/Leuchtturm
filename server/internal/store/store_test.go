@@ -49,7 +49,11 @@ func newInvite(t *testing.T, s *Store, circleID, deviceID string, ttl time.Durat
 	t.Helper()
 	token := randBytes(32)
 	h := sha256.Sum256(token)
-	inv, err := s.CreateInvite(context.Background(), circleID, deviceID, h[:], []byte("sealed"), ttl, uses)
+	d, err := s.GetCircle(context.Background(), circleID, deviceID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	inv, err := s.CreateInvite(context.Background(), circleID, deviceID, d.Epoch, h[:], []byte("sealed"), ttl, uses)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -105,7 +109,7 @@ func TestCircleLifecycle(t *testing.T) {
 	ctx := context.Background()
 	alice, bob := newDevice(t, s), newDevice(t, s)
 
-	cid, epoch, err := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("alice-card"), []byte("alice-wrapped"))
+	cid, epoch, err := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("alice-card"), []byte("alice-wrapped"))
 	if err != nil || epoch != 1 {
 		t.Fatal(epoch, err)
 	}
@@ -150,7 +154,7 @@ func TestInviteSingleUseExpiryAndWrongToken(t *testing.T) {
 	s, clk := openTest(t, Options{})
 	ctx := context.Background()
 	alice, bob, carol := newDevice(t, s), newDevice(t, s), newDevice(t, s)
-	cid, _, _ := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("a"), []byte("k"))
+	cid, _, _ := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("a"), []byte("k"))
 
 	inv, token := newInvite(t, s, cid, alice.ID, time.Hour, 1)
 
@@ -179,7 +183,7 @@ func TestInviteMultiUseAndAlreadyMember(t *testing.T) {
 	s, _ := openTest(t, Options{})
 	ctx := context.Background()
 	alice, bob, carol := newDevice(t, s), newDevice(t, s), newDevice(t, s)
-	cid, _, _ := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("a"), []byte("k"))
+	cid, _, _ := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("a"), []byte("k"))
 	inv, token := newInvite(t, s, cid, alice.ID, time.Hour, 3)
 
 	if _, err := s.RedeemInvite(ctx, inv.ID, alice.ID, token, []byte("a")); !errors.Is(err, ErrConflict) {
@@ -199,16 +203,16 @@ func TestInviteRequiresMembershipAndLimits(t *testing.T) {
 	s, _ := openTest(t, Options{MaxActiveInvitesPerCircle: 2, MaxMembersPerCircle: 2})
 	ctx := context.Background()
 	alice, bob, carol, mallory := newDevice(t, s), newDevice(t, s), newDevice(t, s), newDevice(t, s)
-	cid, _, _ := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("a"), []byte("k"))
+	cid, _, _ := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("a"), []byte("k"))
 
 	h := sha256.Sum256(randBytes(32))
-	if _, err := s.CreateInvite(ctx, cid, mallory.ID, h[:], []byte("s"), time.Hour, 1); !errors.Is(err, ErrNotFound) {
+	if _, err := s.CreateInvite(ctx, cid, mallory.ID, 1, h[:], []byte("s"), time.Hour, 1); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("non-member invite: %v", err)
 	}
 
 	inv, token := newInvite(t, s, cid, alice.ID, time.Hour, 5)
 	newInvite(t, s, cid, alice.ID, time.Hour, 1)
-	if _, err := s.CreateInvite(ctx, cid, alice.ID, h[:], []byte("s"), time.Hour, 1); !errors.Is(err, ErrLimit) {
+	if _, err := s.CreateInvite(ctx, cid, alice.ID, 1, h[:], []byte("s"), time.Hour, 1); !errors.Is(err, ErrLimit) {
 		t.Fatalf("invite limit: %v", err)
 	}
 
@@ -224,7 +228,7 @@ func TestRevokeInvitePermissions(t *testing.T) {
 	s, _ := openTest(t, Options{})
 	ctx := context.Background()
 	alice, bob, carol := newDevice(t, s), newDevice(t, s), newDevice(t, s)
-	cid, _, _ := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("a"), []byte("k"))
+	cid, _, _ := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("a"), []byte("k"))
 	for _, d := range []Device{bob, carol} {
 		inv, tok := newInvite(t, s, cid, alice.ID, time.Hour, 1)
 		if _, err := s.RedeemInvite(ctx, inv.ID, d.ID, tok, []byte("x")); err != nil {
@@ -247,7 +251,7 @@ func TestRemoveMemberRotatesKey(t *testing.T) {
 	s, _ := openTest(t, Options{})
 	ctx := context.Background()
 	alice, bob, carol := newDevice(t, s), newDevice(t, s), newDevice(t, s)
-	cid, _, _ := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("a"), []byte("k1-alice"))
+	cid, _, _ := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("a"), []byte("k1-alice"))
 	for _, d := range []Device{bob, carol} {
 		inv, tok := newInvite(t, s, cid, alice.ID, time.Hour, 1)
 		if _, err := s.RedeemInvite(ctx, inv.ID, d.ID, tok, []byte("x")); err != nil {
@@ -298,7 +302,7 @@ func TestLeavePromotesOwnerAndDeletesEmptyCircle(t *testing.T) {
 	s, clk := openTest(t, Options{})
 	ctx := context.Background()
 	alice, bob := newDevice(t, s), newDevice(t, s)
-	cid, _, _ := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("a"), []byte("k"))
+	cid, _, _ := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("a"), []byte("k"))
 	clk.t = clk.t.Add(time.Second)
 	inv, tok := newInvite(t, s, cid, alice.ID, time.Hour, 1)
 	if _, err := s.RedeemInvite(ctx, inv.ID, bob.ID, tok, []byte("b")); err != nil {
@@ -328,8 +332,8 @@ func TestDeleteDeviceCleansUp(t *testing.T) {
 	s, _ := openTest(t, Options{})
 	ctx := context.Background()
 	alice, bob := newDevice(t, s), newDevice(t, s)
-	solo, _, _ := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("a"), []byte("k"))
-	shared, _, _ := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("a"), []byte("k"))
+	solo, _, _ := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("a"), []byte("k"))
+	shared, _, _ := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("a"), []byte("k"))
 	inv, tok := newInvite(t, s, shared, alice.ID, time.Hour, 1)
 	if _, err := s.RedeemInvite(ctx, inv.ID, bob.ID, tok, []byte("b")); err != nil {
 		t.Fatal(err)
@@ -357,7 +361,7 @@ func TestUpdateCircleMetaOwnerOnly(t *testing.T) {
 	s, _ := openTest(t, Options{})
 	ctx := context.Background()
 	alice, bob := newDevice(t, s), newDevice(t, s)
-	cid, _, _ := s.CreateCircle(ctx, alice.ID, []byte("meta"), []byte("a"), []byte("k"))
+	cid, _, _ := s.CreateCircle(ctx, newID(), alice.ID, []byte("meta"), []byte("a"), []byte("k"))
 	inv, tok := newInvite(t, s, cid, alice.ID, time.Hour, 1)
 	if _, err := s.RedeemInvite(ctx, inv.ID, bob.ID, tok, []byte("b")); err != nil {
 		t.Fatal(err)
@@ -371,5 +375,26 @@ func TestUpdateCircleMetaOwnerOnly(t *testing.T) {
 	list, _ := s.ListCircles(ctx, bob.ID)
 	if len(list) != 1 || string(list[0].MetaBlob) != "meta-v2" {
 		t.Fatalf("list = %+v", list)
+	}
+}
+
+func TestCreateCircleClientIDAndInviteEpoch(t *testing.T) {
+	s, _ := openTest(t, Options{})
+	ctx := context.Background()
+	alice := newDevice(t, s)
+	id := newID()
+	if _, _, err := s.CreateCircle(ctx, "not-an-id", alice.ID, []byte("m"), []byte("a"), []byte("k")); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("bad id: %v", err)
+	}
+	got, _, err := s.CreateCircle(ctx, id, alice.ID, []byte("m"), []byte("a"), []byte("k"))
+	if err != nil || got != id {
+		t.Fatalf("create: %q %v", got, err)
+	}
+	if _, _, err := s.CreateCircle(ctx, id, alice.ID, []byte("m"), []byte("a"), []byte("k")); !errors.Is(err, ErrConflict) {
+		t.Fatalf("duplicate id: %v", err)
+	}
+	h := sha256.Sum256(randBytes(32))
+	if _, err := s.CreateInvite(ctx, id, alice.ID, 2, h[:], []byte("s"), time.Hour, 1); !errors.Is(err, ErrConflict) {
+		t.Fatalf("stale epoch invite: %v", err)
 	}
 }

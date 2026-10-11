@@ -210,6 +210,12 @@ func DeviceID(signingKey []byte) string {
 	return base64.RawURLEncoding.EncodeToString(h[:16])
 }
 
+// ValidID reports whether id is 16 bytes encoded as unpadded base64url.
+func ValidID(id string) bool {
+	b, err := base64.RawURLEncoding.DecodeString(id)
+	return err == nil && len(b) == 16
+}
+
 func newID() string {
 	var b [16]byte
 	if _, err := rand.Read(b[:]); err != nil {
@@ -307,9 +313,11 @@ func (s *Store) DeleteDevice(ctx context.Context, deviceID string) error {
 	return tx.Commit()
 }
 
-// CreateCircle creates a circle at epoch 1 with the caller as owner.
-func (s *Store) CreateCircle(ctx context.Context, deviceID string, metaBlob, memberBlob, wrappedKey []byte) (circleID string, epoch int64, err error) {
-	if len(metaBlob) == 0 || len(memberBlob) == 0 || len(wrappedKey) == 0 {
+// CreateCircle creates a circle at epoch 1 with the caller as owner. The
+// circle ID is chosen by the client (16 random bytes, base64url) because the
+// client binds its ciphertexts to it before the circle exists on the server.
+func (s *Store) CreateCircle(ctx context.Context, circleID, deviceID string, metaBlob, memberBlob, wrappedKey []byte) (string, int64, error) {
+	if !ValidID(circleID) || len(metaBlob) == 0 || len(memberBlob) == 0 || len(wrappedKey) == 0 {
 		return "", 0, ErrInvalid
 	}
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -318,8 +326,14 @@ func (s *Store) CreateCircle(ctx context.Context, deviceID string, metaBlob, mem
 	}
 	defer tx.Rollback() //nolint:errcheck
 
+	var exists int
+	if err := tx.QueryRowContext(ctx, `SELECT COUNT(*) FROM circles WHERE id = ?`, circleID).Scan(&exists); err != nil {
+		return "", 0, err
+	}
+	if exists > 0 {
+		return "", 0, ErrConflict
+	}
 	now := s.nowUnix()
-	circleID = newID()
 	if _, err := tx.ExecContext(ctx,
 		`INSERT INTO circles (id, epoch, meta_blob, created_at) VALUES (?, 1, ?, ?)`, circleID, metaBlob, now); err != nil {
 		return "", 0, err
@@ -429,8 +443,9 @@ func (s *Store) UpdateCircleMeta(ctx context.Context, circleID, deviceID string,
 
 // CreateInvite stores an invite. tokenHash is SHA-256 of the invite auth
 // token; sealedKey is the circle key sealed under a key derived from the
-// invite secret. The server never learns the secret.
-func (s *Store) CreateInvite(ctx context.Context, circleID, deviceID string, tokenHash, sealedKey []byte, ttl time.Duration, maxUses int) (Invite, error) {
+// invite secret. The server never learns the secret. epoch must equal the
+// circle's current epoch, so an invite can never carry a rotated-out key.
+func (s *Store) CreateInvite(ctx context.Context, circleID, deviceID string, epoch int64, tokenHash, sealedKey []byte, ttl time.Duration, maxUses int) (Invite, error) {
 	if len(tokenHash) != sha256.Size || len(sealedKey) == 0 || ttl <= 0 || maxUses <= 0 {
 		return Invite{}, ErrInvalid
 	}
@@ -442,6 +457,13 @@ func (s *Store) CreateInvite(ctx context.Context, circleID, deviceID string, tok
 
 	if _, err := memberRole(ctx, tx, circleID, deviceID); err != nil {
 		return Invite{}, err
+	}
+	var current int64
+	if err := tx.QueryRowContext(ctx, `SELECT epoch FROM circles WHERE id = ?`, circleID).Scan(&current); err != nil {
+		return Invite{}, err
+	}
+	if epoch != current {
+		return Invite{}, ErrConflict
 	}
 	now := s.nowUnix()
 	if _, err := tx.ExecContext(ctx,

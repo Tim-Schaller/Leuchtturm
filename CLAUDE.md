@@ -42,7 +42,7 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 
 - M1 done in code: identity, circles, invites (link + QR), admission proofs, removal with key rotation, safety codes, settings. 27 core tests green, CI green.
 - Storage switched from a self-hosted Go server to **CloudKit** (server is in git history before commit `415663a`).
-- iCloud container: `iCloud.de.timschaller.leuchtturm` (entitlement in project.yml). **Not yet created**: Xcode signing failed with "PLA Update available" until Tim accepts the new Program License Agreement on developer.apple.com. After that: Signing & Capabilities → Try Again, then verify the container exists.
+- iCloud container: `iCloud.de.timschaller.leuchtturm` (entitlement in project.yml). Signing works (automatic, team TW877YHM7Q) and the container is registered. The app has not been run against real iCloud yet. The CloudKit schema is created just-in-time in the Development environment on first save; deploy it to Production before TestFlight.
 
 ## Next steps
 

@@ -27,6 +27,8 @@ public struct CircleMember: Sendable, Identifiable, Hashable {
     public let isPending: Bool
     /// Compare in person to detect key substitution.
     public let safetyCode: String
+    /// Latest verified position; nil if none is shared (or not yet admitted).
+    public let location: SharedLocation?
 }
 
 public struct CircleDetails: Sendable, Identifiable, Hashable {
@@ -65,6 +67,7 @@ enum RecordType {
     static let member = "Member"
     static let keyWrap = "KeyWrap"
     static let invite = "Invite"
+    static let location = "Location"
 }
 
 enum RecordName {
@@ -72,6 +75,8 @@ enum RecordName {
     static func wrap(epoch: Int64, deviceID: String) -> String { "wrap-\(epoch)-\(deviceID)" }
     static func invite(_ id: String) -> String { "invite-\(id)" }
     static let invitePrefix = "invite-"
+    static func location(_ deviceID: String) -> String { "loc-\(deviceID)" }
+    static let locationPrefix = "loc-"
 }
 
 /// High-level client. Everything is encrypted or signed here, before it
@@ -82,6 +87,9 @@ public actor LeuchtturmClient {
     private let secrets: any SecretStore
     private let now: @Sendable () -> Date
     private var displayName: String?
+    /// Newest location seen per circle and device, so a replayed older
+    /// record cannot move someone back in time.
+    private var newestLocations: [String: SharedLocation] = [:]
 
     public static let maxNameLength = 40
     public static let inviteDurations: ClosedRange<Int64> = 60 ... 7 * 24 * 3600
@@ -162,9 +170,10 @@ public actor LeuchtturmClient {
         try await backend.modify(ref, save: [record], delete: [], removeParticipants: [])
     }
 
-    /// Leaves a circle you do not own.
+    /// Leaves a circle you do not own. Your location goes with you.
     public func leave(_ ref: CircleRef) async throws {
         guard !ref.isOwned else { throw ClientError.ownerMustDelete }
+        try? await backend.modify(ref, save: [], delete: [RecordName.location(deviceID)], removeParticipants: [])
         try await backend.leave(ref)
         try? secrets.deleteAll(prefix: Self.prefix(ref.circleID))
     }
@@ -284,12 +293,72 @@ public actor LeuchtturmClient {
         return ref
     }
 
+    // MARK: Location
+
+    /// Shares this device's position with every circle it has a key for.
+    /// Tries all circles and throws the first error afterwards.
+    public func shareLocation(_ location: SharedLocation) async throws {
+        var firstError: (any Error)?
+        for ref in try await backend.listCircles() {
+            do {
+                let p = try parse(try await backend.snapshot(of: ref))
+                guard let key = ensureKey(p) else { throw ClientError.missingCircleKey }
+                let blob = try CircleCrypto.sealLocation(location, key: key, epoch: p.epoch, circleID: p.circleID, deviceID: deviceID)
+                let sig = try identity.sign(CircleCrypto.locationRecordStatement(circleID: p.circleID, deviceID: deviceID, blob: blob))
+                let record = StoredRecord(type: RecordType.location, name: RecordName.location(deviceID), fields: [
+                    "blob": .bytes(blob), "sig": .bytes(sig),
+                ])
+                try await backend.modify(ref, save: [record], delete: [], removeParticipants: [])
+                newestLocations[Self.locationKey(p.circleID, deviceID)] = location
+            } catch {
+                firstError = firstError ?? error
+            }
+        }
+        if let firstError { throw firstError }
+    }
+
+    /// Removes this device's position from every circle.
+    public func stopSharingLocation() async throws {
+        for ref in try await backend.listCircles() {
+            try await backend.modify(ref, save: [], delete: [RecordName.location(deviceID)], removeParticipants: [])
+            newestLocations[Self.locationKey(ref.circleID, deviceID)] = nil
+        }
+    }
+
+    static func locationKey(_ circleID: String, _ deviceID: String) -> String { "\(circleID)/\(deviceID)" }
+
+    /// Verifies and decrypts a member's location record. Records that are
+    /// unsigned, signed by someone else or older than one seen before are
+    /// ignored. A deleted record means the member stopped sharing.
+    private func verifiedLocation(of m: Member, _ p: Parsed) -> SharedLocation? {
+        let cacheKey = Self.locationKey(p.circleID, m.deviceID)
+        guard let record = p.locations[m.deviceID] else {
+            newestLocations[cacheKey] = nil
+            return nil
+        }
+        let cached = newestLocations[cacheKey]
+        guard CircleCrypto.verifySignature(
+                  record.bytes("sig"), publicKey: m.signingKey,
+                  message: CircleCrypto.locationRecordStatement(circleID: p.circleID, deviceID: m.deviceID, blob: record.bytes("blob"))
+              ),
+              let (location, _) = try? CircleCrypto.openLocation(record.bytes("blob"), circleID: p.circleID, deviceID: m.deviceID, keyForEpoch: keyLookup(p.circleID))
+        else { return cached }
+        if let cached, cached.timestamp > location.timestamp { return cached }
+        newestLocations[cacheKey] = location
+        return location
+    }
+
     // MARK: Account
 
     /// Deletes owned circles, leaves all others and wipes local keys.
     public func deleteAllData() async throws {
         for ref in try await backend.listCircles() {
-            if ref.isOwned { try await backend.deleteCircle(ref) } else { try await backend.leave(ref) }
+            if ref.isOwned {
+                try await backend.deleteCircle(ref)
+            } else {
+                try? await backend.modify(ref, save: [], delete: [RecordName.location(deviceID)], removeParticipants: [])
+                try await backend.leave(ref)
+            }
         }
         for account in try secrets.accounts() {
             try secrets.delete(account)
@@ -317,6 +386,8 @@ public actor LeuchtturmClient {
         /// Members with a valid self-signature, by device ID.
         let members: [String: Member]
         let invites: [String: StoredRecord]
+        /// Location records by device ID (not verified yet).
+        let locations: [String: StoredRecord]
         var circleID: String { snapshot.ref.circleID }
         var ownerDeviceID: String { DeviceID.derive(signingPublicKey: ownerSigningKey) }
     }
@@ -354,9 +425,13 @@ public actor LeuchtturmClient {
         for r in snapshot.records where r.type == RecordType.invite && r.name.hasPrefix(RecordName.invitePrefix) {
             invites[String(r.name.dropFirst(RecordName.invitePrefix.count))] = r
         }
+        var locations: [String: StoredRecord] = [:]
+        for r in snapshot.records where r.type == RecordType.location && r.name.hasPrefix(RecordName.locationPrefix) {
+            locations[String(r.name.dropFirst(RecordName.locationPrefix.count))] = r
+        }
         return Parsed(
             snapshot: snapshot, ownerSigningKey: ownerSigning, ownerAgreementKey: ownerAgreement,
-            epoch: epoch, metaBlob: meta, members: members, invites: invites
+            epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations
         )
     }
 
@@ -409,6 +484,7 @@ public actor LeuchtturmClient {
                     // The user left or was removed in iCloud.
                     newRoster.remove(m.deviceID)
                     delete.append(m.deviceID)
+                    if p.locations[m.deviceID] != nil { delete.append(RecordName.location(m.deviceID)) }
                 } else if !newRoster.contains(m.deviceID), hasValidInvite(m, p) {
                     newRoster.insert(m.deviceID)
                 }
@@ -457,12 +533,15 @@ public actor LeuchtturmClient {
             members.append(CircleMember(
                 id: m.deviceID, userID: m.creator, name: name, isOwner: m.deviceID == p.ownerDeviceID,
                 isMe: isMe, isPending: pending && !isMe,
-                safetyCode: DeviceID.safetyCode(signingPublicKey: m.signingKey, agreementPublicKey: m.agreementKey)
+                safetyCode: DeviceID.safetyCode(signingPublicKey: m.signingKey, agreementPublicKey: m.agreementKey),
+                // Only admitted members share a position with the circle.
+                location: admitted || isMe ? verifiedLocation(of: m, p) : nil
             ))
         }
         if !sawMe, key != nil, myName != nil {
             members.append(CircleMember(
-                id: deviceID, userID: nil, name: myName, isOwner: iAmOwner, isMe: true, isPending: false, safetyCode: safetyCode
+                id: deviceID, userID: nil, name: myName, isOwner: iAmOwner, isMe: true, isPending: false, safetyCode: safetyCode,
+                location: nil
             ))
         }
         members.sort { a, b in

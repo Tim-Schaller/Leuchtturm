@@ -213,6 +213,94 @@ struct ClientTests {
         #expect(try await bobAgain.circles().map(\.name) == [nil])
     }
 
+    func location(_ lat: Double, _ lon: Double, at date: Date = Date()) throws -> SharedLocation {
+        try #require(SharedLocation(latitude: lat, longitude: lon, accuracy: 15, timestamp: date))
+    }
+
+    @Test func locationsAreSharedEncryptedAndWithdrawn() async throws {
+        let alice = try client("alice", "Alice")
+        let bob = try client("bob", "Bob")
+        let carol = try client("carol", "Carol")
+        let ref = try await alice.createCircle(name: "Familie")
+        let link = try await alice.createInvite(for: ref)
+        let bobRef = try await bob.join(link)
+        _ = try await carol.join(link)
+        _ = try await alice.circle(ref)
+
+        let hamburg = try location(53.5511, 9.9937)
+        try await bob.shareLocation(hamburg)
+        try await carol.shareLocation(try location(48.1372, 11.5756))
+        let aliceView = try await alice.circle(ref)
+        #expect(aliceView.members.first { $0.name == "Bob" }?.location == hamburg)
+        #expect(aliceView.members.first { $0.name == "Alice" }?.location == nil)
+
+        // Apple sees no coordinates.
+        for record in cloud.rawRecords(circleID: ref.circleID) where record.type == "Location" {
+            for case let .bytes(bytes) in record.fields.values {
+                #expect(bytes.range(of: Data("53.55".utf8)) == nil)
+            }
+        }
+
+        // Stopping, leaving and being removed all take the location away.
+        func hasLocation(_ c: LeuchtturmClient) -> Bool {
+            cloud.rawRecords(circleID: ref.circleID).contains { $0.name == "loc-\(c.deviceID)" }
+        }
+        try await bob.stopSharingLocation()
+        #expect(!hasLocation(bob))
+        #expect(try await alice.circle(ref).members.first { $0.name == "Bob" }?.location == nil)
+        try await bob.shareLocation(hamburg)
+        try await bob.leave(bobRef)
+        #expect(!hasLocation(bob))
+        #expect(hasLocation(carol))
+        try await alice.remove(userID: "carol", from: ref)
+        #expect(!hasLocation(carol))
+    }
+
+    @Test func membersCannotFakeOrRewindLocations() async throws {
+        let start = Date()
+        let alice = try client("alice", "Alice")
+        let bob = try client("bob", "Bob")
+        let carol = try client("carol", "Carol")
+        let ref = try await alice.createCircle(name: "Familie")
+        let link = try await alice.createInvite(for: ref)
+        let bobRef = try await bob.join(link)
+        _ = try await carol.join(link)
+        _ = try await alice.circle(ref)
+        let bobBackend = cloud.backend(for: "bob")
+        func carolOnAlicesMap() async throws -> SharedLocation? {
+            try await alice.circle(ref).members.first { $0.name == "Carol" }?.location
+        }
+
+        let earlier = try location(52.52, 13.405, at: start)
+        let now = try location(52.53, 13.41, at: start.addingTimeInterval(60))
+        try await carol.shareLocation(earlier)
+        let oldRecord = try #require(cloud.rawRecords(circleID: ref.circleID).first { $0.name == "loc-\(carol.deviceID)" })
+        try await carol.shareLocation(now)
+        #expect(try await carolOnAlicesMap() == now)
+
+        // Bob replays Carol's older, validly signed record: ignored.
+        try await bobBackend.modify(bobRef, save: [oldRecord], delete: [], removeParticipants: [])
+        #expect(try await carolOnAlicesMap() == now)
+
+        // Bob writes a position for Carol with the circle key, signed by himself: ignored.
+        let key = try #require(bob.loadKey(circleID: ref.circleID, epoch: 1))
+        let fake = try location(0, 0)
+        let blob = try CircleCrypto.sealLocation(fake, key: key, epoch: 1, circleID: ref.circleID, deviceID: carol.deviceID)
+        let sig = try bob.identity.sign(CircleCrypto.locationRecordStatement(circleID: ref.circleID, deviceID: carol.deviceID, blob: blob))
+        try await bobBackend.modify(bobRef, save: [StoredRecord(type: "Location", name: "loc-\(carol.deviceID)", fields: [
+            "blob": .bytes(blob), "sig": .bytes(sig),
+        ])], delete: [], removeParticipants: [])
+        #expect(try await carolOnAlicesMap() == now)
+
+        // A newcomer who is not confirmed yet shares nothing with the circle.
+        let dave = try client("dave", "Dave")
+        _ = try await dave.join(link)
+        try await dave.shareLocation(fake)
+        let daveOnBobsList = try await bob.circle(bobRef).members.first { $0.name == "Dave" }
+        #expect(daveOnBobsList?.isPending == true)
+        #expect(daveOnBobsList?.location == nil)
+    }
+
     @Test func namesAreValidated() async throws {
         let alice = try client("alice", "Alice")
         await #expect(throws: ClientError.invalidName) { try await alice.createCircle(name: "   ") }

@@ -1,6 +1,6 @@
 # Threat model
 
-Status: v1 for CloudKit (milestone M1: identity, circles, invites). Not independently reviewed.
+Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encrypted live locations and the map). Not independently reviewed.
 
 ## Parties
 
@@ -19,6 +19,8 @@ Status: v1 for CloudKit (milestone M1: identity, circles, invites). Not independ
 ## Non-goals (not protected against)
 
 - **Metadata at Apple.** Apple knows which iCloud accounts (real identities) share a circle, who owns it, when records are written and their approximate sizes. This is the main privacy cost of using CloudKit instead of a self-hosted server.
+- **Movement patterns from timing.** Location records are written more often while someone moves (every 25 m, at most every 2 minutes) than while they stand still. Apple can therefore tell when a member is on the move, though not where. A fixed update cadence could hide this later.
+- **Map tiles.** The map comes from Apple Maps, which sees the map areas the app loads. These are usually where the circle's members are.
 - **Data location.** iCloud data is stored in Apple's data centers; Apple is a US company. EU-only storage is not guaranteed.
 - **Apple as an active attacker on the app itself.** Apple distributes the app binary and operating system.
 - **A compromised device.** Malware or physical access to an unlocked phone defeats client-side encryption.
@@ -41,10 +43,15 @@ Status: v1 for CloudKit (milestone M1: identity, circles, invites). Not independ
 | Apple injects its own device into a circle | Apple could add a participant to the share, but that device has no invite proof and gets no key. Safety codes detect key substitution when compared in person | M1 |
 | Apple substitutes the owner's keys for a new joiner | Owner keys come from the invite payload, authenticated by the secret that Apple never sees | M1 |
 | Device reinstalled or keychain lost | Device cannot verify or decrypt; needs a new invite (no silent re-trust) | M1 |
+| Member fakes another member's location | Location records are signed by the member's own device and checked against the key in its member record | M2 |
+| Member replays an older location | Readers keep the newest timestamp per device; the shown age reveals stale data. The memory is lost when the app restarts | M2 |
+| Someone not admitted shares a location | Only devices in the signed roster appear on the map | M2 |
+| Last position stays behind | Pausing, leaving and removal delete the location record | M2 |
 | Supply chain | App uses Apple frameworks only (CryptoKit, CloudKit). swift-crypto is used only for Linux tests | M1 |
 
-## Known limitations of M1
+## Known limitations
 
+- **Location only while the app is open.** Background tracking and push updates are not built yet; the map polls every 30 seconds.
 - **Single device per person.** A second iPhone or iPad needs its own invite.
 - **The owner device is a single point of failure.** If the owner loses their iPhone, the circle can no longer be managed (no new admissions, removals or renames); members can still read it. Ownership transfer is not possible with CloudKit zones.
 - **Pending members need the owner.** New members are visible as pending right away, but enter the signed roster only when the owner opens the app. Their admission is verified against the invite record, so if an invite expires and is cleaned up first, the owner must re-invite them.

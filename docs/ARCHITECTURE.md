@@ -13,7 +13,7 @@ Status: v1 record format for identity, circles and invites on CloudKit (mileston
 └──────────────────────────────┘        └───────────────────────────────────┘
 ```
 
-- **App** (`ios/Leuchtturm`): SwiftUI, iOS 26+, Liquid Glass. UI and app state only.
+- **App** (`ios/Leuchtturm`): SwiftUI, iOS 26+, Liquid Glass. UI and app state only. Debug builds can swap CloudKit and the Keychain for the in-memory simulation with made-up members (`ios/Leuchtturm/Simulation`, launch argument `-simulation`); release builds do not contain that code.
 - **LeuchtturmCore** (`ios/LeuchtturmCore`): all cryptography, record formats, the `CircleBackend` abstraction with a **CloudKit** implementation and an **in-memory simulation** for tests, and the high-level `LeuchtturmClient`. The logic is tested on Linux (swift-crypto) and macOS (CryptoKit).
 - **No server of our own.** CloudKit stores records and handles sharing.
 
@@ -87,7 +87,18 @@ Recipients accept only wraps from the pinned owner device.
 | `sealed` | ChaCha20-Poly1305 under the invite *enc key*: `0x02 ‖ epoch ‖ expiresAt ‖ circle key ‖ owner Ed25519 key ‖ owner X25519 key`, AAD `ctx("leuchtturm/v1/invite", circleID, inviteID)` |
 | `token` | the invite *auth token*, encrypted under the circle key, so members can check admission proofs |
 
-### Encrypted content (meta, cards, tokens)
+### `Location` (record name `loc-<deviceID>`, one per device)
+
+| Field | Content |
+|-------|---------|
+| `blob` | encrypted `{"lat": …, "lon": …, "acc": …, "t": …}` (degrees, accuracy in meters, Unix seconds) |
+| `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/location-record", circleID, deviceID) ‖ blob` |
+
+Readers show a location only for devices in the signed roster, verify `sig` with the key from that device's member record and keep the newest timestamp seen per device, so a participant cannot fake a position or replay an older one. Pending members' locations are ignored until the owner confirms them. Pausing, leaving the circle and being removed delete the record; the owner's device also deletes it when it cleans up a departed member.
+
+The app writes the record while it is open, at most every 2 minutes or after moving 25 m, and reads the selected circle every 30 seconds (push updates come later).
+
+### Encrypted content (meta, cards, tokens, locations)
 
 ```
 blob      = 0x01 | epoch (u64) | ChaCha20-Poly1305 combined (nonce 12 | ciphertext | tag 16)
@@ -95,7 +106,7 @@ aad       = context | 0x01 | epoch
 plaintext = u16 length | data | zero padding to a multiple of 64 bytes
 ```
 
-Contexts: `ctx("leuchtturm/v1/circle-meta", circleID)`, `ctx("leuchtturm/v1/member-card", circleID, deviceID)`, `ctx("leuchtturm/v1/invite-token", circleID, inviteID)`. Padding hides name lengths.
+Contexts: `ctx("leuchtturm/v1/circle-meta", circleID)`, `ctx("leuchtturm/v1/member-card", circleID, deviceID)`, `ctx("leuchtturm/v1/invite-token", circleID, inviteID)`, `ctx("leuchtturm/v1/location", circleID, deviceID)`. Padding hides name lengths.
 
 ## Invites
 
@@ -129,7 +140,9 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 | Invite expiry times | no | yes |
 | Which iCloud accounts share a circle | n/a | **yes**, with real identities |
 | When records are written | n/a | yes |
-| Live location, places, history (M2+) | yes | ciphertext, size, time |
+| Live location | yes | ciphertext, padded size, **when and how often it is updated** |
+| Places, history (M3+) | yes | ciphertext, size, time |
+| Map area you look at | n/a | Apple Maps sees which map tiles are loaded |
 
 ## Tracking strategy (battery, M2)
 
@@ -140,6 +153,8 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 | Driving (CoreMotion automotive) | Best-for-navigation accuracy, live speed | frequent, while someone is watching or an opt-in trip is active |
 
 Updates will be delivered through CloudKit subscriptions (silent push), so near-real-time rather than instant.
+
+Current state: only while the app is open (When In Use), throttled to 2 minutes / 25 m, and the map polls every 30 seconds. Background tracking and push are next.
 
 ## License
 

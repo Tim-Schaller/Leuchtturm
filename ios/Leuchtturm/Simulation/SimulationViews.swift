@@ -40,11 +40,11 @@ struct SimulationView: View {
                         Button("Clara sagt Guten Morgen", systemImage: "sun.max") {
                             Task { await model.simulate { try await $0.send(.morning, from: world.people[2]) } }
                         }
-                        Button("Anna: Blase an/aus", systemImage: "circle.dashed") {
+                        Button("Anna: Nebel an/aus", systemImage: "circle.dashed") {
                             Task {
                                 await model.simulate { world in
                                     let anna = world.people[0].id
-                                    if world.inBubble.remove(anna) == nil { world.inBubble.insert(anna) }
+                                    if world.inFog.remove(anna) == nil { world.inFog.insert(anna) }
                                 }
                             }
                         }

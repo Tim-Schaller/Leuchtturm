@@ -22,7 +22,7 @@ final class AppModel {
         static let newsSince = "newsSince"
         static let morningGreeting = "morningGreeting"
         static let lastMorningGreeting = "lastMorningGreeting"
-        static let bubble = "bubble"
+        static let fog = "fog"
     }
 
     private(set) var phase: Phase = .onboarding
@@ -61,8 +61,8 @@ final class AppModel {
 
     private let keychain = KeychainSecretStore()
     /// While set and not expired, only an approximate area is shared.
-    private(set) var bubble: Bubble?
-    var activeBubble: Bubble? { bubble.flatMap { $0.until > Date() ? $0 : nil } }
+    private(set) var fog: Fog?
+    var activeFog: Fog? { fog.flatMap { $0.until > Date() ? $0 : nil } }
 
     /// Says "good morning" to the circles on the first movement of the day.
     private(set) var sendsMorningGreeting = false
@@ -113,7 +113,7 @@ final class AppModel {
         if !isSimulation { defaults.set(newsSince, forKey: Keys.newsSince) }
         sendsMorningGreeting = !isSimulation && defaults.bool(forKey: Keys.morningGreeting)
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
-        bubble = isSimulation ? nil : defaults.data(forKey: Keys.bubble).flatMap { try? JSONDecoder().decode(Bubble.self, from: $0) }
+        fog = isSimulation ? nil : defaults.data(forKey: Keys.fog).flatMap { try? JSONDecoder().decode(Fog.self, from: $0) }
         phase = .onboarding
         if !displayName.isEmpty, let client = try? makeClient(name: displayName) {
             self.client = client
@@ -257,8 +257,8 @@ final class AppModel {
         guard policy.shouldShare(location, after: lastShared),
               let exact = SharedLocation(location, battery: battery, isCharging: charging)
         else { return }
-        // In a bubble the exact position never leaves the device.
-        let shared = activeBubble.flatMap { exact.inBubble(radius: $0.radius) } ?? exact
+        // In fog the exact position never leaves the device.
+        let shared = activeFog.flatMap { exact.inFog(radius: $0.radius) } ?? exact
         lastShared = location
         // Finish the upload even if iOS suspends the app right after this update.
         let backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "share-location")
@@ -295,8 +295,8 @@ final class AppModel {
     /// good-morning. Returns false and shows the error on failure.
     @discardableResult
     func send(_ kind: CircleNote.Kind, text: String = "", to recipientID: String? = nil, in ref: CircleRef) async -> Bool {
-        if kind == .checkIn && activeBubble != nil {
-            errorMessage = "Während einer Blase teilst du keinen genauen Ort. Beende sie zuerst, um einzuchecken."
+        if kind == .checkIn && activeFog != nil {
+            errorMessage = "Im Nebel teilst du keinen genauen Ort. Beende den Nebel zuerst, um einzuchecken."
             return false
         }
         let location = kind == .checkIn ? tracker.location.flatMap { SharedLocation($0) } : nil
@@ -310,22 +310,22 @@ final class AppModel {
         return true
     }
 
-    // MARK: Bubble
+    // MARK: Fog
 
-    func startBubble(radius: Int, hours: Double) async {
-        setBubble(Bubble(radius: radius, until: Date().addingTimeInterval(hours * 3600)))
+    func startFog(radius: Int, hours: Double) async {
+        setFog(Fog(radius: radius, until: Date().addingTimeInterval(hours * 3600)))
         await shareLocationNow()
     }
 
-    func endBubble() async {
-        setBubble(nil)
+    func endFog() async {
+        setFog(nil)
         await shareLocationNow()
     }
 
-    private func setBubble(_ new: Bubble?) {
-        bubble = new
+    private func setFog(_ new: Fog?) {
+        fog = new
         guard !isSimulation else { return }
-        UserDefaults.standard.set(new.flatMap { try? JSONEncoder().encode($0) }, forKey: Keys.bubble)
+        UserDefaults.standard.set(new.flatMap { try? JSONEncoder().encode($0) }, forKey: Keys.fog)
     }
 
     func setMorningGreeting(_ on: Bool) {
@@ -520,9 +520,9 @@ final class AppModel {
     }
 }
 
-/// Sharing only an approximate area until a given time (Life360's "Bubble").
-struct Bubble: Codable, Equatable {
-    /// Meters; see `SharedLocation.inBubble(radius:)`.
+/// Fog mode: sharing only an approximate area until a given time.
+struct Fog: Codable, Equatable {
+    /// Meters; see `SharedLocation.inFog(radius:)`.
     let radius: Int
     let until: Date
 

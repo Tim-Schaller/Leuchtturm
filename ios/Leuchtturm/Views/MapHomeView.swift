@@ -9,7 +9,7 @@ enum HomeSheet: Identifiable {
     case createCircle
     case join
     case invite(CircleRef)
-    case bubble
+    case fog
     #if DEBUG
     case simulation
     #endif
@@ -20,7 +20,7 @@ enum HomeSheet: Identifiable {
         case .createCircle: "create"
         case .join: "join"
         case let .invite(ref): "invite-\(ref.circleID)"
-        case .bubble: "bubble"
+        case .fog: "fog"
         #if DEBUG
         case .simulation: "simulation"
         #endif
@@ -28,7 +28,7 @@ enum HomeSheet: Identifiable {
     }
 }
 
-/// Home screen, inspired by Life360: a full-screen map with everyone in the
+/// Home screen: a full-screen map with everyone in the
 /// selected circle, a circle switcher on top and the people drawer below.
 struct MapHomeView: View {
     @Environment(AppModel.self) private var model
@@ -55,18 +55,18 @@ struct MapHomeView: View {
 
     var body: some View {
         Map(position: $camera) {
-            // People in a bubble: only the approximate area.
+            // People in fog: only the approximate area.
             ForEach(details?.members ?? []) { member in
-                if !member.isMe, let location = member.location, let radius = location.bubbleRadius {
+                if !member.isMe, let location = member.location, let radius = location.fogRadius {
                     let color = memberColors[member.id] ?? Theme.color(for: member.id)
                     MapCircle(center: location.coordinate, radius: Double(radius))
                         .foregroundStyle(color.opacity(0.15))
                         .stroke(color.opacity(0.6), style: StrokeStyle(lineWidth: 2, dash: [6, 4]))
                 }
             }
-            if let bubble = model.activeBubble,
-               let mine = model.tracker.location.flatMap({ SharedLocation($0)?.inBubble(radius: bubble.radius) }) {
-                MapCircle(center: mine.coordinate, radius: Double(bubble.radius))
+            if let fog = model.activeFog,
+               let mine = model.tracker.location.flatMap({ SharedLocation($0)?.inFog(radius: fog.radius) }) {
+                MapCircle(center: mine.coordinate, radius: Double(fog.radius))
                     .foregroundStyle(Color.accentColor.opacity(0.12))
                     .stroke(Color.accentColor.opacity(0.6), style: StrokeStyle(lineWidth: 2, dash: [6, 4]))
             }

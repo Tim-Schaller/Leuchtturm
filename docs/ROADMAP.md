@@ -25,7 +25,7 @@ History: M1 was first built with a self-hosted Go server (EU, anonymous device k
 
 ## M2: Live location
 - [x] Encrypted, device-signed location records
-- [x] Map view with circle members (MapKit), Life360-style people drawer, circle switcher
+- [x] Map view with circle members (MapKit), people drawer, circle switcher
 - [x] Moving simulated members in the debug simulation
 - [x] Background location: live updates with a background activity session, stationary pause, fewer uploads while the app is closed
 - [ ] Push: CloudKit subscriptions plus a Notification Service Extension that decrypts on the device (foundation for every alert below)
@@ -34,25 +34,23 @@ History: M1 was first built with a self-hosted Go server (EU, anonymous device k
 - [ ] Pause sharing per circle
 - [ ] Smarter tracking: visits, geofence wake-ups, presence-based frequency
 
-## Life360 parity
+## Feature plan
 
-Researched October 2026. Almost every family feature of Life360 works on the device with encrypted sync. The order below can change; quick, visible wins come first.
+Everything a family expects from a location app, built so that it works on the device with encrypted sync. The order can change; quick, visible wins come first.
 
-| Life360 feature | Leuchtturm plan | Milestone |
+| Feature | How Leuchtturm does it | Milestone |
 |---|---|---|
-| Quick Notes (emoji messages), Check-in | Encrypted reactions and quick notes to a person or the circle; check-in with the current place | M3 |
-| Morning check-in / activity sharing | Opt-in "has started the day" based on first movement | M3 |
-| Bubbles (approximate area for a while) | Share a blurred area instead of the exact position, ends automatically | M3 |
-| Places with arrive/leave alerts | Encrypted places, geofences evaluated on the device (CLMonitor), alerts via push | M4 |
-| No-show alerts, place suggestions | Evaluated on the device | M4 |
-| History (2–30 days, not deletable) | Opt-in, own retention, deletable and exportable | M5 |
-| Drive detection, Driver Reports, weekly Family Driving Summary | CoreMotion trips with route, distance, top speed, hard braking and acceleration; weekly summary in the circle | M6 |
-| Flight detection | Detected on the device | M6 |
-| SOS, crash detection | Alert to the circle (Critical Alerts entitlement); no call center | M7 |
-| Temporary circles | Circles that expire after a chosen time | M8 |
-| (not in Life360) Leaderboards | Opt-in weekly ranking in the circle (e.g. safest drive, distance walked), computed on the device | M8 |
+| Reactions, quick notes, check-ins | Encrypted and signed by the sender | M3 |
+| Good-morning greeting | Opt-in, on the first movement of the day | M3 |
+| Fog mode („Nebel“) | Share only a rough area for a while | M3 |
+| Places with arrival and departure alerts | Encrypted places, checked on the device | M4 |
+| "Not arrived yet" alerts, place suggestions | Checked on the device | M4 |
+| History | Opt-in, own retention, deletable and exportable | M5 |
+| Trips and driving | CoreMotion trips with route, distance, top speed, hard braking and acceleration; weekly summary | M6 |
+| SOS, crash detection | Alert to the circle; no call center | M7 |
+| Temporary circles, leaderboards | Circles that expire; opt-in weekly ranking computed on the device | M8 |
 
-Not planned, because they need a company server, a call center or third parties: emergency dispatch, roadside assistance, insurance and reimbursement, ID-theft services, crime and safety-incident data, Tile/pet GPS hardware, Uber. Never: ads, data sales, insurer data sharing (Life360's Arity program). Maybe later: a web link for people without the app (static page, key in the URL fragment), an Apple Watch app, weather alerts via WeatherKit.
+Not planned, because they would need a company server, a call center or third parties: emergency dispatch, roadside assistance, insurance, identity-theft services, crime data, tracker hardware. Never: ads, selling or sharing data. Maybe later: a web link for people without the app (static page, key in the URL fragment), an Apple Watch app, weather alerts via WeatherKit.
 
 ## M3: Reactions and check-ins
 - [x] Emoji reactions and quick notes, end-to-end encrypted, signed by the sender
@@ -60,7 +58,7 @@ Not planned, because they need a company server, a call center or third parties:
 - [x] Opt-in morning greeting on the first movement of the day
 - [x] Local notifications when the app fetches new notes (open or while sharing in the background)
 - [ ] Instant delivery by push while the app is closed (see M2)
-- [x] Bubbles: approximate area for a limited time
+- [x] Fog mode: approximate area for a limited time
 
 ## M4: Places
 - [ ] Create and share places (encrypted)

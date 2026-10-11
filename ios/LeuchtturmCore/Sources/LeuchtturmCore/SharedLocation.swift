@@ -17,22 +17,22 @@ public struct SharedLocation: Sendable, Hashable {
     /// Battery level in percent, if the device shares it.
     public let battery: Int?
     public let isCharging: Bool
-    /// Set while the member shares only an approximate area ("bubble"):
+    /// Set while the member shares only an approximate area ("fog"):
     /// the size of that area in meters. The position is then the area's center.
-    public let bubbleRadius: Int?
+    public let fogRadius: Int?
 
-    public static let bubbleRadii: ClosedRange<Int> = 100 ... 100_000
+    public static let fogRadii: ClosedRange<Int> = 100 ... 100_000
 
-    /// Returns nil for coordinates, accuracies, battery levels or bubbles that cannot be real.
+    /// Returns nil for coordinates, accuracies, battery levels or fog sizes that cannot be real.
     public init?(
         latitude: Double, longitude: Double, accuracy: Double, timestamp: Date,
-        battery: Int? = nil, isCharging: Bool = false, bubbleRadius: Int? = nil
+        battery: Int? = nil, isCharging: Bool = false, fogRadius: Int? = nil
     ) {
         guard (-90 ... 90).contains(latitude), (-180 ... 180).contains(longitude),
               accuracy.isFinite, (0 ... 200_000).contains(accuracy),
               timestamp.timeIntervalSince1970 > 0,
               battery.map({ (0 ... 100).contains($0) }) ?? true,
-              bubbleRadius.map({ Self.bubbleRadii.contains($0) && accuracy >= Double($0) }) ?? true
+              fogRadius.map({ Self.fogRadii.contains($0) && accuracy >= Double($0) }) ?? true
         else { return nil }
         self.latitude = latitude
         self.longitude = longitude
@@ -40,14 +40,14 @@ public struct SharedLocation: Sendable, Hashable {
         self.timestamp = Date(timeIntervalSince1970: timestamp.timeIntervalSince1970.rounded(.down))
         self.battery = battery
         self.isCharging = isCharging
-        self.bubbleRadius = bubbleRadius
+        self.fogRadius = fogRadius
     }
 
     /// The same moment, but only the center of a fixed grid cell of about
     /// `radius` meters. A fixed grid (not random noise) keeps repeated
     /// updates from averaging out to the real position.
-    public func inBubble(radius: Int) -> SharedLocation? {
-        guard Self.bubbleRadii.contains(radius) else { return nil }
+    public func inFog(radius: Int) -> SharedLocation? {
+        guard Self.fogRadii.contains(radius) else { return nil }
         let cell = Double(radius) * 2
         let latStep = cell / 111_320
         let lat = ((latitude / latStep).rounded(.down) + 0.5) * latStep
@@ -55,7 +55,7 @@ public struct SharedLocation: Sendable, Hashable {
         let lon = ((longitude / lonStep).rounded(.down) + 0.5) * lonStep
         return SharedLocation(
             latitude: min(90, max(-90, lat)), longitude: min(180, max(-180, lon)), accuracy: Double(radius) * 1.5,
-            timestamp: timestamp, battery: battery, isCharging: isCharging, bubbleRadius: radius
+            timestamp: timestamp, battery: battery, isCharging: isCharging, fogRadius: radius
         )
     }
 }
@@ -69,8 +69,8 @@ private struct LocationPayload: Codable {
     /// Battery percent and charging; optional so older records still decode.
     var bat: Int?
     var chg: Bool?
-    /// Bubble size in meters while only an approximate area is shared.
-    var bub: Int?
+    /// Fog size in meters while only an approximate area is shared.
+    var fog: Int?
 }
 
 extension CircleCrypto {
@@ -78,7 +78,7 @@ extension CircleCrypto {
         let payload = LocationPayload(
             lat: location.latitude, lon: location.longitude, acc: location.accuracy,
             t: Int64(location.timestamp.timeIntervalSince1970),
-            bat: location.battery, chg: location.battery == nil ? nil : location.isCharging, bub: location.bubbleRadius
+            bat: location.battery, chg: location.battery == nil ? nil : location.isCharging, fog: location.fogRadius
         )
         return try sealContent(JSONEncoder().encode(payload), key: key, epoch: epoch, context: locationContext(circleID: circleID, deviceID: deviceID))
     }
@@ -92,7 +92,7 @@ extension CircleCrypto {
         let p = try JSONDecoder().decode(LocationPayload.self, from: plain)
         guard let location = SharedLocation(
             latitude: p.lat, longitude: p.lon, accuracy: p.acc, timestamp: Date(timeIntervalSince1970: TimeInterval(p.t)),
-            battery: p.bat, isCharging: p.chg ?? false, bubbleRadius: p.bub
+            battery: p.bat, isCharging: p.chg ?? false, fogRadius: p.fog
         ) else { throw ProtocolError.malformed }
         return (location, epoch)
     }

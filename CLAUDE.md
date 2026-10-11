@@ -1,6 +1,6 @@
 # Leuchtturm – notes for Claude Code
 
-Privacy-first location sharing for iOS (Life360 alternative). Owner: Tim (GitHub `Tim-Schaller`). Tim does not write code himself; explain decisions briefly in German, keep answers direct and concise.
+Privacy-first location sharing for families on iOS. Owner: Tim (GitHub `Tim-Schaller`). Tim does not write code himself; explain decisions briefly in German, keep answers direct and concise.
 
 ## Layout
 
@@ -44,6 +44,7 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 
 - Swift 6 language mode, strict concurrency. No warnings.
 - **Privacy**: nothing personal goes to CloudKit unencrypted. Every record must be verifiable (owner-signed circle record, self-signed member records, HPKE-auth key wraps). Never trust a record just because CloudKit returned it: any share participant can overwrite any record.
+- Never name other apps or companies (competitors) in the code, UI, docs, README, commit messages or App Store metadata, and do not reuse their feature names; describe our own features in our own words.
 - No third-party SDKs in the app. CryptoKit and CloudKit only (swift-crypto is a Linux-only test dependency).
 - Record format or crypto changes: update `docs/ARCHITECTURE.md`, `docs/THREAT_MODEL.md` if the security picture changes, and tests (including attack tests in `ClientTests.swift`).
 - Be honest in user-facing text about what Apple can see (metadata: which iCloud accounts share a circle).
@@ -52,8 +53,8 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 ## Current state (2026-10-11)
 
 - M1 done in code: identity, circles, invites (link + QR), admission proofs, removal with key rotation, safety codes, settings.
-- M2 started: signed + encrypted `Location` records (`SharedLocation.swift`, `LeuchtturmClient.shareLocation`), `LocationTracker` (CLLocationUpdate + CLBackgroundActivitySession, started by `AppModel.updateTracking()` so it also runs after a background relaunch; upload rules in `SharePolicy`), home screen is the map (`MapHomeView` + `PeopleSheet` drawer, Life360-style). The map polls every 30 s; no push yet. Background sharing still needs a real-device test (Settings shows "Zuletzt geteilt"). 32 core tests and 14 app tests green.
-- M3 started: `Note` records (`CircleNote.swift`, `LeuchtturmClient.send`) for reactions, quick notes, check-ins and good-morning; local notifications in `AppModel.deliverNews` (no push yet); UI in `Views/NotesViews.swift`. Battery and bubble size travel in the location payload; bubbles snap to a fixed grid (`SharedLocation.inBubble`).
+- M2 started: signed + encrypted `Location` records (`SharedLocation.swift`, `LeuchtturmClient.shareLocation`), `LocationTracker` (CLLocationUpdate + CLBackgroundActivitySession, started by `AppModel.updateTracking()` so it also runs after a background relaunch; upload rules in `SharePolicy`), home screen is the map (`MapHomeView` + `PeopleSheet` drawer). The map polls every 30 s; no push yet. Background sharing still needs a real-device test (Settings shows "Zuletzt geteilt"). 32 core tests and 14 app tests green.
+- M3 started: `Note` records (`CircleNote.swift`, `LeuchtturmClient.send`) for reactions, quick notes, check-ins and good-morning; local notifications in `AppModel.deliverNews` (no push yet); UI in `Views/NotesViews.swift`. Battery and fog size travel in the location payload; fog mode („Nebel“) snaps to a fixed grid (`SharedLocation.inFog`).
 - Design: green, landscape, cute lighthouse. Palette and assets in `docs/assets` and `ios/Leuchtturm/Assets.xcassets`; app colors and avatars in `Views/Theme.swift`; rounded font app-wide.
 - Simulation mode (debug builds, `ios/Leuchtturm/Simulation`): `SimulatedWorld` runs Anna, Ben and Clara as real `LeuchtturmClient`s on `InMemoryCloud`, with an in-memory key store and name. Activated by `-simulation`, the setup screen or settings; the orange „Simulation“ button controls the people. Everything is `#if DEBUG`; check that release builds stay free of it.
 - Storage switched from a self-hosted Go server to **CloudKit** (server is in git history before commit `415663a`).

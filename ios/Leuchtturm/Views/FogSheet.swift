@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// Starts a bubble: only an approximate area is shared for a while.
-struct BubbleSheet: View {
+/// Starts fog mode: only an approximate area is shared for a while.
+struct FogSheet: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
-    @State private var radius = Bubble.sizes[0].radius
+    @State private var radius = Fog.sizes[0].radius
     @State private var hours = 3.0
 
     var body: some View {
@@ -12,7 +12,7 @@ struct BubbleSheet: View {
             Form {
                 Section("Wie ungenau?") {
                     Picker("Größe", selection: $radius) {
-                        ForEach(Bubble.sizes, id: \.radius) { size in
+                        ForEach(Fog.sizes, id: \.radius) { size in
                             Text(size.label).tag(size.radius)
                         }
                     }
@@ -29,10 +29,10 @@ struct BubbleSheet: View {
                 } header: {
                     Text("Wie lange?")
                 } footer: {
-                    Text("Solange die Blase aktiv ist, verlässt dein genauer Standort dein iPhone nicht. Dein Kreis sieht nur die Gegend und deinen Akkustand. Check-ins sind so lange aus. Danach wird automatisch wieder genau geteilt.")
+                    Text("Solange der Nebel aktiv ist, verlässt dein genauer Standort dein iPhone nicht. Dein Kreis sieht nur die Gegend und deinen Akkustand. Check-ins sind so lange aus. Danach wird automatisch wieder genau geteilt.")
                 }
             }
-            .navigationTitle("Blase")
+            .navigationTitle("Nebel")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -41,7 +41,7 @@ struct BubbleSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Starten") {
                         Task {
-                            await model.startBubble(radius: radius, hours: hours)
+                            await model.startFog(radius: radius, hours: hours)
                             dismiss()
                         }
                     }

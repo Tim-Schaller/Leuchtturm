@@ -44,7 +44,7 @@ final class SimulatedWorld {
     private var lastMoved: [String: Date] = [:]
     private var lastPositions: [String: SharedLocation] = [:]
     /// People who currently share only an approximate area.
-    var inBubble: Set<String> = []
+    var inFog: Set<String> = []
     /// Notes the people already answered.
     private var answered: Set<String> = []
 
@@ -160,7 +160,7 @@ final class SimulatedWorld {
             ) else { continue }
             lastMoved[person.id] = now
             lastPositions[person.id] = position
-            let shared = inBubble.contains(person.id) ? position.inBubble(radius: 1000) ?? position : position
+            let shared = inFog.contains(person.id) ? position.inFog(radius: 1000) ?? position : position
             try? await person.client.shareLocation(shared)
         }
     }

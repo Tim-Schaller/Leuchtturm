@@ -78,7 +78,7 @@ struct NewsSection: View {
     }
 }
 
-/// Emoji reactions and quick notes for one person, like Life360's Quick Notes.
+/// Emoji reactions and quick notes for one person.
 struct ReactionPicker: View {
     @Environment(AppModel.self) private var model
     let member: CircleMember

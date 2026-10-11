@@ -77,15 +77,15 @@ struct SimulationTests {
         #expect(details.notes.contains { $0.senderID == me && $0.text == "❤️" })
     }
 
-    @Test func bubbleBlocksCheckIns() async throws {
+    @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()
         let ref = try #require(model.circles.first?.ref)
-        await model.startBubble(radius: 1000, hours: 1)
-        #expect(model.activeBubble?.radius == 1000)
+        await model.startFog(radius: 1000, hours: 1)
+        #expect(model.activeFog?.radius == 1000)
         #expect(!(await model.send(.checkIn, in: ref)))
-        await model.endBubble()
-        #expect(model.activeBubble == nil)
+        await model.endFog()
+        #expect(model.activeFog == nil)
     }
 
     @Test func strangerWithShareLinkIsUnverified() async throws {

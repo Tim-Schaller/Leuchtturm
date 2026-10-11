@@ -84,7 +84,7 @@ struct Avatar: View {
     }
 }
 
-/// Battery level as Life360 shows it next to each person. Red when low.
+/// Battery level next to each person. Red when low.
 struct BatteryBadge: View {
     let level: Int
     let isCharging: Bool

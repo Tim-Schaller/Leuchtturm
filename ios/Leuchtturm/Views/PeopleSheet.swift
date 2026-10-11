@@ -84,19 +84,19 @@ struct PeopleSheet: View {
                     Button("Einchecken: „Ich bin hier“", systemImage: "mappin.and.ellipse") {
                         Task { await model.send(.checkIn, in: circle.ref) }
                     }
-                    .disabled(!details.hasKey || model.activeBubble != nil)
-                    if let bubble = model.activeBubble {
+                    .disabled(!details.hasKey || model.activeFog != nil)
+                    if let fog = model.activeFog {
                         Button {
-                            Task { await model.endBubble() }
+                            Task { await model.endFog() }
                         } label: {
                             Label {
-                                Text("Blase bis \(bubble.until, format: .dateTime.hour().minute()) · beenden")
+                                Text("Nebel bis \(fog.until, format: .dateTime.hour().minute()) · beenden")
                             } icon: {
                                 Image(systemName: "circle.dashed")
                             }
                         }
                     } else {
-                        Button("Blase: nur ungefähre Gegend teilen", systemImage: "circle.dashed") { sheet = .bubble }
+                        Button("Nebel: nur ungefähre Gegend teilen", systemImage: "circle.dashed") { sheet = .fog }
                     }
                     Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(circle.ref) }
                         .disabled(!details.hasKey)
@@ -133,8 +133,8 @@ struct PeopleSheet: View {
             JoinSheet(link: nil, onJoined: onSelectCircle)
         case let .invite(ref):
             InviteSheet(ref: ref, circleName: details?.name)
-        case .bubble:
-            BubbleSheet()
+        case .fog:
+            FogSheet()
         #if DEBUG
         case .simulation:
             SimulationView { receivedInvite = $0 }
@@ -195,8 +195,8 @@ enum LocationStatus {
     static func text(for member: CircleMember, model: AppModel) -> String {
         if member.isMe {
             if !model.isSharingLocation { return "Teilen pausiert" }
-            if let bubble = model.activeBubble {
-                return String(localized: "Blase bis \(bubble.until.formatted(.dateTime.hour().minute()))")
+            if let fog = model.activeFog {
+                return String(localized: "Nebel bis \(fog.until.formatted(.dateTime.hour().minute()))")
             }
             if model.tracker.isDenied { return "Standortzugriff ist aus" }
             if model.tracker.location == nil { return "Suche Standort …" }
@@ -208,7 +208,7 @@ enum LocationStatus {
             ? String(localized: "Gerade eben")
             : location.timestamp.formatted(.relative(presentation: .named))
         guard let distance = distance(to: location, from: model.tracker.location) else { return ago }
-        if location.bubbleRadius != nil { return String(localized: "\(ago) · in einer Blase") }
+        if location.fogRadius != nil { return String(localized: "\(ago) · im Nebel") }
         return "\(ago) · \(distance)"
     }
 
@@ -240,7 +240,7 @@ struct MemberDetailView: View {
                 ReactionPicker(member: member, ref: ref)
             }
 
-            if let location = member.location, let radius = location.bubbleRadius, !member.isMe {
+            if let location = member.location, let radius = location.fogRadius, !member.isMe {
                 Section {
                     Label("Teilt gerade nur eine ungefähre Gegend (ca. \(radius * 2 / 1000) km).", systemImage: "circle.dashed")
                 }

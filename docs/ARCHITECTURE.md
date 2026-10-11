@@ -91,18 +91,18 @@ Recipients accept only wraps from the pinned owner device.
 
 | Field | Content |
 |-------|---------|
-| `blob` | encrypted `{"lat": …, "lon": …, "acc": …, "t": …, "bat": …, "chg": …, "bub": …}` (degrees, accuracy in meters, Unix seconds, optional battery percent and charging flag, optional bubble size) |
+| `blob` | encrypted `{"lat": …, "lon": …, "acc": …, "t": …, "bat": …, "chg": …, "fog": …}` (degrees, accuracy in meters, Unix seconds, optional battery percent and charging flag, optional fog size) |
 | `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/location-record", circleID, deviceID) ‖ blob` |
 
 Readers show a location only for devices in the signed roster, verify `sig` with the key from that device's member record and keep the newest timestamp seen per device, so a participant cannot fake a position or replay an older one. Pending members' locations are ignored until the owner confirms them. Pausing, leaving the circle and being removed delete the record; the owner's device also deletes it when it cleans up a departed member.
 
-**Bubbles** (Life360's name): for a chosen time the device shares only the center of a fixed grid cell about twice the bubble size (1, 5 or 25 km) and sets `bub`. A fixed grid instead of random noise keeps repeated updates from averaging out to the real position. The exact position never leaves the device during a bubble; check-ins are disabled.
+**Fog mode** („Nebel“): for a chosen time the device shares only the center of a fixed grid cell about twice the fog size (1, 5 or 25 km) and sets `fog`. A fixed grid instead of random noise keeps repeated updates from averaging out to the real position. The exact position never leaves the device while fog is on; check-ins are disabled.
 
 The app writes the record when the device moved (see Tracking strategy) and reads the selected circle every 30 seconds while the map is open (push updates come later).
 
 ### `Note` (record name `note-<noteID>`)
 
-Reactions, quick notes, check-ins and good-mornings (Life360's "Quick Notes" and "Check-in").
+Reactions, quick notes, check-ins and good-mornings.
 
 | Field | Content |
 |-------|---------|

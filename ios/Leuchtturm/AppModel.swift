@@ -59,8 +59,17 @@ final class AppModel {
 
     init(tracksLocation: Bool = true) {
         self.tracksLocation = tracksLocation
+        UIDevice.current.isBatteryMonitoringEnabled = true
         #if DEBUG
-        if ProcessInfo.processInfo.arguments.contains(SimulatedWorld.launchArgument) {
+        let arguments = ProcessInfo.processInfo.arguments
+        if arguments.contains(SimulatedWorld.demoArgument) {
+            startSimulation()
+            Task {
+                if await setUp(name: "Tim") { await createDemoCircle() }
+            }
+            return
+        }
+        if arguments.contains(SimulatedWorld.launchArgument) {
             startSimulation()
             return
         }
@@ -211,7 +220,12 @@ final class AppModel {
     private func share(_ location: CLLocation) async {
         guard isSharingLocation, let client, (0 ... 1000).contains(location.horizontalAccuracy) else { return }
         let policy: SharePolicy = UIApplication.shared.applicationState == .active ? .foreground : .background
-        guard policy.shouldShare(location, after: lastShared), let shared = SharedLocation(location) else { return }
+        let device = UIDevice.current
+        let battery = device.batteryLevel >= 0 ? Int((device.batteryLevel * 100).rounded()) : nil
+        let charging = device.batteryState == .charging || device.batteryState == .full
+        guard policy.shouldShare(location, after: lastShared),
+              let shared = SharedLocation(location, battery: battery, isCharging: charging)
+        else { return }
         lastShared = location
         // Finish the upload even if iOS suspends the app right after this update.
         let backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "share-location")
@@ -299,6 +313,18 @@ final class AppModel {
     }
 
     #if DEBUG
+    /// "Familie" with Anna, Ben and Clara in one step.
+    func createDemoCircle() async {
+        guard let ref = await createCircle(name: "Familie"),
+              let link = await run({ try await $0.createInvite(for: ref) })
+        else { return }
+        await simulate { world in
+            for person in world.people {
+                try await world.join(person, using: link)
+            }
+        }
+    }
+
     /// Switches to the simulation. The real setup stays untouched.
     func startSimulation() {
         do {

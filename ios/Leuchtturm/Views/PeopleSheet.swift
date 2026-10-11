@@ -156,6 +156,9 @@ private struct PersonRow: View {
                     .lineLimit(1)
             }
             Spacer(minLength: 0)
+            if let battery = member.location?.battery {
+                BatteryBadge(level: battery, isCharging: member.location?.isCharging ?? false)
+            }
             Image(systemName: "chevron.right")
                 .font(.caption.bold())
                 .foregroundStyle(.tertiary)
@@ -173,9 +176,7 @@ enum LocationStatus {
             if !model.isSharingLocation { return "Teilen pausiert" }
             if model.tracker.isDenied { return "Standortzugriff ist aus" }
             if model.tracker.location == nil { return "Suche Standort …" }
-            return model.tracker.isAlwaysAllowed || model.isSimulation
-                ? "Wird geteilt, auch bei geschlossener App"
-                : "Wird geteilt, solange die App läuft"
+            return model.tracker.isAlwaysAllowed || model.isSimulation ? "Wird geteilt" : "Nur solange die App läuft"
         }
         if member.isPending { return "Wartet auf Bestätigung" }
         guard let location = member.location else { return "Teilt noch keinen Standort" }
@@ -218,6 +219,11 @@ struct MemberDetailView: View {
                         LabeledContent("Entfernung", value: distance)
                     }
                     LabeledContent("Genauigkeit", value: "± \(Int(location.accuracy.rounded())) m")
+                    if let battery = location.battery {
+                        LabeledContent("Akku") {
+                            BatteryBadge(level: battery, isCharging: location.isCharging)
+                        }
+                    }
                     Button("In Apple Karten öffnen", systemImage: "arrow.triangle.turn.up.right.diamond") {
                         let item = MKMapItem(location: location.clLocation, address: nil)
                         item.name = member.name

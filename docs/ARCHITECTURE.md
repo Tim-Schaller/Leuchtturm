@@ -91,7 +91,7 @@ Recipients accept only wraps from the pinned owner device.
 
 | Field | Content |
 |-------|---------|
-| `blob` | encrypted `{"lat": …, "lon": …, "acc": …, "t": …}` (degrees, accuracy in meters, Unix seconds) |
+| `blob` | encrypted `{"lat": …, "lon": …, "acc": …, "t": …, "bat": …, "chg": …}` (degrees, accuracy in meters, Unix seconds, optional battery percent and charging flag) |
 | `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/location-record", circleID, deviceID) ‖ blob` |
 
 Readers show a location only for devices in the signed roster, verify `sig` with the key from that device's member record and keep the newest timestamp seen per device, so a participant cannot fake a position or replay an older one. Pending members' locations are ignored until the owner confirms them. Pausing, leaving the circle and being removed delete the record; the owner's device also deletes it when it cleans up a departed member.

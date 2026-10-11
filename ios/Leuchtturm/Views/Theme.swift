@@ -17,9 +17,29 @@ enum Theme {
     ]
 
     static func color(for id: String) -> Color {
+        memberColors[colorIndex(for: id)]
+    }
+
+    /// Distinct colors for everyone in a circle (as long as there are
+    /// enough). Same member list, same colors on every device.
+    static func colors(for ids: [String]) -> [String: Color] {
+        var used = Set<Int>()
+        var out: [String: Color] = [:]
+        for id in ids.sorted() {
+            var index = colorIndex(for: id)
+            for _ in memberColors.indices where used.contains(index) {
+                index = (index + 1) % memberColors.count
+            }
+            used.insert(index)
+            out[id] = memberColors[index]
+        }
+        return out
+    }
+
+    private static func colorIndex(for id: String) -> Int {
         // djb2: stable across launches and devices, unlike `hashValue`.
         let hash = id.utf8.reduce(UInt32(5381)) { ($0 &* 33) &+ UInt32($1) }
-        return memberColors[Int(hash % UInt32(memberColors.count))]
+        return Int(hash % UInt32(memberColors.count))
     }
 
     /// Soft mint at the top, deep forest at night.
@@ -36,8 +56,14 @@ enum Theme {
     }
 }
 
+extension EnvironmentValues {
+    /// Colors of the people in the circle on screen, from `Theme.colors(for:)`.
+    @Entry var memberColors: [String: Color] = [:]
+}
+
 /// A person as a colored circle with initials.
 struct Avatar: View {
+    @Environment(\.memberColors) private var memberColors
     let name: String?
     let id: String
     var size: CGFloat = 44
@@ -47,7 +73,7 @@ struct Avatar: View {
             .font(.system(size: size * 0.4, weight: .bold, design: .rounded))
             .foregroundStyle(.white)
             .frame(width: size, height: size)
-            .background(Theme.color(for: id).gradient, in: .circle)
+            .background((memberColors[id] ?? Theme.color(for: id)).gradient, in: .circle)
             .overlay { Circle().strokeBorder(.white, lineWidth: max(2, size * 0.06)) }
             .accessibilityHidden(true)
     }
@@ -55,6 +81,36 @@ struct Avatar: View {
     private var initials: String {
         let parts = (name ?? "?").split(separator: " ").prefix(2)
         return parts.compactMap(\.first).map(String.init).joined().uppercased()
+    }
+}
+
+/// Battery level as Life360 shows it next to each person. Red when low.
+struct BatteryBadge: View {
+    let level: Int
+    let isCharging: Bool
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: symbol)
+            Text("\(level) %").monospacedDigit()
+        }
+        .font(.caption)
+        .foregroundStyle(isLow ? .red : .secondary)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(isCharging ? "Akku \(level) Prozent, lädt" : "Akku \(level) Prozent")
+    }
+
+    private var isLow: Bool { level <= 15 && !isCharging }
+
+    private var symbol: String {
+        if isCharging { return "battery.100percent.bolt" }
+        switch level {
+        case 88...: return "battery.100percent"
+        case 63...: return "battery.75percent"
+        case 38...: return "battery.50percent"
+        case 13...: return "battery.25percent"
+        default: return "battery.0percent"
+        }
     }
 }
 

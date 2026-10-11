@@ -35,3 +35,12 @@ struct SharePolicyTests {
         #expect(SharePolicy.background.shouldShare(fix(0, after: 601), after: last))
     }
 }
+
+struct ThemeTests {
+    @Test func everyoneInACircleGetsTheirOwnColor() {
+        let ids = (0 ..< 8).map { "device-\($0)" }
+        let colors = Theme.colors(for: ids)
+        #expect(Set(ids.compactMap { colors[$0] }.map { "\($0)" }).count == 8)
+        #expect(Theme.colors(for: ids.reversed()) == colors)
+    }
+}

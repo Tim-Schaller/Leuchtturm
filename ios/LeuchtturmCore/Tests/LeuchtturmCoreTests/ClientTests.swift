@@ -227,7 +227,8 @@ struct ClientTests {
         _ = try await carol.join(link)
         _ = try await alice.circle(ref)
 
-        let hamburg = try location(53.5511, 9.9937)
+        let hamburg = try #require(SharedLocation(latitude: 53.5511, longitude: 9.9937, accuracy: 15, timestamp: Date(), battery: 42, isCharging: true))
+        #expect(SharedLocation(latitude: 1, longitude: 1, accuracy: 1, timestamp: Date(), battery: 101) == nil)
         try await bob.shareLocation(hamburg)
         try await carol.shareLocation(try location(48.1372, 11.5756))
         let aliceView = try await alice.circle(ref)

@@ -34,9 +34,10 @@ struct MapHomeView: View {
     @AppStorage("mapSatellite") private var satellite = false
     @State private var details: CircleDetails?
     @State private var camera: MapCameraPosition = .userLocation(fallback: .automatic)
-    /// Framed everyone once for the current circle; after that the camera
+    /// How many people were on the map when it last framed everyone. It
+    /// frames again only when someone new shows up, otherwise the camera
     /// stays where the user puts it.
-    @State private var framed = false
+    @State private var framedCount = 0
     @State private var focusedID: String?
     @State private var sheet: HomeSheet?
     @State private var drawerPath: [DrawerRoute] = []
@@ -88,10 +89,11 @@ struct MapHomeView: View {
             .presentationDragIndicator(.visible)
             .interactiveDismissDisabled()
         }
-        .onChange(of: model.tracker.location == nil) { if !framed { frameEveryone() } }
+        .onChange(of: model.tracker.location == nil) { frameIfSomeoneNew() }
         .onChange(of: model.hasLoadedCircles && model.circles.isEmpty, initial: true) { _, empty in
-            if empty { detent = .medium }
+            detent = empty ? .medium : PeopleSheet.peek
         }
+        .environment(\.memberColors, Theme.colors(for: details?.members.map(\.id) ?? []))
         .task(id: model.externalChanges) { await model.refresh() }
         .task(id: "\(selected?.id ?? "")|\(model.externalChanges)") { await follow(selected?.ref) }
     }
@@ -107,21 +109,30 @@ struct MapHomeView: View {
             details = nil
             focusedID = nil
             drawerPath = []
-            framed = false
+            framedCount = 0
         }
         while !Task.isCancelled {
             if let loaded = await model.mapDetails(for: ref) {
                 details = loaded
-                if !framed { frameEveryone() }
+                frameIfSomeoneNew()
             }
             try? await Task.sleep(for: .seconds(model.isSimulation ? 4 : 30))
         }
     }
 
-    /// Everyone with a position in view, but never closer than about 1.5 km.
-    private func frameEveryone() {
+    private var placedPoints: [CLLocationCoordinate2D] {
         var points = (details?.members ?? []).filter { !$0.isMe }.compactMap { $0.location?.coordinate }
         if let me = model.tracker.location?.coordinate { points.append(me) }
+        return points
+    }
+
+    private func frameIfSomeoneNew() {
+        if placedPoints.count > framedCount { frameEveryone() }
+    }
+
+    /// Everyone with a position in view, but never closer than about 1.5 km.
+    private func frameEveryone() {
+        let points = placedPoints
         guard let first = points.first else { return }
         var (south, north, west, east) = (first.latitude, first.latitude, first.longitude, first.longitude)
         for point in points {
@@ -135,7 +146,7 @@ struct MapHomeView: View {
             span: MKCoordinateSpan(latitudeDelta: max(0.015, (north - south) * 1.6), longitudeDelta: max(0.015, (east - west) * 1.6))
         )
         withAnimation(.smooth(duration: 0.6)) { camera = .region(region) }
-        framed = details != nil
+        framedCount = points.count
     }
 
     /// Flies to the person; with `showDetails` the drawer opens halfway.

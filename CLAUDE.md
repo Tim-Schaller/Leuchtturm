@@ -28,6 +28,8 @@ cd ios && xcodebuild -project Leuchtturm.xcodeproj -scheme Leuchtturm \
 
 # Start in the simulation mode (debug builds only, no iCloud needed)
 xcrun simctl launch 'iPhone 18 Pro' de.timschaller.leuchtturm -simulation
+# ... already set up as "Tim" with the demo circle "Familie" (Anna, Ben, Clara): best for screenshots
+xcrun simctl launch 'iPhone 18 Pro' de.timschaller.leuchtturm -simulationDemo
 
 # Tim's iPhone ("iPhone 17 Pro von Tim", paired): build with -destination 'id=00008150-001C182226FB801C', then
 xcrun devicectl device install app --device 00008150-001C182226FB801C <path>/Debug-iphoneos/Leuchtturm.app
@@ -50,7 +52,7 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 ## Current state (2026-10-11)
 
 - M1 done in code: identity, circles, invites (link + QR), admission proofs, removal with key rotation, safety codes, settings.
-- M2 started: signed + encrypted `Location` records (`SharedLocation.swift`, `LeuchtturmClient.shareLocation`), `LocationTracker` (CLLocationUpdate + CLBackgroundActivitySession, started by `AppModel.updateTracking()` so it also runs after a background relaunch; upload rules in `SharePolicy`), home screen is the map (`MapHomeView` + `PeopleSheet` drawer, Life360-style). The map polls every 30 s; no push yet. Background sharing still needs a real-device test (Settings shows "Zuletzt geteilt"). 29 core tests and 11 app tests green.
+- M2 started: signed + encrypted `Location` records (`SharedLocation.swift`, `LeuchtturmClient.shareLocation`), `LocationTracker` (CLLocationUpdate + CLBackgroundActivitySession, started by `AppModel.updateTracking()` so it also runs after a background relaunch; upload rules in `SharePolicy`), home screen is the map (`MapHomeView` + `PeopleSheet` drawer, Life360-style). The map polls every 30 s; no push yet. Background sharing still needs a real-device test (Settings shows "Zuletzt geteilt"). 29 core tests and 12 app tests green.
 - Design: green, landscape, cute lighthouse. Palette and assets in `docs/assets` and `ios/Leuchtturm/Assets.xcassets`; app colors and avatars in `Views/Theme.swift`; rounded font app-wide.
 - Simulation mode (debug builds, `ios/Leuchtturm/Simulation`): `SimulatedWorld` runs Anna, Ben and Clara as real `LeuchtturmClient`s on `InMemoryCloud`, with an in-memory key store and name. Activated by `-simulation`, the setup screen or settings; the orange „Simulation“ button controls the people. Everything is `#if DEBUG`; check that release builds stay free of it.
 - Storage switched from a self-hosted Go server to **CloudKit** (server is in git history before commit `415663a`).

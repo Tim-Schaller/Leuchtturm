@@ -29,7 +29,8 @@ History: M1 was first built with a self-hosted Go server (EU, anonymous device k
 - [x] Moving simulated members in the debug simulation
 - [x] Background location: live updates with a background activity session, stationary pause, fewer uploads while the app is closed
 - [ ] Push: CloudKit subscriptions plus a Notification Service Extension that decrypts on the device (foundation for every alert below)
-- [ ] Battery level and charging state on the map, low-battery alert
+- [x] Battery level and charging state, encrypted with the location
+- [ ] Low-battery alert (needs push)
 - [ ] Pause sharing per circle
 - [ ] Smarter tracking: visits, geofence wake-ups, presence-based frequency
 

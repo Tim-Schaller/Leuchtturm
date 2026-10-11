@@ -13,6 +13,8 @@ final class SimulatedWorld {
     /// Starts the app in the simulation, e.g.
     /// `xcrun simctl launch booted de.timschaller.leuchtturm -simulation`.
     static let launchArgument = "-simulation"
+    /// Like `-simulation`, but already set up as "Tim" with a full demo circle.
+    static let demoArgument = "-simulationDemo"
 
     struct Person: Identifiable, Sendable {
         /// Simulated iCloud user ID.
@@ -127,8 +129,16 @@ final class SimulatedWorld {
             }
             let latitude = home.latitude + north / 111_320
             let longitude = home.longitude + east / (111_320 * cos(home.latitude * .pi / 180))
-            guard let position = SharedLocation(latitude: latitude, longitude: longitude, accuracy: index == 1 ? 25 : 10, timestamp: now)
-            else { continue }
+            // Anna's battery drains, Ben charges in the car, Clara runs low.
+            let (battery, charging): (Int, Bool) = switch index {
+            case 0: (max(20, 82 - Int(t / 120)), false)
+            case 1: (min(100, 34 + Int(t / 60)), true)
+            default: (9, false)
+            }
+            guard let position = SharedLocation(
+                latitude: latitude, longitude: longitude, accuracy: index == 1 ? 25 : 10, timestamp: now,
+                battery: battery, isCharging: charging
+            ) else { continue }
             lastMoved[person.id] = now
             try? await person.client.shareLocation(position)
         }

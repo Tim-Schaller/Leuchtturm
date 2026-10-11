@@ -21,6 +21,15 @@ struct SimulationView: View {
 
                 if let world = model.simulation, model.client != nil {
                     Section {
+                        Button("Beispielkreis „Familie“ mit allen anlegen", systemImage: "person.3.fill") {
+                            Task {
+                                await model.createDemoCircle()
+                                dismiss()
+                            }
+                        }
+                    }
+
+                    Section {
                         ForEach(world.people) { person in
                             Button("\(person.name) lädt dich ein", systemImage: "envelope") {
                                 invite(from: person)

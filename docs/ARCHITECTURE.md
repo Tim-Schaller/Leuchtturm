@@ -1,88 +1,135 @@
 # Architecture
 
-Status: v1 protocol for identity, circles and invites is implemented (milestone M1). Location sharing (M2+) is still a design. Nothing here has been independently security-reviewed.
+Status: v1 record format for identity, circles and invites on CloudKit (milestone M1). Location sharing (M2+) is still a design. Nothing here has been independently security-reviewed.
 
 ## Components
 
 ```
-┌──────────────────────┐   HTTPS (TLS)        ┌──────────────────────┐
-│ iOS app (SwiftUI)    │ ───────────────────► │ leuchtturmd (Go)     │
-│  └ LeuchtturmCore    │ ◄─────────────────── │ SQLite (pure Go)     │
-│    CryptoKit, API    │   WebSocket (M2)     │ Hetzner, Germany     │
-└──────────┬───────────┘                      └──────────┬───────────┘
-           │                                             │ APNs (opaque payload, M3)
-           └───────────────── Apple Push ◄───────────────┘
+┌──────────────────────────────┐        ┌───────────────────────────────────┐
+│ iPhone                       │        │ Apple iCloud (CloudKit)           │
+│  Leuchtturm app (SwiftUI)    │ ─────► │  owner's private DB: 1 zone/circle│
+│   └ LeuchtturmCore           │ ◄───── │  zone-wide CKShare (public link)  │
+│      crypto, records, client │        │  members: shared DB               │
+└──────────────────────────────┘        └───────────────────────────────────┘
 ```
 
-- **iOS app** (`ios/Leuchtturm`): SwiftUI, iOS 26+, Liquid Glass. Only UI and app state.
-- **LeuchtturmCore** (`ios/LeuchtturmCore`): Swift package with all cryptography, wire formats, the API client and the high-level `LeuchtturmClient`. Uses CryptoKit on Apple platforms and swift-crypto on Linux, so the same code is tested on both (including end-to-end against a real server in CI).
-- **Server** (`server/`, `leuchtturmd`): single Go binary, SQLite in WAL mode, no separate database service. About 11 MB, runs on the smallest Hetzner instance.
+- **App** (`ios/Leuchtturm`): SwiftUI, iOS 26+, Liquid Glass. UI and app state only.
+- **LeuchtturmCore** (`ios/LeuchtturmCore`): all cryptography, record formats, the `CircleBackend` abstraction with a **CloudKit** implementation and an **in-memory simulation** for tests, and the high-level `LeuchtturmClient`. The logic is tested on Linux (swift-crypto) and macOS (CryptoKit).
+- **No server of our own.** CloudKit stores records and handles sharing.
+
+## CloudKit layout
+
+- Each circle is a **custom record zone** named after the circle ID (16 random bytes, base64url) in the **owner's private database**.
+- The zone is shared with a **zone-wide `CKShare`** with `publicPermission = readWrite`, so anyone with the share URL can join the zone. The share title is the generic string "Leuchtturm" (Apple can read it).
+- Members access the zone through their **shared database**. Leaving = deleting the share from the shared database. Removing = the owner removes the participant from the share.
+- In a zone share, **every participant can create, overwrite and delete every record**. CloudKit enforces nothing finer. Leuchtturm therefore decides membership and authenticity cryptographically (below) and treats iCloud only as storage and transport.
 
 ## Identity
 
-- On first launch each device generates two Curve25519 key pairs: **Ed25519** for signing requests and **X25519** for receiving circle keys.
-- Private keys live in the **Keychain** with `AfterFirstUnlockThisDeviceOnly` (readable in the background after the first unlock, never synced to iCloud, not included in backups that restore to other devices). They are **not** in the Secure Enclave: the Secure Enclave only supports P-256, and the protocol uses Curve25519 throughout.
-- **Device ID** = first 16 bytes of SHA-256(Ed25519 public key), base64url. Clients check that every device ID they see matches its key, so the server cannot relabel keys.
-- **No accounts, passwords or tokens.** Every request is signed with the device key (see [API.md](API.md#authentication)). Sign in with Apple is deferred until multi-device support needs an account anchor (see ROADMAP).
-- **Safety code**: 12 hex digits derived from a device's two public keys. Comparing it in person proves no key was swapped by the server.
+- On first launch each iPhone generates an **Ed25519** signing key and an **X25519** agreement key (CryptoKit).
+- Keys live in the **Keychain** with `AfterFirstUnlockThisDeviceOnly`: readable in the background after the first unlock, never synced to iCloud, not restored to other devices. Not in the Secure Enclave, which only supports P-256.
+- **Device ID** = first 16 bytes of SHA-256(Ed25519 public key), base64url.
+- **Safety code**: 12 hex digits from a device's two public keys, for comparing in person.
+- The iCloud account is not part of the cryptographic identity. It only determines zone access.
 
-## Circles
+## Trust anchor: the owner's device
 
-- A circle has a random 256-bit **circle key** and an **epoch** (key version, starting at 1).
-- The **circle ID** (16 random bytes) is chosen by the creating client, because ciphertexts are bound to it before the circle exists on the server.
-- Server-side data per circle: epoch, encrypted **metadata** (name), and per member: role (`owner`/`member`), encrypted **member card** (display name) and optionally a **wrapped circle key**.
+The device that creates a circle is its owner. Its public keys are **pinned** on every member device:
+- the creator pins its own keys;
+- a joiner learns them from the invite payload, which is authenticated by the invite secret (see Invites).
 
-### Key wrapping
+Everything else is verified against the pinned keys. A device without the pin (e.g. after reinstalling the app) cannot verify the circle and needs a new invite.
 
-The circle key is wrapped per member with **HPKE in auth mode** (RFC 9180; DHKEM X25519, HKDF-SHA256, ChaCha20-Poly1305). Auth mode proves to the recipient which member wrapped the key.
+## Records
+
+`ctx(label, parts...)` = UTF-8 label followed by each part as a 2-byte big-endian length and its UTF-8 bytes. All integers are big-endian.
+
+### `Circle` (record name `circle`, one per zone)
+
+| Field | Content |
+|-------|---------|
+| `epoch` | key version, starts at 1 |
+| `meta` | encrypted `{"name": …, "members": [device IDs]}` (the **roster**) |
+| `sig` | Ed25519 by the owner device over `ctx("leuchtturm/v1/circle-record", circleID) ‖ epoch ‖ meta` |
+
+A circle record with a bad signature makes the circle unreadable (`tampered`).
+
+### `Member` (record name = device ID, one per device)
+
+| Field | Content |
+|-------|---------|
+| `skey`, `akey` | the device's public keys |
+| `card` | encrypted `{"name": …}` (member card) |
+| `invite`, `proof` | invite ID and admission proof (empty for the owner) |
+| `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/member-record", circleID, deviceID, inviteID)` followed by each of skey, akey, card, proof as u64 length ‖ bytes |
+
+Member records are **self-authenticating**: the record name must equal the hash of `skey`, and only the holder of that key can produce `sig`. Another participant can delete or replay a record, but cannot forge one.
+
+A member is shown if its device ID is in the signed roster, or (as *pending*) if its admission proof matches an invite on file. The owner's device moves pending members into the roster the next time it opens the circle.
+
+### `KeyWrap` (record name `wrap-<epoch>-<deviceID>`)
+
+The circle key for one device, wrapped with **HPKE in auth mode** (RFC 9180; DHKEM X25519, HKDF-SHA256, ChaCha20-Poly1305):
 
 ```
-wrapped = 0x01 | sender device id (16) | HPKE enc (32) | ciphertext (32 + 16)
-info    = ctx("leuchtturm/v1/circle-key", circleID, epoch, recipientDeviceID)
-aad     = ctx("leuchtturm/v1/circle-key-sender", senderDeviceID)
+blob = 0x01 | sender device id (16) | enc (32) | ciphertext (32 + 16)
+info = ctx("leuchtturm/v1/circle-key", circleID, epoch, recipientDeviceID)
+aad  = ctx("leuchtturm/v1/circle-key-sender", senderDeviceID)
 ```
 
-`ctx(label, parts...)` is the label's UTF-8 bytes followed by each part as a 2-byte big-endian length and its UTF-8 bytes. Recipients accept a wrapped key only from a current circle member.
+Recipients accept only wraps from the pinned owner device.
 
-### Encrypted content (metadata, member cards)
+### `Invite` (record name `invite-<inviteID>`)
+
+| Field | Content |
+|-------|---------|
+| `epoch`, `expires` | plaintext copies for housekeeping |
+| `sealed` | ChaCha20-Poly1305 under the invite *enc key*: `0x02 ‖ epoch ‖ expiresAt ‖ circle key ‖ owner Ed25519 key ‖ owner X25519 key`, AAD `ctx("leuchtturm/v1/invite", circleID, inviteID)` |
+| `token` | the invite *auth token*, encrypted under the circle key, so members can check admission proofs |
+
+### Encrypted content (meta, cards, tokens)
 
 ```
-blob = 0x01 | epoch (u64 BE) | ChaCha20-Poly1305 combined (nonce 12 | ciphertext | tag 16)
-aad  = ctx("leuchtturm/v1/member-card", circleID, deviceID) | header   (member cards)
-       ctx("leuchtturm/v1/circle-meta", circleID) | header             (metadata)
-plaintext = u16 BE length | JSON | zero padding to a multiple of 64 bytes
+blob      = 0x01 | epoch (u64) | ChaCha20-Poly1305 combined (nonce 12 | ciphertext | tag 16)
+aad       = context | 0x01 | epoch
+plaintext = u16 length | data | zero padding to a multiple of 64 bytes
 ```
 
-The epoch is readable without a key so clients know which key to use. Padding hides name lengths: all blobs in the M1 tests are exactly 101 bytes. A member card of `0x00` means "no card yet" (used while joining).
+Contexts: `ctx("leuchtturm/v1/circle-meta", circleID)`, `ctx("leuchtturm/v1/member-card", circleID, deviceID)`, `ctx("leuchtturm/v1/invite-token", circleID, inviteID)`. Padding hides name lengths.
 
-### Invites
+## Invites
 
-1. The inviter creates a random 32-byte **secret** and derives two keys with HKDF-SHA256 (no salt): `auth token` (info `leuchtturm/v1/invite/auth`) and `enc key` (info `leuchtturm/v1/invite/enc`).
-2. The inviter uploads SHA-256(auth token) and the **sealed circle key**: ChaCha20-Poly1305 under `enc key` over `0x01 | epoch | circle key`, with AAD `ctx("leuchtturm/v1/invite", circleID)`. The invite is pinned to the current epoch.
-3. The link `leuchtturm://join?v=1&server=…&id=<invite id>&k=<secret>` is shared privately (QR code or message).
-4. The joiner redeems with the auth token. Only then does the server return the sealed key, so **everyone who obtains the circle key appears in the member list**. The joiner then uploads its member card.
+1. A member creates a random 32-byte **secret** and derives, with HKDF-SHA256 (no salt), an **auth token** (info `leuchtturm/v1/invite/auth`) and an **enc key** (info `leuchtturm/v1/invite/enc`).
+2. It writes an `Invite` record and reads the zone's share URL.
+3. The link `leuchtturm://join?v=2&share=<iCloud share URL>&id=<inviteID>&k=<secret>` is shared privately (QR code or message). Apple never sees the secret.
+4. The joiner accepts the iCloud share, decrypts `sealed` with the enc key, checks expiry, pins the owner keys, stores the circle key, and writes its `Member` record with the **admission proof** `HMAC-SHA256(auth token, ctx("leuchtturm/v1/admission", circleID, deviceID) ‖ skey ‖ akey)`.
+5. If anything fails, the app leaves the iCloud share again.
 
-The server never sees the secret or the enc key. Invites expire (1 minute to 7 days), have a use limit (1 to 50) and are all revoked when the key rotates.
+Someone with only the share URL can join the zone but has neither the circle key nor a valid proof; members ignore them and the owner sees them as *unverified participants* and can remove them.
 
-### Removing members and key rotation
+## Removing members and key rotation
 
-The owner removes a member in one atomic request that contains: the new epoch (current + 1), the circle metadata re-encrypted under a fresh key, and the fresh key wrapped for **exactly** every remaining member. The server rejects incomplete rotations. Remaining members unwrap the new key on their next sync and re-encrypt their own member card under it. The removed device keeps old keys but receives nothing new.
+The owner removes a user (all their devices) in one atomic CloudKit operation:
+- new circle record with epoch + 1 and the roster without the removed devices, encrypted under a **fresh key** and signed;
+- a `KeyWrap` of the fresh key for every remaining roster device;
+- deletion of all old `KeyWrap`s, all `Invite`s (they carry the old key) and all records the removed user created;
+- removal of the user from the `CKShare`.
 
-If the owner leaves, the longest-standing member becomes owner. Empty circles are deleted.
+Remaining members unwrap the new key on their next sync and re-encrypt their member card under it. Users who leave on their own are cleaned out of the roster by the owner's device.
 
-## Data in transit and at rest
+The owner cannot leave; deleting the zone deletes the circle for everyone. Ownership cannot be transferred (CloudKit zones belong to one account).
 
-| Data | Encrypted client-side | Visible to server | Status |
-|------|-----------------------|-------------------|--------|
-| Circle name | yes | ciphertext, padded size, epoch | M1 |
-| Display names | yes | ciphertext, padded size, epoch | M1 |
-| Circle membership, roles | no | which devices are in which circle | M1 |
-| Device public keys | no | public keys | M1 |
-| Live location | yes (circle key) | ciphertext, size, time | M2 |
-| Places / geofences | yes | ciphertext only, evaluated on device | M3 |
-| Location history (opt-in) | yes | ciphertext, retention deadline | M4 |
-| SOS / check-in | yes | ciphertext, recipient circle | M4 |
-| Push tokens | no | token, device | M3 |
+## What is stored where
+
+| Data | Encrypted on device | Visible to Apple |
+|------|---------------------|------------------|
+| Circle name, roster | yes | ciphertext, padded size |
+| Display names | yes | ciphertext, padded size |
+| Device public keys, signatures | no (public) | yes |
+| Invite expiry times | no | yes |
+| Which iCloud accounts share a circle | n/a | **yes**, with real identities |
+| When records are written | n/a | yes |
+| Live location, places, history (M2+) | yes | ciphertext, size, time |
 
 ## Tracking strategy (battery, M2)
 
@@ -90,31 +137,10 @@ If the owner leaves, the longest-standing member becomes owner. Empty circles ar
 |-------|-----------|---------|
 | Stationary | Significant-location-change + visits | rare |
 | Moving | Standard location updates, reduced accuracy | moderate |
-| Driving (CoreMotion automotive) | Best-for-navigation accuracy, live speed | frequent, only while a circle member is watching or an opt-in trip is active |
+| Driving (CoreMotion automotive) | Best-for-navigation accuracy, live speed | frequent, while someone is watching or an opt-in trip is active |
 
-Viewers register "presence" over the WebSocket. Frequent uploads happen only while someone is watching.
+Updates will be delivered through CloudKit subscriptions (silent push), so near-real-time rather than instant.
 
-## Retention
+## License
 
-- Live location: only the latest value per device (M2).
-- History: opt-in per user, retention chosen by the user, deleted automatically by the server (M4).
-- Expired invites are purged hourly.
-- Deleting a device removes its memberships immediately; circles left empty are deleted.
-
-## Server
-
-- API reference: [API.md](API.md).
-- Logs contain method, route pattern, status and duration only: no IPs, bodies, IDs or keys.
-- Limits: 64 KiB request body, 500 members per circle (configurable via `LEUCHTTURM_MAX_MEMBERS`), 20 open invites per circle.
-- Replay protection keeps nonces in memory, so run **one** server instance.
-
-## Hosting and cost
-
-- Hetzner Cloud, smallest shared-CPU instance (about 4-5 EUR/month), Falkenstein or Nuremberg.
-- Docker container behind Caddy (automatic TLS) or any reverse proxy. Serve it at the root of a (sub)domain: the request path is part of the signature.
-- SQLite backups (e.g. Litestream to an EU object store) are a later option.
-
-## Licensing split
-
-- `ios/`: MPL-2.0 (compatible with App Store distribution by the project owner)
-- everything else: AGPL-3.0 (network use of a modified server requires publishing the changes)
+MPL-2.0 for the whole repository.

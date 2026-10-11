@@ -6,7 +6,7 @@ The source code of Leuchtturm is open source under the licenses stated in the RE
 
 - Fork, modify, self-host and redistribute the code under the applicable licenses.
 - Refer to the project factually, e.g. "based on Leuchtturm" or "a fork of Leuchtturm".
-- Self-host the unmodified server for yourself, your family and friends.
+- Build and run your own copy for yourself, your family and friends (with your own bundle ID and iCloud container).
 
 ## You may not
 

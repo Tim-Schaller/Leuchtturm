@@ -1,0 +1,15 @@
+{
+  "description": "Known-answer vectors for Leuchtturm protocol v1 (device IDs and invite key derivation). Generated with Go's crypto/sha256 and crypto/hkdf, independent of the Swift implementation that is tested against them.",
+  "device_id": {
+    "device_id": "ZbYGc9btiEvwHCwiLYKtoA",
+    "signing_key": "ebVWLo_mVPlAeLES6KmLp5AfhTrmlb7X4OORC60ElmQ"
+  },
+  "invite": {
+    "auth_token": "71faVtfWHFmKHPlq-41CWHybevu4y2wrQP-lYe8sHWE",
+    "auth_token_hash": "SEYhFlQHNDvP6pP7I97JxdMKREgVdHvuTsnaGdc9YYA",
+    "enc_key": "NxuqFgqU8yizpJQm0pAUtUJ6nH1Tsb0XG35fHKzS2M8",
+    "hkdf_info_auth": "leuchtturm/v1/invite/auth",
+    "hkdf_info_enc": "leuchtturm/v1/invite/enc",
+    "secret": "oKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr8"
+  }
+}

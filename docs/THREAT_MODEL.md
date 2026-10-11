@@ -1,61 +1,60 @@
 # Threat model
 
-Status: v1 (covers milestone M1: identity, circles, invites). Not independently reviewed.
+Status: v1 for CloudKit (milestone M1: identity, circles, invites). Not independently reviewed.
+
+## Parties
+
+- **Members**: people in a circle, each with one iPhone.
+- **Owner**: the member whose device created the circle (trust anchor).
+- **Apple**: operates iCloud/CloudKit, stores all records, controls zone access, push delivery and the App Store.
+- **Outsiders**: anyone else, including people who obtained a share URL or an invite link.
 
 ## Goals
 
-1. A compromised or curious server operator cannot read locations, places, history, circle names or display names.
-2. A network attacker cannot read or undetectably modify data.
-3. Only current circle members can read a circle's data. Removed members cannot read anything shared after their removal.
-4. The project does not collect more data than needed for the features to work.
+1. Apple (or anyone who breaches iCloud) cannot read locations, places, history, circle names or display names.
+2. Only admitted members can read a circle's data. Removed members cannot read anything shared after their removal.
+3. A member cannot impersonate another member or the owner.
+4. The project collects no data itself (there is no project server).
 
 ## Non-goals (not protected against)
 
-- **Metadata.** The server sees which devices exist, who belongs to which circle, who is owner, when devices make requests, padded ciphertext sizes and IP addresses at connection time (and later push tokens). It does not log IPs, but it necessarily sees them.
-- **A compromised device.** Malware or physical access with an unlocked phone defeats client-side encryption.
-- **A malicious circle member.** Anyone in a circle can read what the circle shares and can screenshot or export it.
-- **Coercion and stalking by a trusted person.** Location sharing can be abused. Leuchtturm will show clear sharing indicators and lets users leave a circle at any time, but cannot prevent misuse by someone with physical access to the victim's phone.
-- **Traffic analysis by a global network observer.**
-- **Apple.** APNs and the App Store are operated by Apple. Push payloads will be opaque to Apple, but delivery timing is visible.
-
-## Assets
-
-- Location data (live and history)
-- Places (home, work, etc.)
-- Circle names, display names, circle membership
-- Device private keys and circle keys (Keychain)
-- Invite links (grant membership while valid)
+- **Metadata at Apple.** Apple knows which iCloud accounts (real identities) share a circle, who owns it, when records are written and their approximate sizes. This is the main privacy cost of using CloudKit instead of a self-hosted server.
+- **Data location.** iCloud data is stored in Apple's data centers; Apple is a US company. EU-only storage is not guaranteed.
+- **Apple as an active attacker on the app itself.** Apple distributes the app binary and operating system.
+- **A compromised device.** Malware or physical access to an unlocked phone defeats client-side encryption.
+- **A malicious member reading or leaking.** Anyone in a circle can read what the circle shares and can screenshot it.
+- **Denial of service by a member.** Any participant can delete records in the zone (CloudKit permission model). Leuchtturm detects forgeries but cannot prevent deletion.
+- **Coercion and stalking by a trusted person.** Location sharing can be abused. Leuchtturm will show clear sharing indicators and lets users leave at any time, but cannot prevent misuse by someone with access to the victim's phone.
 
 ## Threats and mitigations
 
 | Threat | Mitigation | Status |
 |--------|------------|--------|
-| Server breach leaks content | Server stores only ciphertext and public keys; names are padded to hide length | M1 |
-| Server operator reads data | E2EE with keys that never leave devices; geofences evaluated on device | M1 / M3 |
-| Stolen credentials | There are none: no passwords, no bearer tokens. Requests are signed with device keys | M1 |
-| Request replay or tampering | Signature covers method, path, body hash, time and nonce; nonce cache | M1 |
-| Server relabels keys (claims key X belongs to device Y) | Device ID is derived from the signing key; clients verify it | M1 |
-| Server moves a member card to another device or replays it under another epoch | Card AAD binds circle, device and epoch header | M1 |
-| Server forges a rotated circle key | HPKE auth mode: recipients only accept keys wrapped by a current member | M1 |
-| Server silently adds its own device to a circle | It still never receives the circle key unless a member wraps it, which happens on rotation for all listed members. **Mitigation: safety codes** shown for every member, to be compared in person. A later version should warn when unverified members appear | M1 (manual) |
-| Invite link intercepted | Links expire (default 24 h), have a use limit (default 1) and can be revoked. The circle key is only released on redeem, so an interceptor shows up in the member list and can be removed (which rotates the key) | M1 |
-| Invite created during a rotation carries an old key | Server only accepts invites for the current epoch and revokes all invites on rotation | M1 |
-| Removed member keeps reading | Atomic key rotation; server rejects rotations that skip a remaining member | M1 |
-| Log leakage | Logs contain only method, route pattern, status and duration | M1 |
-| Server learns name lengths | Plaintext padded to 64-byte blocks | M1 |
-| Supply chain | Server: one dependency (pure-Go SQLite). App: CryptoKit only. Pinned versions | M1 |
+| Apple or an iCloud breach reads content | Content encrypted on device; keys never leave devices; names padded | M1 |
+| Someone obtains only the iCloud share URL | Without the invite secret: no circle key, no valid admission proof; ignored by members, flagged to the owner, removable | M1 |
+| Invite link intercepted | Links expire (1 h to 7 days); joiners appear in the member list; removal rotates the key and kills all open invites | M1 |
+| Member forges another member's record | Member records are signed by their own device and bound to the device ID (hash of the key) | M1 |
+| Member forges circle name, roster or epoch | Circle record must be signed by the pinned owner device | M1 |
+| Member hands out a fake circle key | Wrapped keys are accepted only from the owner device (HPKE auth mode) | M1 |
+| Member moves cards between devices or epochs | Card AAD binds circle, device and epoch | M1 |
+| Removed member keeps reading | Removed from the iCloud share and atomic key rotation | M1 |
+| Apple injects its own device into a circle | Apple could add a participant to the share, but that device has no invite proof and gets no key. Safety codes detect key substitution when compared in person | M1 |
+| Apple substitutes the owner's keys for a new joiner | Owner keys come from the invite payload, authenticated by the secret that Apple never sees | M1 |
+| Device reinstalled or keychain lost | Device cannot verify or decrypt; needs a new invite (no silent re-trust) | M1 |
+| Supply chain | App uses Apple frameworks only (CryptoKit, CloudKit). swift-crypto is used only for Linux tests | M1 |
 
 ## Known limitations of M1
 
-- **Single device per person.** Losing the phone means losing access; rejoin via a new invite. Multi-device and key backup are open (see ROADMAP).
-- **Safety codes are manual.** Nothing warns yet when an unverified member appears.
-- **Old keys stay on removed devices.** They can still read what was shared before their removal, by design.
-- **Replay cache is in memory.** A server restart within the 2-minute window could accept a replayed request once. Impact is limited because all state-changing requests are idempotent or fail on replay (e.g. used invites, epoch checks).
-- **No forward secrecy within an epoch.** Anyone who gets a circle key can decrypt everything encrypted under that epoch. Periodic rotation may be added later.
+- **Single device per person.** A second iPhone or iPad needs its own invite.
+- **The owner device is a single point of failure.** If the owner loses their iPhone, the circle can no longer be managed (no new admissions, removals or renames); members can still read it. Ownership transfer is not possible with CloudKit zones.
+- **Pending members need the owner.** New members are visible as pending right away, but enter the signed roster only when the owner opens the app. Their admission is verified against the invite record, so if an invite expires and is cleaned up first, the owner must re-invite them.
+- **No use limits on invites.** CloudKit cannot enforce them; a link works for anyone until it expires. Owners see every new member.
+- **Safety codes are manual.** Nothing warns yet when an unverified key appears.
+- **No forward secrecy within an epoch.** Anyone with a circle key can decrypt everything under that epoch. Periodic rotation may be added later.
 
 ## Open questions
 
-- Key backup and multi-device sync without weakening E2EE.
-- Automatic warnings and verification UX for safety codes.
-- Metadata reduction (e.g. sealed sender, padding of request timing).
+- Multi-device support and key backup without weakening E2EE.
+- Owner succession (e.g. a new zone created by another member).
+- Automatic safety-code verification UX.
 - Independent security audit before a public App Store launch.

@@ -10,76 +10,25 @@ permissions:
   contents: read
 
 jobs:
-  server:
-    name: Server (Go)
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: server
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: server/go.mod
-          cache-dependency-path: server/go.sum
-      - name: Format check
-        run: test -z "$(gofmt -l .)"
-      - run: go vet ./...
-      - run: go test -race ./...
-      - name: Docker build
-        run: docker build -t leuchtturmd:ci .
-
   core-linux:
-    name: Core (Swift on Linux) + end-to-end
+    name: Core (Swift on Linux, swift-crypto)
     runs-on: ubuntu-latest
     container: swift:6.2-noble
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: server/go.mod
-          cache-dependency-path: server/go.sum
-      - name: Start server
-        shell: bash
-        run: |
-          cd server
-          # The container runs as another user than the checkout owner, so git
-          # refuses the repo and Go's VCS stamping fails; it is not needed here.
-          go build -buildvcs=false -o /tmp/leuchtturmd ./cmd/leuchtturmd
-          LEUCHTTURM_ADDR=127.0.0.1:8080 LEUCHTTURM_DATA_DIR=/tmp/lt-data nohup /tmp/leuchtturmd > /tmp/leuchtturmd.log 2>&1 &
-          for i in $(seq 1 30); do (echo > /dev/tcp/127.0.0.1/8080) 2>/dev/null && exit 0; sleep 1; done
-          cat /tmp/leuchtturmd.log; exit 1
-      - name: Swift tests (unit + end-to-end)
+      - name: Unit and flow tests (simulated CloudKit)
         working-directory: ios/LeuchtturmCore
-        env:
-          LEUCHTTURM_TEST_SERVER: http://127.0.0.1:8080
         run: swift test
-      - name: Server log
-        if: failure()
-        run: cat /tmp/leuchtturmd.log || true
 
   ios:
-    name: iOS (core on CryptoKit, app build + test)
+    name: iOS (core on CryptoKit + CloudKit, app build + test)
     # Liquid Glass needs the iOS 26 SDK (Xcode 26). If this runner label is not
     # available on your account yet, adjust it to the newest macOS image.
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: server/go.mod
-          cache-dependency-path: server/go.sum
-      - name: Start server
-        run: |
-          cd server
-          go build -o /tmp/leuchtturmd ./cmd/leuchtturmd
-          LEUCHTTURM_ADDR=127.0.0.1:8080 LEUCHTTURM_DATA_DIR=/tmp/lt-data nohup /tmp/leuchtturmd > /tmp/leuchtturmd.log 2>&1 &
-          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8080/healthz && exit 0; sleep 1; done
-          cat /tmp/leuchtturmd.log; exit 1
-      - name: Core tests on macOS (CryptoKit) incl. end-to-end
+      - name: Core tests on macOS (also compiles the CloudKit backend)
         working-directory: ios/LeuchtturmCore
-        env:
-          LEUCHTTURM_TEST_SERVER: http://127.0.0.1:8080
         run: swift test
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -115,6 +64,3 @@ jobs:
             -scheme Leuchtturm \
             -destination "id=$UDID" \
             CODE_SIGNING_ALLOWED=NO
-      - name: Server log
-        if: failure()
-        run: cat /tmp/leuchtturmd.log || true

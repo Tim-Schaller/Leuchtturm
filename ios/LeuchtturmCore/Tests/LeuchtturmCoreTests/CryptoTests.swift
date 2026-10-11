@@ -97,18 +97,73 @@ struct CircleCryptoTests {
         }
     }
 
+    func payload(_ key: SymmetricKey, expires: Int64 = 2_000_000_000) -> InvitePayload {
+        InvitePayload(
+            epoch: 5, expiresAt: expires, circleKeyData: key.rawData,
+            ownerSigningKey: alice.signingPublicKey, ownerAgreementKey: alice.agreementPublicKey
+        )
+    }
+
     @Test func invitePayloadRoundTrip() throws {
         let keys = CircleCrypto.inviteKeys(secret: randomBytes(32))
         let key = CircleCrypto.newCircleKey()
-        let sealed = try CircleCrypto.sealInvitePayload(circleKey: key, epoch: 5, circleID: circleID, keys: keys)
-        let (got, epoch) = try CircleCrypto.openInvitePayload(sealed, circleID: circleID, keys: keys)
-        #expect(got == key && epoch == 5)
+        let inviteID = CircleCrypto.newCircleID()
+        let sealed = try CircleCrypto.sealInvitePayload(payload(key), circleID: circleID, inviteID: inviteID, keys: keys)
+        let opened = try CircleCrypto.openInvitePayload(sealed, circleID: circleID, inviteID: inviteID, keys: keys)
+        #expect(opened == payload(key))
+        #expect(opened.circleKey == key)
 
         #expect(throws: (any Error).self) {
-            try CircleCrypto.openInvitePayload(sealed, circleID: CircleCrypto.newCircleID(), keys: keys)
+            try CircleCrypto.openInvitePayload(sealed, circleID: CircleCrypto.newCircleID(), inviteID: inviteID, keys: keys)
+        }
+        #expect(throws: (any Error).self) {
+            try CircleCrypto.openInvitePayload(sealed, circleID: circleID, inviteID: CircleCrypto.newCircleID(), keys: keys)
         }
         let other = CircleCrypto.inviteKeys(secret: randomBytes(32))
-        #expect(throws: (any Error).self) { try CircleCrypto.openInvitePayload(sealed, circleID: circleID, keys: other) }
+        #expect(throws: (any Error).self) {
+            try CircleCrypto.openInvitePayload(sealed, circleID: circleID, inviteID: inviteID, keys: other)
+        }
+    }
+
+    @Test func inviteTokenAndAdmissionProof() throws {
+        let key = CircleCrypto.newCircleKey()
+        let inviteID = CircleCrypto.newCircleID()
+        let keys = CircleCrypto.inviteKeys(secret: randomBytes(32))
+        let blob = try CircleCrypto.sealInviteToken(keys.authToken, key: key, epoch: 1, circleID: circleID, inviteID: inviteID)
+        let token = try #require(try CircleCrypto.openInviteToken(blob, circleID: circleID, inviteID: inviteID) { _ in key })
+        #expect(token == keys.authToken)
+
+        let proof = CircleCrypto.admissionProof(
+            authToken: token, circleID: circleID, deviceID: bob.deviceID,
+            signingKey: bob.signingPublicKey, agreementKey: bob.agreementPublicKey
+        )
+        #expect(CircleCrypto.verifyAdmissionProof(
+            proof, authToken: token, circleID: circleID, deviceID: bob.deviceID,
+            signingKey: bob.signingPublicKey, agreementKey: bob.agreementPublicKey
+        ))
+        // A proof cannot be moved to another device or circle.
+        #expect(!CircleCrypto.verifyAdmissionProof(
+            proof, authToken: token, circleID: circleID, deviceID: mallory.deviceID,
+            signingKey: mallory.signingPublicKey, agreementKey: mallory.agreementPublicKey
+        ))
+        #expect(!CircleCrypto.verifyAdmissionProof(
+            proof, authToken: token, circleID: CircleCrypto.newCircleID(), deviceID: bob.deviceID,
+            signingKey: bob.signingPublicKey, agreementKey: bob.agreementPublicKey
+        ))
+    }
+
+    @Test func recordStatementsAreSigned() throws {
+        let statement = CircleCrypto.circleRecordStatement(circleID: circleID, epoch: 2, meta: Data([1, 2, 3]))
+        let sig = try alice.sign(statement)
+        #expect(CircleCrypto.verifySignature(sig, publicKey: alice.signingPublicKey, message: statement))
+        #expect(!CircleCrypto.verifySignature(sig, publicKey: bob.signingPublicKey, message: statement))
+        let otherEpoch = CircleCrypto.circleRecordStatement(circleID: circleID, epoch: 3, meta: Data([1, 2, 3]))
+        #expect(!CircleCrypto.verifySignature(sig, publicKey: alice.signingPublicKey, message: otherEpoch))
+
+        // Length prefixes keep fields from sliding into each other.
+        let a = CircleCrypto.memberRecordStatement(circleID: circleID, deviceID: "d", inviteID: "", signingKey: Data([1]), agreementKey: Data([2, 3]), card: Data(), proof: Data())
+        let b = CircleCrypto.memberRecordStatement(circleID: circleID, deviceID: "d", inviteID: "", signingKey: Data([1, 2]), agreementKey: Data([3]), card: Data(), proof: Data())
+        #expect(a != b)
     }
 
     @Test func memberCardRoundTripAndBinding() throws {
@@ -137,8 +192,8 @@ struct CircleCryptoTests {
 
     @Test func paddingHidesNameLength() throws {
         let key = CircleCrypto.newCircleKey()
-        let short = try CircleCrypto.sealCircleMeta(CircleMeta(name: "Ai"), key: key, epoch: 1, circleID: circleID)
-        let long = try CircleCrypto.sealCircleMeta(CircleMeta(name: "Familie Schaller"), key: key, epoch: 1, circleID: circleID)
+        let short = try CircleCrypto.sealCircleMeta(CircleMeta(name: "Ai", members: []), key: key, epoch: 1, circleID: circleID)
+        let long = try CircleCrypto.sealCircleMeta(CircleMeta(name: "Familie Schaller", members: []), key: key, epoch: 1, circleID: circleID)
         #expect(short.count == long.count)
         let opened = try CircleCrypto.openCircleMeta(long, circleID: circleID) { _ in key }
         #expect(opened?.meta.name == "Familie Schaller")
@@ -171,20 +226,23 @@ struct CircleCryptoTests {
 }
 
 struct InviteLinkTests {
+    let share = URL(string: "https://www.icloud.com/share/0abcDEF123#Leuchtturm")!
+
     @Test func roundTrip() throws {
-        let link = InviteLink(server: URL(string: "https://lt.example.org")!, inviteID: CircleCrypto.newCircleID(), secret: randomBytes(32))
+        let link = InviteLink(shareURL: share, inviteID: CircleCrypto.newCircleID(), secret: randomBytes(32))
         let parsed = InviteLink(string: link.url.absoluteString)
         #expect(parsed == link)
         #expect(InviteLink(string: "  \(link.url.absoluteString)\n") == link)
     }
 
     @Test func rejectsGarbage() {
-        #expect(InviteLink(string: "https://example.org") == nil)
-        #expect(InviteLink(string: "leuchtturm://join?v=1&server=https://a.b&id=short&k=AA") == nil)
-        #expect(InviteLink(string: "leuchtturm://join?v=2") == nil)
         let id = CircleCrypto.newCircleID()
         let k = Base64URL.encode(randomBytes(32))
-        #expect(InviteLink(string: "leuchtturm://join?v=1&server=ftp://a.b&id=\(id)&k=\(k)") == nil)
-        #expect(InviteLink(string: "leuchtturm://join?v=1&server=https://a.b&id=\(id)&k=\(k)") != nil)
+        let s = share.absoluteString.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
+        #expect(InviteLink(string: "https://example.org") == nil)
+        #expect(InviteLink(string: "leuchtturm://join?v=2&share=\(s)&id=short&k=\(k)") == nil)
+        #expect(InviteLink(string: "leuchtturm://join?v=1&share=\(s)&id=\(id)&k=\(k)") == nil)
+        #expect(InviteLink(string: "leuchtturm://join?v=2&share=http%3A%2F%2Fa.b&id=\(id)&k=\(k)") == nil)
+        #expect(InviteLink(string: "leuchtturm://join?v=2&share=\(s)&id=\(id)&k=\(k)") != nil)
     }
 }

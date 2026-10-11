@@ -11,10 +11,27 @@ public struct MemberCard: Codable, Sendable, Equatable {
     public init(name: String) { self.name = name }
 }
 
-/// Encrypted circle metadata.
+/// Encrypted circle metadata, written and signed by the owner's device.
 public struct CircleMeta: Codable, Sendable, Equatable {
     public var name: String
-    public init(name: String) { self.name = name }
+    /// Device IDs the owner has admitted (the roster).
+    public var members: [String]
+    public init(name: String, members: [String]) {
+        self.name = name
+        self.members = members
+    }
+}
+
+/// What a joiner learns from an invite: the circle key and, authenticated
+/// by the invite secret, the owner's device keys (the circle's trust anchor).
+public struct InvitePayload: Sendable, Equatable {
+    public let epoch: Int64
+    public let expiresAt: Int64
+    public let circleKeyData: Data
+    public let ownerSigningKey: Data
+    public let ownerAgreementKey: Data
+
+    public var circleKey: SymmetricKey { SymmetricKey(data: circleKeyData) }
 }
 
 /// Keys derived from an invite secret.
@@ -112,33 +129,97 @@ public enum CircleCrypto {
         return InviteKeys(authToken: auth.rawData, encKeyData: enc.rawData)
     }
 
-    /// Seals `0x01 | epoch (u64 BE) | circle key` with ChaCha20-Poly1305 under
-    /// the invite encryption key, bound to the circle ID.
-    public static func sealInvitePayload(circleKey: SymmetricKey, epoch: Int64, circleID: String, keys: InviteKeys) throws -> Data {
-        guard epoch > 0 else { throw ProtocolError.malformed }
-        var payload = Data([version])
-        payload.append(Wire.bigEndian(UInt64(epoch)))
-        payload.append(circleKey.rawData)
-        return try ChaChaPoly.seal(payload, using: keys.encKey, authenticating: inviteAAD(circleID)).combined
+    static let invitePayloadVersion: UInt8 = 2
+
+    /// Seals `0x02 | epoch | expiresAt | circle key (32) | owner signing key (32)
+    /// | owner agreement key (32)` with ChaCha20-Poly1305 under the invite
+    /// encryption key, bound to circle and invite ID.
+    public static func sealInvitePayload(_ payload: InvitePayload, circleID: String, inviteID: String, keys: InviteKeys) throws -> Data {
+        guard payload.epoch > 0, payload.expiresAt > 0, payload.circleKeyData.count == 32,
+              payload.ownerSigningKey.count == 32, payload.ownerAgreementKey.count == 32
+        else { throw ProtocolError.malformed }
+        var plain = Data([invitePayloadVersion])
+        plain.append(Wire.bigEndian(UInt64(payload.epoch)))
+        plain.append(Wire.bigEndian(UInt64(payload.expiresAt)))
+        plain.append(payload.circleKeyData)
+        plain.append(payload.ownerSigningKey)
+        plain.append(payload.ownerAgreementKey)
+        return try ChaChaPoly.seal(plain, using: keys.encKey, authenticating: inviteAAD(circleID, inviteID)).combined
     }
 
-    public static func openInvitePayload(_ sealed: Data, circleID: String, keys: InviteKeys) throws -> (key: SymmetricKey, epoch: Int64) {
+    public static func openInvitePayload(_ sealed: Data, circleID: String, inviteID: String, keys: InviteKeys) throws -> InvitePayload {
         let box = try ChaChaPoly.SealedBox(combined: sealed)
-        let payload = try ChaChaPoly.open(box, using: keys.encKey, authenticating: inviteAAD(circleID))
-        var reader = ByteReader(payload)
+        let plain = try ChaChaPoly.open(box, using: keys.encKey, authenticating: inviteAAD(circleID, inviteID))
+        var reader = ByteReader(plain)
         let v = try reader.readByte()
-        guard v == version else { throw ProtocolError.unsupportedVersion(v) }
+        guard v == invitePayloadVersion else { throw ProtocolError.unsupportedVersion(v) }
         let epoch = try reader.readUInt64()
-        let key = try reader.read(32)
-        guard reader.remaining == 0, epoch > 0, epoch <= UInt64(Int64.max) else { throw ProtocolError.malformed }
-        return (SymmetricKey(data: key), Int64(epoch))
+        let expires = try reader.readUInt64()
+        let payload = InvitePayload(
+            epoch: Int64(clamping: epoch), expiresAt: Int64(clamping: expires),
+            circleKeyData: try reader.read(32), ownerSigningKey: try reader.read(32), ownerAgreementKey: try reader.read(32)
+        )
+        guard reader.remaining == 0, payload.epoch > 0 else { throw ProtocolError.malformed }
+        return payload
     }
 
-    static func inviteAAD(_ circleID: String) -> Data {
-        Wire.context("leuchtturm/v1/invite", circleID)
+    static func inviteAAD(_ circleID: String, _ inviteID: String) -> Data {
+        Wire.context("leuchtturm/v1/invite", circleID, inviteID)
     }
 
-    // MARK: Member cards and circle metadata
+    /// The invite auth token, encrypted under the circle key so every member
+    /// (but not Apple) can check admission proofs made with it.
+    public static func sealInviteToken(_ token: Data, key: SymmetricKey, epoch: Int64, circleID: String, inviteID: String) throws -> Data {
+        try sealContent(token, key: key, epoch: epoch, context: Wire.context("leuchtturm/v1/invite-token", circleID, inviteID))
+    }
+
+    public static func openInviteToken(_ blob: Data, circleID: String, inviteID: String, keyForEpoch: (Int64) -> SymmetricKey?) throws -> Data? {
+        try openContent(blob, context: Wire.context("leuchtturm/v1/invite-token", circleID, inviteID), keyForEpoch: keyForEpoch)?.0
+    }
+
+    // MARK: Admission
+
+    /// Proof that a device knew an invite secret: HMAC-SHA256 under the invite
+    /// auth token over the device's identity. Lets members tell invited
+    /// devices apart from anyone who merely obtained the iCloud share link.
+    public static func admissionProof(authToken: Data, circleID: String, deviceID: String, signingKey: Data, agreementKey: Data) -> Data {
+        let message = Wire.context("leuchtturm/v1/admission", circleID, deviceID) + signingKey + agreementKey
+        return Data(HMAC<SHA256>.authenticationCode(for: message, using: SymmetricKey(data: authToken)))
+    }
+
+    public static func verifyAdmissionProof(_ proof: Data, authToken: Data, circleID: String, deviceID: String, signingKey: Data, agreementKey: Data) -> Bool {
+        let message = Wire.context("leuchtturm/v1/admission", circleID, deviceID) + signingKey + agreementKey
+        return HMAC<SHA256>.isValidAuthenticationCode(proof, authenticating: message, using: SymmetricKey(data: authToken))
+    }
+
+    // MARK: Signed records
+
+    /// Bytes the owner's device signs for the circle record.
+    public static func circleRecordStatement(circleID: String, epoch: Int64, meta: Data) -> Data {
+        Wire.context("leuchtturm/v1/circle-record", circleID) + Wire.bigEndian(UInt64(epoch)) + meta
+    }
+
+    /// Bytes a device signs for its own member record. Binding the device ID
+    /// (= hash of the signing key) makes member records self-authenticating:
+    /// nobody else can write a valid record for that device.
+    public static func memberRecordStatement(
+        circleID: String, deviceID: String, inviteID: String,
+        signingKey: Data, agreementKey: Data, card: Data, proof: Data
+    ) -> Data {
+        var out = Wire.context("leuchtturm/v1/member-record", circleID, deviceID, inviteID)
+        for part in [signingKey, agreementKey, card, proof] {
+            out.append(Wire.bigEndian(UInt64(part.count)))
+            out.append(part)
+        }
+        return out
+    }
+
+    public static func verifySignature(_ signature: Data, publicKey: Data, message: Data) -> Bool {
+        guard let key = try? Curve25519.Signing.PublicKey(rawRepresentation: publicKey) else { return false }
+        return key.isValidSignature(signature, for: message)
+    }
+
+    // MARK: Member cards and circle metadata (encrypted under the circle key)
 
     public static func sealMemberCard(_ card: MemberCard, key: SymmetricKey, epoch: Int64, circleID: String, deviceID: String) throws -> Data {
         try sealContent(JSONEncoder().encode(card), key: key, epoch: epoch, context: cardContext(circleID: circleID, deviceID: deviceID))

@@ -13,13 +13,11 @@ final class AppModel {
 
     private enum Keys {
         static let displayName = "displayName"
-        static let serverURL = "serverURL"
     }
 
     private(set) var phase: Phase
     private(set) var client: LeuchtturmClient? = nil
     private(set) var displayName: String
-    private(set) var serverURL: URL?
 
     var circles: [CircleSummary] = []
     /// True after the first successful load, so the empty state does not flash.
@@ -31,17 +29,11 @@ final class AppModel {
 
     private let defaults = UserDefaults.standard
     private let secrets = KeychainSecretStore()
-    /// Registration is idempotent; doing it once per launch heals a restored
-    /// iPhone (keys are not migrated, settings are) or a reset server.
-    @ObservationIgnored private var registeredThisLaunch = false
 
     init() {
         let name = defaults.string(forKey: Keys.displayName) ?? ""
-        let server = defaults.string(forKey: Keys.serverURL).flatMap(URL.init(string:))
         displayName = name
-        serverURL = server
-        if let server, !name.isEmpty,
-           let client = try? LeuchtturmClient(serverURL: server, secrets: secrets, displayName: name) {
+        if !name.isEmpty, let client = try? Self.makeClient(secrets: secrets, name: name) {
             self.client = client
             phase = .ready
         } else {
@@ -49,31 +41,31 @@ final class AppModel {
         }
     }
 
+    private static func makeClient(secrets: KeychainSecretStore, name: String) throws -> LeuchtturmClient {
+        try LeuchtturmClient(
+            backend: CloudKitBackend(containerIdentifier: AppInfo.cloudKitContainer),
+            secrets: secrets,
+            displayName: name
+        )
+    }
+
     // MARK: Setup
 
-    /// Creates the device keys (if needed), registers with the server and
-    /// stores the settings. Returns false and sets `errorMessage` on failure.
-    func setUp(name: String, server: String) async -> Bool {
+    /// Creates the device keys (if needed), checks iCloud and stores the name.
+    func setUp(name: String) async -> Bool {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, trimmed.count <= LeuchtturmClient.maxNameLength else {
             errorMessage = "Bitte gib einen Namen mit höchstens \(LeuchtturmClient.maxNameLength) Zeichen ein."
             return false
         }
-        guard let url = ServerAddress.parse(server) else {
-            errorMessage = "Die Serveradresse ist ungültig. Erlaubt ist https:// (http:// nur im lokalen Netz)."
-            return false
-        }
         isLoading = true
         defer { isLoading = false }
         do {
-            let client = try LeuchtturmClient(serverURL: url, secrets: secrets, displayName: trimmed)
-            try await client.register()
-            registeredThisLaunch = true
+            let client = try Self.makeClient(secrets: secrets, name: trimmed)
+            try await client.start()
             defaults.set(trimmed, forKey: Keys.displayName)
-            defaults.set(url.absoluteString, forKey: Keys.serverURL)
             self.client = client
             displayName = trimmed
-            serverURL = url
             phase = .ready
             await refresh()
             return true
@@ -88,10 +80,6 @@ final class AppModel {
     func refresh() async {
         guard let client else { return }
         do {
-            if !registeredThisLaunch {
-                try await client.register()
-                registeredThisLaunch = true
-            }
             circles = try await client.circles()
             hasLoadedCircles = true
         } catch {
@@ -99,28 +87,16 @@ final class AppModel {
         }
     }
 
-    func createCircle(name: String) async -> String? {
-        guard let client else { return nil }
-        do {
-            let id = try await client.createCircle(name: name)
-            await refresh()
-            return id
-        } catch {
-            errorMessage = Self.describe(error)
-            return nil
-        }
+    func createCircle(name: String) async -> CircleRef? {
+        let ref = await run { try await $0.createCircle(name: name) }
+        if ref != nil { await refresh() }
+        return ref
     }
 
-    func join(_ link: InviteLink) async -> String? {
-        guard let client else { return nil }
-        do {
-            let id = try await client.join(link)
-            await refresh()
-            return id
-        } catch {
-            errorMessage = Self.describe(error)
-            return nil
-        }
+    func join(_ link: InviteLink) async -> CircleRef? {
+        let ref = await run { try await $0.join(link) }
+        if ref != nil { await refresh() }
+        return ref
     }
 
     /// Runs a client operation and reports errors. Returns nil on failure.
@@ -151,25 +127,22 @@ final class AppModel {
         return ok
     }
 
-    /// Deletes the device on the server, then everything local.
-    func deleteDevice() async {
-        guard await run({ try await $0.deleteDevice() }) != nil else { return }
+    /// Deletes own circles, leaves all others, then wipes this device.
+    func deleteAllData() async {
+        guard await run({ try await $0.deleteAllData() }) != nil else { return }
         resetLocal()
     }
 
-    /// Wipes keys and settings on this device only (e.g. server gone).
+    /// Wipes keys and settings on this device only. iCloud data stays.
     func resetLocal() {
         for account in (try? secrets.accounts()) ?? [] {
             try? secrets.delete(account)
         }
         defaults.removeObject(forKey: Keys.displayName)
-        defaults.removeObject(forKey: Keys.serverURL)
         client = nil
         circles = []
         hasLoadedCircles = false
-        registeredThisLaunch = false
         displayName = ""
-        serverURL = nil
         phase = .onboarding
     }
 
@@ -177,38 +150,31 @@ final class AppModel {
 
     static func describe(_ error: any Error) -> String {
         switch error {
-        case let error as APIError:
+        case let error as BackendError:
             switch error {
-            case let .server(status, code, _):
-                switch code {
-                case "invalid_invite": return "Die Einladung ist ungültig, abgelaufen oder schon benutzt."
-                case "not_found": return "Nicht gefunden. Vielleicht wurdest du aus dem Kreis entfernt."
-                case "forbidden": return "Dafür fehlen dir die Rechte."
-                case "conflict": return "Der Kreis hat sich gerade geändert. Bitte versuch es noch einmal."
-                case "limit_reached": return "Ein Limit ist erreicht (zu viele Mitglieder oder offene Einladungen)."
-                case "unknown_device", "unauthorized": return "Der Server kennt dieses Gerät nicht (mehr)."
-                default: return "Serverfehler (\(status))."
-                }
-            case .invalidResponse: return "Der Server hat unerwartet geantwortet."
-            case .invalidURL: return "Ungültige Adresse."
+            case .noAccount:
+                return "Bitte melde dich in den Einstellungen bei iCloud an. Leuchtturm speichert seine verschlüsselten Daten in deiner iCloud."
+            case .notFound: return "Nicht gefunden. Vielleicht wurde der Kreis gelöscht oder du wurdest entfernt."
+            case .permissionDenied: return "Dafür fehlen dir die Rechte."
+            case .network: return "Keine Verbindung zu iCloud. Bitte versuch es gleich noch einmal."
+            case .quotaExceeded: return "Dein iCloud-Speicher ist voll."
+            case let .other(message): return "iCloud-Fehler: \(message)"
             }
         case let error as ClientError:
             switch error {
-            case .missingCircleKey: return "Für diesen Kreis fehlt auf diesem Gerät der Schlüssel."
+            case .missingCircleKey: return "Auf diesem Gerät fehlt noch der Schlüssel für den Kreis. Der Besitzer muss die App einmal öffnen."
             case .notOwner: return "Das darf nur der Besitzer des Kreises."
             case .unknownMember: return "Dieses Mitglied gibt es nicht."
-            case .differentServer: return "Die Einladung gehört zu einem anderen Server."
             case .invalidName: return "Namen müssen 1 bis \(LeuchtturmClient.maxNameLength) Zeichen lang sein."
+            case .invalidDuration: return "Ungültige Gültigkeitsdauer."
+            case .inviteInvalid: return "Die Einladung ist ungültig oder wurde zurückgezogen."
+            case .inviteExpired: return "Die Einladung ist abgelaufen. Bitte um eine neue."
+            case .untrustedCircle: return "Dieses Gerät kann den Kreis nicht prüfen, z. B. nach einer Neuinstallation. Lass dich neu einladen."
+            case .tampered: return "Die Kreisdaten wurden verändert und sind nicht vom Besitzer signiert."
+            case .ownerMustDelete: return "Als Besitzer kannst du den Kreis nicht verlassen, nur löschen."
             }
         case is ProtocolError:
             return "Die Daten konnten nicht entschlüsselt oder geprüft werden."
-        case let error as URLError:
-            switch error.code {
-            case .notConnectedToInternet, .networkConnectionLost: return "Keine Internetverbindung."
-            case .cannotFindHost, .cannotConnectToHost, .timedOut: return "Der Server ist nicht erreichbar."
-            case .secureConnectionFailed, .serverCertificateUntrusted: return "Die sichere Verbindung zum Server ist fehlgeschlagen."
-            default: return "Netzwerkfehler."
-            }
         default:
             return "Unbekannter Fehler."
         }

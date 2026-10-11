@@ -5,27 +5,28 @@ Each milestone should be usable and testable on its own. Dates are intentionally
 ## M0: Foundation (this scaffold)
 - [x] Repository, licenses, trademark policy, contribution rules
 - [x] Architecture and threat model drafts
-- [x] Go server skeleton with health endpoint and Dockerfile
+- [x] Go server skeleton (later replaced by CloudKit)
 - [x] SwiftUI project skeleton (iOS 26+), CI workflow
 
 ## M1: Identity and key exchange
 - [x] Device keys (Ed25519 + X25519, CryptoKit, Keychain this-device-only)
-- [x] Signed requests instead of accounts/passwords; public key registry (SQLite)
+- [x] Storage and sharing on CloudKit: one zone per circle, zone-wide share with public link
 - [x] Circles with encrypted names and member cards
-- [x] Invite links and QR codes; circle key released only on redeem
-- [x] Member removal with atomic key rotation (HPKE auth mode)
-- [x] Safety codes per member
-- [x] Shared Go/Swift test vectors, unit tests, end-to-end tests in CI
+- [x] Owner-signed circle record and roster; self-signed member records
+- [x] Invite links and QR codes; admission proof from the invite secret
+- [x] Member removal with atomic key rotation (HPKE auth mode) and iCloud share removal
+- [x] Safety codes per member; unverified iCloud participants flagged to the owner
+- [x] Known-answer vectors, unit tests, full flow and attack tests against a CloudKit simulation
 - [x] App: setup, circle list, circle details, invite, join, settings
-- [ ] First run on a real iPhone (owner, Mac required)
+- [ ] First run against real iCloud with two accounts (owner, Mac + iPhone)
 
-Sign in with Apple moved to M6: with one device per person it would only add an Apple ID to the server without any benefit. It becomes useful together with multi-device support.
+History: M1 was first built with a self-hosted Go server (EU, anonymous device keys). It was replaced by CloudKit so nobody has to run hardware. See the README for the privacy trade-off.
 
 ## M2: Live location
-- [ ] Encrypted location upload and WebSocket stream
+- [ ] Encrypted location records and CloudKit subscriptions (silent push) for updates
 - [ ] Map view with circle members (MapKit)
 - [ ] Background location with adaptive tracking (significant changes, presence-based frequency)
-- [ ] APNs registration
+- [ ] Push entitlement and subscription handling
 
 ## M3: Places
 - [ ] Create and share places (encrypted)
@@ -33,7 +34,7 @@ Sign in with Apple moved to M6: with one device per person it would only add an 
 - [ ] Arrival and departure notifications via encrypted push + Notification Service Extension
 
 ## M4: History and safety
-- [ ] Opt-in history with user-chosen retention and automatic server-side deletion
+- [ ] Opt-in history with user-chosen retention, deleted by the writing device
 - [ ] Opt-in SOS and check-in
 
 ## M5: Drive detection
@@ -45,17 +46,18 @@ Sign in with Apple moved to M6: with one device per person it would only add an 
 - [ ] Friend requests, multiple circles and groups
 - [ ] Liquid Glass UI polish, accessibility, localization (DE, EN)
 - [ ] Multi-device support and key backup
-- [ ] Sign in with Apple, email or Google as optional account anchors for multi-device
-- [ ] Warning when an unverified member appears in a circle
+- [ ] Owner succession if the owner's device is lost
+- [ ] Warning when an unverified key appears in a circle
 
 ## M7: Monetization and release
 - [ ] StoreKit 2: non-intrusive convenience purchases (safety features stay free)
-- [ ] Privacy policy, App Privacy labels, background-location review justification
+- [ ] Privacy policy (incl. iCloud metadata disclosure), App Privacy labels, background-location review justification
+- [ ] Deploy CloudKit schema to production
 - [ ] TestFlight with friends, then public App Store release
 - [ ] Independent security review
 
 ## Setup tasks only the owner can do (Mac required)
 - Bundle ID (e.g. `de.timschaller.leuchtturm`), signing and provisioning
 - App Store Connect record, TestFlight
-- Hetzner account and server, DNS
+- iCloud container `iCloud.de.timschaller.leuchtturm` (created via Xcode)
 - Check that the name "Leuchtturm" is usable in the App Store

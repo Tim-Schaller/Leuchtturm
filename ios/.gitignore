@@ -5,4 +5,5 @@ DerivedData/
 .build/
 .swiftpm/
 Leuchtturm/Info.plist
+Leuchtturm/Leuchtturm.entitlements
 .DS_Store

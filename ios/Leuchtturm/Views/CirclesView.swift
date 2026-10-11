@@ -4,7 +4,7 @@ import UIKit
 
 struct CirclesView: View {
     @Environment(AppModel.self) private var model
-    @State private var path: [String] = []
+    @State private var path: [CircleRef] = []
     @State private var showCreate = false
     @State private var showJoin = false
     @State private var showSettings = false
@@ -14,7 +14,7 @@ struct CirclesView: View {
         NavigationStack(path: $path) {
             List {
                 ForEach(model.circles) { circle in
-                    NavigationLink(value: circle.id) {
+                    NavigationLink(value: circle.ref) {
                         CircleRow(circle: circle)
                     }
                 }
@@ -34,8 +34,8 @@ struct CirclesView: View {
                 }
             }
             .navigationTitle("Kreise")
-            .navigationDestination(for: String.self) { id in
-                CircleDetailView(circleID: id)
+            .navigationDestination(for: CircleRef.self) { ref in
+                CircleDetailView(ref: ref)
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -51,13 +51,13 @@ struct CirclesView: View {
             .refreshable { await model.refresh() }
             .task { await model.refresh() }
             .sheet(isPresented: $showCreate) {
-                CreateCircleSheet { id in path.append(id) }
+                CreateCircleSheet { ref in path.append(ref) }
             }
             .sheet(isPresented: $showJoin) {
-                JoinSheet(link: nil) { id in path.append(id) }
+                JoinSheet(link: nil) { ref in path.append(ref) }
             }
             .sheet(item: $bindable.pendingInvite) { link in
-                JoinSheet(link: link) { id in path.append(id) }
+                JoinSheet(link: link) { ref in path.append(ref) }
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
@@ -93,7 +93,7 @@ struct CreateCircleSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var working = false
-    let onCreated: (String) -> Void
+    let onCreated: (CircleRef) -> Void
 
     var body: some View {
         NavigationStack {
@@ -126,9 +126,9 @@ struct CreateCircleSheet: View {
         guard !working else { return }
         working = true
         Task {
-            if let id = await model.createCircle(name: name) {
+            if let ref = await model.createCircle(name: name) {
                 dismiss()
-                onCreated(id)
+                onCreated(ref)
             }
             working = false
         }
@@ -141,7 +141,7 @@ struct JoinSheet: View {
     @State private var text = ""
     @State private var working = false
     let link: InviteLink?
-    let onJoined: (String) -> Void
+    let onJoined: (CircleRef) -> Void
 
     private var parsed: InviteLink? { link ?? InviteLink(string: text) }
 
@@ -172,10 +172,10 @@ struct JoinSheet: View {
                         Text("Nach dem Beitritt sehen die Mitglieder deinen Namen. Standortfreigabe kommt in einem späteren Update.")
                     }
                 }
-                if let parsed, let host = parsed.server.host {
-                    Section("Server") {
-                        Text(host)
-                    }
+                Section {
+                    Label("Der Kreis liegt verschlüsselt in der iCloud des Besitzers. Mit dem Beitritt sieht Apple, dass dein iCloud-Konto dazugehört.", systemImage: "icloud")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 }
             }
             .navigationTitle("Kreis beitreten")
@@ -198,9 +198,9 @@ struct JoinSheet: View {
         guard let parsed, !working else { return }
         working = true
         Task {
-            if let id = await model.join(parsed) {
+            if let ref = await model.join(parsed) {
                 dismiss()
-                onJoined(id)
+                onJoined(ref)
             }
             working = false
         }

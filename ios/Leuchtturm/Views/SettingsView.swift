@@ -32,20 +32,25 @@ struct SettingsView: View {
                             Text(client.safetyCode).font(.body.monospaced())
                         }
                     }
-                    if let host = model.serverURL?.host {
-                        LabeledContent("Server", value: host)
-                    }
                 } header: {
                     Text("Dieses Gerät")
                 } footer: {
-                    Text("Deine Schlüssel liegen nur auf diesem iPhone. Es gibt kein Passwort und kein Konto beim Server.")
+                    Text("Deine Schlüssel liegen nur auf diesem iPhone und werden nicht mit iCloud synchronisiert.")
                 }
 
                 Section {
-                    Button("Gerät beim Server löschen", role: .destructive) { confirmDelete = true }
-                    Button("Nur lokal zurücksetzen", role: .destructive) { confirmReset = true }
+                    Text("Leuchtturm speichert in iCloud (Apple). Kreisnamen, Namen und Standorte werden vorher auf dem iPhone verschlüsselt, Apple kann sie nicht lesen. Apple sieht aber, welche iCloud-Konten zusammen in einem Kreis sind und wann Daten geschrieben werden. Die Daten liegen in Apples Rechenzentren, nicht zwingend in der EU.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    Text("Wo liegen meine Daten?")
+                }
+
+                Section {
+                    Button("Alle meine Daten löschen", role: .destructive) { confirmDelete = true }
+                    Button("Nur dieses Gerät zurücksetzen", role: .destructive) { confirmReset = true }
                 } footer: {
-                    Text("Löschen entfernt dich aus allen Kreisen und löscht deine Schlüssel. Das lässt sich nicht rückgängig machen.")
+                    Text("Löschen entfernt deine eigenen Kreise für alle, verlässt alle anderen und löscht deine Schlüssel. Das lässt sich nicht rückgängig machen.")
                 }
 
                 Section {
@@ -63,21 +68,21 @@ struct SettingsView: View {
                 }
             }
             .onAppear { name = model.displayName }
-            .confirmationDialog("Gerät wirklich löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
-                Button("Löschen", role: .destructive) {
+            .confirmationDialog("Wirklich alles löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
+                Button("Alles löschen", role: .destructive) {
                     Task {
-                        await model.deleteDevice()
+                        await model.deleteAllData()
                         if model.phase == .onboarding { dismiss() }
                     }
                 }
             }
-            .confirmationDialog("Nur lokal zurücksetzen?", isPresented: $confirmReset, titleVisibility: .visible) {
+            .confirmationDialog("Nur dieses Gerät zurücksetzen?", isPresented: $confirmReset, titleVisibility: .visible) {
                 Button("Zurücksetzen", role: .destructive) {
                     model.resetLocal()
                     dismiss()
                 }
             } message: {
-                Text("Für den Fall, dass der Server nicht mehr existiert. Deine Mitgliedschaften bleiben auf dem Server bestehen, bis jemand dich entfernt.")
+                Text("Löscht die Schlüssel auf diesem iPhone. Deine Kreise in iCloud bleiben bestehen, du kannst sie danach aber nicht mehr lesen und brauchst neue Einladungen.")
             }
         }
     }

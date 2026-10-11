@@ -6,11 +6,10 @@ import UIKit
 struct InviteSheet: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
-    let circleID: String
+    let ref: CircleRef
     let circleName: String?
 
     @State private var validity: Validity = .day
-    @State private var maxUses = 1
     @State private var link: InviteLink?
     @State private var qrImage: UIImage?
     @State private var working = false
@@ -59,9 +58,8 @@ struct InviteSheet: View {
                         Picker("Gültig für", selection: $validity) {
                             ForEach(Validity.allCases) { Text($0.label).tag($0) }
                         }
-                        Stepper("Personen: \(maxUses)", value: $maxUses, in: 1 ... 20)
                     } footer: {
-                        Text("Die Einladung verfällt danach automatisch. Entfernst du jemanden aus dem Kreis, werden alle offenen Einladungen ungültig.")
+                        Text("Jeder mit dem Link kann beitreten, bis er abläuft. Neue Mitglieder siehst du in der Mitgliederliste und kannst sie jederzeit entfernen. Entfernst du jemanden, werden alle offenen Einladungen ungültig.")
                     }
                     Section {
                         Button(action: create) {
@@ -92,10 +90,9 @@ struct InviteSheet: View {
     private func create() {
         working = true
         let seconds = validity.rawValue
-        let uses = maxUses
-        let id = circleID
+        let ref = ref
         Task {
-            if let created = await model.run({ try await $0.createInvite(circleID: id, validFor: seconds, maxUses: uses) }) {
+            if let created = await model.run({ try await $0.createInvite(for: ref, validFor: seconds) }) {
                 qrImage = QRCode.image(for: created.url.absoluteString)
                 link = created
             }

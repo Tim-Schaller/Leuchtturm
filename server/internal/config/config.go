@@ -4,6 +4,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -15,6 +16,8 @@ type Config struct {
 	DataDir string
 	// ShutdownTimeout bounds graceful shutdown.
 	ShutdownTimeout time.Duration
+	// MaxMembersPerCircle bounds circle size (0 = server default of 500).
+	MaxMembersPerCircle int
 }
 
 // FromEnv reads configuration from the environment and applies defaults.
@@ -30,6 +33,13 @@ func FromEnv() (Config, error) {
 			return Config{}, fmt.Errorf("LEUCHTTURM_SHUTDOWN_TIMEOUT: %w", err)
 		}
 		cfg.ShutdownTimeout = d
+	}
+	if v := os.Getenv("LEUCHTTURM_MAX_MEMBERS"); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 2 {
+			return Config{}, fmt.Errorf("LEUCHTTURM_MAX_MEMBERS: must be an integer >= 2")
+		}
+		cfg.MaxMembersPerCircle = n
 	}
 	return cfg, nil
 }

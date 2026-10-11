@@ -49,10 +49,10 @@ Everything else is verified against the pinned keys. A device without the pin (e
 | Field | Content |
 |-------|---------|
 | `epoch` | key version, starts at 1 |
-| `meta` | encrypted `{"name": …, "members": [device IDs]}` (the **roster**) |
+| `meta` | encrypted `{"name": …, "members": [device IDs], "expires": Unix seconds (optional)}` (the **roster**; `expires` makes it a temporary circle) |
 | `sig` | Ed25519 by the owner device over `ctx("leuchtturm/v1/circle-record", circleID) ‖ epoch ‖ meta` |
 
-A circle record with a bad signature makes the circle unreadable (`tampered`).
+A circle record with a bad signature makes the circle unreadable (`tampered`). A temporary circle ends at `expires`: from then on the owner's device deletes the zone and members' devices leave it the next time they list their circles.
 
 ### `Member` (record name = device ID, one per device)
 

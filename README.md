@@ -61,7 +61,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 - Opt-in history: your path of the last days for your circle, kept only as long as you choose
 - Fog mode: share only the rough area for a few hours
 - Emoji reactions, quick notes ("Bin auf dem Weg"), check-ins and an opt-in good-morning greeting, all end-to-end encrypted and signed
-- Circles with encrypted names and display names
+- Circles with encrypted names and display names, also as temporary circles that end by themselves
 - Invites via link or QR code, with expiry
 - Removing members rotates the circle key and revokes their iCloud access
 - People who only obtained the iCloud share link (without the invite secret) are not admitted and are flagged to the owner
@@ -69,7 +69,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- Temporary circles, "not arrived yet" alerts, badges, opt-in history with your own retention period, opt-in SOS and check-in
+- "Not arrived yet" alerts, badges, driver/passenger detection, opt-in history with your own retention period, opt-in SOS and check-in
 - Drive detection with live speed (km/h)
 - Adaptive tracking to keep battery drain low
 

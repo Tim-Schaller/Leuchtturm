@@ -6,6 +6,7 @@ struct CreateCircleSheet: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
+    @State private var days = 0
     @State private var working = false
     let onCreated: (CircleRef) -> Void
 
@@ -18,6 +19,16 @@ struct CreateCircleSheet: View {
                         .onSubmit(create)
                 } footer: {
                     Text("Der Name ist verschlüsselt und nur für Mitglieder sichtbar.")
+                }
+                Section {
+                    Picker("Dauer", selection: $days) {
+                        Text("Dauerhaft").tag(0)
+                        Text("1 Tag").tag(1)
+                        Text("1 Woche").tag(7)
+                        Text("2 Wochen").tag(14)
+                    }
+                } footer: {
+                    Text("Ein Kreis auf Zeit, z. B. für einen Ausflug, endet von selbst: Danach ist er für alle weg, samt Standorten und Nachrichten.")
                 }
             }
             .navigationTitle("Neuer Kreis")
@@ -40,7 +51,7 @@ struct CreateCircleSheet: View {
         guard !working else { return }
         working = true
         Task {
-            if let ref = await model.createCircle(name: name) {
+            if let ref = await model.createCircle(name: name, lasting: days == 0 ? nil : days) {
                 dismiss()
                 onCreated(ref)
             }

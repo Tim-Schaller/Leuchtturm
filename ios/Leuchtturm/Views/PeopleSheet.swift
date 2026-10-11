@@ -79,6 +79,11 @@ struct PeopleSheet: View {
                     Label("Warte auf den Schlüssel vom Besitzer. Er wird übertragen, sobald der Besitzer die App öffnet.", systemImage: "key")
                         .font(.callout)
                 }
+                if let end = details.expiresAt {
+                    Label("Kreis auf Zeit · endet \(end.formatted(.relative(presentation: .named)))", systemImage: "hourglass")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
                 Section {
                     ForEach(sorted(details.members)) { member in
                         Button {

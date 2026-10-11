@@ -16,9 +16,12 @@ public struct CircleMeta: Codable, Sendable, Equatable {
     public var name: String
     /// Device IDs the owner has admitted (the roster).
     public var members: [String]
-    public init(name: String, members: [String]) {
+    /// Unix seconds when a temporary circle ends; nil for a lasting one.
+    public var expires: Int64?
+    public init(name: String, members: [String], expires: Int64? = nil) {
         self.name = name
         self.members = members
+        self.expires = expires
     }
 }
 

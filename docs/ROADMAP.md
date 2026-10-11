@@ -88,7 +88,8 @@ Not planned, because they would need a company server, a call center or third pa
 - [ ] Critical Alerts entitlement (needs Apple's approval)
 
 ## M8: Friends, groups, fun and polish
-- [ ] Temporary circles, friend requests, multiple circles and groups
+- [x] Temporary circles (1 day, 1 week, 2 weeks)
+- [ ] Friend requests, multiple circles and groups
 - [x] Opt-in weekly circle leaderboards (driving, distance)
 - [ ] Badges
 - [ ] Liquid Glass UI polish, accessibility, localization (DE, EN)

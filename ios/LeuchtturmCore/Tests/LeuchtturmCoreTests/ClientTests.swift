@@ -506,6 +506,23 @@ struct ClientTests {
         try await bob.leave(bobRef)
     }
 
+    @Test func temporaryCirclesEndByThemselves() async throws {
+        let clock = TestClock()
+        let alice = try client("alice", "Alice", now: { clock.now })
+        let bob = try client("bob", "Bob", now: { clock.now })
+        let end = clock.now.addingTimeInterval(86400)
+        let ref = try await alice.createCircle(name: "Festival", expiresAt: end)
+        let bobRef = try await bob.join(try await alice.createInvite(for: ref))
+        try await alice.rename(ref, to: "Festival 2027")
+        #expect(try await bob.circle(bobRef).expiresAt == Date(timeIntervalSince1970: end.timeIntervalSince1970.rounded(.down)))
+        #expect(try await bob.circles().map(\.name) == ["Festival 2027"])
+
+        clock.advance(by: 86401)
+        #expect(try await bob.circles().isEmpty)
+        #expect(try await alice.circles().isEmpty)
+        #expect(cloud.rawRecords(circleID: ref.circleID).isEmpty)
+    }
+
     @Test func namesAreValidated() async throws {
         let alice = try client("alice", "Alice")
         await #expect(throws: ClientError.invalidName) { try await alice.createCircle(name: "   ") }

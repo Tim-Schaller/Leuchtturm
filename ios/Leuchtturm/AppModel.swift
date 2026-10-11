@@ -251,8 +251,9 @@ final class AppModel {
         }
     }
 
-    func createCircle(name: String) async -> CircleRef? {
-        let ref = await run { try await $0.createCircle(name: name) }
+    func createCircle(name: String, lasting days: Int? = nil) async -> CircleRef? {
+        let expiresAt = days.map { Date().addingTimeInterval(Double($0) * 86400) }
+        let ref = await run { try await $0.createCircle(name: name, expiresAt: expiresAt) }
         if ref != nil {
             await shareLocationNow()
             await refresh()

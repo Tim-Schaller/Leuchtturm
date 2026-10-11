@@ -62,7 +62,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 
 ## Known limitations
 
-- **Background tracking depends on iOS.** Without "Always" access, sharing stops once iOS terminates the app; a user who force-quits the app stops sharing until they open it again. Silent pushes can be delayed by iOS.
+- **Background tracking depends on iOS.** Without "Always" access, sharing stops when the app goes to the background (to avoid a permanent status-bar indicator); a user who force-quits the app stops sharing until they open it again. Silent pushes can be delayed by iOS.
 - **Single device per person.** A second iPhone or iPad needs its own invite.
 - **The owner device is a single point of failure.** If the owner loses their iPhone, the circle can no longer be managed (no new admissions, removals or renames); members can still read it. Ownership transfer is not possible with CloudKit zones.
 - **Pending members need the owner.** New members are visible as pending right away, but enter the signed roster only when the owner opens the app. Their admission is verified against the invite record, so if an invite expires and is cleaned up first, the owner must re-invite them.

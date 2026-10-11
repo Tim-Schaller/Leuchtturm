@@ -48,13 +48,15 @@ struct SettingsView: View {
                             Label("Auch bei geschlossener App", systemImage: "checkmark.circle.fill")
                                 .foregroundStyle(.tint)
                         } else {
-                            Button("Auf „Immer“ stellen", systemImage: "location.circle") { openAppSettings() }
+                            Button("Auf „Immer“ stellen", systemImage: "location.circle") {
+                                if !model.tracker.requestAlways() { openAppSettings() }
+                            }
                         }
                     }
                 } header: {
                     Text("Standort")
                 } footer: {
-                    Text("Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Kreisen geteilt. Mit Standortzugriff „Immer“ sehen sie dich auch, wenn die App geschlossen ist. Steht dein iPhone still, pausiert die Ortung und spart Akku. Ausschalten entfernt deinen Standort sofort aus allen Kreisen. Der Guten-Morgen-Gruß sagt deinen Kreisen Bescheid, wenn du morgens zum ersten Mal unterwegs bist.")
+                    Text("Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Kreisen geteilt. Mit Standortzugriff „Immer“ sehen sie dich auch, wenn die App geschlossen ist, ohne dauerhaften blauen Hinweis in der Statusleiste. Mit „Beim Verwenden“ teilt Leuchtturm nur, solange die App offen ist, weil iOS sonst den Hinweis ständig zeigen würde. Steht dein iPhone still, pausiert die Ortung und spart Akku. Ausschalten entfernt deinen Standort sofort aus allen Kreisen. Der Guten-Morgen-Gruß sagt deinen Kreisen Bescheid, wenn du morgens zum ersten Mal unterwegs bist.")
                 }
 
                 Section {

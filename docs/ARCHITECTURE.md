@@ -211,7 +211,7 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 Updates will be delivered through CloudKit subscriptions (silent push), so near-real-time rather than instant.
 
 Current state:
-- `CLLocationUpdate.liveUpdates` with a `CLBackgroundActivitySession` while sharing is on. iOS pauses updates while the device is stationary and resumes them on movement; with "Always" access it relaunches a terminated app, which restarts tracking at launch.
+- `CLLocationManager` standard updates (10 m filter in the foreground, 50 m / 100 m accuracy in the background). Background updates only with "Always" access, with `showsBackgroundLocationIndicator = false`, so iOS shows no permanent blue indicator. iOS pauses them while the device is stationary (`pausesLocationUpdatesAutomatically`); significant location changes and visit departures wake the app (also after termination) and updates resume. With "When In Use" iOS would show the indicator the whole time a background app tracks, so tracking stops when the app goes to the background and sharing happens only while it is open.
 - Uploads: app open, after 25 m but at most every 15 s, at least every 2 min while moving; app closed, after 100 m but at most every minute, at least every 10 min while moving. Each upload runs inside a background task so a suspension does not cut it off.
 - Not yet: driving mode, visits, geofence wake-ups (CLMonitor, M3) and push.
 

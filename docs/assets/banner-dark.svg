@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420">
+  <title>Leuchtturm – Privacy-first location sharing for iPhone</title>
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="420" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0F2A20"/><stop offset="0.55" stop-color="#143545"/><stop offset="1" stop-color="#1A4552"/></linearGradient><clipPath id="card"><rect width="1280" height="420" rx="28"/></clipPath><radialGradient id="bglow" cx="930" cy="199.8" r="280" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFEDB0" stop-opacity="1"/><stop offset="0.28" stop-color="#FFD97A" stop-opacity="0.5"/><stop offset="1" stop-color="#FFD97A" stop-opacity="0"/></radialGradient><linearGradient id="bbeamL" x1="918" y1="0" x2="630" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFE29A" stop-opacity="0.8"/><stop offset="0.55" stop-color="#FFE29A" stop-opacity="0.30"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></linearGradient><linearGradient id="bbeamR" x1="942" y1="0" x2="1260" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFE29A" stop-opacity="0.8"/><stop offset="0.55" stop-color="#FFE29A" stop-opacity="0.30"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></linearGradient><linearGradient id="bfar" x1="0" y1="260" x2="0" y2="520" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1E5241"/><stop offset="1" stop-color="#183F33"/></linearGradient><linearGradient id="bmid" x1="0" y1="330" x2="0" y2="520" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2C6B4C"/><stop offset="1" stop-color="#1F5440"/></linearGradient><linearGradient id="bfront" x1="0" y1="352" x2="0" y2="520" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2C6B4C"/><stop offset="1" stop-color="#1F5440"/></linearGradient><linearGradient id="bfore" x1="0" y1="420" x2="0" y2="520" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#163D2D"/><stop offset="1" stop-color="#0F2E22"/></linearGradient>
+    <linearGradient id="bshade" x1="347" y1="0" x2="677" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F2A20" stop-opacity="0.08"/>
+      <stop offset="0.12" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.28" stop-color="#FFFFFF" stop-opacity="0.12"/>
+      <stop offset="0.46" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.6" stop-color="#0F2A20" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0F2A20" stop-opacity="0.34"/>
+    </linearGradient>
+    <linearGradient id="btopsh" x1="0" y1="504" x2="0" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F2A20" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#0F2A20" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="broof" x1="408" y1="0" x2="616" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3A8263"/><stop offset="0.6" stop-color="#2A6A4F"/><stop offset="1" stop-color="#225A43"/>
+    </linearGradient>
+    <radialGradient id="blamp" cx="512" cy="414" r="84" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/><stop offset="0.45" stop-color="#FFF3C8"/><stop offset="1" stop-color="#FFD27A"/>
+    </radialGradient>
+    <clipPath id="btower"><path d="M346,806 Q354,650 402,500 L622,500 Q670,650 678,806 Q512,842 346,806 Z"/></clipPath></defs><g clip-path="url(#card)">
+  <rect width="1280" height="420" fill="url(#sky)"/>
+  <path d="M724,130 Q726.8,137.2 734,140 Q726.8,142.8 724,150 Q721.2,142.8 714,140 Q721.2,137.2 724,130 Z" fill="#FFF3C4" opacity="1.0"/><path d="M1220,142 Q1222.24,147.76 1228,150 Q1222.24,152.24 1220,158 Q1217.76,152.24 1212,150 Q1217.76,147.76 1220,142 Z" fill="#FFF3C4" opacity="0.8"/><path d="M46,229 Q47.96,234.04 53,236 Q47.96,237.96 46,243 Q44.04,237.96 39,236 Q44.04,234.04 46,229 Z" fill="#FFF3C4" opacity="0.7"/><circle cx="300" cy="34" r="3.5" fill="#FFF3C4" opacity="0.8"/><circle cx="520" cy="28" r="3" fill="#FFF3C4" opacity="0.7"/><circle cx="860" cy="36" r="3.5" fill="#FFF3C4" opacity="0.75"/><circle cx="640" cy="196" r="2.5" fill="#FFF3C4" opacity="0.55"/><circle cx="1100" cy="28" r="3" fill="#FFF3C4" opacity="0.7"/><circle cx="1240" cy="250" r="2.5" fill="#FFF3C4" opacity="0.5"/><circle cx="40" cy="60" r="3" fill="#FFF3C4" opacity="0.6"/><circle cx="420" cy="250" r="2.5" fill="#FFF3C4" opacity="0.5"/><circle cx="1170" cy="220" r="2.5" fill="#FFF3C4" opacity="0.5"/>
+  <g transform="translate(0,-59.7) scale(1.0667)">
+  
+  <circle cx="930" cy="199.8" r="280" fill="url(#bglow)"/>
+  
+  <path d="M884,190.8 L630,143.8 Q612,199.8 630,255.8 L884,208.8 Z" fill="url(#bbeamL)"/><path d="M976,190.8 L1260,143.8 Q1278,199.8 1260,255.8 L976,208.8 Z" fill="url(#bbeamR)"/>
+  <path d="M0,330 C110,288 230,282 340,312 C430,336 500,352 590,338 C660,326 700,300 770,292 C850,284 900,300 960,312 C1060,332 1140,322 1200,300 L1200,520 L0,520 Z" fill="url(#bfar)"/>
+  <rect x="146.9" y="273.0" width="6.1" height="31.0" rx="3.1" fill="#4A4A3A"/><circle cx="150" cy="270.3" r="18" fill="#1F5E43"/><circle cx="144.1" cy="264.4" r="7.2" fill="#2E7556"/><rect x="181.8" y="278.5" width="4.4" height="23.5" rx="2.2" fill="#4A4A3A"/><circle cx="184" cy="276.6" r="13" fill="#24654A"/><rect x="637.3" y="300.0" width="5.4" height="28.0" rx="2.7" fill="#4A4A3A"/><circle cx="640" cy="297.6" r="16" fill="#1F5E43"/><circle cx="634.7" cy="292.3" r="6.4" fill="#2E7556"/><rect x="1147.5" y="295.5" width="5.1" height="26.5" rx="2.6" fill="#4A4A3A"/><circle cx="1150" cy="293.2" r="15" fill="#24654A"/>
+  <path d="M0,412 C120,370 270,360 400,392 C500,416 640,448 760,520 L0,520 Z" fill="url(#bmid)"/>
+  <path d="M500,520 C580,436 740,368 930,368 C1060,368 1150,388 1200,398 L1200,520 Z" fill="url(#bfront)"/>
+  <ellipse cx="930" cy="371" rx="84.0" ry="8.4" fill="#0F2E22" opacity="0.45"/>
+  <path d="M921,372 C914,412 860,442 846,520 L890,520 C896,452 940,412 939,372 Z" fill="#B9AE8A" opacity="0.45"/>
+  <g transform="translate(714.96,25.92) scale(0.42)">
+    <path d="M346,806 Q354,650 402,500 L622,500 Q670,650 678,806 Q512,842 346,806 Z" fill="#F4EDDD"/>
+    <g clip-path="url(#btower)">
+      <path d="M320,558 Q512,574 704,558 L704,614 Q512,630 320,614 Z" fill="#E8705F"/>
+      <path d="M320,720 Q512,736 704,720 L704,776 Q512,792 320,776 Z" fill="#E8705F"/>
+      <rect x="330" y="500" width="364" height="44" fill="url(#btopsh)"/>
+      <rect x="330" y="490" width="364" height="360" fill="url(#bshade)"/>
+    </g>
+    <ellipse cx="447" cy="688" rx="20" ry="12" fill="#E88A82" opacity="0.6"/>
+    <ellipse cx="577" cy="688" rx="20" ry="12" fill="#E88A82" opacity="0.6"/>
+    <circle cx="477" cy="658" r="14.5" fill="#23453A"/>
+    <circle cx="547" cy="658" r="14.5" fill="#23453A"/>
+    <circle cx="482" cy="653" r="4.5" fill="#FFFFFF"/>
+    <circle cx="552" cy="653" r="4.5" fill="#FFFFFF"/>
+    <path d="M494,682 Q512,700 530,682" fill="none" stroke="#23453A" stroke-width="9" stroke-linecap="round"/>
+    <rect x="378" y="470" width="268" height="36" rx="18" fill="#1A4F3A"/>
+    <rect x="396" y="475" width="232" height="7" rx="3.5" fill="#FFE7A6" opacity="0.28"/>
+    <rect x="420" y="346" width="184" height="134" rx="24" fill="#1A4F3A"/>
+    <rect x="436" y="360" width="152" height="108" rx="15" fill="url(#blamp)"/>
+    <rect x="482" y="360" width="8" height="108" fill="#1A4F3A" opacity="0.35"/>
+    <rect x="534" y="360" width="8" height="108" fill="#1A4F3A" opacity="0.35"/>
+    <path d="M402,338 A110,90 0 0 1 622,338 Z" fill="url(#broof)"/>
+    <rect x="390" y="330" width="244" height="28" rx="14" fill="#1A4F3A"/>
+    <path d="M440,314 Q450,282 488,266" fill="none" stroke="#FFE7A6" stroke-width="10" stroke-linecap="round" opacity="0.28"/>
+    <rect x="505" y="226" width="14" height="36" rx="7" fill="#1A4F3A"/>
+    <circle cx="512" cy="222" r="18" fill="#F2786B"/>
+  </g>
+  <path d="M0,470 C140,446 300,452 430,476 C520,492 580,506 640,520 L0,520 Z" fill="url(#bfore)"/>
+  
+</g>
+  
+    <g transform="translate(690,92)">
+      <defs><linearGradient id="cloud15" x1="0" y1="-58.3" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#27505A"/><stop offset="0.6" stop-color="#27505A"/><stop offset="1" stop-color="#1F4149"/>
+      </linearGradient></defs>
+      <rect x="0" y="-24.2" width="99.0" height="24.2" rx="12.1" fill="url(#cloud15)"/>
+      <circle cx="26.4" cy="-24.2" r="18.7" fill="url(#cloud15)"/>
+      <circle cx="56.1" cy="-33.0" r="25.3" fill="url(#cloud15)"/>
+      <circle cx="81.4" cy="-20.9" r="16.5" fill="url(#cloud15)"/>
+    </g>
+    <g transform="translate(1150,70)">
+      <defs><linearGradient id="cloud16" x1="0" y1="-44.52" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#27505A"/><stop offset="0.6" stop-color="#27505A"/><stop offset="1" stop-color="#1F4149"/>
+      </linearGradient></defs>
+      <rect x="0" y="-18.48" width="75.6" height="18.48" rx="9.24" fill="url(#cloud16)"/>
+      <circle cx="20.16" cy="-18.48" r="14.28" fill="url(#cloud16)"/>
+      <circle cx="42.84" cy="-25.2" r="19.32" fill="url(#cloud16)"/>
+      <circle cx="62.16" cy="-15.96" r="12.6" fill="url(#cloud16)"/>
+    </g>
+  <circle cx="236" cy="392" r="6" fill="#9FB8A8"/><circle cx="236" cy="392" r="2.4" fill="#D9B866"/><circle cx="330" cy="404" r="4.7" fill="#B9675E"/><circle cx="470" cy="396" r="6" fill="#9FB8A8"/><circle cx="470" cy="396" r="2.4" fill="#D9B866"/><circle cx="846" cy="384" r="6" fill="#9FB8A8"/><circle cx="846" cy="384" r="2.4" fill="#D9B866"/><circle cx="1150" cy="376" r="4.7" fill="#B9675E"/><circle cx="1222" cy="398" r="6" fill="#9FB8A8"/><circle cx="1222" cy="398" r="2.4" fill="#D9B866"/>
+  
+  <text x="88" y="150" font-family="ui-rounded, 'SF Pro Rounded', 'Nunito', 'Varela Round', 'Arial Rounded MT Bold', 'Segoe UI', system-ui, sans-serif" font-size="100" font-weight="800" letter-spacing="-1.5" fill="#EAF7EF">Leuchtturm</text>
+  <text x="92" y="200" font-family="ui-rounded, 'SF Pro Rounded', 'Nunito', 'Varela Round', 'Arial Rounded MT Bold', 'Segoe UI', system-ui, sans-serif" font-size="31" font-weight="600" fill="#A5DDBC">Privacy-first location sharing for iPhone</text>
+  </g>
+</svg>

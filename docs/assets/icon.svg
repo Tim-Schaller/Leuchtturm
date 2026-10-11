@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Leuchtturm</title>
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1024" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#BFE8EA"/><stop offset="0.55" stop-color="#DDF3EC"/><stop offset="1" stop-color="#EAF7EE"/></linearGradient><radialGradient id="glow" cx="512" cy="414" r="340" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFF1BF" stop-opacity="1"/><stop offset="0.28" stop-color="#FFE8A3" stop-opacity="0.62"/><stop offset="1" stop-color="#FFE8A3" stop-opacity="0"/></radialGradient><linearGradient id="beamL" x1="500" y1="0" x2="80" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFDC8C" stop-opacity="0.95"/><stop offset="0.55" stop-color="#FFDC8C" stop-opacity="0.36"/><stop offset="1" stop-color="#FFDC8C" stop-opacity="0"/></linearGradient><linearGradient id="beamR" x1="524" y1="0" x2="944" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFDC8C" stop-opacity="0.95"/><stop offset="0.55" stop-color="#FFDC8C" stop-opacity="0.36"/><stop offset="1" stop-color="#FFDC8C" stop-opacity="0"/></linearGradient><linearGradient id="hillFar" x1="0" y1="610" x2="0" y2="900" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B2E0AD"/><stop offset="1" stop-color="#97D195"/></linearGradient><linearGradient id="hillFront" x1="0" y1="790" x2="0" y2="1024" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8ACB88"/><stop offset="1" stop-color="#5DAE76"/></linearGradient><linearGradient id="hillFore" x1="0" y1="830" x2="0" y2="1024" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4E9F6E"/><stop offset="1" stop-color="#2F8F5B"/></linearGradient>
+    <linearGradient id="shade" x1="347" y1="0" x2="677" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F2A20" stop-opacity="0.08"/>
+      <stop offset="0.12" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.28" stop-color="#FFFFFF" stop-opacity="0.25"/>
+      <stop offset="0.46" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.6" stop-color="#0F2A20" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0F2A20" stop-opacity="0.16"/>
+    </linearGradient>
+    <linearGradient id="topsh" x1="0" y1="504" x2="0" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F2A20" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#0F2A20" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="roof" x1="408" y1="0" x2="616" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2B7556"/><stop offset="0.6" stop-color="#1F5E43"/><stop offset="1" stop-color="#1A5039"/>
+    </linearGradient>
+    <radialGradient id="lamp" cx="512" cy="414" r="84" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFEF4"/><stop offset="0.45" stop-color="#FFF0BC"/><stop offset="1" stop-color="#FFD27A"/>
+    </radialGradient>
+    <clipPath id="tower"><path d="M346,806 Q354,650 402,500 L622,500 Q670,650 678,806 Q512,842 346,806 Z"/></clipPath></defs>
+  <rect width="1024" height="1024" fill="url(#sky)"/>
+  
+  <circle cx="512" cy="414" r="340" fill="url(#glow)"/>
+  
+    <g transform="translate(128,298)">
+      <defs><linearGradient id="cloud1" x1="0" y1="-106.0" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E6F5EE"/>
+      </linearGradient></defs>
+      <rect x="0" y="-44.0" width="180.0" height="44.0" rx="22.0" fill="url(#cloud1)"/>
+      <circle cx="48.0" cy="-44.0" r="34.0" fill="url(#cloud1)"/>
+      <circle cx="102.0" cy="-60.0" r="46.0" fill="url(#cloud1)"/>
+      <circle cx="148.0" cy="-38.0" r="30.0" fill="url(#cloud1)"/>
+    </g>
+    <g transform="translate(752,230)">
+      <defs><linearGradient id="cloud2" x1="0" y1="-80.56" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E6F5EE"/>
+      </linearGradient></defs>
+      <rect x="0" y="-33.44" width="136.8" height="33.44" rx="16.72" fill="url(#cloud2)"/>
+      <circle cx="36.48" cy="-33.44" r="25.84" fill="url(#cloud2)"/>
+      <circle cx="77.52" cy="-45.6" r="34.96" fill="url(#cloud2)"/>
+      <circle cx="112.48" cy="-28.88" r="22.8" fill="url(#cloud2)"/>
+    </g>
+  <path d="M466,393 L92,331 Q68,414 92,497 L466,435 Z" fill="url(#beamL)"/><path d="M558,393 L932,331 Q956,414 932,497 L558,435 Z" fill="url(#beamR)"/>
+  <path d="M0,700 C90,640 200,615 300,640 C390,662 440,700 512,700 C590,700 640,655 730,630 C830,604 940,630 1024,680 L1024,1024 L0,1024 Z" fill="url(#hillFar)"/>
+  <rect x="218.9" y="593.0" width="10.2" height="49.0" rx="5.1" fill="#8C7B5A"/><circle cx="224" cy="588.5" r="30" fill="#5DAE76"/><circle cx="214.1" cy="578.6" r="12.0" fill="#7CC28B"/><rect x="268.4" y="610.5" width="7.1" height="35.5" rx="3.6" fill="#8C7B5A"/><circle cx="272" cy="607.4" r="21" fill="#6DB77E"/><rect x="816.9" y="581.0" width="10.2" height="49.0" rx="5.1" fill="#8C7B5A"/><circle cx="822" cy="576.5" r="30" fill="#5DAE76"/><circle cx="812.1" cy="566.6" r="12.0" fill="#7CC28B"/>
+  <path d="M56,1024 C100,868 290,792 512,792 C734,792 924,868 968,1024 Z" fill="url(#hillFront)"/>
+  <ellipse cx="512" cy="818" rx="200" ry="20" fill="#3E9462" opacity="0.35"/>
+  <path d="M490,820 C474,876 392,908 372,1024 L476,1024 C484,936 540,888 534,820 Z" fill="#F4EACB" opacity="0.9"/>
+  
+    <path d="M346,806 Q354,650 402,500 L622,500 Q670,650 678,806 Q512,842 346,806 Z" fill="#FFFDF7"/>
+    <g clip-path="url(#tower)">
+      <path d="M320,558 Q512,574 704,558 L704,614 Q512,630 320,614 Z" fill="#F2786B"/>
+      <path d="M320,720 Q512,736 704,720 L704,776 Q512,792 320,776 Z" fill="#F2786B"/>
+      <rect x="330" y="500" width="364" height="44" fill="url(#topsh)"/>
+      <rect x="330" y="490" width="364" height="360" fill="url(#shade)"/>
+    </g>
+    <ellipse cx="447" cy="688" rx="20" ry="12" fill="#F59C92" opacity="0.65"/>
+    <ellipse cx="577" cy="688" rx="20" ry="12" fill="#F59C92" opacity="0.65"/>
+    <circle cx="477" cy="658" r="14.5" fill="#23453A"/>
+    <circle cx="547" cy="658" r="14.5" fill="#23453A"/>
+    <circle cx="482" cy="653" r="4.5" fill="#FFFFFF"/>
+    <circle cx="552" cy="653" r="4.5" fill="#FFFFFF"/>
+    <path d="M494,682 Q512,700 530,682" fill="none" stroke="#23453A" stroke-width="9" stroke-linecap="round"/>
+    <rect x="378" y="470" width="268" height="36" rx="18" fill="#1F5E43"/>
+    <rect x="396" y="475" width="232" height="7" rx="3.5" fill="#FFFFFF" opacity="0.2"/>
+    <rect x="420" y="346" width="184" height="134" rx="24" fill="#1F5E43"/>
+    <rect x="436" y="360" width="152" height="108" rx="15" fill="url(#lamp)"/>
+    <rect x="482" y="360" width="8" height="108" fill="#1F5E43" opacity="0.4"/>
+    <rect x="534" y="360" width="8" height="108" fill="#1F5E43" opacity="0.4"/>
+    <path d="M402,338 A110,90 0 0 1 622,338 Z" fill="url(#roof)"/>
+    <rect x="390" y="330" width="244" height="28" rx="14" fill="#1F5E43"/>
+    <path d="M440,314 Q450,282 488,266" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" opacity="0.2"/>
+    <rect x="505" y="226" width="14" height="36" rx="7" fill="#1F5E43"/>
+    <circle cx="512" cy="222" r="18" fill="#F2786B"/>
+  <path d="M0,858 C110,846 252,896 330,1024 L0,1024 Z" fill="url(#hillFore)"/>
+  <path d="M1024,834 C900,830 772,898 700,1024 L1024,1024 Z" fill="url(#hillFore)"/>
+  <circle cx="262" cy="914" r="9" fill="#FFFDF7"/><circle cx="262" cy="914" r="3.6" fill="#FFD27A"/><circle cx="318" cy="868" r="7.6" fill="#F2786B"/><circle cx="664" cy="876" r="9" fill="#FFFDF7"/><circle cx="664" cy="876" r="3.6" fill="#FFD27A"/><circle cx="804" cy="922" r="9" fill="#FFFDF7"/><circle cx="804" cy="922" r="3.6" fill="#FFD27A"/><circle cx="742" cy="850" r="6.8" fill="#F2786B"/>
+</svg>

@@ -141,7 +141,7 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 | Which iCloud accounts share a circle | n/a | **yes**, with real identities |
 | When records are written | n/a | yes |
 | Live location | yes | ciphertext, padded size, **when and how often it is updated** |
-| Places, history (M3+) | yes | ciphertext, size, time |
+| Places, history, trips, reactions (M3+) | yes | ciphertext, size, time |
 | Map area you look at | n/a | Apple Maps sees which map tiles are loaded |
 
 ## Tracking strategy (battery, M2)

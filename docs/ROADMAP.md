@@ -27,33 +27,68 @@ History: M1 was first built with a self-hosted Go server (EU, anonymous device k
 - [x] Encrypted, device-signed location records
 - [x] Map view with circle members (MapKit), Life360-style people drawer, circle switcher
 - [x] Moving simulated members in the debug simulation
-- [ ] CloudKit subscriptions (silent push) for updates instead of 30-second polling
 - [x] Background location: live updates with a background activity session, stationary pause, fewer uploads while the app is closed
+- [ ] Push: CloudKit subscriptions plus a Notification Service Extension that decrypts on the device (foundation for every alert below)
+- [ ] Battery level and charging state on the map, low-battery alert
+- [ ] Pause sharing per circle
 - [ ] Smarter tracking: visits, geofence wake-ups, presence-based frequency
-- [ ] Push entitlement and subscription handling
 
-## M3: Places
+## Life360 parity
+
+Researched October 2026. Almost every family feature of Life360 works on the device with encrypted sync. The order below can change; quick, visible wins come first.
+
+| Life360 feature | Leuchtturm plan | Milestone |
+|---|---|---|
+| Quick Notes (emoji messages), Check-in | Encrypted reactions and quick notes to a person or the circle; check-in with the current place | M3 |
+| Morning check-in / activity sharing | Opt-in "has started the day" based on first movement | M3 |
+| Bubbles (approximate area for a while) | Share a blurred area instead of the exact position, ends automatically | M3 |
+| Places with arrive/leave alerts | Encrypted places, geofences evaluated on the device (CLMonitor), alerts via push | M4 |
+| No-show alerts, place suggestions | Evaluated on the device | M4 |
+| History (2–30 days, not deletable) | Opt-in, own retention, deletable and exportable | M5 |
+| Drive detection, Driver Reports, weekly Family Driving Summary | CoreMotion trips with route, distance, top speed, hard braking and acceleration; weekly summary in the circle | M6 |
+| Flight detection | Detected on the device | M6 |
+| SOS, crash detection | Alert to the circle (Critical Alerts entitlement); no call center | M7 |
+| Temporary circles | Circles that expire after a chosen time | M8 |
+| (not in Life360) Leaderboards | Opt-in weekly ranking in the circle (e.g. safest drive, distance walked), computed on the device | M8 |
+
+Not planned, because they need a company server, a call center or third parties: emergency dispatch, roadside assistance, insurance and reimbursement, ID-theft services, crime and safety-incident data, Tile/pet GPS hardware, Uber. Never: ads, data sales, insurer data sharing (Life360's Arity program). Maybe later: a web link for people without the app (static page, key in the URL fragment), an Apple Watch app, weather alerts via WeatherKit.
+
+## M3: Reactions and check-ins
+- [ ] Emoji reactions and quick notes, end-to-end encrypted, delivered by push
+- [ ] Check-in with the current place
+- [ ] Opt-in morning check-in
+- [ ] Bubbles: approximate area for a limited time
+
+## M4: Places
 - [ ] Create and share places (encrypted)
 - [ ] On-device geofence evaluation
 - [ ] Arrival and departure notifications via encrypted push + Notification Service Extension
+- [ ] No-show alerts and place suggestions
 
-## M4: History and safety
-- [ ] Opt-in history with user-chosen retention, deleted by the writing device
-- [ ] Opt-in SOS and check-in
+## M5: History
+- [ ] Opt-in history with user-chosen retention, deleted by the writing device, exportable
 
-## M5: Drive detection
-- [ ] CoreMotion automotive detection
+## M6: Trips and driving
+- [ ] CoreMotion automotive detection, driver/passenger toggle
+- [ ] Trip records: route, distance, duration, top speed, hard braking, rapid acceleration
 - [ ] Live speed (km/h) while driving
+- [ ] Weekly driving summary in the circle
+- [ ] Flight detection
 - [ ] Battery profiling and tuning
 
-## M6: Friends, groups and polish
-- [ ] Friend requests, multiple circles and groups
+## M7: Safety
+- [ ] SOS to the circle (Critical Alerts entitlement)
+- [ ] Crash detection heuristics with an "Are you OK?" timer, alert to the circle
+
+## M8: Friends, groups, fun and polish
+- [ ] Temporary circles, friend requests, multiple circles and groups
+- [ ] Opt-in weekly circle leaderboard and badges
 - [ ] Liquid Glass UI polish, accessibility, localization (DE, EN)
 - [ ] Multi-device support and key backup
 - [ ] Owner succession if the owner's device is lost
 - [ ] Warning when an unverified key appears in a circle
 
-## M7: Monetization and release
+## M9: Monetization and release
 - [ ] StoreKit 2: non-intrusive convenience purchases (safety features stay free)
 - [ ] Privacy policy (incl. iCloud metadata disclosure), App Privacy labels, background-location review justification
 - [ ] Deploy CloudKit schema to production

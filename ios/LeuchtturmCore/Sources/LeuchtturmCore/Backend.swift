@@ -101,4 +101,11 @@ public protocol CircleBackend: Sendable {
     func leave(_ circle: CircleRef) async throws
     /// Deletes a circle the current user owns, for everyone.
     func deleteCircle(_ circle: CircleRef) async throws
+    /// Asks to be woken by a silent push whenever anything in the user's
+    /// circles changes. The push carries no content.
+    func subscribeToChanges() async throws
+}
+
+extension CircleBackend {
+    public func subscribeToChanges() async throws {}
 }

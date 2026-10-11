@@ -1,15 +1,35 @@
 import SwiftUI
+import UIKit
 
 @main
 struct LeuchtturmApp: App {
-    @State private var model = AppModel()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environment(model)
-                .onOpenURL { model.handle(url: $0) }
+                .environment(delegate.model)
+                .onOpenURL { delegate.model.handle(url: $0) }
         }
+    }
+}
+
+/// Owns the model so silent pushes reach it even when iOS launches the app
+/// in the background without a scene.
+final class AppDelegate: NSObject, UIApplicationDelegate {
+    let model = AppModel()
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        application.registerForRemoteNotifications()
+        return true
+    }
+
+    /// iCloud says something changed in a circle. The push has no content:
+    /// fetch, decrypt and notify locally.
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
+        await model.checkForNews()
+        model.noteRemoteChange()
+        return .newData
     }
 }
 

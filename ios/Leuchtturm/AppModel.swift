@@ -118,6 +118,7 @@ final class AppModel {
         if !displayName.isEmpty, let client = try? makeClient(name: displayName) {
             self.client = client
             phase = .ready
+            subscribe(client)
         }
         updateTracking()
     }
@@ -179,6 +180,7 @@ final class AppModel {
             self.client = client
             displayName = trimmed
             phase = .ready
+            subscribe(client)
             updateTracking()
             await refresh()
             return true
@@ -287,6 +289,20 @@ final class AppModel {
         } else {
             await run { try await $0.stopSharingLocation() }
         }
+    }
+
+    // MARK: Push
+
+    /// Silent pushes for changes in any circle. Failures are fine: polling
+    /// and background location updates still pick up news.
+    private func subscribe(_ client: LeuchtturmClient) {
+        guard usesDeviceServices else { return }
+        Task { try? await client.subscribeToChanges() }
+    }
+
+    /// A silent push arrived: let open views reload.
+    func noteRemoteChange() {
+        externalChanges += 1
     }
 
     // MARK: Notes

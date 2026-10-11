@@ -123,6 +123,11 @@ public actor LeuchtturmClient {
         _ = try await backend.currentUserID()
     }
 
+    /// Silent pushes for changes in any circle; see `CircleBackend.subscribeToChanges`.
+    public func subscribeToChanges() async throws {
+        try await backend.subscribeToChanges()
+    }
+
     /// Sets the name shown to others and updates it in every circle.
     public func setDisplayName(_ name: String) async throws {
         displayName = try Self.validated(name)

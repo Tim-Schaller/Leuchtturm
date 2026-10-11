@@ -28,9 +28,10 @@ History: M1 was first built with a self-hosted Go server (EU, anonymous device k
 - [x] Map view with circle members (MapKit), people drawer, circle switcher
 - [x] Moving simulated members in the debug simulation
 - [x] Background location: live updates with a background activity session, stationary pause, fewer uploads while the app is closed
-- [ ] Push: CloudKit subscriptions plus a Notification Service Extension that decrypts on the device (foundation for every alert below)
+- [x] Push: silent CloudKit database subscriptions wake the app, which decrypts on the device and notifies locally
+- [ ] Verify push delivery with two iCloud accounts
 - [x] Battery level and charging state, encrypted with the location
-- [ ] Low-battery alert (needs push)
+- [ ] Low-battery alert
 - [ ] Pause sharing per circle
 - [ ] Smarter tracking: visits, geofence wake-ups, presence-based frequency
 
@@ -57,7 +58,7 @@ Not planned, because they would need a company server, a call center or third pa
 - [x] Check-in with the current place
 - [x] Opt-in morning greeting on the first movement of the day
 - [x] Local notifications when the app fetches new notes (open or while sharing in the background)
-- [ ] Instant delivery by push while the app is closed (see M2)
+- [x] Delivery by silent push while the app is closed
 - [x] Fog mode: approximate area for a limited time
 
 ## M4: Places

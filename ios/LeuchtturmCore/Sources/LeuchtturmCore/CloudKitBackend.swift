@@ -162,6 +162,22 @@ public final class CloudKitBackend: CircleBackend, @unchecked Sendable {
         }
     }
 
+    /// One silent database subscription each for owned and joined circles.
+    /// Saving an existing subscription ID again replaces it.
+    public func subscribeToChanges() async throws {
+        _ = try await currentUserID()
+        try await mapped {
+            for (db, id) in [(container.privateCloudDatabase, "leuchtturm-private"), (container.sharedCloudDatabase, "leuchtturm-shared")] {
+                let subscription = CKDatabaseSubscription(subscriptionID: id)
+                let info = CKSubscription.NotificationInfo()
+                info.shouldSendContentAvailable = true
+                subscription.notificationInfo = info
+                let result = try await db.modifySubscriptions(saving: [subscription], deleting: [])
+                for (_, r) in result.saveResults { _ = try r.get() }
+            }
+        }
+    }
+
     // MARK: Helpers
 
     private func database(_ circle: CircleRef) -> CKDatabase {

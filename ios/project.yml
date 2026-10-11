@@ -35,6 +35,7 @@ targets:
           - iCloud.de.timschaller.leuchtturm
         com.apple.developer.icloud-services:
           - CloudKit
+        aps-environment: development
     info:
       path: Leuchtturm/Info.plist
       properties:
@@ -48,6 +49,7 @@ targets:
           - UIInterfaceOrientationPortrait
         UIBackgroundModes:
           - location
+          - remote-notification
         CFBundleURLTypes:
           - CFBundleURLName: de.timschaller.leuchtturm.invite
             CFBundleURLSchemes:

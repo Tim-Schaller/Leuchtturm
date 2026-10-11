@@ -112,7 +112,11 @@ Reactions, quick notes, check-ins and good-mornings.
 
 Readers accept notes only from devices in the signed roster (or their own), check `sig` against the sender's member record and ignore notes older than 7 days. Text is at most 120 characters. A sender deletes its own notes older than 2 days when it sends a new one; removal and the owner's cleanup delete a departed member's notes. Every member can read every note of the circle, including those addressed to someone else.
 
-Notifications are posted locally by the receiving app after it fetched and decrypted the note (while open, or when it uploads its location in the background). Nothing readable goes through Apple's push service.
+Notifications are posted locally by the receiving app after it fetched and decrypted the note. Nothing readable goes through Apple's push service.
+
+## Push
+
+Each device saves two `CKDatabaseSubscription`s (private and shared database) with `shouldSendContentAvailable` only: a silent push without title, text or record data. When it arrives, iOS wakes the app briefly; the app loads its circles, decrypts and verifies new notes and posts local notifications. iOS throttles silent pushes, so delivery can be delayed; the app also checks for news when it uploads its location in the background and every 30 seconds while the map is open. CloudKit does not push a change to the device that made it.
 
 ### Encrypted content (meta, cards, tokens, locations, notes)
 

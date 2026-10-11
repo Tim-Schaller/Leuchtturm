@@ -80,6 +80,7 @@ final class AppModel {
     private(set) var sharesTrips = false
     @ObservationIgnored private var tripDetector = TripDetector()
     @ObservationIgnored private let motion = MotionMonitor()
+    @ObservationIgnored private var visitStore = VisitStore(persistent: false)
     /// Asks "Are you OK?" after an abrupt stop while driving. On by default.
     private(set) var detectsCrashes = true
     /// Set while the "Are you OK?" countdown runs: when the SOS goes out.
@@ -157,6 +158,7 @@ final class AppModel {
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
         knownPlaces = [:]
         latestDetails = [:]
+        visitStore = VisitStore(persistent: !isSimulation)
         arrivalWatches = isSimulation ? [] : defaults.data(forKey: Keys.arrivalWatches)
             .flatMap { try? JSONDecoder().decode([ArrivalWatch].self, from: $0) } ?? []
         sharesHistory = !isSimulation && defaults.bool(forKey: Keys.sharesHistory)
@@ -303,6 +305,7 @@ final class AppModel {
             return
         }
         if sharesTrips && !isSimulation { motion.start() } else { motion.stop() }
+        tracker.onVisit = { [weak self] visit in self?.visitStore.add(visit) }
         Task { _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) }
         tracker.start(background: isSharingLocation && !isSimulation) { [weak self] location in
             Task { await self?.share(location) }
@@ -466,6 +469,12 @@ final class AppModel {
 
     func places(inCircle circleID: String) -> [CirclePlace] {
         latestDetails[circleID]?.places ?? knownPlaces[circleID]?.places ?? []
+    }
+
+    /// Spots you often stay at that are no place in the circle yet. Computed
+    /// from stays stored only on this device.
+    func placeSuggestions(inCircle circleID: String) -> [PlaceSuggestion] {
+        PlaceSuggestion.suggest(visits: visitStore.visits, existing: places(inCircle: circleID), calendar: .current)
     }
 
     func addArrivalWatch(member: CircleMember, place: CirclePlace, circleID: String, hour: Int, minute: Int, repeats: ArrivalWatch.Repeat) async {
@@ -764,6 +773,7 @@ final class AppModel {
         }
         savedName = nil
         historyRecorder.clear()
+        visitStore.clear()
         client = nil
         circles = []
         hasLoadedCircles = false
@@ -797,6 +807,12 @@ final class AppModel {
             }
             try await world.addDemoPlaces(circleID: ref.circleID, near: here)
             try await world.addDemoTrips(near: here)
+        }
+        // Three evenings at the sports club, for the place suggestions.
+        let (lat, lon) = SimulatedWorld.offset(home, north: -600, east: 900)
+        for day in 1 ... 3 {
+            let arrival = Date().addingTimeInterval(-Double(day) * 86400 - 3 * 3600)
+            visitStore.add(Visit(latitude: lat, longitude: lon, arrival: arrival, departure: arrival.addingTimeInterval(5400)))
         }
     }
 

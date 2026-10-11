@@ -78,12 +78,29 @@ struct PlacesSection: View {
                     }
                 }
             }
-            Button("Ort hinzufügen", systemImage: "plus.circle") { sheet = .addPlace(details.ref) }
+            ForEach(model.placeSuggestions(inCircle: details.id)) { suggestion in
+                Button {
+                    sheet = .addPlace(details.ref, suggestion)
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "sparkles").frame(width: 36).foregroundStyle(Color.accentColor)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Vorschlag: Hier bist du oft").font(.headline)
+                            Text("\(suggestion.visits) Besuche, zusammen \(Duration.seconds(suggestion.totalTime).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .tint(.primary)
+                .disabled(!details.hasKey)
+            }
+            Button("Ort hinzufügen", systemImage: "plus.circle") { sheet = .addPlace(details.ref, nil) }
                 .disabled(!details.hasKey)
         } header: {
             Text("Orte")
         } footer: {
-            Text("Kommt jemand an oder geht, bekommt der Kreis Bescheid. Das prüft jedes iPhone selbst, kein Server kennt eure Orte.")
+            Text("Kommt jemand an oder geht, bekommt der Kreis Bescheid. Das prüft jedes iPhone selbst, kein Server kennt eure Orte. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.")
         }
     }
 
@@ -195,6 +212,8 @@ struct AddPlaceSheet: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     let ref: CircleRef
+    /// Starts the map at a suggested spot.
+    var suggestion: PlaceSuggestion?
 
     static let emojis = ["🏠", "🏫", "💼", "🏋️", "🛒", "☕️", "⚽️", "❤️"]
 
@@ -237,6 +256,14 @@ struct AddPlaceSheet: View {
                     .pickerStyle(.segmented)
                 } footer: {
                     Text("Ort, Name und Symbol sind Ende-zu-Ende-verschlüsselt.")
+                }
+            }
+            .onAppear {
+                if let suggestion {
+                    camera = .region(MKCoordinateRegion(
+                        center: CLLocationCoordinate2D(latitude: suggestion.latitude, longitude: suggestion.longitude),
+                        latitudinalMeters: 600, longitudinalMeters: 600
+                    ))
                 }
             }
             .navigationTitle("Neuer Ort")

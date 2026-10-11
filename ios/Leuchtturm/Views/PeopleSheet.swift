@@ -157,8 +157,8 @@ struct PeopleSheet: View {
             InviteSheet(ref: ref, circleName: details?.name)
         case .fog:
             FogSheet()
-        case let .addPlace(ref):
-            AddPlaceSheet(ref: ref)
+        case let .addPlace(ref, suggestion):
+            AddPlaceSheet(ref: ref, suggestion: suggestion)
         case .sos:
             SOSSheet()
         #if DEBUG

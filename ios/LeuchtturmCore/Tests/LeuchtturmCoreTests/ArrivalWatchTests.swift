@@ -45,3 +45,27 @@ struct ArrivalWatchTests {
         #expect(!w.isSatisfied(deadline: deadline, place: school, location: nil, notes: [yesterday], calendar: calendar))
     }
 }
+
+struct PlaceSuggestionTests {
+    let calendar = Calendar(identifier: .gregorian)
+    let monday = Date(timeIntervalSince1970: 1_800_000_000)
+
+    func visit(_ lat: Double, day: Int, minutes: Double) -> Visit {
+        let arrival = monday.addingTimeInterval(Double(day) * 86400)
+        return Visit(latitude: lat, longitude: 9.99, arrival: arrival, departure: arrival.addingTimeInterval(minutes * 60))
+    }
+
+    @Test func suggestsRecurringStaysThatAreNotPlacesYet() {
+        let home = CirclePlace(id: "h", creatorID: "x", name: "Zuhause", emoji: "🏠", latitude: 53.50, longitude: 9.99, radius: 150)!
+        let visits = [
+            visit(53.50, day: 0, minutes: 600), visit(53.5001, day: 1, minutes: 600), // home: already a place
+            visit(53.52, day: 0, minutes: 90), visit(53.5203, day: 2, minutes: 80), visit(53.5199, day: 4, minutes: 60), // club
+            visit(53.54, day: 1, minutes: 120), visit(53.5401, day: 1, minutes: 30), // twice, same day
+            visit(53.56, day: 3, minutes: 5), visit(53.56, day: 5, minutes: 5), // too short
+        ]
+        let suggestions = PlaceSuggestion.suggest(visits: visits, existing: [home], calendar: calendar)
+        #expect(suggestions.count == 1)
+        #expect(suggestions.first?.visits == 3)
+        #expect(abs((suggestions.first?.latitude ?? 0) - 53.52) < 0.001)
+    }
+}

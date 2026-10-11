@@ -157,6 +157,15 @@ struct SimulationTests {
         #expect(model.arrivalWatches.isEmpty)
     }
 
+    @Test func demoSuggestsTheSportsClub() async throws {
+        let (model, _) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        _ = await model.mapDetails(for: ref)
+        let suggestions = model.placeSuggestions(inCircle: ref.circleID)
+        #expect(suggestions.map(\.visits) == [3])
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

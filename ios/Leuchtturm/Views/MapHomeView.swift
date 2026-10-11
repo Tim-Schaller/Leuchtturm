@@ -10,7 +10,7 @@ enum HomeSheet: Identifiable {
     case join
     case invite(CircleRef)
     case fog
-    case addPlace(CircleRef)
+    case addPlace(CircleRef, PlaceSuggestion?)
     case sos
     #if DEBUG
     case simulation
@@ -23,7 +23,7 @@ enum HomeSheet: Identifiable {
         case .join: "join"
         case let .invite(ref): "invite-\(ref.circleID)"
         case .fog: "fog"
-        case let .addPlace(ref): "place-\(ref.circleID)"
+        case let .addPlace(ref, suggestion): "place-\(ref.circleID)-\(suggestion?.id ?? "")"
         case .sos: "sos"
         #if DEBUG
         case .simulation: "simulation"

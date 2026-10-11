@@ -67,7 +67,7 @@ Not planned, because they would need a company server, a call center or third pa
 - [x] Arrival and departure notifications (signed notes, silent push, local notification)
 - [x] Region monitoring (CLMonitor, up to 20 places, "Always" only) wakes the app at place edges while iOS pauses location updates
 - [x] "Not arrived yet" alerts (on the watcher's device only)
-- [ ] Place suggestions
+- [x] Place suggestions from stays kept on the device
 
 ## M5: History
 - [x] Opt-in history with user-chosen retention (1, 7, 30 days), deleted by the writing device

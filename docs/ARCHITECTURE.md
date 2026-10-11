@@ -154,6 +154,10 @@ Opt-in ("Fahrten teilen"), off by default.
 
 An `ArrivalWatch` (member, place, time, once/weekdays/daily) is stored only on the device that set it, never in iCloud. That device schedules a local time-sensitive notification for every deadline in the next 7 days and withdraws it whenever it loads the circle and sees that the member is inside the place (exact position from today) or sent an arrival note for that place since the start of the day. If the arrival note reaches the device late (throttled silent pushes), the alert can come although the member arrived.
 
+### Place suggestions
+
+With "Always" access iOS reports visits (`CLVisit`). The device keeps finished stays for 30 days in a protected local file, never in iCloud, and suggests spots with stays of 15 minutes or more on at least two different days within 150 m that are not inside a place yet. No reverse geocoding, so no coordinates go to Apple for this.
+
 ### Low battery
 
 When the device's battery drops to 15 % or less without charging, it sends a `Note` of kind `lowBattery` (text: the percentage) to every circle, once per discharge (again after charging or above 30 %).

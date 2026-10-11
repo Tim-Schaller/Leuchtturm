@@ -22,6 +22,8 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
 
     @ObservationIgnored private let manager = CLLocationManager()
     @ObservationIgnored private var onUpdate: (@MainActor (CLLocation) -> Void)?
+    /// Finished stays (with "Always" access), for place suggestions.
+    @ObservationIgnored var onVisit: (@MainActor (Visit) -> Void)?
     @ObservationIgnored private var running = false
     @ObservationIgnored private var wantsBackground = false
     @ObservationIgnored private var paused = false
@@ -150,8 +152,12 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
 
     nonisolated func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
         let departed = visit.departureDate != .distantFuture
+        let stay = departed && visit.arrivalDate != .distantPast
+            ? Visit(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude, arrival: visit.arrivalDate, departure: visit.departureDate)
+            : nil
         MainActor.assumeIsolated {
             if departed { resumeIfPaused() }
+            if let stay { onVisit?(stay) }
         }
     }
 

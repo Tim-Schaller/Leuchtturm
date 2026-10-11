@@ -136,7 +136,7 @@ Opt-in, off by default.
 | `blob` | encrypted `{"p": [[lat, lon, unix seconds], …]}`, at most 2000 points |
 | `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/history-record", circleID, deviceID, day) ‖ blob` |
 
-The device records a point when it uploads its location and has moved at least 40 m or 5 minutes passed (never while in fog), keeps today's points in a protected file and rewrites today's record together with the location record in one operation. It deletes its own days older than the chosen retention (1, 7 or 30 days) on the same occasion. Turning history off, leaving a circle and removal delete all of the device's history records. Readers show history only for roster members with a valid signature. Context: `ctx("leuchtturm/v1/history", circleID, deviceID, day)`.
+The device records a point when it uploads its location and has moved at least 40 m or 5 minutes passed (never while in fog), keeps today's points in a protected file and rewrites today's record together with the location record in one operation. It deletes its own days older than the chosen retention (1, 7 or 30 days) on the same occasion. Turning history off, leaving a circle and removal delete all of the device's history records. Readers show history only for roster members with a valid signature. Your own history can be exported as an unencrypted GPX file through the share sheet. Context: `ctx("leuchtturm/v1/history", circleID, deviceID, day)`.
 
 ### `Trip` (record name `trip-<tripID>`)
 

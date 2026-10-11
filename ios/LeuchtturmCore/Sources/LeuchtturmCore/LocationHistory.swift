@@ -49,6 +49,31 @@ public struct HistoryDay: Sendable, Hashable, Identifiable {
     }
 }
 
+extension HistoryDay {
+    /// GPX 1.1 with one track segment per day, oldest day first.
+    public static func gpx(_ days: [HistoryDay], name: String) -> String {
+        let iso = ISO8601DateFormatter()
+        func escape(_ s: String) -> String {
+            s.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "<", with: "&lt;")
+                .replacingOccurrences(of: ">", with: "&gt;").replacingOccurrences(of: "\"", with: "&quot;")
+        }
+        var out = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <gpx version="1.1" creator="Leuchtturm" xmlns="http://www.topografix.com/GPX/1/1">
+          <trk><name>\(escape(name))</name>
+
+        """
+        for day in days.sorted(by: { $0.day < $1.day }) where !day.points.isEmpty {
+            out += "    <trkseg>\n"
+            for p in day.points {
+                out += "      <trkpt lat=\"\(p.latitude)\" lon=\"\(p.longitude)\"><time>\(iso.string(from: p.timestamp))</time></trkpt>\n"
+            }
+            out += "    </trkseg>\n"
+        }
+        return out + "  </trk>\n</gpx>\n"
+    }
+}
+
 /// What a device uploads with its location while history is on.
 public struct HistoryUpdate: Sendable {
     /// Today's points so far.

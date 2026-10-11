@@ -1,7 +1,21 @@
 import CoreLocation
+import CoreTransferable
 import LeuchtturmCore
 import MapKit
 import SwiftUI
+import UniformTypeIdentifiers
+
+/// Your history as a GPX file for other map and sports apps.
+struct GPXFile: Transferable {
+    let days: [HistoryDay]
+
+    static var transferRepresentation: some TransferRepresentation {
+        DataRepresentation(exportedContentType: UTType(filenameExtension: "gpx") ?? .xml) { file in
+            Data(HistoryDay.gpx(file.days, name: String(localized: "Mein Leuchtturm-Verlauf")).utf8)
+        }
+        .suggestedFileName("Leuchtturm-Verlauf.gpx")
+    }
+}
 
 /// A member's path on one day, if they share their history.
 struct HistoryView: View {
@@ -50,6 +64,15 @@ struct HistoryView: View {
                         }
                     } footer: {
                         Text("Ende-zu-Ende-verschlüsselt. Wie lange der Verlauf aufbewahrt wird, legt \(member.isMe ? "du" : member.name ?? "die Person") selbst fest.")
+                    }
+                    if member.isMe {
+                        Section {
+                            ShareLink(item: GPXFile(days: days), preview: SharePreview("Leuchtturm-Verlauf.gpx")) {
+                                Label("Als GPX exportieren", systemImage: "square.and.arrow.up")
+                            }
+                        } footer: {
+                            Text("Alle gespeicherten Tage als GPX-Datei, z. B. für Karten- und Sport-Apps. Die Datei ist nicht verschlüsselt.")
+                        }
                     }
                 } else {
                     ContentUnavailableView(

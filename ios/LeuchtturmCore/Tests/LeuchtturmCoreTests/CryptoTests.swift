@@ -294,3 +294,21 @@ struct PlaceTrackerTests {
     }
 }
 
+struct GPXTests {
+    @Test func exportsDaysAsTrackSegments() {
+        let t = Date(timeIntervalSince1970: 1_800_000_000)
+        let days = [
+            HistoryDay(deviceID: "d", day: "2027-01-16", points: [HistoryDay.Point(latitude: 53.5, longitude: 9.9, timestamp: t + 86400)]),
+            HistoryDay(deviceID: "d", day: "2027-01-15", points: [
+                HistoryDay.Point(latitude: 53.55, longitude: 9.99, timestamp: t), HistoryDay.Point(latitude: 53.56, longitude: 10.0, timestamp: t + 60),
+            ]),
+        ]
+        let gpx = HistoryDay.gpx(days, name: "Tim & <Verlauf>")
+        #expect(gpx.contains("<name>Tim &amp; &lt;Verlauf&gt;</name>"))
+        #expect(gpx.components(separatedBy: "<trkseg>").count == 3)
+        #expect(gpx.components(separatedBy: "<trkpt").count == 4)
+        #expect(gpx.range(of: "lat=\"53.55\"")!.lowerBound < gpx.range(of: "lat=\"53.5\" ")!.lowerBound)
+        #expect(gpx.contains("<time>2027-01-15T"))
+    }
+}
+

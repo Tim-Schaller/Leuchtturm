@@ -94,10 +94,18 @@ struct SettingsView: View {
                             Text(client.safetyCode).font(.body.monospaced())
                         }
                     }
+                    if !model.isSimulation {
+                        Toggle("Schlüssel nur auf diesem Gerät", isOn: Binding(
+                            get: { model.keysOnDeviceOnly },
+                            set: { model.setKeysOnDeviceOnly($0) }
+                        ))
+                    }
                 } header: {
                     Text("Dieses Gerät")
                 } footer: {
-                    Text("Deine Schlüssel liegen nur auf diesem iPhone und werden nicht mit iCloud synchronisiert.")
+                    Text(model.keysOnDeviceOnly
+                        ? "Deine Schlüssel liegen nur auf diesem Gerät. Ein neues iPhone oder iPad braucht neue Einladungen."
+                        : "Deine Schlüssel reisen mit dem iCloud-Schlüsselbund (von Apple Ende-zu-Ende-verschlüsselt) auf deine anderen Geräte. So funktionieren iPad und ein neues iPhone sofort. Wer es strenger will, schaltet „nur auf diesem Gerät“ ein.")
                 }
 
                 Section {

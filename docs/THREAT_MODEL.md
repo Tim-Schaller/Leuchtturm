@@ -45,6 +45,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 | Removed member keeps reading | Removed from the iCloud share and atomic key rotation | M1 |
 | Apple injects its own device into a circle | Apple could add a participant to the share, but that device has no invite proof and gets no key. Safety codes detect key substitution when compared in person | M1 |
 | Apple substitutes the owner's keys for a new joiner | Owner keys come from the invite payload, authenticated by the secret that Apple never sees | M1 |
+| Someone with access to the user's Apple Account and iCloud Keychain | With the default (synced keys) they get the device keys too. Users who do not want this keep keys on the device only | Keys |
 | Device reinstalled or keychain lost | Device cannot verify or decrypt; needs a new invite (no silent re-trust) | M1 |
 | Member fakes another member's location | Location records are signed by the member's own device and checked against the key in its member record | M2 |
 | Member replays an older location | Readers keep the newest timestamp per device; the shown age reveals stale data. The memory is lost when the app restarts | M2 |
@@ -67,7 +68,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 ## Known limitations
 
 - **Background tracking depends on iOS.** Without "Always" access, sharing stops when the app goes to the background (to avoid a permanent status-bar indicator); a user who force-quits the app stops sharing until they open it again. Silent pushes can be delayed by iOS.
-- **Single device per person.** A second iPhone or iPad needs its own invite.
+- **Synced keys trust iCloud Keychain.** By default the keys are protected by Apple's iCloud Keychain (end-to-end encrypted, tied to the device passcodes). „Nur auf diesem Gerät“ removes that trust; then every device needs its own invite.
 - **Admins are trusted.** An admin can take a circle over once the owner seems inactive (or never shared a location or message). Owners should make only people admins they trust with the circle. Without any admin, a circle whose owner lost their device can no longer be managed.
 - **Pending members need the owner.** New members are visible as pending right away, but enter the signed roster only when the owner opens the app. Their admission is verified against the invite record, so if an invite expires and is cleaned up first, the owner must re-invite them.
 - **No use limits on invites.** CloudKit cannot enforce them; a link works for anyone until it expires. Owners see every new member.

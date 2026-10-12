@@ -821,12 +821,22 @@
         }
       }
     },
-    "Deine Schlüssel liegen nur auf diesem iPhone und werden nicht mit iCloud synchronisiert.": {
+    "Deine Schlüssel liegen nur auf diesem Gerät. Ein neues iPhone oder iPad braucht neue Einladungen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your keys stay on this iPhone only and are not synced with iCloud."
+            "value": "Your keys stay on this device only. A new iPhone or iPad needs new invites."
+          }
+        }
+      }
+    },
+    "Deine Schlüssel reisen mit dem iCloud-Schlüsselbund (von Apple Ende-zu-Ende-verschlüsselt) auf deine anderen Geräte. So funktionieren iPad und ein neues iPhone sofort. Wer es strenger will, schaltet „nur auf diesem Gerät“ ein.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your keys travel with iCloud Keychain (end-to-end encrypted by Apple) to your other devices, so an iPad or a new iPhone works right away. For stricter privacy, turn on “this device only”."
           }
         }
       }
@@ -957,6 +967,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The person invites you to their own lighthouse. To have someone join your lighthouse: open the lighthouse, “Invite someone”, create an invite."
+          }
+        }
+      }
+    },
+    "Die Schlüssel konnten nicht umgezogen werden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The keys could not be moved."
           }
         }
       }
@@ -2367,6 +2387,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Close"
+          }
+        }
+      }
+    },
+    "Schlüssel nur auf diesem Gerät": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keys on this device only"
           }
         }
       }

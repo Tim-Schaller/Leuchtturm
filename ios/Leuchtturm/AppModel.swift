@@ -17,6 +17,7 @@ final class AppModel {
     private enum Keys {
         static let displayName = "displayName"
         static let locationPaused = "locationPaused"
+        static let keysOnDeviceOnly = "keysOnDeviceOnly"
         static let lastSharedAt = "lastSharedAt"
         static let seenNotes = "seenNotes"
         static let newsSince = "newsSince"
@@ -69,7 +70,9 @@ final class AppModel {
         #endif
     }
 
-    private let keychain = KeychainSecretStore()
+    /// Keys travel with iCloud Keychain unless the user keeps them on this device.
+    private(set) var keysOnDeviceOnly = UserDefaults.standard.bool(forKey: Keys.keysOnDeviceOnly)
+    private var keychain: KeychainSecretStore { KeychainSecretStore(synchronized: !keysOnDeviceOnly) }
     /// While set and not expired, only an approximate area is shared.
     private(set) var fog: Fog?
     var activeFog: Fog? { fog.flatMap { $0.until > Date() ? $0 : nil } }
@@ -154,7 +157,10 @@ final class AppModel {
         hasLoadedCircles = false
         pendingInvite = nil
         lastShared = nil
-        isSharingLocation = isSimulation || !UserDefaults.standard.bool(forKey: Keys.locationPaused)
+        // An iPad shares no location unless asked to (the iPhone usually does).
+        let pausedByDefault = UIDevice.current.userInterfaceIdiom != .phone
+        isSharingLocation = isSimulation
+            || !(UserDefaults.standard.object(forKey: Keys.locationPaused) as? Bool ?? pausedByDefault)
         lastSharedAt = isSimulation ? nil : UserDefaults.standard.object(forKey: Keys.lastSharedAt) as? Date
         let defaults = UserDefaults.standard
         seenNotes = isSimulation ? [] : defaults.stringArray(forKey: Keys.seenNotes) ?? []
@@ -471,6 +477,20 @@ final class AppModel {
             tripDetector = TripDetector()
             saveTripDetector()
             await run { try await $0.deleteTrips() }
+        }
+    }
+
+    // MARK: Key storage
+
+    /// Moves all keys into or out of iCloud Keychain.
+    func setKeysOnDeviceOnly(_ onDevice: Bool) {
+        guard onDevice != keysOnDeviceOnly else { return }
+        do {
+            try KeychainSecretStore(synchronized: !onDevice).migrateAll()
+            keysOnDeviceOnly = onDevice
+            UserDefaults.standard.set(onDevice, forKey: Keys.keysOnDeviceOnly)
+        } catch {
+            errorMessage = String(localized: "Die Schlüssel konnten nicht umgezogen werden.")
         }
     }
 

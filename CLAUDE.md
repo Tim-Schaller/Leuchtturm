@@ -73,7 +73,7 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 **Goal from Tim (2026-10-12), work through all of it; tick items here as they land.** Install every finished build on Tim's iPhone without asking. Check the 5-hour limit before bigger steps; at 95 % commit and schedule a one-shot resume after the reset.
 
 Build order (dependencies first):
-- [ ] 1. Keys via iCloud Keychain by default (synchronizable), option „nur auf diesem Gerät“; threat model update.
+- [x] 1. Keys via iCloud Keychain by default (synchronizable), option „nur auf diesem Gerät“; threat model update.
 - [ ] 11/19/24. `Profile` record per device: picture, banner, pin colour/emoji, status emoji with expiry; shown on map, lists, chat.
 - [ ] 10. Chat tab: messages with reply, photos and Apple stickers (Genmoji/adaptive image glyphs), encrypted.
 - [ ] 13. „Wo bist du?“ request wakes the other phone for a fresh location.

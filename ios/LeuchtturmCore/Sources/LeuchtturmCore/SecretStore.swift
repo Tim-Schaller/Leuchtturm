@@ -35,21 +35,26 @@ public struct KeychainError: Error, Sendable, Equatable {
     public let status: OSStatus
 }
 
-/// Keychain-backed store. Items are available after first unlock (needed for
-/// background location uploads), never leave this device and are not synced
-/// to iCloud.
+/// Keychain-backed store. Items are readable after the first unlock (needed
+/// for background location uploads). With `synchronized`, they travel with
+/// iCloud Keychain to the user's other Apple devices (end-to-end encrypted
+/// by Apple); otherwise they never leave this device.
 public struct KeychainSecretStore: SecretStore {
     public let service: String
+    public let synchronized: Bool
 
-    public init(service: String = "de.timschaller.leuchtturm") {
+    public init(service: String = "de.timschaller.leuchtturm", synchronized: Bool = false) {
         self.service = service
+        self.synchronized = synchronized
     }
 
+    /// Finds items in either mode, so switching modes never loses keys.
     private func baseQuery(_ account: String? = nil) -> [String: Any] {
         var q: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecUseDataProtectionKeychain as String: true,
+            kSecAttrSynchronizable as String: kSecAttrSynchronizableAny,
         ]
         if let account { q[kSecAttrAccount as String] = account }
         return q
@@ -70,8 +75,10 @@ public struct KeychainSecretStore: SecretStore {
         try delete(account)
         var q = baseQuery(account)
         q[kSecValueData as String] = data
-        q[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
-        q[kSecAttrSynchronizable as String] = false
+        q[kSecAttrSynchronizable as String] = synchronized
+        q[kSecAttrAccessible as String] = synchronized
+            ? kSecAttrAccessibleAfterFirstUnlock
+            : kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
         let status = SecItemAdd(q as CFDictionary, nil)
         guard status == errSecSuccess else { throw KeychainError(status: status) }
     }
@@ -89,7 +96,14 @@ public struct KeychainSecretStore: SecretStore {
         let status = SecItemCopyMatching(q as CFDictionary, &items)
         if status == errSecItemNotFound { return [] }
         guard status == errSecSuccess, let list = items as? [[String: Any]] else { throw KeychainError(status: status) }
-        return list.compactMap { $0[kSecAttrAccount as String] as? String }
+        return Set(list.compactMap { $0[kSecAttrAccount as String] as? String }).sorted()
+    }
+
+    /// Re-saves every item in this store's mode (sync on or off).
+    public func migrateAll() throws {
+        for account in try accounts() {
+            if let data = try load(account) { try save(data, for: account) }
+        }
     }
 }
 #endif

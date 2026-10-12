@@ -27,7 +27,7 @@ Status: v1 record format for identity, circles and invites on CloudKit (mileston
 ## Identity
 
 - On first launch each iPhone generates an **Ed25519** signing key and an **X25519** agreement key (CryptoKit).
-- Keys live in the **Keychain** with `AfterFirstUnlockThisDeviceOnly`: readable in the background after the first unlock, never synced to iCloud, not restored to other devices. Not in the Secure Enclave, which only supports P-256.
+- Keys live in the **Keychain**, readable in the background after the first unlock. By default they are **synchronizable** (iCloud Keychain, end-to-end encrypted by Apple), so the user's iPad or a new iPhone has the same identity and circle keys right away. With „Schlüssel nur auf diesem Gerät“ they are stored `ThisDeviceOnly` and never leave the device; switching re-saves all items. Not in the Secure Enclave, which only supports P-256. Devices that share an identity also share one member record; only one of them should share its location (iPads start with sharing paused).
 - **Device ID** = first 16 bytes of SHA-256(Ed25519 public key), base64url.
 - **Safety code**: 12 hex digits from a device's two public keys, for comparing in person. Each device remembers locally which member devices the user marked as verified, and which devices it has seen per circle: a new device (new member, or a reinstall with a new key) triggers a local notification asking to compare the code.
 - The iCloud account is not part of the cryptographic identity. It only determines zone access.

@@ -323,6 +323,52 @@
         }
       }
     },
+    "%@ möchte mit dir befreundet sein.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ wants to be friends with you."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ quiere ser tu amigo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ veut être ton ami·e."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ vuole essere tuo amico."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ wil vrienden met je worden."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ chce zostać twoim znajomym."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ seninle arkadaş olmak istiyor."
+          }
+        }
+      }
+    },
     "%@ teilt keine Fahrten.": {
       "localizations": {
         "en": {
@@ -1979,6 +2025,52 @@
         }
       }
     },
+    "Ablehnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decline"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechazar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refuser"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rifiuta"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weiger"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odrzuć"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reddet"
+          }
+        }
+      }
+    },
     "Abzeichen der Woche": {
       "localizations": {
         "en": {
@@ -2761,6 +2853,98 @@
         }
       }
     },
+    "Anfrage senden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send Request"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar solicitud"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envoyer la demande"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invia richiesta"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stuur verzoek"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyślij zaproszenie"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İstek gönder"
+          }
+        }
+      }
+    },
+    "Anfragen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requests"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solicitudes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demandes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Richieste"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verzoeken"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaproszenia"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İstekler"
+          }
+        }
+      }
+    },
     "Ankunft": {
       "localizations": {
         "en": {
@@ -3125,6 +3309,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anna: Sis aç/kapat"
+          }
+        }
+      }
+    },
+    "Annehmen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accept"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aceptar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accepter"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accetta"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accepteer"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akceptuj"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kabul et"
           }
         }
       }
@@ -5107,6 +5337,98 @@
         }
       }
     },
+    "Code eingeben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter code"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introducir código"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisir le code"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inserisci codice"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voer code in"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wpisz kod"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kodu gir"
+          }
+        }
+      }
+    },
+    "Code wird erstellt …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creating code …"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creando código …"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Création du code …"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creazione del codice …"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code wordt gemaakt …"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tworzenie kodu …"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kod oluşturuluyor …"
+          }
+        }
+      }
+    },
     "Da: %@": {
       "localizations": {
         "en": {
@@ -5475,6 +5797,52 @@
         }
       }
     },
+    "Das ist dein eigener Code.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That's your own code."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ese es tu propio código."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C'est ton propre code."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo è il tuo codice."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dat is je eigen code."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To twój własny kod."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu senin kendi kodun."
+          }
+        }
+      }
+    },
     "Das ist kein gültiger Leuchtturm-Einladungslink.": {
       "localizations": {
         "en": {
@@ -5701,6 +6069,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kalıcı"
+          }
+        }
+      }
+    },
+    "Dein Freundescode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Friend Code"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu código de amigo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ton code ami"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tuo codice amico"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je vriendcode"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twój kod znajomego"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arkadaş kodun"
+          }
+        }
+      }
+    },
+    "Dein Freundescode %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your friend code %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu código de amigo %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ton code ami %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tuo codice amico %@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je vriendcode %@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twój kod znajomego %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arkadaş kodun %@"
           }
         }
       }
@@ -6395,6 +6855,52 @@
         }
       }
     },
+    "Der alte Code funktioniert dann nicht mehr. Deine Freunde bleiben.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The old code will stop working. Your friends stay."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El código antiguo dejará de funcionar. Tus amigos se quedan."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'ancien code ne fonctionnera plus. Tes amis restent."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il vecchio codice non funzionerà più. I tuoi amici restano."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De oude code werkt dan niet meer. Je vrienden blijven."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stary kod przestanie działać. Twoi znajomi zostaną."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eski kod artık çalışmaz. Arkadaşların kalır."
+          }
+        }
+      }
+    },
     "Die Ankunftszeit berechnet Apple Karten; dafür sieht Apple Start und Ziel. Dein Leuchtturm sieht nur Ziel und Uhrzeit, Ende-zu-Ende-verschlüsselt.": {
       "localizations": {
         "en": {
@@ -6851,6 +7357,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "Arama, orta noktayı konum alarak Apple Harita üzerinden yapılır. Siste olanlar hesaba katılmaz."
+          }
+        }
+      }
+    },
+    "Diese Einladung kommt aus der TestFlight- oder App-Store-Version. Du hast eine Testversion mit eigenem iCloud-Bereich; installiere Leuchtturm über TestFlight, um beizutreten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This invite comes from the TestFlight or App Store version. You have a test build with its own iCloud area; install Leuchtturm from TestFlight to join."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta invitación viene de la versión de TestFlight o del App Store. Tienes una versión de prueba con su propia zona de iCloud; instala Leuchtturm desde TestFlight para unirte."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cette invitation vient de la version TestFlight ou App Store. Tu as une version de test avec son propre espace iCloud ; installe Leuchtturm via TestFlight pour rejoindre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo invito arriva dalla versione TestFlight o App Store. Hai una versione di prova con un'area iCloud propria; installa Leuchtturm da TestFlight per unirti."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deze uitnodiging komt uit de TestFlight- of App Store-versie. Je hebt een testversie met een eigen iCloud-omgeving; installeer Leuchtturm via TestFlight om mee te doen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To zaproszenie pochodzi z wersji TestFlight lub App Store. Masz wersję testową z własnym obszarem iCloud; zainstaluj Leuchtturm z TestFlight, aby dołączyć."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu davet TestFlight veya App Store sürümünden geliyor. Sende kendi iCloud alanı olan bir test sürümü var; katılmak için Leuchtturm'u TestFlight'tan yükle."
+          }
+        }
+      }
+    },
+    "Diese Einladung kommt aus einer Testversion von Leuchtturm, die einen eigenen iCloud-Bereich nutzt. Bitte die Person, die TestFlight- oder App-Store-Version zu installieren und dich neu einzuladen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This invite comes from a test build of Leuchtturm that uses its own iCloud area. Ask the person to install the TestFlight or App Store version and invite you again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta invitación viene de una versión de prueba de Leuchtturm que usa su propia zona de iCloud. Pide a la persona que instale la versión de TestFlight o del App Store y te invite de nuevo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cette invitation vient d'une version de test de Leuchtturm qui utilise son propre espace iCloud. Demande à la personne d'installer la version TestFlight ou App Store et de t'inviter à nouveau."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo invito arriva da una versione di prova di Leuchtturm con un'area iCloud propria. Chiedi alla persona di installare la versione TestFlight o App Store e di invitarti di nuovo."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deze uitnodiging komt uit een testversie van Leuchtturm met een eigen iCloud-omgeving. Vraag de persoon de TestFlight- of App Store-versie te installeren en je opnieuw uit te nodigen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To zaproszenie pochodzi z wersji testowej Leuchtturm z własnym obszarem iCloud. Poproś tę osobę, aby zainstalowała wersję TestFlight lub App Store i zaprosiła cię ponownie."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu davet, kendi iCloud alanını kullanan bir Leuchtturm test sürümünden geliyor. Kişiden TestFlight veya App Store sürümünü yükleyip seni yeniden davet etmesini iste."
           }
         }
       }
@@ -9017,6 +9615,98 @@
         }
       }
     },
+    "Freund": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friend"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amigo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ami"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amico"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vriend"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znajomy"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arkadaş"
+          }
+        }
+      }
+    },
+    "Freund hinzufügen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Friend"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir amigo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un ami"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi amico"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voeg vriend toe"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj znajomego"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arkadaş ekle"
+          }
+        }
+      }
+    },
     "Freunde": {
       "localizations": {
         "en": {
@@ -9063,6 +9753,190 @@
         }
       }
     },
+    "Freunde verwalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage Friends"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestionar amigos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gérer les amis"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestisci amici"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beheer vrienden"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zarządzaj znajomymi"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arkadaşları yönet"
+          }
+        }
+      }
+    },
+    "Freundescode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friend Code"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Código de amigo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code ami"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codice amico"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vriendcode"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kod znajomego"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arkadaş kodu"
+          }
+        }
+      }
+    },
+    "Freundschaft beenden?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End Friendship?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Terminar la amistad?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mettre fin à l'amitié ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminare l'amicizia?"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vriendschap beëindigen?"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zakończyć znajomość?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arkadaşlık bitsin mi?"
+          }
+        }
+      }
+    },
+    "Freundschaftsanfrage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friend Request"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solicitud de amistad"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demande d'ami"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Richiesta di amicizia"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vriendschapsverzoek"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaproszenie do znajomych"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arkadaşlık isteği"
+          }
+        }
+      }
+    },
     "Fährt · %@ · %@": {
       "localizations": {
         "en": {
@@ -9105,6 +9979,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sürüyor · %@ · %@"
+          }
+        }
+      }
+    },
+    "Füge mich in Leuchtturm hinzu: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add me in Leuchtturm: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añádeme en Leuchtturm: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoute-moi dans Leuchtturm : %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungimi su Leuchtturm: %@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voeg me toe in Leuchtturm: %@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj mnie w Leuchtturm: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beni Leuchtturm'da ekle: %@"
           }
         }
       }
@@ -9427,6 +10347,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Toplam"
+          }
+        }
+      }
+    },
+    "Gesendet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviadas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envoyées"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inviate"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verstuurd"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wysłane"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gönderilenler"
           }
         }
       }
@@ -10535,6 +11501,52 @@
         }
       }
     },
+    "Ihr seht euch dann nicht mehr, auch euer Chat ist weg. In gemeinsamen Leuchttürmen bleibt %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You will no longer see each other, and your chat is gone. %@ stays in lighthouses you share."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dejaréis de veros y vuestro chat desaparece. %@ sigue en los faros que compartís."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous ne vous verrez plus et votre discussion disparaît. %@ reste dans vos phares communs."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non vi vedrete più e la chat sparisce. %@ resta nei fari che condividete."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jullie zien elkaar dan niet meer en jullie chat is weg. In gedeelde vuurtorens blijft %@."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie będziecie się już widzieć, a wasz czat zniknie. W wspólnych latarniach zostaje: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artık birbirinizi görmezsiniz, sohbetiniz de silinir. Ortak fenerlerde kalır: %@."
+          }
+        }
+      }
+    },
     "Im Nebel teilst du keinen genauen Ort. Beende den Nebel zuerst, um einzuchecken.": {
       "localizations": {
         "en": {
@@ -11225,48 +12237,48 @@
         }
       }
     },
-    "Lade Leute in einen Leuchtturm ein, dann erscheinen sie hier.": {
+    "Kopiert": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invite people to a lighthouse and they show up here."
+            "value": "Copied"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invita a personas a un faro y aparecerán aquí."
+            "value": "Copiado"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invite des gens dans un phare et ils apparaîtront ici."
+            "value": "Copié"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invita persone in un faro e compariranno qui."
+            "value": "Copiato"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nodig mensen uit in een vuurtoren, dan verschijnen ze hier."
+            "value": "Gekopieerd"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zaproś osoby do latarni, a pojawią się tutaj."
+            "value": "Skopiowano"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kişileri bir fenere davet et, burada görünsünler."
+            "value": "Kopyalandı"
           }
         }
       }
@@ -12743,6 +13755,190 @@
         }
       }
     },
+    "Max ist in keinem Leuchtturm. Füge ihn mit seinem Code im Freunde-Menü hinzu; er nimmt sofort an.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max is in no lighthouse. Add him with his code in the friends menu; he accepts right away."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max no está en ningún faro. Añádelo con su código en el menú de amigos; acepta enseguida."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max n'est dans aucun phare. Ajoute-le avec son code dans le menu Amis ; il accepte tout de suite."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max non è in nessun faro. Aggiungilo con il suo codice nel menu amici; accetta subito."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max zit in geen vuurtoren. Voeg hem toe met zijn code in het vriendenmenu; hij accepteert meteen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max nie jest w żadnej latarni. Dodaj go jego kodem w menu znajomych; od razu akceptuje."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max hiçbir fenerde değil. Onu arkadaş menüsünde koduyla ekle; hemen kabul eder."
+          }
+        }
+      }
+    },
+    "Max schickt dir eine Freundschaftsanfrage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max sends you a friend request"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max te envía una solicitud de amistad"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max t'envoie une demande d'ami"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max ti invia una richiesta di amicizia"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max stuurt je een vriendschapsverzoek"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max wysyła ci zaproszenie"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max sana arkadaşlık isteği gönderir"
+          }
+        }
+      }
+    },
+    "Max' Freundescode kopieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy Max's friend code"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar el código de amigo de Max"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier le code ami de Max"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia il codice amico di Max"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopieer de vriendcode van Max"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skopiuj kod znajomego Maxa"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max'in arkadaş kodunu kopyala"
+          }
+        }
+      }
+    },
+    "Mehr": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altro"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meer"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Więcej"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daha fazla"
+          }
+        }
+      }
+    },
     "Mein Leuchtturm-Verlauf": {
       "localizations": {
         "en": {
@@ -12923,6 +14119,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Profil resmi varken raptiye resmini gösterir; emojiyi veya baş harfleri resmi kaldırınca görürsün."
+          }
+        }
+      }
+    },
+    "Mit der Kamera scannen, dann öffnet sich Leuchtturm mit deinem Code.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan with the camera, and Leuchtturm opens with your code."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanéalo con la cámara y Leuchtturm se abrirá con tu código."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanne avec l'appareil photo, Leuchtturm s'ouvre avec ton code."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scansiona con la fotocamera e Leuchtturm si apre con il tuo codice."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan met de camera, dan opent Leuchtturm met je code."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeskanuj aparatem, a Leuchtturm otworzy się z twoim kodem."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kamerayla tara, Leuchtturm kodunla açılır."
           }
         }
       }
@@ -13755,6 +14997,144 @@
         }
       }
     },
+    "Neuen Code erstellen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create New Code"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crear código nuevo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Créer un nouveau code"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crea nuovo codice"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maak nieuwe code"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utwórz nowy kod"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni kod oluştur"
+          }
+        }
+      }
+    },
+    "Neuen Freundescode erstellen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create a new friend code?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Crear un código de amigo nuevo?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Créer un nouveau code ami ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creare un nuovo codice amico?"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nieuwe vriendcode maken?"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utworzyć nowy kod znajomego?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni arkadaş kodu oluşturulsun mu?"
+          }
+        }
+      }
+    },
+    "Neuer Code": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New Code"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Código nuevo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveau code"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovo codice"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nieuwe code"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nowy kod"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni kod"
+          }
+        }
+      }
+    },
     "Neuer Leuchtturm": {
       "localizations": {
         "en": {
@@ -13985,6 +15365,52 @@
         }
       }
     },
+    "Nimm nur Anfragen von Leuten an, die du kennst: Ihr teilt dann euren Standort miteinander. Den Sicherheitscode könnt ihr vergleichen, wenn ihr euch seht.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only accept requests from people you know: you will share your locations with each other. You can compare the safety code when you meet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acepta solo solicitudes de gente que conoces: compartiréis vuestra ubicación. Podéis comparar el código de seguridad cuando os veáis."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N'accepte que les demandes de personnes que tu connais : vous partagerez vos positions. Vous pouvez comparer le code de sécurité quand vous vous voyez."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accetta solo richieste da persone che conosci: condividerete la vostra posizione. Potete confrontare il codice di sicurezza quando vi vedete."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accepteer alleen verzoeken van mensen die je kent: jullie delen dan je locatie met elkaar. De veiligheidscode kunnen jullie vergelijken als je elkaar ziet."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akceptuj tylko zaproszenia od znajomych osób: będziecie udostępniać sobie lokalizację. Kod bezpieczeństwa możecie porównać przy spotkaniu."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca tanıdığın kişilerin isteklerini kabul et: konumunuzu birbirinizle paylaşırsınız. Güvenlik kodunu görüştüğünüzde karşılaştırabilirsiniz."
+          }
+        }
+      }
+    },
     "Noch keine Fahrten. Ab 25 km/h erkennt dein iPhone Fahrten, wenn „Fahrten teilen“ oder die Unfallerkennung an ist.": {
       "localizations": {
         "en": {
@@ -14031,48 +15457,48 @@
         }
       }
     },
-    "Noch keine Freunde": {
+    "Noch keine Freunde. Schick jemandem deinen Code oder lade Leute in einen Leuchtturm ein.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No friends yet"
+            "value": "No friends yet. Send someone your code or invite people to a lighthouse."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aún no hay amigos"
+            "value": "Aún no tienes amigos. Envía tu código a alguien o invita a gente a un faro."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pas encore d'amis"
+            "value": "Pas encore d'amis. Envoie ton code à quelqu'un ou invite des gens dans un phare."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ancora nessun amico"
+            "value": "Ancora nessun amico. Manda il tuo codice a qualcuno o invita persone in un faro."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nog geen vrienden"
+            "value": "Nog geen vrienden. Stuur iemand je code of nodig mensen uit in een vuurtoren."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Brak znajomych"
+            "value": "Jeszcze brak znajomych. Wyślij komuś swój kod lub zaproś ludzi do latarni."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Henüz arkadaş yok"
+            "value": "Henüz arkadaş yok. Birine kodunu gönder ya da insanları bir fenere davet et."
           }
         }
       }
@@ -15549,6 +16975,52 @@
         }
       }
     },
+    "QR-Code": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR Code"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Código QR"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code QR"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codice QR"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-code"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kod QR"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kod"
+          }
+        }
+      }
+    },
     "QR-Code der Einladung": {
       "localizations": {
         "en": {
@@ -15591,6 +17063,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Davet QR kodu"
+          }
+        }
+      }
+    },
+    "QR-Code mit deinem Freundescode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR code with your friend code"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Código QR con tu código de amigo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code QR avec ton code ami"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codice QR con il tuo codice amico"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-code met je vriendcode"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kod QR z twoim kodem znajomego"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arkadaş kodunu içeren QR kod"
           }
         }
       }
@@ -16465,6 +17983,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gönder"
+          }
+        }
+      }
+    },
+    "Sendet …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sending …"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviando …"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envoi …"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invio …"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versturen …"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wysyłanie …"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gönderiliyor …"
           }
         }
       }
@@ -17941,6 +19505,52 @@
         }
       }
     },
+    "Suchen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chercher"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoek"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szukaj"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ara"
+          }
+        }
+      }
+    },
     "Symbol": {
       "localizations": {
         "en": {
@@ -18075,6 +19685,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Konumunu senin için önemli olan insanlarla paylaş. Her şey, aygıtından çıkmadan önce iPhone’unda şifrelenir."
+          }
+        }
+      }
+    },
+    "Teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartir"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partager"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condividi"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deel"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Udostępnij"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paylaş"
           }
         }
       }
@@ -18581,6 +20237,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bilinmeyen hata."
+          }
+        }
+      }
+    },
+    "Unbekannter Leuchtturm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown lighthouse"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faro desconocido"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phare inconnu"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faro sconosciuto"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Onbekende vuurtoren"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nieznana latarnia"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilinmeyen fener"
           }
         }
       }
@@ -19597,6 +21299,52 @@
         }
       }
     },
+    "Wer deinen Code hat, kann dir eine Anfrage schicken. Nimmst du sie an, seht ihr euch gegenseitig auf der Karte und könnt chatten, Ende-zu-Ende-verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anyone with your code can send you a request. If you accept, you see each other on the map and can chat, end-to-end encrypted."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quien tenga tu código puede enviarte una solicitud. Si la aceptas, os veis en el mapa y podéis chatear, con cifrado de extremo a extremo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toute personne qui a ton code peut t'envoyer une demande. Si tu l'acceptes, vous vous voyez sur la carte et pouvez discuter, chiffré de bout en bout."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi ha il tuo codice può inviarti una richiesta. Se accetti, vi vedete sulla mappa e potete chattare, con crittografia end-to-end."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie je code heeft, kan je een verzoek sturen. Accepteer je het, dan zien jullie elkaar op de kaart en kunnen jullie chatten, end-to-end versleuteld."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Każdy, kto ma twój kod, może wysłać ci zaproszenie. Jeśli je przyjmiesz, widzicie się na mapie i możecie czatować z szyfrowaniem end-to-end."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kodun olan herkes sana istek gönderebilir. Kabul edersen birbirinizi haritada görür ve uçtan uca şifreli sohbet edebilirsiniz."
+          }
+        }
+      }
+    },
     "Wer den Link hat, sieht bis dahin deinen Standort, auch ohne die App. Beenden löscht ihn sofort.": {
       "localizations": {
         "en": {
@@ -20425,6 +22173,52 @@
         }
       }
     },
+    "Zu diesem Code gibt es niemanden. Prüf ihn noch einmal.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody has this code. Check it again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nadie tiene este código. Revísalo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personne n'a ce code. Vérifie-le."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuno ha questo codice. Controllalo di nuovo."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niemand heeft deze code. Controleer hem nog eens."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nikt nie ma tego kodu. Sprawdź go jeszcze raz."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu koda sahip kimse yok. Tekrar kontrol et."
+          }
+        }
+      }
+    },
     "Zuhause": {
       "localizations": {
         "en": {
@@ -20559,6 +22353,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sıfırla"
+          }
+        }
+      }
+    },
+    "Zurückziehen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Withdraw"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritira"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trek in"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wycofaj"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geri çek"
           }
         }
       }
@@ -20835,6 +22675,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "bu kişi"
+          }
+        }
+      }
+    },
+    "die Person": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the person"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la persona"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la personne"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la persona"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de persoon"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ta osoba"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kişi"
           }
         }
       }
@@ -22353,6 +24239,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "yolda · %@"
+          }
+        }
+      }
+    },
+    "wartet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "waiting"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pendiente"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en attente"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in attesa"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wacht"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "oczekuje"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bekliyor"
           }
         }
       }

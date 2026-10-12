@@ -29,6 +29,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 - **Apple Watch and Apple TV.** The watch keeps the widget snapshot unencrypted (besides watchOS file protection). The TV shows the map of the selected circle, including the user, to anyone in the room, and caches the last snapshot. Whoever can sign in to the user's iCloud on a TV still needs the code shown on that TV to get a snapshot.
 - **Live links.** Anyone who gets the link sees the position until it ends; it cannot be limited to one viewer. Apple sees that a public record is written and read (and the readers' IP addresses), GitHub sees visits to the page. If the phone dies, the last position stays readable for anyone with the link until the hour is over, then the page shows it as expired; the record itself is deleted the next time the app runs.
 - **Long-term driving totals.** With "Fahrten teilen" a member's circles see sums over a year and all time (number of trips, distance, top speed, hard braking), even though single trips are deleted after 30 days. Turning trip sharing off removes them from the profile.
+- **Friend requests.** Anyone who has a user's friend code can send them requests under any name. Apple sees which iCloud account writes a request to which mailbox, i.e. who adds whom.
 - **Map tiles.** The map comes from Apple Maps, which sees the map areas the app loads. These are usually where the circle's members are.
 - **Data location.** iCloud data is stored in Apple's data centers; Apple is a US company. EU-only storage is not guaranteed.
 - **Apple as an active attacker on the app itself.** Apple distributes the app binary and operating system.
@@ -77,6 +78,9 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 | Apple or the web host reads a live link | AES-GCM with a key that exists only in the link fragment, which browsers never send to servers | Live link |
 | Someone overwrites a live record with a fake position | Public records can only be changed by their creator; a forged one fails AES-GCM authentication without the key | Live link |
 | A live link stays open forever | The expiry is inside the encrypted payload; the page stops after it and the app deletes the record | Live link |
+| Someone with a friend code poses as a person the user knows | The request shows the sender's chosen name and safety code; the user decides. Accepting shares the location with that device only | Friends |
+| Apple reads friend codes or requests | The code never leaves the devices; the card is encrypted under a key derived from it, requests are HPKE-encrypted to the recipient's device | Friends |
+| Someone guesses friend codes | 60-bit codes; a wrong guess finds nothing. Users can make a new code at any time | Friends |
 | Supply chain | App uses Apple frameworks only (CryptoKit, CloudKit). swift-crypto is used only for Linux tests | M1 |
 
 ## Known limitations

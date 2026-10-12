@@ -214,6 +214,19 @@ https://tim-schaller.github.io/Leuchtturm/live/#<env>.<link id>.<key>
 
 The plaintext is JSON `{v: 1, n: name, la, lo, ac: accuracy (m), t: unix s, b: battery?, e: expires}` padded with spaces to a multiple of 256 bytes. Public-database records can be read by anyone and changed only by their creator. The page (`docs/live`, static, GitHub Pages) reads the record through CloudKit Web Services with a read-only API token, decrypts it with WebCrypto and shows name, time, accuracy, battery and an Apple Maps link (a map too, if a MapKit JS token is configured). It refreshes every 20 s and stops when the record is gone or `e` has passed. "Link beenden" deletes the record; so does the app after the hour (on the next location update or launch). AES-GCM rather than ChaCha20 because browsers support it natively. Known-answer vector: `docs/test-vectors/live-v1.json`, checked by the Swift tests and by `node docs/test-vectors/check-live.mjs`.
 
+### Friends by friend code (`FriendCode`, `FriendRequest`, public DB)
+
+A friendship is a circle of two with `"kind": "friend"` in the owner-signed `CircleMeta`; all circle rules apply. It is hidden from the Leuchtturm list and shown in the friends menu and under "Freunde" in the map menu.
+
+Each device has a friend code: 12 Crockford-base32 characters (60 bits), shown as `XXXX-XXXX-XXXX`, also as `leuchtturm://friend?c=…`, and a random 16-byte mailbox ID. Both stay on the device (Keychain).
+
+| Record | Name | Fields |
+|--------|------|--------|
+| `FriendCode` | `fc-` + base64url(HKDF-SHA256(code, info `leuchtturm/v1/friend-code/id`, 16 bytes)) | `blob`: ChaCha20-Poly1305 under HKDF(code, `leuchtturm/v1/friend-code/key`, 32), AAD = record name, of JSON `{mailbox, name, agreementKey, signingKey}` padded to 256 bytes |
+| `FriendRequest` | `fr-` + random | `to`: mailbox ID (queryable), `blob`: `0x01 ‖ enc ‖ HPKE` (base mode, X25519/HKDF-SHA256/ChaCha20-Poly1305) to the card's agreement key, info `ctx("leuchtturm/v1/friend-request", mailbox)`, of JSON `{name, invite, agreementKey, signingKey, timestamp}` padded to 512 bytes |
+
+Adding someone: look up their card by code, create a friendship circle and a 7-day invite, write the request. The recipient's device queries requests for its mailbox (on refresh, at most once a minute), shows name and safety code, and joins with the invite on "Annehmen". The sender's device deletes the request once the friend joined, or after 7 days together with the empty friendship. A new code deletes the old card; requests to the old mailbox are then ignored.
+
 ### Low battery
 
 When the device's battery drops to 15 % or less without charging, it sends a `Note` of kind `lowBattery` (text: the percentage) to every circle, once per discharge (again after charging or above 30 %).
@@ -311,6 +324,7 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 | Places, history, trips, reactions (M3+) | yes | ciphertext, size, time; for history also the days with records |
 | Map area you look at | n/a | Apple Maps sees which map tiles are loaded |
 | Apple TV snapshot | yes (HPKE to the TV) | that a TV is paired, padded size, when it is written |
+| Friend code card and requests | yes (key from the code; HPKE to the recipient) | that a code exists, which mailbox gets how many requests and when; who wrote a record (iCloud user) |
 | Live link | yes (AES-GCM, key only in the link) | that you share a link, when it is updated, and the viewers' IP addresses (CloudKit Web Services); GitHub sees page visits, not the fragment |
 | Watch snapshot | no (WatchConnectivity, device to device) | no |
 

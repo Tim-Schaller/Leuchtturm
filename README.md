@@ -67,7 +67,7 @@ There is nothing to host or run yourself. (Very early versions used a small serv
 - Roles: owner, admins and members; admins can take a Leuchtturm over if the owner is gone
 - Chat with replies, photos, stickers and Genmoji; profile pictures, banners, own pin colour or emoji and a status that expires
 - "Bin auf dem Weg" with arrival time, "Wo bist du?", "Hol mich ab", walk-home company and a meeting point in the middle
-- Friends across all your Leuchttürme, weekly challenges, opt-in steps from Health, "a year ago today" memories (only on your iPhone) and the weather where your people are
+- Friends by friend code (no Leuchtturm needed), friends across all your Leuchttürme, weekly challenges, opt-in steps from Health, "a year ago today" memories (only on your iPhone) and the weather where your people are
 - Widgets for the home and lock screen, a Live Activity while driving, Siri and Shortcuts
 - A one-hour live link for people without the app: a web page that decrypts your position in the browser
 - iPad, Apple Watch (people, SOS and check-in) and Apple TV (the family map on the big screen, end-to-end encrypted through your own iCloud)

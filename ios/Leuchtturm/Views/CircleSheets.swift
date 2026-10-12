@@ -31,6 +31,17 @@ struct CreateCircleSheet: View {
                     Text("Ein Leuchtturm auf Zeit, z. B. für einen Ausflug, endet von selbst: Danach ist er für alle weg, samt Standorten und Nachrichten.")
                 }
             }
+            .disabled(working)
+            .overlay {
+                if working {
+                    ZStack {
+                        Rectangle().fill(.regularMaterial).ignoresSafeArea()
+                        BeaconLoading(message: "Leuchtturm wird gebaut …")
+                    }
+                    .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.25), value: working)
             .navigationTitle("Neuer Leuchtturm")
             .navigationBarTitleDisplayMode(.inline)
             .errorAlert()
@@ -103,6 +114,16 @@ struct JoinSheet: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            .overlay {
+                if working {
+                    ZStack {
+                        Rectangle().fill(.regularMaterial).ignoresSafeArea()
+                        BeaconLoading(message: "Beitreten …")
+                    }
+                    .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.25), value: working)
             .navigationTitle("Leuchtturm beitreten")
             .navigationBarTitleDisplayMode(.inline)
             .errorAlert()

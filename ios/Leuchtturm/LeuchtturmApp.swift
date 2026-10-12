@@ -40,11 +40,28 @@ struct RootView: View {
 
     var body: some View {
         Group {
+            #if DEBUG
+            if ProcessInfo.processInfo.arguments.contains("-loadingPreview") { BeaconLoadingScreen() } else { content }
+            #else
+            content
+            #endif
+        }
+    }
+
+    @ViewBuilder private var content: some View {
+        Group {
             switch model.phase {
             case .onboarding:
                 OnboardingView()
             case .ready:
                 MapHomeView()
+                    // Until the first list of Leuchttürme arrives, instead of an empty map.
+                    .overlay {
+                        if !model.hasLoadedCircles {
+                            BeaconLoadingScreen().transition(.opacity)
+                        }
+                    }
+                    .animation(.easeOut(duration: 0.35), value: model.hasLoadedCircles)
             }
         }
         .fontDesign(.rounded)

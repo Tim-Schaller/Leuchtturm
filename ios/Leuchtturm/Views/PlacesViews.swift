@@ -237,7 +237,8 @@ struct AddPlaceSheet: View {
                         }
                     }
                     .overlay { PlaceBadge(emoji: emoji).allowsHitTesting(false) }
-                    .onMapCameraChange(frequency: .continuous) { center = $0.region.center }
+                    // At the end of a pan only; updating on every frame made the sheet sluggish.
+                    .onMapCameraChange(frequency: .onEnd) { center = $0.region.center }
                     .frame(height: 240)
                     .listRowInsets(EdgeInsets())
                 } footer: {

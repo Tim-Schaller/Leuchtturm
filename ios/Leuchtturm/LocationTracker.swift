@@ -32,6 +32,10 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
     @ObservationIgnored private var monitor: CLMonitor?
     @ObservationIgnored private var monitored: Set<String> = []
     @ObservationIgnored private var monitorTask: Task<Void, Never>?
+    /// Newest places to watch while an update is running; one update at a time,
+    /// because a second CLMonitor with the same name blocks the app.
+    @ObservationIgnored private var pendingPlaces: [CirclePlace]?
+    @ObservationIgnored private var updatingMonitor = false
 
     override init() {
         super.init()
@@ -60,6 +64,11 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
     /// just resumes location updates; arrivals are judged by `PlaceTracker`.
     func monitor(places: [CirclePlace]) async {
         guard isAlwaysAllowed else { return }
+        pendingPlaces = places
+        // A running update picks up the newest list when it is done.
+        guard !updatingMonitor else { return }
+        updatingMonitor = true
+        defer { updatingMonitor = false }
         if monitor == nil {
             let monitor = await CLMonitor("places")
             self.monitor = monitor
@@ -72,13 +81,16 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
             }
         }
         guard let monitor else { return }
-        let wanted = Dictionary(places.prefix(20).map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
-        for id in monitored.subtracting(wanted.keys) { await monitor.remove(id) }
-        for (id, place) in wanted where !monitored.contains(id) {
-            let condition = CLMonitor.CircularGeographicCondition(center: place.coordinate, radius: Double(place.radius))
-            await monitor.add(condition, identifier: id)
+        while let places = pendingPlaces {
+            pendingPlaces = nil
+            let wanted = Dictionary(places.prefix(20).map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+            for id in monitored.subtracting(wanted.keys) { await monitor.remove(id) }
+            for (id, place) in wanted where !monitored.contains(id) {
+                let condition = CLMonitor.CircularGeographicCondition(center: place.coordinate, radius: Double(place.radius))
+                await monitor.add(condition, identifier: id)
+            }
+            monitored = Set(wanted.keys)
         }
-        monitored = Set(wanted.keys)
     }
 
     func stop() {

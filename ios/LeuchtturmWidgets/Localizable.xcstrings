@@ -1,0 +1,116 @@
+{
+  "sourceLanguage": "de",
+  "version": "1.0",
+  "strings": {
+    "%@ %@ · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ %@ · %@"
+          }
+        }
+      }
+    },
+    "%@ · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@"
+          }
+        }
+      }
+    },
+    "%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld %%": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %%"
+          }
+        }
+      }
+    },
+    "Ankunft %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arriving %@"
+          }
+        }
+      }
+    },
+    "Leuchtturm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm"
+          }
+        }
+      }
+    },
+    "Wer ist wo, mit Akkustand.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who is where, with battery level."
+          }
+        }
+      }
+    },
+    "km/h": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "km/h"
+          }
+        }
+      }
+    },
+    "· Ankunft %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· arriving %@"
+          }
+        }
+      }
+    },
+    "· seit %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· since %@"
+          }
+        }
+      }
+    },
+    "Öffne Leuchtturm, um loszulegen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Leuchtturm to get started."
+          }
+        }
+      }
+    }
+  }
+}

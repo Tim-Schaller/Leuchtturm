@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        }
+      }
+    },
     "%@ %@": {
       "localizations": {
         "en": {
@@ -171,6 +181,16 @@
         }
       }
     },
+    "%@: %@%@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %@%@."
+          }
+        }
+      }
+    },
     "%@: %lld Prozent": {
       "localizations": {
         "en": {
@@ -247,6 +267,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld of 100 points"
+          }
+        }
+      }
+    },
+    ", Akku %lld %%": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ", battery %lld %%"
           }
         }
       }
@@ -1061,12 +1091,32 @@
         }
       }
     },
+    "Das hat nicht geklappt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That did not work."
+          }
+        }
+      }
+    },
     "Das ist kein gültiger Leuchtturm-Einladungslink.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "This is not a valid Leuchtturm invite link."
+          }
+        }
+      }
+    },
+    "Das weiß ich gerade nicht. Öffne Leuchtturm einmal.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I don't know right now. Open Leuchtturm once."
           }
         }
       }
@@ -1441,6 +1491,16 @@
         }
       }
     },
+    "Eingecheckt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checked in."
+          }
+        }
+      }
+    },
     "Einladen": {
       "localizations": {
         "en": {
@@ -1657,6 +1717,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Too few people share their location yet."
+          }
+        }
+      }
+    },
+    "Fahrt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drive"
           }
         }
       }
@@ -2601,6 +2671,26 @@
         }
       }
     },
+    "Nebel einschalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn on fog"
+          }
+        }
+      }
+    },
+    "Nebel ist an.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fog is on."
+          }
+        }
+      }
+    },
     "Neu beigetreten, noch nicht vom Besitzer bestätigt": {
       "localizations": {
         "en": {
@@ -2891,6 +2981,16 @@
         }
       }
     },
+    "Person": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Person"
+          }
+        }
+      }
+    },
     "Personen": {
       "localizations": {
         "en": {
@@ -3037,6 +3137,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "SOS"
+          }
+        }
+      }
+    },
+    "Sagt deinem Leuchtturm, wo du gerade bist.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tells your lighthouse where you are."
+          }
+        }
+      }
+    },
+    "Sagt, wo jemand aus deinem Leuchtturm gerade ist.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Says where someone from your lighthouse is right now."
           }
         }
       }
@@ -3421,6 +3541,16 @@
         }
       }
     },
+    "Stunden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hours"
+          }
+        }
+      }
+    },
     "Suche Standort …": {
       "localizations": {
         "en": {
@@ -3467,6 +3597,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sharing paused"
+          }
+        }
+      }
+    },
+    "Teilt für eine Weile nur die ungefähre Gegend.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shares only the rough area for a while."
           }
         }
       }
@@ -3871,6 +4011,16 @@
         }
       }
     },
+    "Wo ist …?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where is …?"
+          }
+        }
+      }
+    },
     "Wo liegen meine Daten?": {
       "localizations": {
         "en": {
@@ -4121,6 +4271,16 @@
         }
       }
     },
+    "im Nebel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in fog"
+          }
+        }
+      }
+    },
     "in der Schule": {
       "localizations": {
         "en": {
@@ -4251,6 +4411,16 @@
         }
       }
     },
+    "teilt keinen Standort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not sharing a location"
+          }
+        }
+      }
+    },
     "täglich": {
       "localizations": {
         "en": {
@@ -4267,6 +4437,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "on the go"
+          }
+        }
+      }
+    },
+    "unterwegs · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "on the move · %@"
           }
         }
       }
@@ -4297,6 +4477,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "on foot"
+          }
+        }
+      }
+    },
+    "Öffne Leuchtturm einmal.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Leuchtturm once."
           }
         }
       }

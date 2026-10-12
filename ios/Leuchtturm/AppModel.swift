@@ -136,11 +136,18 @@ final class AppModel {
     @ObservationIgnored private var knownPlaces: [String: (ref: CircleRef, places: [CirclePlace])] = [:]
     @ObservationIgnored private var placeTracker = PlaceTracker()
 
+    /// The running model, for Siri and Shortcuts.
+    nonisolated(unsafe) static weak var current: AppModel?
+    @ObservationIgnored var lastWidgetReload = Date.distantPast
+    @ObservationIgnored var lastActivityLocation: CLLocation?
+    @ObservationIgnored var activityDistance: CLLocationDistance = 0
+
     /// Off in unit tests, which must not start CoreLocation or ask for notifications.
     private let usesDeviceServices: Bool
 
     init(usesDeviceServices: Bool = true) {
         self.usesDeviceServices = usesDeviceServices
+        if usesDeviceServices { Self.current = self }
         UIDevice.current.isBatteryMonitoringEnabled = true
         if usesDeviceServices {
             let center = UNUserNotificationCenter.current()
@@ -336,6 +343,7 @@ final class AppModel {
         await simulateOthers()
         guard let details = try? await client.circle(ref) else { return nil }
         deliverNews(details)
+        if usesDeviceServices && !isSimulation { updateWidgets(with: details) }
         return details
     }
 
@@ -369,6 +377,9 @@ final class AppModel {
         let charging = device.batteryState == .charging || device.batteryState == .full
         await warnIfBatteryLow(battery, charging: charging)
         await watchJourney(location)
+        if usesDeviceServices && !isSimulation {
+            updateLiveActivity(location: location, driving: sharesTrips && tripDetector.isDriving)
+        }
         let forced = forceShare
         forceShare = false
         guard forced || policy.shouldShare(location, after: lastShared),

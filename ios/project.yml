@@ -20,8 +20,10 @@ targets:
     platform: iOS
     sources:
       - Leuchtturm
+      - Shared
     dependencies:
       - package: LeuchtturmCore
+      - target: LeuchtturmWidgets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: de.timschaller.leuchtturm
@@ -41,10 +43,13 @@ targets:
         com.apple.developer.usernotifications.time-sensitive: true
         com.apple.developer.healthkit: true
         com.apple.developer.weatherkit: true
+        com.apple.security.application-groups:
+          - group.de.timschaller.leuchtturm
     info:
       path: Leuchtturm/Info.plist
       properties:
         CFBundleDisplayName: Leuchtturm
+        NSSupportsLiveActivities: true
         CFBundleDevelopmentRegion: de
         CFBundleLocalizations:
           - de
@@ -67,6 +72,30 @@ targets:
         NSLocationAlwaysAndWhenInUseUsageDescription: Damit deine Kreise dich auch sehen, wenn die App geschlossen ist, braucht Leuchtturm den Standort im Hintergrund. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt.
         NSHealthShareUsageDescription: Wenn du es einschaltest, teilt Leuchtturm deine Schritte von heute und der letzten Woche mit deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt.
         NSMotionUsageDescription: Leuchtturm erkennt mit Bewegungsdaten, wann du fährst, um Akku zu sparen und deine Geschwindigkeit zu zeigen.
+  LeuchtturmWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - LeuchtturmWidgets
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.timschaller.leuchtturm.widgets
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SWIFT_EMIT_LOC_STRINGS: YES
+    entitlements:
+      path: LeuchtturmWidgets/LeuchtturmWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.de.timschaller.leuchtturm
+    info:
+      path: LeuchtturmWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Leuchtturm
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
   LeuchtturmTests:
     type: bundle.unit-test
     platform: iOS

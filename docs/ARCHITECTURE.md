@@ -174,6 +174,10 @@ Notes carry an optional `"d"` (deadline, Unix seconds).
 - **Memories**: the device keeps its own path per day (at most 300 points) in a protected local file, never in iCloud, and shows the day a year, a month or a week ago.
 - **Weather**: the current weather at members' positions comes from WeatherKit. Coordinates are rounded to 0.01° (about 1 km) before asking and cached for 30 minutes; Apple sees those rounded places, not who is there.
 
+### Widgets, Live Activity and Siri
+
+The app writes a small snapshot of the selected circle (names, initials, colours, status, the place or "unterwegs", battery, 64 px pictures) as JSON into the App Group container `group.de.timschaller.leuchtturm`, file protection "until first unlock". The widget extension (`LeuchtturmWidgets`) reads only this file, has no keys and no network access to iCloud. The Live Activity shows speed and distance while a trip runs, or destination and arrival time for "Bin auf dem Weg". App Intents ("Wo ist …?", "Nebel einschalten", "Einchecken") read the same snapshot or call into the running app.
+
 ### Low battery
 
 When the device's battery drops to 15 % or less without charging, it sends a `Note` of kind `lowBattery` (text: the percentage) to every circle, once per discharge (again after charging or above 30 %).

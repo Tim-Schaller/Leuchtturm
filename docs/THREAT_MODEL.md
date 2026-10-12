@@ -25,6 +25,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 - **History size.** Apple sees on which days a member has history records and roughly how many points (padded size), i.e. how much they moved.
 - **Note timing.** Apple sees when a note record is written (not what it says or for whom), and which devices get a silent push for it.
 - **Weather requests.** With weather on, Apple Weather receives the members' places rounded to about 1 km.
+- **Widgets and lock screen.** Widgets and the Live Activity show names and places on the lock screen; anyone holding the phone can read them. The snapshot file lives unencrypted (besides iOS file protection) in the app's App Group container.
 - **Map tiles.** The map comes from Apple Maps, which sees the map areas the app loads. These are usually where the circle's members are.
 - **Data location.** iCloud data is stored in Apple's data centers; Apple is a US company. EU-only storage is not guaranteed.
 - **Apple as an active attacker on the app itself.** Apple distributes the app binary and operating system.

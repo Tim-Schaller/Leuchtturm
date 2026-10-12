@@ -1681,6 +1681,16 @@
         }
       }
     },
+    "Freunde": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friends"
+          }
+        }
+      }
+    },
     "Fährt · %@ · %@": {
       "localizations": {
         "en": {
@@ -2077,6 +2087,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
+          }
+        }
+      }
+    },
+    "Lade Leute in einen Leuchtturm ein, dann erscheinen sie hier.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite people to a lighthouse and they show up here."
           }
         }
       }
@@ -2567,6 +2587,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not found. Maybe the lighthouse was deleted or you were removed."
+          }
+        }
+      }
+    },
+    "Noch keine Freunde": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No friends yet"
           }
         }
       }
@@ -3367,6 +3397,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rename"
+          }
+        }
+      }
+    },
+    "Unbekannt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown"
           }
         }
       }

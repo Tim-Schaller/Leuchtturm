@@ -159,6 +159,13 @@ struct PeopleSheet: View {
             JourneySheet(ref: ref, walkHome: walkHome)
         case let .meetingPoint(ref):
             MeetingPointSheet(ref: ref)
+        case .friends:
+            FriendsView { friend in
+                if let first = friend.circles.first, let ref = model.circles.first(where: { $0.id == first.id })?.ref {
+                    onSelectCircle(ref)
+                    path = [.member(friend.id)]
+                }
+            }
         case let .addPlace(ref, suggestion):
             AddPlaceSheet(ref: ref, suggestion: suggestion)
         case .sos:

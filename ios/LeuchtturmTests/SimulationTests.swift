@@ -227,6 +227,17 @@ struct SimulationTests {
         #expect(model.journey == nil)
     }
 
+    @Test func friendsAppearOnceAcrossLeuchttuerme() async throws {
+        let (model, world) = try await simulatedModel()
+        await model.createDemoCircle()
+        let link = try #require(await model.simulate { try await $0.invitation(from: world.people[1]) })
+        _ = try #require(await model.join(link))
+        await model.checkForNews()
+        let ben = try #require(model.friends.first { $0.member.name == "Ben" })
+        #expect(ben.circles.count == 2)
+        #expect(model.friends.map(\.member.name) == ["Anna", "Ben", "Clara"])
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

@@ -669,6 +669,11 @@ final class AppModel {
         latestDetails[circleID]
     }
 
+    /// All circles as last loaded, for the friends list.
+    var latestCircles: [CircleDetails] {
+        circles.compactMap { latestDetails[$0.id] }
+    }
+
     func places(inCircle circleID: String) -> [CirclePlace] {
         latestDetails[circleID]?.places ?? knownPlaces[circleID]?.places ?? []
     }

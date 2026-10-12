@@ -91,4 +91,10 @@ Build order (dependencies first):
 - [ ] 3. Privacy policy (de, en).
 - [ ] 4. TestFlight: CloudKit schema to Production, App Store Connect together with Tim in Claude in Chrome.
 
+Working notes (2026-10-12, for continuing after a context reset):
+- Done and pushed: items 1, 9–16, 19–24 (profiles, chat, journeys, friends, challenges/steps/memories/weather). Next: widgets + Live Activity + Siri (needs an App Group `group.de.timschaller.leuchtturm` and a widget extension target in project.yml; the app writes a small JSON snapshot of members/locations/profiles for the widget), then iPad layout, Watch/tvOS, share link, languages, privacy policy, TestFlight.
+- Tim's iPhone was unavailable (offline) since ~08:20; install the latest build as soon as `xcrun devicectl list devices` shows it "available (paired)".
+- Helpers in the session scratchpad (recreate if missing): `apptest.sh` runs the app tests with an 8-minute cap (plain `xcodebuild test` sometimes hangs after finishing), `deploy.sh` builds/installs/launches on the iPhone, `tr.py` adds English entries to `Localizable.xcstrings` from a JSON dict on stdin and drops unused keys.
+- After UI text changes: build for the simulator, `python3 ios/scripts/check-strings.py`, add English. Demo for screenshots: `xcrun simctl launch 'iPhone 18 Pro' de.timschaller.leuchtturm -simulationDemo`.
+
 Still open from before: verify on real CloudKit with **two** iCloud accounts (creator/lastModified user IDs and `CKCurrentUserDefaultName` normalization, removing a public-link participant, leaving by deleting the `CKShare`, `recordZoneChanges` returning all records, silent pushes, takeover across accounts). Tim's girlfriend via TestFlight covers this.

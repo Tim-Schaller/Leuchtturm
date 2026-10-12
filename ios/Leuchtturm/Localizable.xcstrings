@@ -621,6 +621,16 @@
         }
       }
     },
+    "Bestenliste": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leaderboard"
+          }
+        }
+      }
+    },
     "Bis": {
       "localizations": {
         "en": {
@@ -951,16 +961,6 @@
         }
       }
     },
-    "Diese Woche": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This week"
-          }
-        }
-      }
-    },
     "Diese iCloud-Konten haben den Freigabelink geöffnet, aber keine gültige Einladung. Sie sehen nur verschlüsselte Daten.": {
       "localizations": {
         "en": {
@@ -1267,6 +1267,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Trips"
+          }
+        }
+      }
+    },
+    "Fahrten der letzten 7 Tage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trips of the last 7 days"
           }
         }
       }
@@ -2161,6 +2171,16 @@
         }
       }
     },
+    "Nur von Leuten, die „Fahrten teilen“ eingeschaltet haben.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only from people who turned on “Share trips”."
+          }
+        }
+      }
+    },
     "OK": {
       "localizations": {
         "en": {
@@ -2217,6 +2237,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Places"
+          }
+        }
+      }
+    },
+    "Personen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "People"
           }
         }
       }
@@ -2957,16 +2987,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Where is my data?"
-          }
-        }
-      }
-    },
-    "Wochenrückblick und Bestenliste": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weekly review and leaderboard"
           }
         }
       }

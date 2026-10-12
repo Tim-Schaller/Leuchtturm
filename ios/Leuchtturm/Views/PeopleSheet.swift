@@ -6,7 +6,6 @@ import SwiftUI
 enum DrawerRoute: Hashable {
     case member(String)
     case history(String)
-    case week
     case trip(Trip)
     case manage(CircleRef)
 }
@@ -26,6 +25,7 @@ struct PeopleSheet: View {
     let onSelectCircle: (CircleRef) -> Void
     /// An invite from the simulation, shown once its sheet has closed.
     @State private var receivedInvite: InviteLink?
+    @State private var tab = DrawerTab.people
 
     var body: some View {
         @Bindable var bindable = model
@@ -43,8 +43,6 @@ struct PeopleSheet: View {
                         if let member = details?.members.first(where: { $0.id == id }), let ref = circle?.ref {
                             HistoryView(member: member, ref: ref)
                         }
-                    case .week:
-                        if let details { WeekView(details: details) }
                     case let .trip(trip):
                         TripView(trip: trip, member: details?.members.first { $0.id == trip.deviceID })
                     case let .manage(ref):
@@ -74,6 +72,25 @@ struct PeopleSheet: View {
                     .buttonStyle(.glass)
             }
         } else if let details, let circle {
+            VStack(spacing: 0) {
+                DrawerTabBar(selection: $tab)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+                switch tab {
+                case .people: peopleList(details, circle)
+                case .places: List { PlacesSection(details: details, sheet: $sheet, onShowPlace: onShowPlace) }
+                case .trips: WeekView(details: details, mode: .trips)
+                case .ranking: WeekView(details: details, mode: .ranking)
+                }
+            }
+        } else {
+            ProgressView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    /// The start tab: people, news and what you can do.
+    private func peopleList(_ details: CircleDetails, _ circle: CircleSummary) -> some View {
             List {
                 if !details.hasKey {
                     Label("Warte auf den Schlüssel vom Besitzer. Er wird übertragen, sobald der Besitzer die App öffnet.", systemImage: "key")
@@ -98,13 +115,7 @@ struct PeopleSheet: View {
                         .tint(.primary)
                     }
                 }
-                Section {
-                    NavigationLink(value: DrawerRoute.week) {
-                        Label("Wochenrückblick und Bestenliste", systemImage: "trophy")
-                    }
-                }
                 NewsSection(details: details, onShowPlace: onShowPlace)
-                PlacesSection(details: details, sheet: $sheet, onShowPlace: onShowPlace)
                 Section {
                     Button("Einchecken: „Ich bin hier“", systemImage: "mappin.and.ellipse") {
                         Task { await model.send(.checkIn, in: circle.ref) }
@@ -134,10 +145,6 @@ struct PeopleSheet: View {
                 }
             }
             .contentMargins(.top, 0, for: .scrollContent)
-        } else {
-            ProgressView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
     }
 
     /// You first, then everyone by name.

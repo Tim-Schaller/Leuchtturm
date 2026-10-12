@@ -6,15 +6,48 @@ import SwiftUI
 /// The last 7 days of the circle: who drove safest, who was out and about
 /// most, and the trips. Only members who share trips or history appear.
 struct WeekView: View {
+    enum Mode {
+        case ranking
+        case trips
+    }
+
     @Environment(AppModel.self) private var model
     let details: CircleDetails
+    var mode = Mode.ranking
 
     @State private var trips: [Trip]?
     @State private var walkers: [(member: CircleMember, meters: Double)] = []
 
     var body: some View {
         List {
-            if let trips {
+            if let trips, mode == .trips {
+                Section {
+                    if trips.isEmpty {
+                        Text("Noch keine geteilten Fahrten diese Woche.")
+                            .foregroundStyle(.secondary)
+                    }
+                    ForEach(trips) { trip in
+                        NavigationLink(value: DrawerRoute.trip(trip)) {
+                            HStack(spacing: 12) {
+                                Avatar(name: member(trip.deviceID)?.name, id: trip.deviceID, size: 32)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("\(Self.km(trip.distance)) · \(Self.minutes(trip.duration))")
+                                        .font(.subheadline.weight(.semibold))
+                                    Text(trip.start, format: .dateTime.weekday(.wide).hour().minute())
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                ScoreBadge(score: trip.score)
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Fahrten der letzten 7 Tage")
+                } footer: {
+                    Text("Nur von Leuten, die „Fahrten teilen“ eingeschaltet haben.")
+                }
+            } else if let trips {
                 let board = DriverStats.leaderboard(trips)
                 Section {
                     if board.isEmpty {
@@ -85,33 +118,12 @@ struct WeekView: View {
                     }
                 }
 
-                if !trips.isEmpty {
-                    Section("Fahrten") {
-                        ForEach(trips) { trip in
-                            NavigationLink(value: DrawerRoute.trip(trip)) {
-                                HStack(spacing: 12) {
-                                    Avatar(name: member(trip.deviceID)?.name, id: trip.deviceID, size: 32)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("\(Self.km(trip.distance)) · \(Self.minutes(trip.duration))")
-                                            .font(.subheadline.weight(.semibold))
-                                        Text(trip.start, format: .dateTime.weekday(.wide).hour().minute())
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    Spacer()
-                                    ScoreBadge(score: trip.score)
-                                }
-                            }
-                        }
-                    }
-                }
             } else {
                 ProgressView().frame(maxWidth: .infinity).listRowBackground(Color.clear)
             }
         }
-        .navigationTitle("Diese Woche")
-        .navigationBarTitleDisplayMode(.inline)
-        .task { await load() }
+        .contentMargins(.top, 0, for: .scrollContent)
+        .task(id: details.id) { await load() }
     }
 
     private func member(_ id: String) -> CircleMember? {

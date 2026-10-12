@@ -186,7 +186,11 @@ const source = document.createElement("a");
 source.href = "https://github.com/Tim-Schaller/Leuchtturm";
 source.textContent = text.source;
 source.rel = "noopener noreferrer";
-$("note").append(source, ".");
+const imprint = document.createElement("a");
+imprint.href = "https://www.timschaller.de/impressum/";
+imprint.textContent = "Impressum";
+imprint.rel = "noopener noreferrer";
+$("note").append(source, " · ", imprint);
 
 function show(title, subtitle) {
   $("title").textContent = title;

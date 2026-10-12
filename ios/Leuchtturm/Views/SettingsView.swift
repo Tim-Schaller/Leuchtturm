@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State private var confirmReset = false
     @State private var saving = false
     @State private var editingProfile = false
+    @State private var schemaCreated = false
 
     var body: some View {
         NavigationStack {
@@ -171,6 +172,13 @@ struct SettingsView: View {
                             model.startSimulation()
                             dismiss()
                         }
+                        Button("iCloud-Schema anlegen", systemImage: "square.stack.3d.up") {
+                            Task { schemaCreated = await model.createCloudSchema() }
+                        }
+                        if schemaCreated {
+                            Label("Alle Datentypen sind in Development angelegt.", systemImage: "checkmark.circle.fill")
+                                .foregroundStyle(.tint)
+                        }
                     }
                 } header: {
                     Text("Entwicklung")
@@ -180,7 +188,10 @@ struct SettingsView: View {
                 #endif
 
                 Section {
-                    Link(destination: URL(string: "https://github.com/Tim-Schaller/leuchtturm")!) {
+                    Link(destination: AppInfo.privacyPolicy) {
+                        Label("Datenschutzerklärung", systemImage: "hand.raised")
+                    }
+                    Link(destination: URL(string: "https://github.com/Tim-Schaller/Leuchtturm")!) {
                         Label("Quellcode auf GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
                     }
                 }

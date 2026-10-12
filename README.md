@@ -71,7 +71,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 - Widgets for the home and lock screen, a Live Activity while driving, Siri and Shortcuts
 - A one-hour live link for people without the app: a web page that decrypts your position in the browser
 - iPad, Apple Watch (people, SOS and check-in) and Apple TV (the family map on the big screen, end-to-end encrypted through your own iCloud)
-- In German and English
+- In German, English, French, Spanish, Italian, Dutch, Polish and Turkish
 - Invites via link or QR code, with expiry
 - Removing members rotates the circle key and revokes their iCloud access
 - People who only obtained the iCloud share link (without the invite secret) are not admitted and are flagged to the owner
@@ -79,7 +79,6 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- More languages
 - Adaptive tracking to keep battery drain low
 
 Safety features (live location, circles, SOS, check-in) will always be free. Optional in-app purchases only cover convenience, with no ads and no intrusive paywalls.

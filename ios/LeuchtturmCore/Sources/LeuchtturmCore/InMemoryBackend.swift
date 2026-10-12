@@ -13,8 +13,29 @@ public final class InMemoryCloud: Sendable {
     }
 
     private let zones = Mutex<[String: Zone]>([:])
+    private let written = Mutex<Set<String>>([])
 
     public init() {}
+
+    /// Every "Type.field:kind" saved so far, to check against `CloudSchema`.
+    public func writtenFields() -> Set<String> {
+        written.withLock { $0 }
+    }
+
+    func noteWritten(_ records: [StoredRecord]) {
+        written.withLock { set in
+            for record in records {
+                for (field, value) in record.fields {
+                    let kind = switch value {
+                    case .bytes: "bytes"
+                    case .int: "int"
+                    case .string: "string"
+                    }
+                    set.insert("\(record.type).\(field):\(kind)")
+                }
+            }
+        }
+    }
 
     public func backend(for userID: String) -> InMemoryBackend {
         InMemoryBackend(cloud: self, userID: userID)
@@ -37,7 +58,8 @@ public struct InMemoryBackend: CircleBackend {
     public func currentUserID() async throws -> String { userID }
 
     public func createCircle(id: String, records: [StoredRecord]) async throws -> CircleRef {
-        try cloud.withZones { zones in
+        cloud.noteWritten(records)
+        return try cloud.withZones { zones in
             guard zones[id] == nil else { throw BackendError.other("zone exists") }
             var zone = InMemoryCloud.Zone(owner: userID, shareToken: Base64URL.encode(randomBytes(16)))
             for var record in records {
@@ -46,8 +68,8 @@ public struct InMemoryBackend: CircleBackend {
                 zone.records[record.name] = record
             }
             zones[id] = zone
+            return CircleRef(circleID: id, ownerUserID: userID, isOwned: true)
         }
-        return CircleRef(circleID: id, ownerUserID: userID, isOwned: true)
     }
 
     public func listCircles() async throws -> [CircleRef] {
@@ -70,6 +92,7 @@ public struct InMemoryBackend: CircleBackend {
     }
 
     public func modify(_ circle: CircleRef, save: [StoredRecord], delete: [String], removeParticipants: [String]) async throws {
+        cloud.noteWritten(save)
         try cloud.withZones { zones in
             var zone = try accessible(zones, circle.circleID)
             if !removeParticipants.isEmpty {

@@ -59,9 +59,14 @@ struct ActionGrid: View {
         Button(action: action) {
             VStack(spacing: 6) {
                 Image(systemName: symbol).font(.title2)
-                Text(title).font(.caption.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
+                // Two lines for longer words in other languages.
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2, reservesSpace: true)
+                    .minimumScaleFactor(0.8)
             }
-            .frame(maxWidth: .infinity, minHeight: 64)
+            .frame(maxWidth: .infinity, minHeight: 72)
         }
         .buttonStyle(.glass)
     }

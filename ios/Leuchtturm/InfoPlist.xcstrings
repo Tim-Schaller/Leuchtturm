@@ -16,6 +16,42 @@
             "state": "translated",
             "value": "Leuchtturm shows your location to the lighthouses you are in. It is encrypted on your iPhone before it leaves it."
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm muestra tu ubicación a los faros de los que formas parte. Se cifra en tu iPhone antes de salir de él."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm montre ta position aux phares dont tu fais partie. Elle est chiffrée sur ton iPhone avant de le quitter."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm mostra la tua posizione ai fari di cui fai parte. Viene crittografata sul tuo iPhone prima di lasciarlo."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm toont je locatie aan de vuurtorens waarvan je lid bent. Je locatie wordt op je iPhone versleuteld voordat die het toestel verlaat."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm pokazuje twoją lokalizację latarniom, do których należysz. Jest ona szyfrowana na twoim iPhonie, zanim go opuści."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm, konumunu içinde bulunduğun fenerlere gösterir. Konumun iPhone’undan çıkmadan önce orada şifrelenir."
+          }
         }
       }
     },
@@ -33,6 +69,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "So your lighthouses see you even when the app is closed, Leuchtturm needs your location in the background. It is encrypted on your iPhone before it leaves it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para que tus faros te vean también cuando la app está cerrada, Leuchtturm necesita tu ubicación en segundo plano. Se cifra en tu iPhone antes de salir de él."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour que tes phares te voient même quand l'app est fermée, Leuchtturm a besoin de ta position en arrière-plan. Elle est chiffrée sur ton iPhone avant de le quitter."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perché i tuoi fari ti vedano anche quando l'app è chiusa, Leuchtturm ha bisogno della posizione in background. Viene crittografata sul tuo iPhone prima di lasciarlo."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zodat je vuurtorens je ook zien als de app gesloten is, heeft Leuchtturm je locatie op de achtergrond nodig. Je locatie wordt op je iPhone versleuteld voordat die het toestel verlaat."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aby twoje latarnie widziały cię także wtedy, gdy aplikacja jest zamknięta, Leuchtturm potrzebuje lokalizacji w tle. Jest ona szyfrowana na twoim iPhonie, zanim go opuści."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulama kapalıyken de fenerlerinin seni görebilmesi için Leuchtturm’un arka planda konuma ihtiyacı var. Konumun iPhone’undan çıkmadan önce orada şifrelenir."
           }
         }
       }
@@ -52,6 +124,42 @@
             "state": "translated",
             "value": "Leuchtturm uses motion data to recognize when you are driving, to save battery and to show your speed."
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm usa los datos de movimiento para detectar cuándo vas en coche, para ahorrar batería y mostrar tu velocidad."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm utilise les données de mouvement pour savoir quand tu es en voiture, afin d'économiser la batterie et d'afficher ta vitesse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm usa i dati di movimento per riconoscere quando sei in auto, così risparmia batteria e mostra la tua velocità."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm herkent met bewegingsgegevens wanneer je rijdt, om batterij te besparen en je snelheid te tonen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm korzysta z danych ruchu, aby rozpoznać, kiedy jedziesz, oszczędzać baterię i pokazywać twoją prędkość."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm, pil tasarrufu yapmak ve hızını göstermek için hareket verileriyle ne zaman araç kullandığını algılar."
+          }
         }
       }
     },
@@ -69,6 +177,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "If you turn it on, Leuchtturm shares your steps of today and the last week with your lighthouses, end-to-end encrypted."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si lo activas, Leuchtturm comparte tus pasos de hoy y de la última semana con tus faros, con cifrado de extremo a extremo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si tu l'actives, Leuchtturm partage tes pas d'aujourd'hui et de la semaine passée avec tes phares, chiffrés de bout en bout."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se lo attivi, Leuchtturm condivide con i tuoi fari i tuoi passi di oggi e dell'ultima settimana, con crittografia end-to-end."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Als je het aanzet, deelt Leuchtturm je stappen van vandaag en van de afgelopen week met je vuurtorens, end-to-end versleuteld."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeśli to włączysz, Leuchtturm udostępni twoim latarniom twoje kroki z dzisiaj i z ostatniego tygodnia, z szyfrowaniem end-to-end."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Açarsan Leuchtturm bugünkü ve geçen haftaki adımlarını fenerlerinle uçtan uca şifreli olarak paylaşır."
           }
         }
       }

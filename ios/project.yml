@@ -55,6 +55,12 @@ targets:
         CFBundleLocalizations:
           - de
           - en
+          - fr
+          - es
+          - it
+          - nl
+          - pl
+          - tr
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
@@ -98,6 +104,16 @@ targets:
       path: LeuchtturmWidgets/Info.plist
       properties:
         CFBundleDisplayName: Leuchtturm
+        CFBundleDevelopmentRegion: de
+        CFBundleLocalizations:
+          - de
+          - en
+          - fr
+          - es
+          - it
+          - nl
+          - pl
+          - tr
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
@@ -126,6 +142,12 @@ targets:
         CFBundleLocalizations:
           - de
           - en
+          - fr
+          - es
+          - it
+          - nl
+          - pl
+          - tr
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         WKApplication: true
@@ -164,6 +186,12 @@ targets:
         CFBundleLocalizations:
           - de
           - en
+          - fr
+          - es
+          - it
+          - nl
+          - pl
+          - tr
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}

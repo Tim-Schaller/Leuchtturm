@@ -12,7 +12,7 @@ extension Color {
 
     var hex: String {
         let c = UIColor(self).cgColor.converted(to: CGColorSpace(name: CGColorSpace.sRGB)!, intent: .defaultIntent, options: nil)?.components ?? [0, 0, 0]
-        let rgb = (0 ..< 3).map { Int((c.indices.contains($0) ? c[$0] : 0) * 255) }
+        let rgb = (0 ..< 3).map { Int(((c.indices.contains($0) ? c[$0] : 0) * 255).rounded()) }
         return String(format: "#%02X%02X%02X", rgb[0], rgb[1], rgb[2])
     }
 }
@@ -47,19 +47,20 @@ struct ProfileHeader: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ZStack {
-                if let data = member.profile?.banner, let image = UIImage(data: data) {
-                    Image(uiImage: image).resizable().scaledToFill()
-                } else {
-                    (BannerStyle(rawValue: member.profile?.bannerStyle ?? "") ?? .meadow).gradient
+            // The picture fills the banner without widening the layout.
+            Color.clear
+                .frame(height: 120)
+                .frame(maxWidth: .infinity)
+                .overlay {
+                    if let data = member.profile?.banner, let image = UIImage(data: data) {
+                        Image(uiImage: image).resizable().scaledToFill()
+                    } else {
+                        (BannerStyle(rawValue: member.profile?.bannerStyle ?? "") ?? .meadow).gradient
+                    }
                 }
-            }
-            .frame(height: 120)
-            .frame(maxWidth: .infinity)
-            .clipped()
-            .clipShape(.rect(cornerRadius: 20))
-            .accessibilityHidden(true)
-            Avatar(name: member.name, id: member.id, size: 84)
+                .clipShape(.rect(cornerRadius: 20))
+                .accessibilityHidden(true)
+            Avatar(name: member.name, id: member.id, size: 84, profile: member.profile)
                 .offset(y: -42)
                 .padding(.bottom, -42)
             VStack(spacing: 4) {
@@ -85,8 +86,12 @@ struct ProfileEditor: View {
     @State private var profile = Profile()
     @State private var photoItem: PhotosPickerItem?
     @State private var bannerItem: PhotosPickerItem?
+    /// Hours; 0 = until midnight, -1 = until changed.
     @State private var statusHours = 2.0
+    /// The status and its expiry stay as they are unless one of them is changed.
+    @State private var statusEdited = false
     @State private var saving = false
+    @State private var loadingPicture = false
     @State private var pickedColor = Color.accentColor
     @State private var statusText = ""
 
@@ -96,113 +101,17 @@ struct ProfileEditor: View {
     ]
     static let emojis = ["🦊", "🐻", "🐼", "🐸", "🦉", "🐝", "🌻", "⚓️", "🏄", "🚲", "⭐️", "🍀"]
 
+    private var myID: String { model.client?.deviceID ?? "" }
+    /// The pin colour as shown: chosen, or the one the app picks from the ID.
+    private var currentColor: Color { Color(hex: profile.color) ?? Theme.color(for: myID) }
+
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    VStack(spacing: 0) {
-                        ProfileHeader(member: preview, subtitle: model.displayName)
-                    }
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
-                }
-                Section("Bild") {
-                    let hasPhoto = profile.photo != nil
-                    let hasBanner = profile.banner != nil
-                    PhotosPicker(selection: $photoItem, matching: .images) {
-                        Label(hasPhoto ? "Profilbild ändern" : "Profilbild wählen", systemImage: "person.crop.circle")
-                    }
-                    PhotosPicker(selection: $bannerItem, matching: .images) {
-                        Label(hasBanner ? "Bannerbild ändern" : "Bannerbild wählen", systemImage: "photo")
-                    }
-                    if profile.photo != nil || profile.banner != nil {
-                        Button("Bilder entfernen", systemImage: "trash", role: .destructive) {
-                            profile.photo = nil
-                            profile.banner = nil
-                        }
-                    }
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            ForEach(BannerStyle.allCases) { style in
-                                Button { profile.bannerStyle = style.rawValue; profile.banner = nil } label: {
-                                    style.gradient.frame(width: 56, height: 32).clipShape(.rect(cornerRadius: 8))
-                                        .overlay { if profile.bannerStyle == style.rawValue && profile.banner == nil {
-                                            RoundedRectangle(cornerRadius: 8).strokeBorder(.primary, lineWidth: 2)
-                                        } }
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel(style.rawValue)
-                            }
-                        }
-                    }
-                }
-                Section("Pin") {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            ForEach(Theme.memberColors.indices, id: \.self) { i in
-                                let color = Theme.memberColors[i]
-                                Button { profile.color = color.hex } label: {
-                                    Circle().fill(color).frame(width: 32, height: 32)
-                                        .overlay { if profile.color == color.hex { Image(systemName: "checkmark").foregroundStyle(.white).bold() } }
-                                }
-                                .buttonStyle(.plain)
-                            }
-                            ColorPicker("", selection: $pickedColor, supportsOpacity: false)
-                                .labelsHidden()
-                        }
-                    }
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            Button { profile.emoji = nil } label: {
-                                Text("Aa").font(.headline).frame(width: 36, height: 36)
-                                    .background(profile.emoji == nil ? Color.accentColor.opacity(0.2) : .clear, in: .circle)
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel("Initialen")
-                            ForEach(Self.emojis, id: \.self) { emoji in
-                                Button { profile.emoji = emoji } label: {
-                                    Text(emoji).font(.title2).frame(width: 36, height: 36)
-                                        .background(profile.emoji == emoji ? Color.accentColor.opacity(0.2) : .clear, in: .circle)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                }
-                Section {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 140))], alignment: .leading) {
-                        ForEach(Self.statusPresets, id: \.emoji) { preset in
-                            let text = String(localized: preset.text)
-                            Button {
-                                profile.statusEmoji = preset.emoji
-                                profile.statusText = text
-                            } label: {
-                                Text("\(preset.emoji) \(text)")
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 10).padding(.vertical, 6)
-                                    .background(profile.statusText == text ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.1), in: .capsule)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    TextField("Eigener Status", text: $statusText)
-                    Picker("Wie lange?", selection: $statusHours) {
-                        Text("1 Std.").tag(1.0)
-                        Text("2 Std.").tag(2.0)
-                        Text("Heute").tag(0.0)
-                        Text("Bis ich es ändere").tag(-1.0)
-                    }
-                    if profile.statusText != nil || profile.statusEmoji != nil {
-                        Button("Status löschen", role: .destructive) {
-                            profile.statusEmoji = nil
-                            profile.statusText = nil
-                        }
-                    }
-                } header: {
-                    Text("Status")
-                } footer: {
-                    Text("Bild, Pin und Status sehen alle in deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt.")
-                }
+                headerSection
+                pictureSection
+                pinSection
+                statusSection
             }
             .navigationTitle("Profil gestalten")
             .navigationBarTitleDisplayMode(.inline)
@@ -212,21 +121,174 @@ struct ProfileEditor: View {
                     Button("Abbrechen", role: .cancel) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Sichern", action: save).disabled(saving)
+                    Button("Sichern", action: save).disabled(saving || loadingPicture)
                 }
             }
             .onAppear {
-                profile = model.myProfile
-                statusText = profile.statusText ?? ""
-                pickedColor = Color(hex: profile.color) ?? .accentColor
+                var current = model.myProfile
+                // A status that has run out is not shown or kept.
+                if current.status(at: Date()) == nil {
+                    current.statusEmoji = nil
+                    current.statusText = nil
+                    current.statusUntil = nil
+                }
+                profile = current
+                statusText = current.statusText ?? ""
+                statusHours = current.statusText != nil || current.statusEmoji != nil
+                    ? (current.statusUntil == nil ? -1 : 2) : 2
+                pickedColor = Color(hex: current.color) ?? Theme.color(for: myID)
             }
-            .onChange(of: pickedColor) { _, color in profile.color = color.hex }
+            // Only a real change sets a colour; opening the editor keeps the automatic one.
+            .onChange(of: pickedColor) { _, color in
+                if color.hex != currentColor.hex { profile.color = color.hex }
+            }
             .onChange(of: statusText) { _, text in
-                profile.statusText = text.isEmpty ? nil : String(text.prefix(Profile.maxStatusLength))
+                let trimmed = String(text.prefix(Profile.maxStatusLength))
+                if trimmed != text { statusText = trimmed; return }
+                let value = trimmed.trimmingCharacters(in: .whitespaces)
+                guard (value.isEmpty ? nil : value) != profile.statusText else { return }
+                profile.statusText = value.isEmpty ? nil : value
+                // Own words: the emoji of a preset no longer fits.
+                if !Self.statusPresets.contains(where: { String(localized: $0.text) == value }) { profile.statusEmoji = nil }
+                statusEdited = true
             }
-            .onChange(of: profile.statusText) { _, text in if (text ?? "") != statusText { statusText = text ?? "" } }
+            .onChange(of: profile.statusText) { _, text in if (text ?? "") != statusText.trimmingCharacters(in: .whitespaces) { statusText = text ?? "" } }
             .onChange(of: photoItem) { _, item in load(item, side: 256, maxBytes: Profile.maxPhotoBytes, square: true) { profile.photo = $0 } }
             .onChange(of: bannerItem) { _, item in load(item, side: 900, maxBytes: Profile.maxBannerBytes, square: false) { profile.banner = $0 } }
+        }
+    }
+
+    @ViewBuilder private var headerSection: some View {
+        Section {
+            ProfileHeader(member: preview, subtitle: model.displayName)
+                .overlay {
+                    if loadingPicture { ProgressView().controlSize(.large) }
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+        }
+    }
+
+    @ViewBuilder private var pictureSection: some View {
+        // Computed outside the picker labels, which are Sendable closures.
+        let hasPhoto = profile.photo != nil
+        let hasBanner = profile.banner != nil
+        Section("Bild") {
+            PhotosPicker(selection: $photoItem, matching: .images) {
+                Label(hasPhoto ? "Profilbild ändern" : "Profilbild wählen", systemImage: "person.crop.circle")
+            }
+            if profile.photo != nil {
+                Button("Profilbild entfernen", systemImage: "trash", role: .destructive) { profile.photo = nil }
+            }
+            PhotosPicker(selection: $bannerItem, matching: .images) {
+                Label(hasBanner ? "Bannerbild ändern" : "Bannerbild wählen", systemImage: "photo")
+            }
+            if profile.banner != nil {
+                Button("Bannerbild entfernen", systemImage: "trash", role: .destructive) { profile.banner = nil }
+            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(BannerStyle.allCases) { style in
+                        BannerChoice(style: style, isOn: profile.banner == nil && (profile.bannerStyle ?? BannerStyle.meadow.rawValue) == style.rawValue) {
+                            profile.bannerStyle = style.rawValue
+                            profile.banner = nil
+                        }
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+        }
+    }
+
+    @ViewBuilder private var pinSection: some View {
+        Section {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(Theme.memberColors.indices, id: \.self) { i in
+                        let color = Theme.memberColors[i]
+                        let isOn = currentColor.hex == color.hex
+                        Button {
+                            profile.color = color.hex
+                            pickedColor = color
+                        } label: {
+                            Circle().fill(color).frame(width: 32, height: 32)
+                                .overlay { if isOn { Image(systemName: "checkmark").foregroundStyle(.white).bold() } }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(isOn ? .isSelected : [])
+                    }
+                    ColorPicker("Eigene Farbe", selection: $pickedColor, supportsOpacity: false)
+                        .labelsHidden()
+                }
+                .padding(.vertical, 2)
+            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    Button { profile.emoji = nil } label: {
+                        Text("Aa").font(.headline).frame(width: 36, height: 36)
+                            .background(profile.emoji == nil ? Color.accentColor.opacity(0.2) : .clear, in: .circle)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Initialen")
+                    ForEach(Self.emojis, id: \.self) { emoji in
+                        Button { profile.emoji = emoji } label: {
+                            Text(emoji).font(.title2).frame(width: 36, height: 36)
+                                .background(profile.emoji == emoji ? Color.accentColor.opacity(0.2) : .clear, in: .circle)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        } header: {
+            Text("Pin")
+        } footer: {
+            if profile.photo != nil {
+                Text("Mit Profilbild zeigt der Pin dein Bild; Emoji und Initialen siehst du, wenn du es entfernst.")
+            }
+        }
+    }
+
+    @ViewBuilder private var statusSection: some View {
+        Section {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 140))], alignment: .leading) {
+                ForEach(Self.statusPresets, id: \.emoji) { preset in
+                    let text = String(localized: preset.text)
+                    let isOn = profile.statusEmoji == preset.emoji && profile.statusText == text
+                    Button {
+                        profile.statusEmoji = preset.emoji
+                        profile.statusText = text
+                        statusEdited = true
+                    } label: {
+                        Text("\(preset.emoji) \(text)")
+                            .font(.subheadline)
+                            .padding(.horizontal, 10).padding(.vertical, 6)
+                            .background(isOn ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.1), in: .capsule)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(isOn ? .isSelected : [])
+                }
+            }
+            TextField("Eigener Status", text: $statusText)
+            Picker("Wie lange?", selection: Binding(get: { statusHours }, set: { statusHours = $0; statusEdited = true })) {
+                Text("1 Std.").tag(1.0)
+                Text("2 Std.").tag(2.0)
+                Text("Heute").tag(0.0)
+                Text("Bis ich es ändere").tag(-1.0)
+            }
+            if profile.statusText != nil || profile.statusEmoji != nil {
+                if !statusEdited, let until = profile.statusUntil {
+                    LabeledContent("Läuft ab", value: until.formatted(date: .omitted, time: .shortened))
+                }
+                Button("Status löschen", role: .destructive) {
+                    profile.statusEmoji = nil
+                    profile.statusText = nil
+                    statusEdited = true
+                }
+            }
+        } header: {
+            Text("Status")
+        } footer: {
+            Text("Bild, Pin und Status sehen alle in deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt.")
         }
     }
 
@@ -240,14 +302,14 @@ struct ProfileEditor: View {
     private func save() {
         saving = true
         var updated = profile
-        if updated.statusText != nil || updated.statusEmoji != nil {
+        if updated.statusText == nil && updated.statusEmoji == nil {
+            updated.statusUntil = nil
+        } else if statusEdited {
             updated.statusUntil = switch statusHours {
             case -1: nil
             case 0: Calendar.current.date(bySettingHour: 23, minute: 59, second: 0, of: Date())
             default: Date().addingTimeInterval(statusHours * 3600)
             }
-        } else {
-            updated.statusUntil = nil
         }
         Task {
             if await model.saveProfile(updated) { dismiss() }
@@ -258,9 +320,20 @@ struct ProfileEditor: View {
     /// Loads a picture, scales it down and compresses it until it fits.
     private func load(_ item: PhotosPickerItem?, side: CGFloat, maxBytes: Int, square: Bool, apply: @escaping (Data) -> Void) {
         guard let item else { return }
+        loadingPicture = true
         Task {
-            guard let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data) else { return }
-            if let jpeg = Self.compress(image, side: side, maxBytes: maxBytes, square: square) { apply(jpeg) }
+            defer {
+                loadingPicture = false
+                photoItem = nil
+                bannerItem = nil
+            }
+            guard let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data),
+                  let jpeg = Self.compress(image, side: side, maxBytes: maxBytes, square: square)
+            else {
+                model.errorMessage = String(localized: "Das Bild ließ sich nicht laden. Versuch ein anderes.")
+                return
+            }
+            apply(jpeg)
         }
     }
 
@@ -289,5 +362,25 @@ struct ProfileEditor: View {
             if let data = rendered.jpegData(compressionQuality: quality), data.count <= maxBytes { return data }
         }
         return nil
+    }
+}
+
+private struct BannerChoice: View {
+    let style: BannerStyle
+    let isOn: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            style.gradient
+                .frame(width: 56, height: 32)
+                .clipShape(.rect(cornerRadius: 8))
+                .overlay {
+                    if isOn { RoundedRectangle(cornerRadius: 8).strokeBorder(.primary, lineWidth: 2) }
+                }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(style.rawValue)
+        .accessibilityAddTraits(isOn ? .isSelected : [])
     }
 }

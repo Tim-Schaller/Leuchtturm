@@ -198,6 +198,15 @@ private struct ChatComposer: View {
                 }
                 .accessibilityLabel("Foto senden")
                 StickerTextView(text: $text)
+                    .overlay(alignment: .leading) {
+                        if text.length == 0 {
+                            Text("Nachricht")
+                                .foregroundStyle(.tertiary)
+                                .padding(.leading, 5)
+                                .allowsHitTesting(false)
+                                .accessibilityHidden(true)
+                        }
+                    }
                     .padding(.horizontal, 10).padding(.vertical, 2)
                     .glassEffect(.regular, in: .rect(cornerRadius: 18))
                 Button { send() } label: {
@@ -257,12 +266,25 @@ private struct ChatComposer: View {
     }
 }
 
+/// Pasted text comes in plain (no foreign fonts or colours); pictures and
+/// stickers keep the system behaviour.
+private final class ComposerTextView: UITextView {
+    override func paste(_ sender: Any?) {
+        let board = UIPasteboard.general
+        guard !board.hasImages, board.hasStrings, let string = board.string else {
+            super.paste(sender)
+            return
+        }
+        insertText(string)
+    }
+}
+
 /// UITextView that takes stickers and Genmoji from the emoji keyboard.
 private struct StickerTextView: UIViewRepresentable {
     @Binding var text: NSAttributedString
 
     func makeUIView(context: Context) -> UITextView {
-        let view = UITextView()
+        let view = ComposerTextView()
         view.supportsAdaptiveImageGlyph = true
         view.font = .preferredFont(forTextStyle: .body)
         view.adjustsFontForContentSizeCategory = true

@@ -87,7 +87,7 @@ struct PlacesSection: View {
                         Image(systemName: "sparkles").frame(width: 36).foregroundStyle(Color.accentColor)
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Vorschlag: Hier bist du oft").font(.headline)
-                            Text("\(suggestion.visits) Besuche, zusammen \(Duration.seconds(suggestion.totalTime).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))")
+                            Text("\(suggestion.visits) Besuche · zusammen \(Duration.seconds(suggestion.totalTime).formatted(.units(allowed: [.hours, .minutes], width: .narrow)))")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
@@ -101,7 +101,7 @@ struct PlacesSection: View {
         } header: {
             Text("Orte")
         } footer: {
-            Text("Kommt jemand an oder geht, bekommt der Leuchtturm Bescheid. Das prüft jedes iPhone selbst, kein Server kennt eure Orte. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.")
+            Text("Kommt jemand an oder geht, bekommt der Leuchtturm Bescheid. Das prüft jedes iPhone selbst; die Orte liegen verschlüsselt in iCloud, Apple kann sie nicht lesen. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.")
         }
     }
 

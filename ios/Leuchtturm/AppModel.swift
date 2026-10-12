@@ -118,6 +118,8 @@ final class AppModel {
     @ObservationIgnored private var tripDetector = TripDetector()
     @ObservationIgnored private let motion = MotionMonitor()
     @ObservationIgnored private var visitStore = VisitStore(persistent: false)
+    /// Own trips on this device, for the driving statistics.
+    private(set) var tripArchive = TripArchive(persistent: false)
     /// Asks "Are you OK?" after an abrupt stop while driving. On by default.
     private(set) var detectsCrashes = true
     /// Set while the "Are you OK?" countdown runs: when the SOS goes out.
@@ -222,6 +224,7 @@ final class AppModel {
         knownMembers = isSimulation ? [:] : (defaults.dictionary(forKey: Keys.knownMembers) as? [String: [String]] ?? [:])
             .mapValues { Set($0) }
         visitStore = VisitStore(persistent: !isSimulation)
+        tripArchive = TripArchive(persistent: !isSimulation)
         arrivalWatches = isSimulation ? [] : defaults.data(forKey: Keys.arrivalWatches)
             .flatMap { try? JSONDecoder().decode([ArrivalWatch].self, from: $0) } ?? []
         sharesHistory = !isSimulation && defaults.bool(forKey: Keys.sharesHistory)
@@ -496,7 +499,8 @@ final class AppModel {
         guard activeFog == nil, let client, !knownPlaces.isEmpty else { return }
         let events = placeTracker.update(
             latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
-            accuracy: location.horizontalAccuracy, places: knownPlaces.values.flatMap(\.places)
+            accuracy: location.horizontalAccuracy, speed: location.speed >= 0 ? location.speed : nil,
+            places: knownPlaces.values.flatMap(\.places)
         )
         if !isSimulation {
             UserDefaults.standard.set(try? JSONEncoder().encode(placeTracker), forKey: Keys.placeTracker)
@@ -523,14 +527,30 @@ final class AppModel {
         )
         saveTripDetector()
         if tripDetector.takeCrash() != nil, detectsCrashes { startCrashCheck() }
-        if let trip, sharesTrips { try? await client.shareTrip(trip) }
+        if let trip { await finished(trip) }
+    }
+
+    /// Keeps the trip for the statistics and shares it if wanted.
+    private func finished(_ trip: Trip) async {
+        tripArchive.add(trip)
+        guard sharesTrips, let client else { return }
+        try? await client.shareTrip(trip)
+        await publishDrivingStats()
+    }
+
+    /// The totals go to the circles inside the encrypted profile.
+    func publishDrivingStats() async {
+        var profile = myProfile
+        profile.driving = sharesTrips && !tripArchive.trips.isEmpty ? tripArchive.stats : nil
+        guard profile.driving != myProfile.driving else { return }
+        _ = await saveProfile(profile)
     }
 
     /// After parking iOS pauses updates; end the trip when the app wakes up.
     private func finishStaleTrip() async {
         guard sharesTrips, let client, let trip = tripDetector.finishIfStale(now: Date(), deviceID: client.deviceID) else { return }
         saveTripDetector()
-        try? await client.shareTrip(trip)
+        await finished(trip)
     }
 
     private func saveTripDetector() {
@@ -548,6 +568,7 @@ final class AppModel {
             saveTripDetector()
             await run { try await $0.deleteTrips() }
         }
+        await publishDrivingStats()
     }
 
     // MARK: Memories and weather
@@ -643,12 +664,13 @@ final class AppModel {
         var color, emoji, bannerStyle, statusEmoji, statusText: String?
         var photo, banner: Data?
         var statusUntil: Date?
+        var driving: [DriveStats.Period: DriveStats]?
     }
 
     private static func loadStoredProfile() -> Profile? {
         guard let data = try? Data(contentsOf: profileURL), let s = try? JSONDecoder().decode(StoredProfile.self, from: data) else { return nil }
         return Profile(color: s.color, emoji: s.emoji, photo: s.photo, banner: s.banner, bannerStyle: s.bannerStyle,
-                       statusEmoji: s.statusEmoji, statusText: s.statusText, statusUntil: s.statusUntil)
+                       statusEmoji: s.statusEmoji, statusText: s.statusText, statusUntil: s.statusUntil, driving: s.driving)
     }
 
     /// Saves locally and sends to every circle.
@@ -658,7 +680,8 @@ final class AppModel {
         if !isSimulation {
             let stored = StoredProfile(color: profile.color, emoji: profile.emoji, bannerStyle: profile.bannerStyle,
                                        statusEmoji: profile.statusEmoji, statusText: profile.statusText,
-                                       photo: profile.photo, banner: profile.banner, statusUntil: profile.statusUntil)
+                                       photo: profile.photo, banner: profile.banner, statusUntil: profile.statusUntil,
+                                       driving: profile.driving)
             try? FileManager.default.createDirectory(at: URL.applicationSupportDirectory, withIntermediateDirectories: true)
             try? JSONEncoder().encode(stored).write(to: Self.profileURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         }
@@ -1105,6 +1128,7 @@ final class AppModel {
         liveLink = nil
         historyRecorder.clear()
         memories.clear()
+        tripArchive.clear()
         visitStore.clear()
         client = nil
         circles = []
@@ -1143,8 +1167,10 @@ final class AppModel {
         // Everyone has their own look.
         await simulate { world in
             try await world.people[0].client.setProfile(Profile(color: "#D9567F", bannerStyle: "sunset", statusEmoji: "☕️", statusText: String(localized: "Kaffeepause"), statusUntil: Date().addingTimeInterval(3600)))
-            try await world.people[1].client.setProfile(Profile(color: "#E0533A", emoji: "🏎️", bannerStyle: "night"))
-            try await world.people[2].client.setProfile(Profile(color: "#9576C9", photo: SimulatedWorld.demoPhoto(), bannerStyle: "lavender", statusEmoji: "📚", statusText: String(localized: "in der Schule")))
+            try await world.people[1].client.setProfile(Profile(color: "#E0533A", emoji: "🏎️", bannerStyle: "night",
+                                                                driving: world.demoDriving(of: world.people[1])))
+            try await world.people[2].client.setProfile(Profile(color: "#9576C9", photo: SimulatedWorld.demoPhoto(), bannerStyle: "lavender", statusEmoji: "📚", statusText: String(localized: "in der Schule"),
+                                                                driving: world.demoDriving(of: world.people[2])))
         }
         // A little chat to start with.
         await simulate { world in

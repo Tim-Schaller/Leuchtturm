@@ -1,52 +1,6 @@
 {
   "sourceLanguage": "de",
   "strings": {
-    "": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ""
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ""
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ""
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ""
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ""
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ""
-          }
-        }
-      }
-    },
     "%@": {
       "localizations": {
         "en": {
@@ -365,6 +319,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ feneri sana devretmek istiyor."
+          }
+        }
+      }
+    },
+    "%@ teilt keine Fahrten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ doesn't share trips."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ no comparte trayectos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ne partage pas ses trajets."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ non condivide i tragitti."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ deelt geen ritten."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ nie udostępnia przejazdów."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ sürüş paylaşmıyor."
           }
         }
       }
@@ -1013,48 +1013,48 @@
         }
       }
     },
-    "%lld Besuche, zusammen %@": {
+    "%lld Besuche · zusammen %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld visits, %@ in total"
+            "value": "%lld visits · %@ in total"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld visitas, %@ en total"
+            "value": "%lld visitas · %@ en total"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld visites, %@ au total"
+            "value": "%lld visites · %@ au total"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld visite, in tutto %@"
+            "value": "%lld visite · %@ in totale"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld bezoeken, in totaal %@"
+            "value": "%lld bezoeken · samen %@"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wizyty: %lld, łącznie %@"
+            "value": "Wizyty: %lld · łącznie %@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld ziyaret, toplam %@"
+            "value": "%lld ziyaret · toplam %@"
           }
         }
       }
@@ -1285,6 +1285,52 @@
           "stringUnit": {
             "state": "translated",
             "value": ", pil %%%lld"
+          }
+        }
+      }
+    },
+    "1 Jahr": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 Year"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 año"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 an"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 anno"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 jaar"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 rok"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 yıl"
           }
         }
       }
@@ -1611,6 +1657,52 @@
         }
       }
     },
+    "30 Tage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 Days"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 días"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 jours"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 giorni"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 dagen"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 dni"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 gün"
+          }
+        }
+      }
+    },
     "50 km unterwegs": {
       "localizations": {
         "en": {
@@ -1653,6 +1745,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "50 km yol"
+          }
+        }
+      }
+    },
+    "7 Tage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 Days"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 días"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 jours"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 giorni"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 dagen"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 dni"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 gün"
           }
         }
       }
@@ -3819,6 +3957,52 @@
         }
       }
     },
+    "Bannerbild entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Banner Picture"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quitar imagen del banner"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer la bannière"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovi immagine banner"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwijder bannerafbeelding"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usuń obraz banera"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banner resmini kaldır"
+          }
+        }
+      }
+    },
     "Bannerbild wählen": {
       "localizations": {
         "en": {
@@ -4321,52 +4505,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Resmini, raptiyeni ve durumunu fenerlerindeki herkes uçtan uca şifreli olarak görür."
-          }
-        }
-      }
-    },
-    "Bilder entfernen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Remove pictures"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quitar imágenes"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Retirer les photos"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rimuovi immagini"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verwijder foto’s"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Usuń zdjęcia"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Resimleri kaldır"
           }
         }
       }
@@ -5153,6 +5291,52 @@
         }
       }
     },
+    "Das Bild ließ sich nicht laden. Versuch ein anderes.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The picture couldn't be loaded. Try another one."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo cargar la imagen. Prueba con otra."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de charger l'image. Essaie une autre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile caricare l'immagine. Provane un'altra."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De afbeelding kon niet worden geladen. Probeer een andere."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się wczytać obrazu. Spróbuj innego."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resim yüklenemedi. Başka bir tane dene."
+          }
+        }
+      }
+    },
     "Das darf nur der Besitzer des Leuchtturms.": {
       "localizations": {
         "en": {
@@ -5701,6 +5885,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "iCloud saklama alanın dolu."
+          }
+        }
+      }
+    },
+    "Deine Leuchttürme sehen diese Summen, Ende-zu-Ende-verschlüsselt. Die einzelnen Fahrten bleiben nur 30 Tage in iCloud, die Summen rechnet dein iPhone aus seinem eigenen Archiv.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your lighthouses see these totals, end-to-end encrypted. Individual trips stay in iCloud for 30 days only; your iPhone computes the totals from its own archive."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus faros ven estos totales, con cifrado de extremo a extremo. Los trayectos solo permanecen 30 días en iCloud; tu iPhone calcula los totales a partir de su propio archivo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tes phares voient ces totaux, chiffrés de bout en bout. Les trajets restent seulement 30 jours dans iCloud ; ton iPhone calcule les totaux à partir de ses propres archives."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I tuoi fari vedono questi totali, con crittografia end-to-end. I singoli tragitti restano in iCloud solo 30 giorni; il tuo iPhone calcola i totali dal proprio archivio."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je vuurtorens zien deze totalen, end-to-end versleuteld. Losse ritten blijven maar 30 dagen in iCloud; je iPhone berekent de totalen uit zijn eigen archief."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twoje latarnie widzą te sumy z szyfrowaniem end-to-end. Pojedyncze przejazdy zostają w iCloud tylko 30 dni; sumy liczy twój iPhone z własnego archiwum."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fenerlerin bu toplamları uçtan uca şifreli olarak görür. Tek tek sürüşler iCloud'da yalnızca 30 gün kalır; toplamları iPhone'un kendi arşivinden hesaplar."
           }
         }
       }
@@ -6625,6 +6855,52 @@
         }
       }
     },
+    "Diese Person": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This person"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta persona"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cette personne"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa persona"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deze persoon"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta osoba"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu kişi"
+          }
+        }
+      }
+    },
     "Diese iCloud-Konten haben den Freigabelink geöffnet, aber keine gültige Einladung. Sie sehen nur verschlüsselte Daten.": {
       "localizations": {
         "en": {
@@ -6989,6 +7265,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bir fenere davet edildin."
+          }
+        }
+      }
+    },
+    "Eigene Farbe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom Colour"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Color propio"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couleur personnalisée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colore personalizzato"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eigen kleur"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Własny kolor"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Özel renk"
           }
         }
       }
@@ -8189,6 +8511,52 @@
         }
       }
     },
+    "Fahrstatistik": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Driving Statistics"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estadísticas de conducción"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statistiques de conduite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statistiche di guida"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rijstatistieken"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statystyki jazdy"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sürüş istatistikleri"
+          }
+        }
+      }
+    },
     "Fahrt": {
       "localizations": {
         "en": {
@@ -8369,6 +8737,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sürüşleri paylaş"
+          }
+        }
+      }
+    },
+    "Fahrwertung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Driving Score"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puntuación de conducción"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Note de conduite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punteggio di guida"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rijscore"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocena jazdy"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sürüş puanı"
+          }
+        }
+      }
+    },
+    "Fahrzeit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Driving Time"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiempo al volante"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temps de conduite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo di guida"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rijtijd"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Czas jazdy"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sürüş süresi"
           }
         }
       }
@@ -8921,6 +9381,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Şu an kimse yok"
+          }
+        }
+      }
+    },
+    "Gesamt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All Time"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totale"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totaal"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Łącznie"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toplam"
           }
         }
       }
@@ -10397,6 +10903,52 @@
         }
       }
     },
+    "Keine Fahrten in diesem Zeitraum.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No trips in this period."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ningún trayecto en este periodo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun trajet sur cette période."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun tragitto in questo periodo."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen ritten in deze periode."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak przejazdów w tym okresie."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu dönemde sürüş yok."
+          }
+        }
+      }
+    },
     "Keine Verbindung zu iCloud. Bitte versuch es gleich noch einmal.": {
       "localizations": {
         "en": {
@@ -10581,48 +11133,48 @@
         }
       }
     },
-    "Kommt jemand an oder geht, bekommt der Leuchtturm Bescheid. Das prüft jedes iPhone selbst, kein Server kennt eure Orte. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.": {
+    "Kommt jemand an oder geht, bekommt der Leuchtturm Bescheid. Das prüft jedes iPhone selbst; die Orte liegen verschlüsselt in iCloud, Apple kann sie nicht lesen. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When someone arrives or leaves, the lighthouse is told. Each iPhone checks this itself; no server knows your places. Suggestions come from your stays, which are stored only on this iPhone."
+            "value": "When someone arrives or leaves, the lighthouse is told. Each iPhone checks this itself; the places are stored encrypted in iCloud, and Apple can't read them. Suggestions come from your stays, which are stored only on this iPhone."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cuando alguien llega o se va, el faro recibe un aviso. Cada iPhone lo comprueba por sí mismo; ningún servidor conoce vuestros lugares. Las sugerencias salen de tus estancias, que solo se guardan en este iPhone."
+            "value": "Cuando alguien llega o se va, el faro se entera. Cada iPhone lo comprueba por sí mismo; los lugares se guardan cifrados en iCloud y Apple no puede leerlos. Las sugerencias salen de tus estancias, guardadas solo en este iPhone."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quand quelqu'un arrive ou part, le phare est prévenu. Chaque iPhone le vérifie lui-même, aucun serveur ne connaît vos lieux. Les suggestions se basent sur les endroits où tu t'arrêtes, enregistrés uniquement sur cet iPhone."
+            "value": "Quand quelqu'un arrive ou part, le phare est prévenu. Chaque iPhone le vérifie lui-même ; les lieux sont chiffrés dans iCloud, Apple ne peut pas les lire. Les suggestions viennent de tes séjours, enregistrés uniquement sur cet iPhone."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quando qualcuno arriva o se ne va, il faro viene avvisato. Lo verifica ogni iPhone da solo: nessun server conosce i vostri luoghi. I suggerimenti nascono dalle tue soste, salvate solo su questo iPhone."
+            "value": "Quando qualcuno arriva o se ne va, il faro viene avvisato. Ogni iPhone lo verifica da sé; i luoghi sono salvati crittografati in iCloud e Apple non può leggerli. I suggerimenti nascono dalle tue soste, salvate solo su questo iPhone."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Komt iemand aan of vertrekt iemand, dan krijgt de vuurtoren een melding. Dat controleert elke iPhone zelf; geen server kent jullie plekken. Suggesties komen uit je verblijven, die alleen op deze iPhone worden bewaard."
+            "value": "Komt iemand aan of gaat iemand weg, dan krijgt de vuurtoren bericht. Elke iPhone controleert dat zelf; de plekken staan versleuteld in iCloud, Apple kan ze niet lezen. Suggesties komen uit je verblijven, die alleen op deze iPhone staan."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gdy ktoś przychodzi lub wychodzi, latarnia dostaje powiadomienie. Sprawdza to każdy iPhone sam, żaden serwer nie zna waszych miejsc. Propozycje powstają na podstawie twoich pobytów, zapisanych tylko na tym iPhonie."
+            "value": "Gdy ktoś przyjeżdża lub wyjeżdża, latarnia dostaje powiadomienie. Każdy iPhone sprawdza to sam; miejsca są zaszyfrowane w iCloud i Apple nie może ich odczytać. Propozycje powstają z twoich pobytów, zapisanych tylko na tym iPhonie."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Biri geldiğinde ya da ayrıldığında fenere haber verilir. Bunu her iPhone kendisi denetler, hiçbir sunucu yerlerinizi bilmez. Öneriler, uğradığın yerlerin yalnızca bu iPhone’da saklanan kayıtlarından oluşur."
+            "value": "Biri geldiğinde ya da ayrıldığında fener haberdar olur. Bunu her iPhone kendisi denetler; yerler iCloud'da şifreli durur, Apple okuyamaz. Öneriler yalnızca bu iPhone'da saklanan duraklamalarından çıkar."
           }
         }
       }
@@ -11915,6 +12467,52 @@
         }
       }
     },
+    "Läuft ab": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expires"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caduca"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scade"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verloopt"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wygasa"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bitiş"
+          }
+        }
+      }
+    },
     "Läuft bis %@": {
       "localizations": {
         "en": {
@@ -12279,6 +12877,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "İyiyim"
+          }
+        }
+      }
+    },
+    "Mit Profilbild zeigt der Pin dein Bild; Emoji und Initialen siehst du, wenn du es entfernst.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With a profile picture, the pin shows your picture; the emoji or initials appear when you remove it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con foto de perfil, la chincheta muestra tu foto; el emoji o las iniciales aparecen si la quitas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec une photo de profil, l'épingle affiche ta photo ; l'emoji ou les initiales apparaissent si tu la supprimes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con un'immagine del profilo, la puntina mostra la tua foto; emoji o iniziali compaiono se la rimuovi."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Met een profielfoto toont de pin je foto; emoji of initialen zie je als je die verwijdert."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ze zdjęciem profilowym pinezka pokazuje zdjęcie; emoji lub inicjały pojawią się po jego usunięciu."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil resmi varken raptiye resmini gösterir; emojiyi veya baş harfleri resmi kaldırınca görürsün."
           }
         }
       }
@@ -13341,6 +13985,52 @@
         }
       }
     },
+    "Noch keine Fahrten. Ab 25 km/h erkennt dein iPhone Fahrten, wenn „Fahrten teilen“ oder die Unfallerkennung an ist.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No trips yet. From 25 km/h your iPhone detects trips when “Share Trips” or crash detection is on."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay trayectos. A partir de 25 km/h tu iPhone detecta trayectos si «Compartir trayectos» o la detección de accidentes está activada."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore de trajets. À partir de 25 km/h, ton iPhone détecte les trajets si « Partager les trajets » ou la détection d'accident est activé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessun tragitto. Da 25 km/h il tuo iPhone riconosce i tragitti se “Condividi tragitti” o il rilevamento incidenti è attivo."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog geen ritten. Vanaf 25 km/h herkent je iPhone ritten als ‘Deel ritten’ of ongevalsdetectie aan staat."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeszcze brak przejazdów. Od 25 km/h iPhone rozpoznaje przejazdy, gdy włączone jest „Udostępniaj przejazdy” lub wykrywanie wypadków."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz sürüş yok. “Sürüşleri paylaş” ya da kaza algılama açıkken iPhone'un 25 km/sa üzerinden sürüşleri tanır."
+          }
+        }
+      }
+    },
     "Noch keine Freunde": {
       "localizations": {
         "en": {
@@ -13659,6 +14349,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yalnızca iPhone’unda saklanır. Varış bildirimi geç ulaşırsa uyarı nadiren haksız yere de gelebilir."
+          }
+        }
+      }
+    },
+    "Nur auf diesem iPhone. Schalte „Fahrten teilen“ ein, damit deine Leuchttürme die Summen sehen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only on this iPhone. Turn on “Share Trips” so your lighthouses see the totals."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo en este iPhone. Activa «Compartir trayectos» para que tus faros vean los totales."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uniquement sur cet iPhone. Active « Partager les trajets » pour que tes phares voient les totaux."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo su questo iPhone. Attiva “Condividi tragitti” perché i tuoi fari vedano i totali."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alleen op deze iPhone. Zet ‘Deel ritten’ aan zodat je vuurtorens de totalen zien."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tylko na tym iPhonie. Włącz „Udostępniaj przejazdy”, aby twoje latarnie widziały sumy."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca bu iPhone'da. Fenerlerin toplamları görsün diye “Sürüşleri paylaş” seçeneğini aç."
           }
         }
       }
@@ -14629,6 +15365,52 @@
         }
       }
     },
+    "Profilbild entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Profile Picture"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quitar foto de perfil"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer la photo de profil"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovi immagine del profilo"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwijder profielfoto"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usuń zdjęcie profilowe"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil resmini kaldır"
+          }
+        }
+      }
+    },
     "Profilbild wählen": {
       "localizations": {
         "en": {
@@ -15499,6 +16281,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hızlı hızlanma"
+          }
+        }
+      }
+    },
+    "Schnelles Beschleunigen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rapid Acceleration"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aceleraciones bruscas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accélérations brusques"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accelerazioni brusche"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snel optrekken"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gwałtowne przyspieszanie"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ani hızlanma"
           }
         }
       }
@@ -16637,6 +17465,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hard geremd"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gwałtowne hamowanie"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sert fren"
+          }
+        }
+      }
+    },
+    "Starkes Bremsen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hard Braking"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frenazos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freinages brusques"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frenate brusche"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hard remmen"
           }
         },
         "pl": {
@@ -19413,6 +20287,52 @@
         }
       }
     },
+    "Zeitraum": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Period"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periodo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Période"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periodo"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periode"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Okres"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dönem"
+          }
+        }
+      }
+    },
     "Ziel": {
       "localizations": {
         "en": {
@@ -20149,52 +21069,6 @@
         }
       }
     },
-    "hat die Begleitung beendet": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ended the escort"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ha terminado el acompañamiento"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "a terminé l'accompagnement"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ha terminato l'accompagnamento"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "heeft de begeleiding gestopt"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "kończy odprowadzanie"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "eşliği bitirdi"
-          }
-        }
-      }
-    },
     "hat eingecheckt 📍": {
       "localizations": {
         "en": {
@@ -20697,6 +21571,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "vardı: “%@”"
+          }
+        }
+      }
+    },
+    "ist nicht mehr auf dem Weg zu „%@“": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "is no longer on the way to “%@”"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ya no va de camino a «%@»"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "n'est plus en route vers « %@ »"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "non è più in viaggio verso “%@”"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "is niet meer onderweg naar ‘%@’"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nie jest już w drodze do „%@”"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "artık “%@” yolunda değil"
+          }
+        }
+      }
+    },
+    "ist nicht mehr unterwegs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "is no longer on the way"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ya no está de camino"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "n'est plus en route"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "non è più in viaggio"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "is niet meer onderweg"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nie jest już w drodze"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "artık yolda değil"
           }
         }
       }

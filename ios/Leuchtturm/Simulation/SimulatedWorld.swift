@@ -45,6 +45,8 @@ final class SimulatedWorld {
     private var lastMoved: [String: Date] = [:]
     private var lastPositions: [String: SharedLocation] = [:]
     private var placeTrackers: [String: PlaceTracker] = [:]
+    /// Trips the demo shared, by person, for their driving totals.
+    private var sharedTrips: [String: [Trip]] = [:]
     /// Anna's and Ben's paths today; they share their history.
     private var paths: [String: [HistoryDay.Point]] = [:]
     /// People who currently share only an approximate area.
@@ -209,7 +211,9 @@ final class SimulatedWorld {
         for circle in (try? await person.client.circles()) ?? [] {
             guard let places = try? await person.client.circle(circle.ref).places else { continue }
             var tracker = placeTrackers[person.id + circle.id] ?? PlaceTracker()
-            let events = tracker.update(latitude: position.latitude, longitude: position.longitude, accuracy: position.accuracy, places: places)
+            let events = tracker.update(
+                latitude: position.latitude, longitude: position.longitude, accuracy: position.accuracy, speed: position.speed, places: places
+            )
             placeTrackers[person.id + circle.id] = tracker
             for event in events {
                 switch event {
@@ -294,6 +298,7 @@ final class SimulatedWorld {
                 hardBrakes: entry.brakes, rapidAccelerations: entry.accels, route: route
             )
             try await entry.person.client.shareTrip(trip)
+            sharedTrips[entry.person.id, default: []].append(trip)
         }
 
         // Ben's day out: town, country road, motorway at up to 220 km/h, town again.
@@ -312,10 +317,30 @@ final class SimulatedWorld {
                 route.append(HistoryDay.Point(latitude: lat, longitude: lon, timestamp: time))
             }
         }
-        try await people[1].client.shareTrip(Trip(
+        let dayOut = Trip(
             id: CircleCrypto.newCircleID(), deviceID: people[1].client.deviceID, start: start, end: time,
             distance: distance, topSpeed: 220 / 3.6, hardBrakes: 0, rapidAccelerations: 1, route: route
-        ))
+        )
+        try await people[1].client.shareTrip(dayOut)
+        sharedTrips[people[1].id, default: []].append(dayOut)
+    }
+
+    /// The person's driving totals: this week's trips plus a made-up year
+    /// and more before, as their own iPhone would keep them.
+    func demoDriving(of person: Person) -> [DriveStats.Period: DriveStats] {
+        let now = Date()
+        var trips = sharedTrips[person.id] ?? []
+        let seed = person.name.unicodeScalars.reduce(0) { $0 + Int($1.value) }
+        for i in 0 ..< 160 {
+            let end = now.addingTimeInterval(-Double(9 + i * 4 + seed % 3) * 86400)
+            let km = Double(6 + (i * 7 + seed) % 40)
+            trips.append(Trip(
+                id: "old-\(person.id)-\(i)", deviceID: person.client.deviceID, start: end - km * 70, end: end, distance: km * 1000,
+                topSpeed: Double(14 + (i * 3 + seed) % 22), hardBrakes: (i + seed) % 9 == 0 ? 1 : 0,
+                rapidAccelerations: (i + seed) % 13 == 0 ? 1 : 0, route: []
+            ))
+        }
+        return DriveStats.summarize(trips, now: now)
     }
 
     static func offset(_ home: CLLocationCoordinate2D, north: Double, east: Double) -> (Double, Double) {

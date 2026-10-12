@@ -240,11 +240,11 @@ Contexts: `ctx("leuchtturm/v1/circle-meta", circleID)`, `ctx("leuchtturm/v1/memb
 
 | Field | Content |
 |-------|---------|
-| `blob` | encrypted and padded `{"c": colour "#RRGGBB", "e": pin emoji, "bs": banner style, "se": status emoji, "st": status text (≤ 40), "su": status end}` |
+| `blob` | encrypted and padded `{"c": colour "#RRGGBB", "e": pin emoji, "bs": banner style, "se": status emoji, "st": status text (≤ 40), "su": status end, "ds": driving totals}` |
 | `photo`, `banner` | square JPEG (≤ 120 KB) and wide JPEG (≤ 300 KB), each `0x01 ‖ epoch ‖ ChaCha20-Poly1305` under the circle key, context `ctx("leuchtturm/v1/profile", circleID, deviceID) ‖ "photo"/"banner"`, not padded; empty if none |
 | `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/profile-record", circleID, deviceID)` followed by blob, photo, banner each as u64 length ‖ bytes |
 
-The device writes the same profile to all its circles, re-encrypts it after a key rotation and deletes it when leaving. Readers show profiles only of roster members with a valid signature. Apple sees the sizes of the pictures.
+`ds` is present only with "Fahrten teilen": `{"week"|"month"|"year"|"all": {trips, distance (m), duration (s), topSpeed (m/s), hardBrakes, rapidAccelerations, score}}`. The driver's device computes it after every trip from a local archive of its own trips (`TripArchive`, numbers only, no routes, never uploaded), because `Trip` records stay in iCloud for 30 days only. Readers reject implausible values (e.g. top speed above 150 m/s). The device writes the same profile to all its circles, re-encrypts it after a key rotation and deletes it when leaving. Readers show profiles only of roster members with a valid signature. Apple sees the sizes of the pictures.
 
 ### `Message` (record name `msg-<messageID>`)
 

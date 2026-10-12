@@ -28,6 +28,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 - **Widgets and lock screen.** Widgets and the Live Activity show names and places on the lock screen; anyone holding the phone can read them. The snapshot file lives unencrypted (besides iOS file protection) in the app's App Group container.
 - **Apple Watch and Apple TV.** The watch keeps the widget snapshot unencrypted (besides watchOS file protection). The TV shows the map of the selected circle, including the user, to anyone in the room, and caches the last snapshot. Whoever can sign in to the user's iCloud on a TV still needs the code shown on that TV to get a snapshot.
 - **Live links.** Anyone who gets the link sees the position until it ends; it cannot be limited to one viewer. Apple sees that a public record is written and read (and the readers' IP addresses), GitHub sees visits to the page. If the phone dies, the last position stays readable for anyone with the link until the hour is over, then the page shows it as expired; the record itself is deleted the next time the app runs.
+- **Long-term driving totals.** With "Fahrten teilen" a member's circles see sums over a year and all time (number of trips, distance, top speed, hard braking), even though single trips are deleted after 30 days. Turning trip sharing off removes them from the profile.
 - **Map tiles.** The map comes from Apple Maps, which sees the map areas the app loads. These are usually where the circle's members are.
 - **Data location.** iCloud data is stored in Apple's data centers; Apple is a US company. EU-only storage is not guaranteed.
 - **Apple as an active attacker on the app itself.** Apple distributes the app binary and operating system.
@@ -59,6 +60,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 | Last position stays behind | Pausing, leaving and removal delete the location record | M2 |
 | A member wants privacy for a while without leaving | Fog mode: only a grid cell of 2 to 50 km is shared; the exact position stays on the device | M3 |
 | Someone fakes a member's trips or driving score | Trips are signed by the driver's device; scores are computed by each reader from verified trips | M6 |
+| Someone fakes a member's long-term driving totals | The totals are part of the profile, signed by the driver's own device; readers drop implausible numbers. The driver's device could still lie about itself | Profile |
 | Someone fakes or extends a member's history | History days are signed by the member's device; only the device itself writes and deletes them | M5 |
 | History kept longer than wanted | The writing device deletes days past its retention, and everything when history is turned off or the member leaves | M5 |
 | Member redirects everyone to a circle of their own | Move notices count only from admins in the owner-signed meta, signed with the admin's own keys, which become the new owner keys | Roles |

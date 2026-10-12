@@ -62,7 +62,9 @@ enum NoteText {
         case .meetingPoint:
             return String(localized: "schlägt „\(note.text)“ als Treffpunkt vor 📍")
         case .journeyCancelled:
-            return String(localized: "hat die Begleitung beendet")
+            return note.text.isEmpty
+                ? String(localized: "ist nicht mehr unterwegs")
+                : String(localized: "ist nicht mehr auf dem Weg zu „\(note.text)“")
         case .removeRequest, .renameRequest:
             return ""
         }

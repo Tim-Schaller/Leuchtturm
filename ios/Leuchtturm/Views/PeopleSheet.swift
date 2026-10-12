@@ -292,27 +292,34 @@ struct MemberDetailView: View {
     @State private var editing = false
     @State private var asked = false
 
+    /// One's own page shows the profile as edited, not the copy from iCloud.
+    private var shown: CircleMember {
+        guard member.isMe else { return member }
+        var me = member
+        me.profile = model.myProfile
+        return me
+    }
+
     var body: some View {
         List {
             Section {
-                ProfileHeader(member: member, subtitle: LocationStatus.text(for: member, model: model))
-                if model.showsWeather, member.location != nil || member.isMe {
-                    HStack {
-                        WeatherBadge(location: member.isMe ? model.tracker.location.flatMap { SharedLocation($0) } : member.location)
-                        Spacer()
-                        Link("\u{F8FF} Weather", destination: model.weather.attribution?.legalPageURL
-                             ?? URL(string: "https://weatherkit.apple.com/legal-attribution.html")!)
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.horizontal)
-                }
-                if member.isMe {
-                    Button("Profil gestalten", systemImage: "paintbrush") { editing = true }
+                ProfileHeader(member: shown, subtitle: LocationStatus.text(for: member, model: model))
+                    .listRowSeparator(.hidden)
+                if model.showsWeather {
+                    WeatherBadge(location: member.isMe ? model.tracker.location.flatMap { SharedLocation($0) } : member.location,
+                                 withAttribution: true)
+                        .padding(.horizontal)
+                        .listRowSeparator(.hidden)
                 }
             }
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
+
+            if member.isMe {
+                Section {
+                    Button("Profil gestalten", systemImage: "paintbrush") { editing = true }
+                }
+            }
 
             if !member.isMe, !member.isPending, let ref {
                 Section {
@@ -324,6 +331,13 @@ struct MemberDetailView: View {
                 } footer: {
                     Text("Weckt das iPhone von \(member.name ?? String(localized: "der Person")) für einen frischen Standort. Die Person sieht, dass du gefragt hast.")
                 }
+            }
+
+            if !member.isPending {
+                DriveStatsSection(member: member)
+            }
+
+            if !member.isMe, !member.isPending, let ref {
                 ReactionPicker(member: member, ref: ref)
             }
 

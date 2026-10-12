@@ -76,9 +76,11 @@ struct Avatar: View {
     let name: String?
     let id: String
     var size: CGFloat = 44
+    /// Shown instead of the circle's copy, e.g. while editing one's own profile.
+    var profile: Profile?
 
     var body: some View {
-        let profile = memberProfiles[id]
+        let profile = self.profile ?? memberProfiles[id]
         let color = Color(hex: profile?.color) ?? memberColors[id] ?? Theme.color(for: id)
         ZStack {
             Circle().fill(color.gradient)

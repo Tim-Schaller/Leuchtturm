@@ -271,8 +271,16 @@ struct PlaceTrackerTests {
     let school = CirclePlace(id: "school", creatorID: "x", name: "Schule", emoji: "🏫", latitude: 53.55, longitude: 9.99, radius: 150)!
 
     /// A position `meters` north of the school.
-    func step(_ tracker: inout PlaceTracker, _ meters: Double, accuracy: Double = 10) -> [PlaceTracker.Event] {
-        tracker.update(latitude: 53.55 + meters / 111_320, longitude: 9.99, accuracy: accuracy, places: [school])
+    func step(_ tracker: inout PlaceTracker, _ meters: Double, accuracy: Double = 10, speed: Double? = nil) -> [PlaceTracker.Event] {
+        tracker.update(latitude: 53.55 + meters / 111_320, longitude: 9.99, accuracy: accuracy, speed: speed, places: [school])
+    }
+
+    @Test func drivingThroughIsNoArrival() {
+        var tracker = PlaceTracker()
+        #expect(step(&tracker, 1000, speed: 16).isEmpty)
+        #expect(step(&tracker, 50, speed: 16).isEmpty) // 57 km/h past the school
+        #expect(step(&tracker, -400, speed: 16).isEmpty) // and no departure either
+        #expect(step(&tracker, 30, speed: 2).isEmpty == false) // walking in is an arrival
     }
 
     @Test func arrivalAndDepartureWithMargin() {

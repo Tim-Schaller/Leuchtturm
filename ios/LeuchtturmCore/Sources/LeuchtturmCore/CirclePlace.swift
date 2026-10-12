@@ -90,6 +90,7 @@ extension CircleCrypto {
 /// needs a margin beyond the radius so GPS jitter at the edge does not
 /// cause a flood of alerts. The first look at a place only records where
 /// you are, so creating a place you are at does not announce an arrival.
+/// Passing through at driving speed is no arrival (and so no departure).
 public struct PlaceTracker: Sendable, Codable, Equatable {
     public enum Event: Sendable, Equatable {
         case arrived(CirclePlace)
@@ -99,9 +100,14 @@ public struct PlaceTracker: Sendable, Codable, Equatable {
     public private(set) var inside: Set<String> = []
     private var known: Set<String> = []
 
+    /// Faster than this (m/s, about 25 km/h) one is passing by, not arriving.
+    public static let passingSpeed = 7.0
+
     public init() {}
 
-    public mutating func update(latitude: Double, longitude: Double, accuracy: Double, places: [CirclePlace]) -> [Event] {
+    /// `speed` in m/s; nil or negative if unknown.
+    public mutating func update(latitude: Double, longitude: Double, accuracy: Double, speed: Double? = nil, places: [CirclePlace]) -> [Event] {
+        let passing = (speed ?? -1) >= Self.passingSpeed
         let ids = Set(places.map(\.id))
         inside.formIntersection(ids)
         known.formIntersection(ids)
@@ -111,7 +117,7 @@ public struct PlaceTracker: Sendable, Codable, Equatable {
             let isInside = inside.contains(place.id)
             let firstLook = !known.contains(place.id)
             known.insert(place.id)
-            if !isInside, distance <= Double(place.radius) {
+            if !isInside, distance <= Double(place.radius), !passing {
                 inside.insert(place.id)
                 if !firstLook { events.append(.arrived(place)) }
             } else if isInside, distance > Double(place.radius) + max(50, accuracy) {

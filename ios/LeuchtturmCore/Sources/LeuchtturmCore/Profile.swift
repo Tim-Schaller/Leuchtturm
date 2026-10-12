@@ -23,6 +23,8 @@ public struct Profile: Sendable, Hashable {
     public var statusText: String?
     /// The status disappears at this time.
     public var statusUntil: Date?
+    /// Driving totals per period; only with "Fahrten teilen".
+    public var driving: [DriveStats.Period: DriveStats]?
 
     public static let maxPhotoBytes = 120_000
     public static let maxBannerBytes = 300_000
@@ -30,7 +32,8 @@ public struct Profile: Sendable, Hashable {
 
     public init(
         color: String? = nil, emoji: String? = nil, photo: Data? = nil, banner: Data? = nil, bannerStyle: String? = nil,
-        statusEmoji: String? = nil, statusText: String? = nil, statusUntil: Date? = nil
+        statusEmoji: String? = nil, statusText: String? = nil, statusUntil: Date? = nil,
+        driving: [DriveStats.Period: DriveStats]? = nil
     ) {
         self.color = color
         self.emoji = emoji
@@ -40,6 +43,7 @@ public struct Profile: Sendable, Hashable {
         self.statusEmoji = statusEmoji
         self.statusText = statusText
         self.statusUntil = statusUntil.map { Date(timeIntervalSince1970: $0.timeIntervalSince1970.rounded(.down)) }
+        self.driving = driving
     }
 
     /// The status, if it has not run out at `now`.
@@ -58,6 +62,7 @@ public struct Profile: Sendable, Hashable {
             && (emoji?.count ?? 1) == 1 && (statusEmoji?.count ?? 1) == 1
             && (statusText?.count ?? 0) <= Self.maxStatusLength
             && (bannerStyle?.count ?? 0) <= 20
+            && (driving?.values.allSatisfy(\.isPlausible) ?? true)
     }
 }
 
@@ -68,6 +73,8 @@ private struct ProfilePayload: Codable {
     var se: String?
     var st: String?
     var su: Int64?
+    /// Driving totals by period name.
+    var ds: [String: DriveStats]?
 }
 
 /// The encrypted parts of a profile record.
@@ -83,7 +90,8 @@ extension CircleCrypto {
     static func sealProfile(_ profile: Profile, key: SymmetricKey, epoch: Int64, circleID: String, deviceID: String) throws -> SealedProfile {
         let payload = ProfilePayload(
             c: profile.color, e: profile.emoji, bs: profile.bannerStyle, se: profile.statusEmoji, st: profile.statusText,
-            su: profile.statusUntil.map { Int64($0.timeIntervalSince1970) }
+            su: profile.statusUntil.map { Int64($0.timeIntervalSince1970) },
+            ds: profile.driving.map { Dictionary(uniqueKeysWithValues: $0.map { ($0.key.rawValue, $0.value) }) }
         )
         let context = profileContext(circleID: circleID, deviceID: deviceID)
         return SealedProfile(
@@ -104,7 +112,8 @@ extension CircleCrypto {
             photo: sealed.photo.isEmpty ? nil : try openPicture(sealed.photo, context: context + Data("photo".utf8), keyForEpoch: keyForEpoch),
             banner: sealed.banner.isEmpty ? nil : try openPicture(sealed.banner, context: context + Data("banner".utf8), keyForEpoch: keyForEpoch),
             bannerStyle: p.bs, statusEmoji: p.se, statusText: p.st,
-            statusUntil: p.su.map { Date(timeIntervalSince1970: TimeInterval($0)) }
+            statusUntil: p.su.map { Date(timeIntervalSince1970: TimeInterval($0)) },
+            driving: p.ds.map { Dictionary(uniqueKeysWithValues: $0.compactMap { key, value in DriveStats.Period(rawValue: key).map { ($0, value) } }) }
         )
         guard profile.isValid else { throw ProtocolError.malformed }
         return profile

@@ -33,7 +33,7 @@ struct WeekView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text("\(Self.km(trip.distance)) · \(Self.minutes(trip.duration))")
                                         .font(.subheadline.weight(.semibold))
-                                    Text(trip.start, format: .dateTime.weekday(.wide).hour().minute())
+                                    Text("\(member(trip.deviceID)?.name ?? String(localized: "Unbekannt")) · \(trip.start.formatted(.dateTime.weekday(.wide).hour().minute()))")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
@@ -356,14 +356,29 @@ struct ChallengesSection: View {
 struct MemoryCard: View {
     @Environment(AppModel.self) private var model
 
+    /// Tight around the path; the automatic framing zoomed out so far that
+    /// the city's name covered the map.
+    static func position(for points: [HistoryDay.Point]) -> MapCameraPosition {
+        guard let first = points.first else { return .automatic }
+        var (minLat, maxLat, minLon, maxLon) = (first.latitude, first.latitude, first.longitude, first.longitude)
+        for p in points {
+            minLat = min(minLat, p.latitude); maxLat = max(maxLat, p.latitude)
+            minLon = min(minLon, p.longitude); maxLon = max(maxLon, p.longitude)
+        }
+        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLon + maxLon) / 2)
+        let span = MKCoordinateSpan(latitudeDelta: max(0.004, (maxLat - minLat) * 1.8), longitudeDelta: max(0.004, (maxLon - minLon) * 1.4))
+        return .region(MKCoordinateRegion(center: center, span: span))
+    }
+
     var body: some View {
         if model.keepsMemories, let memory = model.memories.memory() {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
                     Label(memory.title, systemImage: "calendar.badge.clock").font(.headline)
-                    Map(initialPosition: .automatic, interactionModes: []) {
+                    Map(initialPosition: Self.position(for: memory.points), interactionModes: []) {
                         SpeedPathContent(path: SpeedPath(memory.points))
                     }
+                    .mapStyle(.standard(emphasis: .muted, pointsOfInterest: .excludingAll))
                     .frame(height: 150)
                     .clipShape(.rect(cornerRadius: 14))
                     Text("\(WeekView.km(WeekView.length(memory.points))) unterwegs · nur auf diesem iPhone gespeichert")
@@ -378,18 +393,29 @@ struct MemoryCard: View {
 struct WeatherBadge: View {
     @Environment(AppModel.self) private var model
     let location: SharedLocation?
+    /// Shows Apple's required " Weather" link next to it, only while there is weather to show.
+    var withAttribution = false
     @State private var entry: WeatherCache.Entry?
 
     var body: some View {
         Group {
             if let entry {
-                Label {
-                    Text(entry.temperature.formatted(.measurement(width: .narrow, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))
-                } icon: {
-                    Image(systemName: entry.symbol).symbolRenderingMode(.multicolor)
+                HStack {
+                    Label {
+                        Text(entry.temperature.formatted(.measurement(width: .narrow, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))
+                    } icon: {
+                        Image(systemName: entry.symbol).symbolRenderingMode(.multicolor)
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    if withAttribution {
+                        Spacer()
+                        Link("\u{F8FF} Weather", destination: model.weather.attribution?.legalPageURL
+                             ?? URL(string: "https://weatherkit.apple.com/legal-attribution.html")!)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
             }
         }
         .task(id: location.map { "\(($0.latitude * 100).rounded()),\(($0.longitude * 100).rounded())" }) {

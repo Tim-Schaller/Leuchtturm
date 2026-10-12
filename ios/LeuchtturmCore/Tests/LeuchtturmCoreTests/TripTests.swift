@@ -108,3 +108,36 @@ struct TripTests {
         #expect(walker.inFog(radius: 1000)?.steps == 8421)
     }
 }
+
+struct DriveStatsTests {
+    let now = Date(timeIntervalSince1970: 1_800_000_000)
+
+    func trip(daysAgo: Double, km: Double, top: Double = 20, brakes: Int = 0) -> Trip {
+        let end = now.addingTimeInterval(-daysAgo * 86400)
+        return Trip(id: UUID().uuidString, deviceID: "ben", start: end - 600, end: end, distance: km * 1000,
+                    topSpeed: top, hardBrakes: brakes, rapidAccelerations: 0, route: [])
+    }
+
+    @Test func periodsCountOnlyTheirTrips() {
+        let trips = [trip(daysAgo: 1, km: 10, top: 30), trip(daysAgo: 20, km: 20, brakes: 2), trip(daysAgo: 200, km: 30, top: 40), trip(daysAgo: 800, km: 40)]
+        let stats = DriveStats.summarize(trips, now: now)
+        #expect(stats[.week]?.trips == 1 && stats[.week]?.distance == 10_000 && stats[.week]?.topSpeed == 30)
+        #expect(stats[.month]?.trips == 2 && stats[.month]?.hardBrakes == 2)
+        #expect(stats[.year]?.trips == 3 && stats[.year]?.topSpeed == 40)
+        #expect(stats[.all]?.trips == 4 && stats[.all]?.distance == 100_000)
+        #expect(stats[.week]?.score == 100)
+        #expect(DriveStats([]).score == nil)
+    }
+
+    @Test func statsTravelInTheEncryptedProfile() throws {
+        let stats = DriveStats.summarize([trip(daysAgo: 1, km: 12, top: 33)], now: now)
+        let profile = Profile(color: "#2F8F5B", driving: stats)
+        let key = CircleCrypto.newCircleKey()
+        let sealed = try CircleCrypto.sealProfile(profile, key: key, epoch: 1, circleID: "c", deviceID: "d")
+        let opened = try #require(try CircleCrypto.openProfile(sealed, circleID: "c", deviceID: "d") { $0 == 1 ? key : nil })
+        #expect(opened.driving == stats)
+        var forged = profile
+        forged.driving?[.all]?.topSpeed = 900 // 3240 km/h
+        #expect(!forged.isValid)
+    }
+}

@@ -217,6 +217,9 @@ schemes:
       targets:
         Leuchtturm: all
     test:
+      # The tests check German UI texts; CI simulators default to English.
+      language: de
+      region: DE
       targets:
         - LeuchtturmTests
   Leuchtturm TV:

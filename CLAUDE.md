@@ -70,16 +70,25 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 
 ## Next steps
 
-Tim's requests from 2026-10-12, in this order (Tim reads summaries in German; install every finished build on his iPhone without asking):
+**Goal from Tim (2026-10-12), work through all of it; tick items here as they land.** Install every finished build on Tim's iPhone without asking. Check the 5-hour limit before bigger steps; at 95 % commit and schedule a one-shot resume after the reset.
 
-1. ~~Drawer tabs~~ done: `DrawerTabBar` with Personen, Orte, Fahrten, Bestenliste (`Views/DrawerTabs.swift`). Add „Chat“ as a tab with item 3.
-2. ~~History path coloured by speed~~ done (`Views/SpeedPath.swift`, used in history and trip views). Was: **History path coloured by speed**: draw the real path; when driving, colour segments by speed so 30 km/h in town and 250 km/h on the Autobahn are clearly different (gradient, legend).
-3. **Profile pictures and a basic chat** (reactions exist). Pictures and messages end-to-end encrypted like everything else (CKAsset or bytes field; pictures small, e.g. 256 px JPEG).
-4. **Keys via iCloud Keychain by default** („einfach statt streng“), with an option „nur auf diesem Gerät“. Same identity on all devices of one Apple Account; only one device shares the location (setting). Update threat model.
-5. **More languages** (e.g. French, Spanish, Italian, Dutch, Polish, Turkish) in `Localizable.xcstrings` / `InfoPlist.xcstrings`.
-6. **Privacy policy** (German and English) as a page in the repo for the App Store URL.
-7. **CloudKit schema**: Tim does not know this step. Explain: records types are created automatically only in the Development environment; before TestFlight the schema must be deployed to Production in the CloudKit Console. Build a debug helper that writes one record of every type in Development, then deploy together with Tim in Claude in Chrome.
-8. **TestFlight** as soon as ready (Tim tests with his girlfriend, which also covers the two-account checks below). App Store Connect is set up together in Claude in Chrome.
-9. Answer Tim's question „welche Features brauchen wir noch?“ with a short list.
+Build order (dependencies first):
+- [ ] 1. Keys via iCloud Keychain by default (synchronizable), option „nur auf diesem Gerät“; threat model update.
+- [ ] 11/19/24. `Profile` record per device: picture, banner, pin colour/emoji, status emoji with expiry; shown on map, lists, chat.
+- [ ] 10. Chat tab: messages with reply, photos and Apple stickers (Genmoji/adaptive image glyphs), encrypted.
+- [ ] 13. „Wo bist du?“ request wakes the other phone for a fresh location.
+- [ ] 15. „Hol mich ab“ with location.
+- [ ] 12. „Bin auf dem Weg“ with ETA (MKDirections) and automatic arrival message.
+- [ ] 14. Heimweg-Begleitung: watchers' devices alert if not home by the deadline.
+- [ ] 16. Treffpunkt in the middle of everyone (MKLocalSearch nearby).
+- [ ] 9. Friends list across all Leuchttürme.
+- [ ] 20. Weekly challenges and streaks. 21. Steps leaderboard (HealthKit, opt-in). 22. „Heute vor einem Jahr“ from a local-only archive. 23. Weather at a person's place (WeatherKit).
+- [ ] 5/17. Widgets (home and lock screen) via App Group snapshot. 7. Live Activity while driving / on the way. 18. Siri and Shortcuts (App Intents).
+- [ ] 25. iPad layout.
+- [ ] 6. Apple Watch app and tvOS app.
+- [ ] 8. 1-hour share link for people without the app (CloudKit public DB, AES-GCM, key in URL fragment, static web page).
+- [ ] 2. Languages: fr, es, it, nl, pl, tr (app and permission texts).
+- [ ] 3. Privacy policy (de, en).
+- [ ] 4. TestFlight: CloudKit schema to Production, App Store Connect together with Tim in Claude in Chrome.
 
-Still open from before: verify on real CloudKit with **two** iCloud accounts (creator/lastModified user IDs and `CKCurrentUserDefaultName` normalization, removing a public-link participant, leaving by deleting the `CKShare`, `recordZoneChanges` returning all records, silent pushes, takeover across accounts).
+Still open from before: verify on real CloudKit with **two** iCloud accounts (creator/lastModified user IDs and `CKCurrentUserDefaultName` normalization, removing a public-link participant, leaving by deleting the `CKShare`, `recordZoneChanges` returning all records, silent pushes, takeover across accounts). Tim's girlfriend via TestFlight covers this.

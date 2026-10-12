@@ -158,6 +158,16 @@ An `ArrivalWatch` (member, place, time, once/weekdays/daily) is stored only on t
 
 With "Always" access iOS reports visits (`CLVisit`). The device keeps finished stays for 30 days in a protected local file, never in iCloud, and suggests spots with stays of 15 minutes or more on at least two different days within 150 m that are not inside a place yet. No reverse geocoding, so no coordinates go to Apple for this.
 
+### Requests and journeys (more `Note` kinds)
+
+Notes carry an optional `"d"` (deadline, Unix seconds).
+
+- `locationRequest` ("Wo bist du?", to one member): the recipient's device, woken by the silent push, takes a fresh position and shares it right away, and the recipient sees who asked.
+- `pickUp` ("Hol mich ab"): with the sender's exact position.
+- `onMyWay` ("Bin auf dem Weg"): destination name and position, expected arrival in `d` (computed with Apple Maps directions, so Apple sees start and destination for that request). The sender's device sends an `arrival` note within 150 m of the destination.
+- `walkHome` ("Heimweg-Begleitung"): destination and latest arrival in `d`. Every other member's device schedules a local alert for `d`, withdrawn when it sees the arrival, a `journeyCancelled` note, or the walker's position at the destination.
+- `meetingPoint` ("Treffpunkt"): the centre of everyone's positions (people in fog excluded), optionally a nearby place from an Apple Maps search around that centre.
+
 ### Low battery
 
 When the device's battery drops to 15 % or less without charging, it sends a `Note` of kind `lowBattery` (text: the percentage) to every circle, once per discharge (again after charging or above 30 %).

@@ -30,6 +30,7 @@ final class AppModel {
         static let sharesTrips = "sharesTrips"
         static let tripDetector = "tripDetector"
         static let detectsCrashes = "detectsCrashes"
+        static let journey = "journey"
         static let lowBatteryWarned = "lowBatteryWarned"
         static let arrivalWatches = "arrivalWatches"
         static let verifiedDevices = "verifiedDevices"
@@ -76,6 +77,11 @@ final class AppModel {
     /// While set and not expired, only an approximate area is shared.
     private(set) var fog: Fog?
     var activeFog: Fog? { fog.flatMap { $0.until > Date() ? $0 : nil } }
+
+    /// "Bin auf dem Weg" or "Heimweg" of this device, until arrival.
+    private(set) var journey: Journey?
+    /// Share the next position even if the policy would skip it.
+    @ObservationIgnored private var forceShare = false
 
     /// This device's picture, pin and status, kept locally and written to all circles.
     private(set) var myProfile = Profile()
@@ -172,6 +178,7 @@ final class AppModel {
         sendsMorningGreeting = !isSimulation && defaults.bool(forKey: Keys.morningGreeting)
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
         knownPlaces = [:]
+        journey = isSimulation ? nil : defaults.data(forKey: Keys.journey).flatMap { try? JSONDecoder().decode(Journey.self, from: $0) }
         myProfile = isSimulation ? Profile() : Self.loadStoredProfile() ?? Profile()
         latestDetails = [:]
         verifiedDevices = isSimulation ? [] : Set(defaults.stringArray(forKey: Keys.verifiedDevices) ?? [])
@@ -343,7 +350,10 @@ final class AppModel {
         let battery = device.batteryLevel >= 0 ? Int((device.batteryLevel * 100).rounded()) : nil
         let charging = device.batteryState == .charging || device.batteryState == .full
         await warnIfBatteryLow(battery, charging: charging)
-        guard policy.shouldShare(location, after: lastShared),
+        await watchJourney(location)
+        let forced = forceShare
+        forceShare = false
+        guard forced || policy.shouldShare(location, after: lastShared),
               let exact = SharedLocation(
                   location, battery: battery, isCharging: charging,
                   speed: sharesTrips && tripDetector.isDriving && location.speed >= 0 ? location.speed : nil
@@ -413,7 +423,11 @@ final class AppModel {
             return false
         }
         // An SOS always carries the exact position, also in fog.
-        let location = kind == .checkIn || kind == .sos ? tracker.location.flatMap { SharedLocation($0) } : nil
+        let location = [.checkIn, .sos, .pickUp].contains(kind) ? tracker.location.flatMap { SharedLocation($0) } : nil
+        if kind == .pickUp && location == nil {
+            errorMessage = String(localized: "Dein Standort ist noch nicht bekannt. Bitte versuch es gleich noch einmal.")
+            return false
+        }
         if kind == .checkIn && location == nil {
             errorMessage = String(localized: "Dein Standort ist noch nicht bekannt. Bitte versuch es gleich noch einmal.")
             return false
@@ -484,6 +498,58 @@ final class AppModel {
             saveTripDetector()
             await run { try await $0.deleteTrips() }
         }
+    }
+
+    // MARK: Journeys
+
+    func startJourney(_ new: Journey) async -> Bool {
+        guard let ref = circles.first(where: { $0.id == new.circleID })?.ref,
+              let destination = SharedLocation(latitude: new.latitude, longitude: new.longitude, accuracy: 50, timestamp: Date())
+        else { return false }
+        let kind: CircleNote.Kind = new.isWalkHome ? .walkHome : .onMyWay
+        guard let note = await run({ try await $0.send(kind, text: new.destination, location: destination, deadline: new.deadline, in: ref) })
+        else { return false }
+        markSeen([note.id])
+        setJourney(new)
+        await shareLocationNow()
+        noteRemoteChange()
+        return true
+    }
+
+    func cancelJourney() async {
+        guard let journey, let ref = circles.first(where: { $0.id == journey.circleID })?.ref else { setJourney(nil); return }
+        await send(.journeyCancelled, text: journey.destination, in: ref)
+        setJourney(nil)
+        noteRemoteChange()
+    }
+
+    private func setJourney(_ new: Journey?) {
+        journey = new
+        if !isSimulation { UserDefaults.standard.set(new.flatMap { try? JSONEncoder().encode($0) }, forKey: Keys.journey) }
+    }
+
+    /// Arrived within 150 m of the destination: tell the circle.
+    private func watchJourney(_ location: CLLocation) async {
+        guard let journey, location.distance(from: CLLocation(latitude: journey.latitude, longitude: journey.longitude)) <= 150,
+              let ref = circles.first(where: { $0.id == journey.circleID })?.ref
+        else { return }
+        setJourney(nil)
+        await send(.arrival, text: journey.destination, in: ref)
+        noteRemoteChange()
+    }
+
+    func sendMeetingPoint(name: String, coordinate: CLLocationCoordinate2D, in ref: CircleRef) async -> Bool {
+        guard let point = SharedLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, accuracy: 30, timestamp: Date()),
+              let note = await run({ try await $0.send(.meetingPoint, text: name, location: point, in: ref) })
+        else { return false }
+        markSeen([note.id])
+        noteRemoteChange()
+        return true
+    }
+
+    /// The circle a member is in (the first one this device knows).
+    func circleOf(_ memberID: String) -> String? {
+        latestDetails.first { $0.value.members.contains { $0.id == memberID } }?.key
     }
 
     // MARK: Chat
@@ -647,6 +713,25 @@ final class AppModel {
         guard usesDeviceServices else { return }
 
         var desired: [String: UNNotificationRequest] = [:]
+        // Heimweg-Begleitung of others: alert at the deadline unless they arrived.
+        for details in latestDetails.values {
+            for member in details.members where !member.isMe {
+                guard let walk = activeJourney(of: member.id, in: details.notes, now: now), walk.kind == .walkHome,
+                      let deadline = walk.deadline, deadline > now, let destination = walk.location
+                else { continue }
+                if let l = member.location, l.timestamp > walk.timestamp,
+                   CLLocation(latitude: l.latitude, longitude: l.longitude).distance(from: destination.clLocation) <= 150 { continue }
+                let id = "walk-\(walk.id)"
+                let content = UNMutableNotificationContent()
+                content.title = String(localized: "⏰ \(member.name ?? "Jemand") ist noch nicht angekommen")
+                content.body = String(localized: "Der Heimweg nach „\(walk.text)“ sollte bis \(deadline.formatted(date: .omitted, time: .shortened)) dauern. Vielleicht mal nachfragen?")
+                content.sound = .default
+                content.interruptionLevel = .timeSensitive
+                content.threadIdentifier = details.id
+                let trigger = UNCalendarNotificationTrigger(dateMatching: calendar.dateComponents([.year, .month, .day, .hour, .minute], from: deadline), repeats: false)
+                desired[id] = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+            }
+        }
         for watch in arrivalWatches {
             guard let details = latestDetails[watch.circleID],
                   let place = details.places.first(where: { $0.id == watch.placeID }),
@@ -668,7 +753,7 @@ final class AppModel {
             }
         }
         let center = UNUserNotificationCenter.current()
-        let pending = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix("watch-") }
+        let pending = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix("watch-") || $0.hasPrefix("walk-") }
         center.removePendingNotificationRequests(withIdentifiers: pending.filter { desired[$0] == nil })
         for (id, request) in desired where !pending.contains(id) {
             try? await center.add(request)
@@ -829,7 +914,7 @@ final class AppModel {
     func deliverNews(_ details: CircleDetails) {
         latestDetails[details.id] = details
         announceNewMembers(details)
-        if !arrivalWatches.isEmpty { Task { await scheduleArrivalWatches() } }
+        if !arrivalWatches.isEmpty || details.notes.contains(where: { $0.kind == .walkHome }) { Task { await scheduleArrivalWatches() } }
         let placesChanged = knownPlaces[details.id]?.places != details.places
         knownPlaces[details.id] = (details.ref, details.places)
         if placesChanged, usesDeviceServices {
@@ -863,6 +948,11 @@ final class AppModel {
         }
         guard !fresh.isEmpty else { return }
         markSeen(fresh.map(\.id))
+        if fresh.contains(where: { $0.kind == .locationRequest && $0.recipientID == me }), isSharingLocation {
+            forceShare = true
+            tracker.requestFresh()
+            if let here = tracker.location { Task { await share(here) } }
+        }
         guard usesDeviceServices else { return }
         for note in fresh.reversed() {
             let sender = details.members.first { $0.id == note.senderID }?.name ?? String(localized: "Jemand")

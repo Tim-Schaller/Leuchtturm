@@ -33,6 +33,19 @@ public struct CircleNote: Sendable, Hashable, Identifiable {
         case handoverOffer
         /// Sent by the new owner in the new circle after a takeover.
         case tookOver
+        /// "Where are you?": asks the recipient's device for a fresh position.
+        case locationRequest
+        /// "Pick me up", with the sender's position.
+        case pickUp
+        /// On the way to `text` at `location`, arriving around `deadline`.
+        case onMyWay
+        /// Walking home to `text` at `location`; the others are alerted if
+        /// there is no arrival by `deadline`.
+        case walkHome
+        /// A suggested meeting point `text` at `location`.
+        case meetingPoint
+        /// Ends an onMyWay or walkHome without arriving.
+        case journeyCancelled
     }
 
     public let id: String
@@ -43,9 +56,11 @@ public struct CircleNote: Sendable, Hashable, Identifiable {
     public let kind: Kind
     /// Emoji or short text; empty for check-ins and good-mornings.
     public let text: String
-    /// Where a check-in happened.
+    /// Where a check-in happened, or the destination of a journey.
     public let location: SharedLocation?
     public let timestamp: Date
+    /// Expected arrival (onMyWay) or latest arrival (walkHome).
+    public var deadline: Date? = nil
 
     public static let maxTextLength = 120
     /// Older notes are ignored by readers and deleted by their sender.
@@ -59,6 +74,7 @@ private struct NotePayload: Codable {
     let to: String?
     let t: Int64
     var loc: CheckInPayload?
+    var d: Int64?
 }
 
 /// A check-in position inside a note.
@@ -72,7 +88,8 @@ extension CircleCrypto {
     static func sealNote(_ note: CircleNote, key: SymmetricKey, epoch: Int64, circleID: String) throws -> Data {
         let payload = NotePayload(
             k: note.kind, x: note.text, to: note.recipientID, t: Int64(note.timestamp.timeIntervalSince1970),
-            loc: note.location.map { CheckInPayload(lat: $0.latitude, lon: $0.longitude, acc: $0.accuracy) }
+            loc: note.location.map { CheckInPayload(lat: $0.latitude, lon: $0.longitude, acc: $0.accuracy) },
+            d: note.deadline.map { Int64($0.timeIntervalSince1970) }
         )
         return try sealContent(JSONEncoder().encode(payload), key: key, epoch: epoch, context: noteContext(circleID: circleID, noteID: note.id))
     }
@@ -93,7 +110,8 @@ extension CircleCrypto {
             location = checked
         }
         return CircleNote(
-            id: id, senderID: senderID, recipientID: p.to, kind: p.k, text: p.x, location: location, timestamp: timestamp
+            id: id, senderID: senderID, recipientID: p.to, kind: p.k, text: p.x, location: location, timestamp: timestamp,
+            deadline: p.d.map { Date(timeIntervalSince1970: TimeInterval($0)) }
         )
     }
 

@@ -95,11 +95,20 @@ final class SimulatedWorld {
 
     /// The person sends a note to all their circles, optionally addressed to
     /// someone. A check-in uses their current position.
-    func send(_ kind: CircleNote.Kind, text: String = "", from person: Person, to recipientID: String? = nil) async throws {
-        let location = kind == .checkIn || kind == .sos ? lastPositions[person.id] : nil
+    func send(
+        _ kind: CircleNote.Kind, text: String = "", from person: Person, to recipientID: String? = nil,
+        location: SharedLocation? = nil, deadline: Date? = nil
+    ) async throws {
+        let location = location ?? ([.checkIn, .sos, .pickUp].contains(kind) ? lastPositions[person.id] : nil)
         for circle in try await person.client.circles() {
-            try await person.client.send(kind, text: text, to: recipientID, location: location, in: circle.ref)
+            try await person.client.send(kind, text: text, to: recipientID, location: location, deadline: deadline, in: circle.ref)
         }
+    }
+
+    /// Ben heads home: on his way to "Zuhause", arriving in twelve minutes.
+    func benOnHisWayHome(home: CLLocationCoordinate2D) async throws {
+        let destination = SharedLocation(latitude: home.latitude, longitude: home.longitude, accuracy: 50, timestamp: Date())
+        try await send(.onMyWay, text: String(localized: "Zuhause"), from: people[1], location: destination, deadline: Date().addingTimeInterval(720))
     }
 
     /// The person receives the invite link as text, like via a messenger, and joins.

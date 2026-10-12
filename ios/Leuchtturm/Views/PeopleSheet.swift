@@ -116,25 +116,12 @@ struct PeopleSheet: View {
                         .tint(.primary)
                     }
                 }
+                if let journey = model.journey, journey.circleID == details.id {
+                    Section { JourneyBanner(journey: journey) }
+                }
+                Section { ActionGrid(details: details, sheet: $sheet) }
                 NewsSection(details: details, onShowPlace: onShowPlace)
                 Section {
-                    Button("Einchecken: „Ich bin hier“", systemImage: "mappin.and.ellipse") {
-                        Task { await model.send(.checkIn, in: circle.ref) }
-                    }
-                    .disabled(!details.hasKey || model.activeFog != nil)
-                    if let fog = model.activeFog {
-                        Button {
-                            Task { await model.endFog() }
-                        } label: {
-                            Label {
-                                Text("Nebel bis \(fog.until, format: .dateTime.hour().minute()) · beenden")
-                            } icon: {
-                                Image(systemName: "circle.dashed")
-                            }
-                        }
-                    } else {
-                        Button("Nebel: nur ungefähre Gegend teilen", systemImage: "circle.dashed") { sheet = .fog }
-                    }
                     Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(circle.ref) }
                         .disabled(!details.hasKey)
                     NavigationLink(value: DrawerRoute.manage(circle.ref)) {
@@ -168,6 +155,10 @@ struct PeopleSheet: View {
             InviteSheet(ref: ref, circleName: details?.name)
         case .fog:
             FogSheet()
+        case let .journey(ref, walkHome):
+            JourneySheet(ref: ref, walkHome: walkHome)
+        case let .meetingPoint(ref):
+            MeetingPointSheet(ref: ref)
         case let .addPlace(ref, suggestion):
             AddPlaceSheet(ref: ref, suggestion: suggestion)
         case .sos:
@@ -247,6 +238,13 @@ enum LocationStatus {
             return model.tracker.isAlwaysAllowed || model.isSimulation ? String(localized: "Wird geteilt") : String(localized: "Nur solange die App läuft")
         }
         if member.isPending { return String(localized: "Wartet auf Bestätigung") }
+        if let journey = activeJourney(of: member.id, in: model.latestCircle(model.circleOf(member.id) ?? "")?.notes ?? []),
+           let deadline = journey.deadline {
+            let time = deadline.formatted(date: .omitted, time: .shortened)
+            return journey.kind == .walkHome
+                ? String(localized: "Heimweg zu \(journey.text) · bis \(time)")
+                : String(localized: "Auf dem Weg zu \(journey.text) · ca. \(time)")
+        }
         guard let location = member.location else { return String(localized: "Teilt noch keinen Standort") }
         let ago = location.timestamp.timeIntervalSinceNow > -60
             ? String(localized: "Gerade eben")
@@ -272,6 +270,7 @@ struct MemberDetailView: View {
     let member: CircleMember
     let ref: CircleRef?
     @State private var editing = false
+    @State private var asked = false
 
     var body: some View {
         List {
@@ -285,6 +284,15 @@ struct MemberDetailView: View {
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
 
             if !member.isMe, !member.isPending, let ref {
+                Section {
+                    Button(asked ? "Gefragt, Standort kommt gleich" : "Wo bist du?", systemImage: "location.magnifyingglass") {
+                        let (id, ref) = (member.id, ref)
+                        Task { if await model.send(.locationRequest, to: id, in: ref) { asked = true } }
+                    }
+                    .disabled(asked)
+                } footer: {
+                    Text("Weckt das iPhone von \(member.name ?? String(localized: "der Person")) für einen frischen Standort. Die Person sieht, dass du gefragt hast.")
+                }
                 ReactionPicker(member: member, ref: ref)
             }
 

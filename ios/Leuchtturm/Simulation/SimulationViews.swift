@@ -40,6 +40,17 @@ struct SimulationView: View {
                         Button("Clara sagt Guten Morgen", systemImage: "sun.max") {
                             Task { await model.simulate { try await $0.send(.morning, from: world.people[2]) } }
                         }
+                        Button("Ben ist auf dem Weg nach Hause", systemImage: "figure.walk.motion") {
+                            let home = model.places(inCircle: model.circles.first?.id ?? "").first { $0.emoji == "🏠" }?.coordinate
+                                ?? SimulatedWorld.fallbackHome
+                            Task { await model.simulate { try await $0.benOnHisWayHome(home: home) } }
+                        }
+                        Button("Clara fragt, wo du bist", systemImage: "location.magnifyingglass") {
+                            Task { await model.simulate { try await $0.send(.locationRequest, from: world.people[2], to: me) } }
+                        }
+                        Button("Anna möchte abgeholt werden", systemImage: "car.side") {
+                            Task { await model.simulate { try await $0.send(.pickUp, from: world.people[0]) } }
+                        }
                         Button("Clara löst SOS aus", systemImage: "sos") {
                             Task { await model.simulate { try await $0.send(.sos, from: world.people[2]) } }
                         }

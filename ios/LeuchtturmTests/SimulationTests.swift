@@ -206,6 +206,27 @@ struct SimulationTests {
         #expect(mine.notes.contains { $0.kind == .tookOver })
     }
 
+    @Test func journeysShowAndEndOnArrival() async throws {
+        let (model, world) = try await simulatedModel()
+        await model.createDemoCircle()
+        let ref = try #require(model.circles.first?.ref)
+        try await world.benOnHisWayHome(home: SimulatedWorld.fallbackHome)
+        var details = try #require(await model.mapDetails(for: ref))
+        let ben = world.people[1].client.deviceID
+        #expect(activeJourney(of: ben, in: details.notes)?.text == "Zuhause")
+        try await world.send(.arrival, text: "Zuhause", from: world.people[1])
+        details = try #require(await model.mapDetails(for: ref))
+        #expect(activeJourney(of: ben, in: details.notes) == nil)
+
+        // Tim's own journey needs a place and a known circle.
+        let home = try #require(model.places(inCircle: ref.circleID).first { $0.name == "Zuhause" })
+        #expect(await model.startJourney(Journey(isWalkHome: true, circleID: ref.circleID, destination: home.name,
+                                                 latitude: home.latitude, longitude: home.longitude, deadline: Date().addingTimeInterval(1800))))
+        #expect(model.journey?.isWalkHome == true)
+        await model.cancelJourney()
+        #expect(model.journey == nil)
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

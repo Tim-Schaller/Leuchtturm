@@ -89,6 +89,12 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
         manager.allowsBackgroundLocationUpdates = false
     }
 
+    /// One fresh position right now, e.g. when someone asked "Wo bist du?".
+    func requestFresh() {
+        resumeIfPaused()
+        manager.requestLocation()
+    }
+
     /// Asks iOS for "Always". Returns false when iOS will not ask, then the
     /// Settings app is the way.
     func requestAlways() -> Bool {

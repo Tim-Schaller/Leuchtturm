@@ -805,7 +805,7 @@ public actor LeuchtturmClient {
     @discardableResult
     public func send(
         _ kind: CircleNote.Kind, text: String = "", to recipientID: String? = nil,
-        location: SharedLocation? = nil, in ref: CircleRef
+        location: SharedLocation? = nil, deadline: Date? = nil, in ref: CircleRef
     ) async throws -> CircleNote {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard text.count <= CircleNote.maxTextLength else { throw ClientError.invalidNote }
@@ -818,7 +818,8 @@ public actor LeuchtturmClient {
             location: location.flatMap {
                 SharedLocation(latitude: $0.latitude, longitude: $0.longitude, accuracy: $0.accuracy, timestamp: timestamp)
             },
-            timestamp: timestamp
+            timestamp: timestamp,
+            deadline: deadline.map { Date(timeIntervalSince1970: $0.timeIntervalSince1970.rounded(.down)) }
         )
         let blob = try CircleCrypto.sealNote(note, key: key, epoch: p.epoch, circleID: p.circleID)
         let sig = try identity.sign(CircleCrypto.noteRecordStatement(circleID: p.circleID, noteID: note.id, senderID: deviceID, blob: blob))

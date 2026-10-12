@@ -359,6 +359,20 @@ struct ClientTests {
         }
     }
 
+    @Test func journeysCarryDestinationAndDeadline() async throws {
+        let alice = try client("alice", "Alice")
+        let bob = try client("bob", "Bob")
+        let ref = try await alice.createCircle(name: "Familie")
+        let bobRef = try await bob.join(try await alice.createInvite(for: ref))
+        _ = try await alice.circle(ref)
+        let eta = Date().addingTimeInterval(720)
+        let home = try location(53.55, 9.99)
+        try await bob.send(.onMyWay, text: "Zuhause", location: home, deadline: eta, in: bobRef)
+        let note = try #require(try await alice.circle(ref).notes.first { $0.kind == .onMyWay })
+        #expect(note.text == "Zuhause" && note.location?.latitude == 53.55)
+        #expect(note.deadline == Date(timeIntervalSince1970: eta.timeIntervalSince1970.rounded(.down)))
+    }
+
     @Test func oldNotesFadeAndAreCleanedUp() async throws {
         let clock = TestClock()
         let alice = try client("alice", "Alice", now: { clock.now })

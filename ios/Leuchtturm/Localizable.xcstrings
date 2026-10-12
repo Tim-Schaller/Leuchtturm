@@ -201,6 +201,16 @@
         }
       }
     },
+    "%lld Min.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
     "%lld Tage": {
       "localizations": {
         "en": {
@@ -491,12 +501,42 @@
         }
       }
     },
+    "Ankunft ca.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arriving around"
+          }
+        }
+      }
+    },
+    "Ankunft ca. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arriving around %@"
+          }
+        }
+      }
+    },
     "Ankunft von %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "%@'s arrival"
+          }
+        }
+      }
+    },
+    "Anna möchte abgeholt werden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anna wants to be picked up"
           }
         }
       }
@@ -581,6 +621,26 @@
         }
       }
     },
+    "Auf dem Weg zu %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the way to %@"
+          }
+        }
+      }
+    },
+    "Auf dem Weg zu %@ · ca. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the way to %@ · around %@"
+          }
+        }
+      }
+    },
     "Auf der Karte zeigen": {
       "localizations": {
         "en": {
@@ -641,6 +701,26 @@
         }
       }
     },
+    "Auto": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Car"
+          }
+        }
+      }
+    },
+    "Bahnhof": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Station"
+          }
+        }
+      }
+    },
     "Bannerbild wählen": {
       "localizations": {
         "en": {
@@ -657,6 +737,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Change banner picture"
+          }
+        }
+      }
+    },
+    "Beenden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End"
           }
         }
       }
@@ -687,6 +777,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ben checks in"
+          }
+        }
+      }
+    },
+    "Ben ist auf dem Weg nach Hause": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ben is on his way home"
           }
         }
       }
@@ -741,6 +841,16 @@
         }
       }
     },
+    "Bin auf dem Weg": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On my way"
+          }
+        }
+      }
+    },
     "Bis": {
       "localizations": {
         "en": {
@@ -767,6 +877,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Until I change it"
+          }
+        }
+      }
+    },
+    "Bist du bis dahin nicht angekommen, bekommt dein Leuchtturm einen Hinweis. Kommst du an, endet die Begleitung von selbst.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you have not arrived by then, your lighthouse gets an alert. When you arrive, the escort ends by itself."
           }
         }
       }
@@ -801,12 +921,32 @@
         }
       }
     },
+    "Café": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Café"
+          }
+        }
+      }
+    },
     "Chat": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Chat"
+          }
+        }
+      }
+    },
+    "Clara fragt, wo du bist": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clara asks where you are"
           }
         }
       }
@@ -1001,6 +1141,16 @@
         }
       }
     },
+    "Der Heimweg nach „%@“ sollte bis %@ dauern. Vielleicht mal nachfragen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The walk home to “%@” should have ended by %@. Maybe check in?"
+          }
+        }
+      }
+    },
     "Der Leuchtturm bekommt einen neuen Schlüssel. Die Person verliert den Zugriff und kann nichts mehr lesen, was danach geteilt wird.": {
       "localizations": {
         "en": {
@@ -1037,6 +1187,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The name is encrypted and visible only to members."
+          }
+        }
+      }
+    },
+    "Die Ankunftszeit berechnet Apple Karten; dafür sieht Apple Start und Ziel. Dein Leuchtturm sieht nur Ziel und Uhrzeit, Ende-zu-Ende-verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Maps calculates the arrival time, so Apple sees start and destination. Your lighthouse sees only destination and time, end-to-end encrypted."
           }
         }
       }
@@ -1117,6 +1277,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The keys could not be moved."
+          }
+        }
+      }
+    },
+    "Die Suche läuft über Apple Karten mit der Mitte als Ort. Wer im Nebel ist, zählt nicht mit.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The search uses Apple Maps with the middle as location. People in fog are not counted."
           }
         }
       }
@@ -1221,12 +1391,12 @@
         }
       }
     },
-    "Einchecken: „Ich bin hier“": {
+    "Einchecken": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Check in: “I'm here”"
+            "value": "Check in"
           }
         }
       }
@@ -1431,6 +1601,16 @@
         }
       }
     },
+    "Es teilen noch zu wenige ihren Standort.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too few people share their location yet."
+          }
+        }
+      }
+    },
     "Fahrten": {
       "localizations": {
         "en": {
@@ -1507,6 +1687,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Driving · %@ · %@"
+          }
+        }
+      }
+    },
+    "Gefragt, Standort kommt gleich": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asked, location coming soon"
+          }
+        }
+      }
+    },
+    "Genau die Mitte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exactly the middle"
           }
         }
       }
@@ -1631,6 +1831,46 @@
         }
       }
     },
+    "Heimweg": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walk home"
+          }
+        }
+      }
+    },
+    "Heimweg zu %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walking home to %@"
+          }
+        }
+      }
+    },
+    "Heimweg zu %@ · bis %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walking home to %@ · by %@"
+          }
+        }
+      }
+    },
+    "Heimweg-Begleitung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walk-home escort"
+          }
+        }
+      }
+    },
     "Heute": {
       "localizations": {
         "en": {
@@ -1647,6 +1887,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Call for help"
+          }
+        }
+      }
+    },
+    "Hol mich ab": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick me up"
           }
         }
       }
@@ -1827,6 +2077,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
+          }
+        }
+      }
+    },
+    "Lege zuerst einen Ort an, z. B. Zuhause.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a place first, e.g. Home."
           }
         }
       }
@@ -2221,32 +2481,22 @@
         }
       }
     },
+    "Nebel beenden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End fog"
+          }
+        }
+      }
+    },
     "Nebel bis %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Fog until %@"
-          }
-        }
-      }
-    },
-    "Nebel bis %@ · beenden": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fog until %@ · end"
-          }
-        }
-      }
-    },
-    "Nebel: nur ungefähre Gegend teilen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fog: share only the rough area"
           }
         }
       }
@@ -2501,6 +2751,16 @@
         }
       }
     },
+    "Park": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Park"
+          }
+        }
+      }
+    },
     "Personen": {
       "localizations": {
         "en": {
@@ -2601,12 +2861,32 @@
         }
       }
     },
+    "Rad": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bike"
+          }
+        }
+      }
+    },
     "Region (ca. 50 km)": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Region (about 50 km)"
+          }
+        }
+      }
+    },
+    "Restaurant": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurant"
           }
         }
       }
@@ -2831,6 +3111,26 @@
         }
       }
     },
+    "Spätestens %@ da, sonst wird dein Leuchtturm benachrichtigt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrive by %@, or your lighthouse is alerted"
+          }
+        }
+      }
+    },
+    "Spätestens in": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At the latest in"
+          }
+        }
+      }
+    },
     "Stadt (ca. 10 km)": {
       "localizations": {
         "en": {
@@ -3051,6 +3351,16 @@
         }
       }
     },
+    "Treffpunkt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meeting point"
+          }
+        }
+      }
+    },
     "Umbenennen": {
       "localizations": {
         "en": {
@@ -3127,6 +3437,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "On the way"
+          }
+        }
+      }
+    },
+    "Unterwegs mit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Travelling by"
           }
         }
       }
@@ -3251,6 +3571,26 @@
         }
       }
     },
+    "Was?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What?"
+          }
+        }
+      }
+    },
+    "Weckt das iPhone von %@ für einen frischen Standort. Die Person sieht, dass du gefragt hast.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wakes %@'s iPhone for a fresh location. They see that you asked."
+          }
+        }
+      }
+    },
     "Weite Wege: über 100 km gefahren": {
       "localizations": {
         "en": {
@@ -3351,12 +3691,62 @@
         }
       }
     },
+    "Wo bist du?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where are you?"
+          }
+        }
+      }
+    },
     "Wo liegen meine Daten?": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Where is my data?"
+          }
+        }
+      }
+    },
+    "Wohin?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where to?"
+          }
+        }
+      }
+    },
+    "Ziel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Destination"
+          }
+        }
+      }
+    },
+    "Zu Fuß": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On foot"
+          }
+        }
+      }
+    },
+    "Zuhause": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home"
           }
         }
       }
@@ -3431,6 +3821,16 @@
         }
       }
     },
+    "der Person": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the person"
+          }
+        }
+      }
+    },
     "einmal": {
       "localizations": {
         "en": {
@@ -3447,6 +3847,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "celebrating"
+          }
+        }
+      }
+    },
+    "geht nach „%@“, spätestens %@ da": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "is walking to “%@”, there by %@"
           }
         }
       }
@@ -3471,22 +3881,12 @@
         }
       }
     },
-    "hat ein Foto gesendet": {
+    "hat die Begleitung beendet": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "sent a photo"
-          }
-        }
-      }
-    },
-    "hat einen Sticker gesendet": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "sent a sticker"
+            "value": "ended the escort"
           }
         }
       }
@@ -3507,6 +3907,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "reacted with %@"
+          }
+        }
+      }
+    },
+    "hat nach einem Standort gefragt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "asked for a location"
           }
         }
       }
@@ -3551,6 +3961,16 @@
         }
       }
     },
+    "ist auf dem Weg zu „%@“, Ankunft ca. %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "is on the way to “%@”, arriving around %@"
+          }
+        }
+      }
+    },
     "ist bei „%@“ angekommen": {
       "localizations": {
         "en": {
@@ -3581,6 +4001,16 @@
         }
       }
     },
+    "möchte abgeholt werden 🚗": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wants to be picked up 🚗"
+          }
+        }
+      }
+    },
     "möchte den Leuchtturm an %@ übergeben 👑": {
       "localizations": {
         "en": {
@@ -3597,6 +4027,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "wants to hand the lighthouse over to you 👑"
+          }
+        }
+      }
+    },
+    "möchte wissen, wo du bist 📍": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wants to know where you are 📍"
           }
         }
       }
@@ -3627,6 +4067,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "sleeping"
+          }
+        }
+      }
+    },
+    "schlägt „%@“ als Treffpunkt vor 📍": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "suggests “%@” as a meeting point 📍"
           }
         }
       }

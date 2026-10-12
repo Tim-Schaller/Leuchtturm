@@ -76,11 +76,11 @@ Build order (dependencies first):
 - [x] 1. Keys via iCloud Keychain by default (synchronizable), option „nur auf diesem Gerät“; threat model update.
 - [x] 11/19/24. `Profile` record per device: picture, banner, pin colour/emoji, status emoji with expiry; shown on map, lists, chat.
 - [x] 10. Chat tab: messages with reply, photos and Apple stickers (Genmoji/adaptive image glyphs), encrypted.
-- [ ] 13. „Wo bist du?“ request wakes the other phone for a fresh location.
-- [ ] 15. „Hol mich ab“ with location.
-- [ ] 12. „Bin auf dem Weg“ with ETA (MKDirections) and automatic arrival message.
-- [ ] 14. Heimweg-Begleitung: watchers' devices alert if not home by the deadline.
-- [ ] 16. Treffpunkt in the middle of everyone (MKLocalSearch nearby).
+- [x] 13. „Wo bist du?“ request wakes the other phone for a fresh location.
+- [x] 15. „Hol mich ab“ with location.
+- [x] 12. „Bin auf dem Weg“ with ETA (MKDirections) and automatic arrival message.
+- [x] 14. Heimweg-Begleitung: watchers' devices alert if not home by the deadline.
+- [x] 16. Treffpunkt in the middle of everyone (MKLocalSearch nearby).
 - [ ] 9. Friends list across all Leuchttürme.
 - [ ] 20. Weekly challenges and streaks. 21. Steps leaderboard (HealthKit, opt-in). 22. „Heute vor einem Jahr“ from a local-only archive. 23. Weather at a person's place (WeatherKit).
 - [ ] 5/17. Widgets (home and lock screen) via App Group snapshot. 7. Live Activity while driving / on the way. 18. Siri and Shortcuts (App Intents).

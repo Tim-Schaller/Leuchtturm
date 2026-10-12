@@ -48,6 +48,21 @@ enum NoteText {
             return String(localized: "möchte den Leuchtturm an \(name) übergeben 👑")
         case .tookOver:
             return String(localized: "hat den Leuchtturm übernommen 👑")
+        case .locationRequest:
+            if note.recipientID == myID { return String(localized: "möchte wissen, wo du bist 📍") }
+            return String(localized: "hat nach einem Standort gefragt")
+        case .pickUp:
+            return String(localized: "möchte abgeholt werden 🚗")
+        case .onMyWay:
+            let time = note.deadline?.formatted(date: .omitted, time: .shortened) ?? ""
+            return String(localized: "ist auf dem Weg zu „\(note.text)“, Ankunft ca. \(time)")
+        case .walkHome:
+            let time = note.deadline?.formatted(date: .omitted, time: .shortened) ?? ""
+            return String(localized: "geht nach „\(note.text)“, spätestens \(time) da")
+        case .meetingPoint:
+            return String(localized: "schlägt „\(note.text)“ als Treffpunkt vor 📍")
+        case .journeyCancelled:
+            return String(localized: "hat die Begleitung beendet")
         case .removeRequest, .renameRequest:
             return ""
         }
@@ -88,7 +103,7 @@ struct NewsSection: View {
         return HStack(spacing: 12) {
             Avatar(name: sender?.name, id: note.senderID, size: 32)
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(sender?.isMe == true ? String(localized: "Du") : sender?.name ?? String(localized: "Jemand")) \(NoteText.body(note, members: details.members, myID: model.client?.deviceID ?? ""))")
+                Text("\(sender?.isMe == true ? model.displayName : sender?.name ?? String(localized: "Jemand")) \(NoteText.body(note, members: details.members, myID: model.client?.deviceID ?? ""))")
                     .font(.subheadline)
                     .lineLimit(2)
                 Text(note.timestamp, format: .relative(presentation: .named))

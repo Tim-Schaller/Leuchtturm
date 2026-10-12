@@ -70,11 +70,21 @@ final class SimulatedWorld {
 
     /// The people open their app: owners confirm new members, everyone picks
     /// up new keys and keeps their member card current. Notes sent to them
-    /// get a friendly answer.
+    /// get a friendly answer, and Anna likes what you write in the chat.
     func tick() async {
         for person in people {
             for circle in (try? await person.client.circles()) ?? [] {
                 guard let details = try? await person.client.circle(circle.ref) else { continue }
+                if person.id == people.first?.id {
+                    for message in details.messages where message.reactsTo == nil && !answered.contains(message.id)
+                        && !people.contains(where: { $0.client.deviceID == message.senderID }) {
+                        answered.insert(message.id)
+                        _ = try? await person.client.sendMessage("❤️", reactsTo: message.id, in: circle.ref)
+                        if message.text.contains("?") {
+                            _ = try? await person.client.sendMessage(String(localized: "Klar, bin dabei!"), replyTo: message.id, in: circle.ref)
+                        }
+                    }
+                }
                 for note in details.notes where note.recipientID == person.client.deviceID && !answered.contains(note.id) {
                     answered.insert(note.id)
                     _ = try? await person.client.send(.reaction, text: note.kind == .text ? "👍" : "😊", to: note.senderID, in: circle.ref)
@@ -209,6 +219,16 @@ final class SimulatedWorld {
             let (latitude, longitude) = Self.offset(home, north: north, east: east)
             try await person.client.addPlace(name: name, emoji: emoji, latitude: latitude, longitude: longitude, radius: radius, in: ref)
         }
+    }
+
+    /// A made-up sticker: a big frog.
+    static func demoSticker() -> Data? {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = false
+        return UIGraphicsImageRenderer(size: CGSize(width: 160, height: 160), format: format).image { _ in
+            ("🐸" as NSString).draw(at: CGPoint(x: 10, y: 4), withAttributes: [.font: UIFont.systemFont(ofSize: 130)])
+        }.pngData()
     }
 
     /// A made-up profile picture: a sunflower on a sky gradient.

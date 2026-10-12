@@ -190,6 +190,17 @@ Contexts: `ctx("leuchtturm/v1/circle-meta", circleID)`, `ctx("leuchtturm/v1/memb
 
 The device writes the same profile to all its circles, re-encrypts it after a key rotation and deletes it when leaving. Readers show profiles only of roster members with a valid signature. Apple sees the sizes of the pictures.
 
+### `Message` (record name `msg-<messageID>`)
+
+Chat. Readers accept messages only from roster devices (or their own), check the signature and ignore messages older than 30 days; senders delete their own older ones when sending.
+
+| Field | Content |
+|-------|---------|
+| `from` | device ID of the sender |
+| `blob` | encrypted and padded `{"x": text (≤ 2000), "r": message it replies to, "a": message it reacts to (then `x` is the emoji), "s": sticker flag, "t": Unix milliseconds}` |
+| `image` | photo (JPEG) or sticker/Genmoji image (≤ 400 KB), encrypted like profile pictures, context `ctx("leuchtturm/v1/message", circleID, messageID) ‖ "image"`; empty if none |
+| `sig` | Ed25519 by the **sending device** over `ctx("leuchtturm/v1/message-record", circleID, messageID, from)` followed by blob and image as u64 length ‖ bytes |
+
 ## Roles and takeover
 
 The owner's device stays the only signer of the circle record. It lists **admins** in the signed meta.

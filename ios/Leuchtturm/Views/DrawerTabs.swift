@@ -3,6 +3,7 @@ import SwiftUI
 /// The tabs at the top of the drawer.
 enum DrawerTab: CaseIterable, Identifiable {
     case people
+    case chat
     case places
     case trips
     case ranking
@@ -12,6 +13,7 @@ enum DrawerTab: CaseIterable, Identifiable {
     var title: LocalizedStringResource {
         switch self {
         case .people: "Personen"
+        case .chat: "Chat"
         case .places: "Orte"
         case .trips: "Fahrten"
         case .ranking: "Bestenliste"
@@ -21,6 +23,7 @@ enum DrawerTab: CaseIterable, Identifiable {
     var symbol: String {
         switch self {
         case .people: "person.2.fill"
+        case .chat: "bubble.left.and.bubble.right.fill"
         case .places: "mappin.and.ellipse"
         case .trips: "car.fill"
         case .ranking: "trophy.fill"

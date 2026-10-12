@@ -170,3 +170,44 @@ struct ProfileTests {
     }
 }
 
+struct ChatTests {
+    let cloud = InMemoryCloud()
+
+    @Test func chatWithRepliesReactionsAndStickers() async throws {
+        let clock = TestClock()
+        let alice = try LeuchtturmClient(backend: cloud.backend(for: "alice"), secrets: InMemorySecretStore(), displayName: "Alice", now: { clock.now })
+        let bob = try LeuchtturmClient(backend: cloud.backend(for: "bob"), secrets: InMemorySecretStore(), displayName: "Bob", now: { clock.now })
+        let ref = try await alice.createCircle(name: "Familie")
+        let bobRef = try await bob.join(try await alice.createInvite(for: ref))
+        _ = try await alice.circle(ref)
+
+        let hi = try await alice.sendMessage("Wer holt Brot?", in: ref)
+        clock.advance(by: 1)
+        let answer = try await bob.sendMessage("Ich!", replyTo: hi.id, in: bobRef)
+        clock.advance(by: 1)
+        try await alice.sendMessage("👍", reactsTo: answer.id, in: ref)
+        clock.advance(by: 1)
+        let sticker = Data(repeating: 7, count: 80_000)
+        try await bob.sendMessage("", image: sticker, isSticker: true, in: bobRef)
+
+        let messages = try await alice.circle(ref).messages
+        #expect(messages.map(\.text) == ["Wer holt Brot?", "Ich!", "👍", ""])
+        #expect(messages[1].replyTo == hi.id && messages[2].reactsTo == answer.id)
+        #expect(messages[3].image == sticker && messages[3].isSticker)
+        for record in cloud.rawRecords(circleID: ref.circleID) where record.type == "Message" {
+            for case let .bytes(bytes) in record.fields.values { #expect(bytes.range(of: Data("Brot".utf8)) == nil) }
+        }
+
+        // Bob cannot delete Alice's message through the client; he can delete his own.
+        await #expect(throws: ClientError.unknownMember) { try await bob.deleteMessage(hi.id, in: bobRef) }
+        try await bob.deleteMessage(answer.id, in: bobRef)
+        #expect(try await alice.circle(ref).messages.count == 3)
+
+        // After 30 days messages are gone for readers and the sender cleans up.
+        clock.advance(by: 31 * 86400)
+        #expect(try await alice.circle(ref).messages.isEmpty)
+        try await alice.sendMessage("Neu", in: ref)
+        #expect(cloud.rawRecords(circleID: ref.circleID).filter { $0.type == "Message" && $0.string("from") == alice.deviceID }.count == 1)
+    }
+}
+

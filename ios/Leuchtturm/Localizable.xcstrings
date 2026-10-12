@@ -531,6 +531,36 @@
         }
       }
     },
+    "Antwort abbrechen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel reply"
+          }
+        }
+      }
+    },
+    "Antwort an %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reply to %@"
+          }
+        }
+      }
+    },
+    "Antworten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reply"
+          }
+        }
+      }
+    },
     "Apple Karten bekommt dabei diesen Ort. In Leuchtturm selbst sieht Apple die Standorte nicht.": {
       "localizations": {
         "en": {
@@ -767,6 +797,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Please sign in to iCloud in Settings. Leuchtturm stores its encrypted data in your iCloud."
+          }
+        }
+      }
+    },
+    "Chat": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat"
           }
         }
       }
@@ -1441,6 +1481,16 @@
         }
       }
     },
+    "Foto senden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send photo"
+          }
+        }
+      }
+    },
     "Fremder öffnet den iCloud-Link": {
       "localizations": {
         "en": {
@@ -1631,6 +1681,16 @@
         }
       }
     },
+    "Ich! Bin eh unterwegs.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Me! I'm out anyway."
+          }
+        }
+      }
+    },
     "Im Nebel teilst du keinen genauen Ort. Beende den Nebel zuerst, um einzuchecken.": {
       "localizations": {
         "en": {
@@ -1721,6 +1781,16 @@
         }
       }
     },
+    "Klar, bin dabei!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sure, count me in!"
+          }
+        }
+      }
+    },
     "Klein": {
       "localizations": {
         "en": {
@@ -1747,6 +1817,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "When someone arrives or leaves, the lighthouse is told. Each iPhone checks this itself; no server knows your places. Suggestions come from your stays, which are stored only on this iPhone."
+          }
+        }
+      }
+    },
+    "Kopieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
           }
         }
       }
@@ -2071,6 +2151,16 @@
         }
       }
     },
+    "Nachricht": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message"
+          }
+        }
+      }
+    },
     "Nachrichten": {
       "localizations": {
         "en": {
@@ -2237,6 +2327,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "No lighthouses yet"
+          }
+        }
+      }
+    },
+    "Noch keine Nachrichten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No messages yet"
           }
         }
       }
@@ -2581,6 +2681,26 @@
         }
       }
     },
+    "Schreib deinem Leuchtturm. Alles ist Ende-zu-Ende-verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Write to your lighthouse. Everything is end-to-end encrypted."
+          }
+        }
+      }
+    },
+    "Senden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send"
+          }
+        }
+      }
+    },
     "Sicher unterwegs: 3 Fahrten mit 100 Punkten": {
       "localizations": {
         "en": {
@@ -2807,6 +2927,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Clear status"
+          }
+        }
+      }
+    },
+    "Sticker": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sticker"
           }
         }
       }
@@ -3141,6 +3271,16 @@
         }
       }
     },
+    "Wer holt heute Brötchen? 🥐": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who's getting bread rolls today? 🥐"
+          }
+        }
+      }
+    },
     "Wie lange?": {
       "localizations": {
         "en": {
@@ -3331,12 +3471,42 @@
         }
       }
     },
+    "hat ein Foto gesendet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sent a photo"
+          }
+        }
+      }
+    },
+    "hat einen Sticker gesendet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sent a sticker"
+          }
+        }
+      }
+    },
     "hat eingecheckt 📍": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "checked in 📍"
+          }
+        }
+      }
+    },
+    "hat mit %@ reagiert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "reacted with %@"
           }
         }
       }

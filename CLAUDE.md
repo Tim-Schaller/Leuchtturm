@@ -75,7 +75,7 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 Build order (dependencies first):
 - [x] 1. Keys via iCloud Keychain by default (synchronizable), option „nur auf diesem Gerät“; threat model update.
 - [x] 11/19/24. `Profile` record per device: picture, banner, pin colour/emoji, status emoji with expiry; shown on map, lists, chat.
-- [ ] 10. Chat tab: messages with reply, photos and Apple stickers (Genmoji/adaptive image glyphs), encrypted.
+- [x] 10. Chat tab: messages with reply, photos and Apple stickers (Genmoji/adaptive image glyphs), encrypted.
 - [ ] 13. „Wo bist du?“ request wakes the other phone for a fresh location.
 - [ ] 15. „Hol mich ab“ with location.
 - [ ] 12. „Bin auf dem Weg“ with ETA (MKDirections) and automatic arrival message.

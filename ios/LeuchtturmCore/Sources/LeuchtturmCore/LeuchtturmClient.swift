@@ -78,6 +78,8 @@ public struct CircleDetails: Sendable, Identifiable, Hashable {
     public var handoverOffered = false
     /// This device may take the circle over now.
     public var canTakeOver = false
+    /// Chat of the last 30 days, oldest first (reactions included).
+    public var messages: [ChatMessage] = []
 }
 
 public enum ClientError: Error, Sendable, Equatable {
@@ -120,6 +122,7 @@ enum RecordType {
     static let trip = "Trip"
     static let move = "Move"
     static let profile = "Profile"
+    static let message = "Message"
 }
 
 enum RecordName {
@@ -139,6 +142,8 @@ enum RecordName {
     static func move(_ signer: String) -> String { "move-\(signer)" }
     static func profile(_ deviceID: String) -> String { "profile-\(deviceID)" }
     static let profilePrefix = "profile-"
+    static func message(_ id: String) -> String { "msg-\(id)" }
+    static let messagePrefix = "msg-"
 }
 
 /// High-level client. Everything is encrypted or signed here, before it
@@ -266,7 +271,7 @@ public actor LeuchtturmClient {
     public func leave(_ ref: CircleRef) async throws {
         guard !ref.isOwned else { throw ClientError.ownerMustDelete }
         let history = (try? await backend.snapshot(of: ref))?.records
-            .filter { ($0.type == RecordType.history || $0.type == RecordType.trip) && $0.string("from") == deviceID }.map(\.name) ?? []
+            .filter { [RecordType.history, RecordType.trip, RecordType.message].contains($0.type) && $0.string("from") == deviceID }.map(\.name) ?? []
         try? await backend.modify(ref, save: [], delete: [RecordName.location(deviceID), RecordName.profile(deviceID)] + history, removeParticipants: [])
         try await backend.leave(ref)
         try? secrets.deleteAll(prefix: Self.prefix(ref.circleID))
@@ -330,6 +335,72 @@ public actor LeuchtturmClient {
         try await backend.modify(ref, save: save, delete: delete.sorted(), removeParticipants: [userID])
         // Re-encrypt my own card under the new key.
         _ = try? await load(ref)
+    }
+
+    // MARK: Chat
+
+    /// Sends a chat message, reply, picture or sticker; deletes own messages
+    /// older than 30 days on the way.
+    @discardableResult
+    public func sendMessage(
+        _ text: String, replyTo: String? = nil, reactsTo: String? = nil, image: Data? = nil, isSticker: Bool = false,
+        in ref: CircleRef
+    ) async throws -> ChatMessage {
+        let message = ChatMessage(
+            id: CircleCrypto.newCircleID(), senderID: deviceID, text: text.trimmingCharacters(in: .whitespacesAndNewlines),
+            replyTo: replyTo, reactsTo: reactsTo, image: image, isSticker: isSticker, timestamp: now()
+        )
+        guard message.isValid else { throw ClientError.invalidNote }
+        let p = try parse(try await backend.snapshot(of: ref))
+        guard let key = ensureKey(p) else { throw ClientError.missingCircleKey }
+        let sealed = try CircleCrypto.sealMessage(message, key: key, epoch: p.epoch, circleID: p.circleID)
+        let sig = try identity.sign(CircleCrypto.messageRecordStatement(
+            circleID: p.circleID, id: message.id, senderID: deviceID, blob: sealed.blob, image: sealed.image
+        ))
+        let record = StoredRecord(type: RecordType.message, name: RecordName.message(message.id), fields: [
+            "from": .string(deviceID), "blob": .bytes(sealed.blob), "image": .bytes(sealed.image), "sig": .bytes(sig),
+        ])
+        let cutoff = now().addingTimeInterval(-ChatMessage.lifetime)
+        let expired = p.messages.filter { r in
+            guard r.string("from") == deviceID else { return false }
+            guard let mine = try? openMessageRecord(r, p) else { return true }
+            return mine.timestamp < cutoff
+        }.map(\.name)
+        try await backend.modify(ref, save: [record], delete: expired, removeParticipants: [])
+        return message
+    }
+
+    /// Deletes one of this device's messages (and reactions to nothing else).
+    public func deleteMessage(_ id: String, in ref: CircleRef) async throws {
+        let p = try parse(try await backend.snapshot(of: ref))
+        guard p.messages.contains(where: { $0.name == RecordName.message(id) && $0.string("from") == deviceID }) else {
+            throw ClientError.unknownMember
+        }
+        try await backend.modify(ref, save: [], delete: [RecordName.message(id)], removeParticipants: [])
+    }
+
+    nonisolated func openMessageRecord(_ r: StoredRecord, _ p: Parsed) throws -> ChatMessage? {
+        try CircleCrypto.openMessage(
+            blob: r.bytes("blob"), image: r.bytes("image"), id: String(r.name.dropFirst(RecordName.messagePrefix.count)),
+            senderID: r.string("from"), circleID: p.circleID, keyForEpoch: keyLookup(p.circleID)
+        )
+    }
+
+    nonisolated func verifiedMessages(_ p: Parsed, roster: Set<String>) -> [ChatMessage] {
+        let cutoff = now().addingTimeInterval(-ChatMessage.lifetime)
+        return p.messages.compactMap { r -> ChatMessage? in
+            let sender = r.string("from")
+            let id = String(r.name.dropFirst(RecordName.messagePrefix.count))
+            guard let m = p.members[sender], roster.contains(sender) || sender == deviceID,
+                  CircleCrypto.verifySignature(
+                      r.bytes("sig"), publicKey: m.signingKey,
+                      message: CircleCrypto.messageRecordStatement(circleID: p.circleID, id: id, senderID: sender, blob: r.bytes("blob"), image: r.bytes("image"))
+                  ),
+                  let message = try? openMessageRecord(r, p), message.timestamp > cutoff
+            else { return nil }
+            return message
+        }
+        .sorted { ($0.timestamp, $0.id) < ($1.timestamp, $1.id) }
     }
 
     // MARK: Profile
@@ -960,6 +1031,8 @@ public actor LeuchtturmClient {
         let moves: [StoredRecord]
         /// Profile records by device ID (not verified yet).
         let profiles: [String: StoredRecord]
+        /// Chat message records (not verified yet).
+        let messages: [StoredRecord]
         var circleID: String { snapshot.ref.circleID }
         var ownerDeviceID: String { DeviceID.derive(signingPublicKey: ownerSigningKey) }
     }
@@ -1006,6 +1079,7 @@ public actor LeuchtturmClient {
         let history = snapshot.records.filter { $0.type == RecordType.history }
         let trips = snapshot.records.filter { $0.type == RecordType.trip && $0.name.hasPrefix(RecordName.tripPrefix) }
         let moves = snapshot.records.filter { $0.type == RecordType.move }
+        let messages = snapshot.records.filter { $0.type == RecordType.message && $0.name.hasPrefix(RecordName.messagePrefix) }
         var profiles: [String: StoredRecord] = [:]
         for r in snapshot.records where r.type == RecordType.profile && r.name.hasPrefix(RecordName.profilePrefix) {
             profiles[String(r.name.dropFirst(RecordName.profilePrefix.count))] = r
@@ -1013,7 +1087,7 @@ public actor LeuchtturmClient {
         return Parsed(
             snapshot: snapshot, ownerSigningKey: ownerSigning, ownerAgreementKey: ownerAgreement,
             epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations, notes: notes,
-            places: places, history: history, trips: trips, moves: moves, profiles: profiles
+            places: places, history: history, trips: trips, moves: moves, profiles: profiles, messages: messages
         )
     }
 
@@ -1067,7 +1141,7 @@ public actor LeuchtturmClient {
                     newRoster.remove(m.deviceID)
                     delete.append(m.deviceID)
                     if p.locations[m.deviceID] != nil { delete.append(RecordName.location(m.deviceID)) }
-                    delete += (p.notes + p.places + p.history + p.trips).filter { $0.string("from") == m.deviceID }.map(\.name)
+                    delete += (p.notes + p.places + p.history + p.trips + p.messages).filter { $0.string("from") == m.deviceID }.map(\.name)
                     if p.profiles[m.deviceID] != nil { delete.append(RecordName.profile(m.deviceID)) }
                 } else if !newRoster.contains(m.deviceID), hasValidInvite(m, p) {
                     newRoster.insert(m.deviceID)
@@ -1165,7 +1239,8 @@ public actor LeuchtturmClient {
             ownerLastSeen: lastSeen,
             handoverOffered: offered,
             canTakeOver: !iAmOwner && (meta?.admins ?? []).contains(deviceID)
-                && (offered || (lastSeen.map { now().timeIntervalSince($0) >= Self.takeoverAfter } ?? true))
+                && (offered || (lastSeen.map { now().timeIntervalSince($0) >= Self.takeoverAfter } ?? true)),
+            messages: verifiedMessages(p, roster: roster)
         )
     }
 

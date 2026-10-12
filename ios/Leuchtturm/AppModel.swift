@@ -486,6 +486,17 @@ final class AppModel {
         }
     }
 
+    // MARK: Chat
+
+    @discardableResult
+    func sendChat(_ text: String, replyTo: String? = nil, reactsTo: String? = nil, image: Data? = nil, isSticker: Bool = false, in ref: CircleRef) async -> Bool {
+        guard let message = await run({ try await $0.sendMessage(text, replyTo: replyTo, reactsTo: reactsTo, image: image, isSticker: isSticker, in: ref) })
+        else { return false }
+        markSeen([message.id])
+        noteRemoteChange()
+        return true
+    }
+
     // MARK: Profile
 
     private static var profileURL: URL { URL.applicationSupportDirectory.appending(path: "profile.json") }
@@ -830,6 +841,26 @@ final class AppModel {
             $0.senderID != me && ($0.recipientID == nil || $0.recipientID == me)
                 && $0.timestamp > newsSince && !seenNotes.contains($0.id)
         }
+        let newMessages = details.messages.filter {
+            $0.senderID != me && $0.timestamp > newsSince && !seenNotes.contains($0.id)
+        }
+        if !newMessages.isEmpty {
+            markSeen(newMessages.map(\.id))
+            if usesDeviceServices {
+                for message in newMessages {
+                    let sender = details.members.first { $0.id == message.senderID }?.name ?? String(localized: "Jemand")
+                    let content = UNMutableNotificationContent()
+                    content.title = sender
+                    content.subtitle = details.name ?? ""
+                    content.body = message.reactsTo != nil
+                        ? String(localized: "hat mit \(message.text) reagiert")
+                        : message.text.isEmpty ? String(localized: message.isSticker ? "hat einen Sticker gesendet" : "hat ein Foto gesendet") : message.text
+                    content.sound = .default
+                    content.threadIdentifier = "chat-\(details.id)"
+                    UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: message.id, content: content, trigger: nil))
+                }
+            }
+        }
         guard !fresh.isEmpty else { return }
         markSeen(fresh.map(\.id))
         guard usesDeviceServices else { return }
@@ -939,6 +970,18 @@ final class AppModel {
             try await world.people[0].client.setProfile(Profile(color: "#D9567F", bannerStyle: "sunset", statusEmoji: "☕️", statusText: String(localized: "Kaffeepause"), statusUntil: Date().addingTimeInterval(3600)))
             try await world.people[1].client.setProfile(Profile(color: "#E0533A", emoji: "🏎️", bannerStyle: "night"))
             try await world.people[2].client.setProfile(Profile(color: "#9576C9", photo: SimulatedWorld.demoPhoto(), bannerStyle: "lavender", statusEmoji: "📚", statusText: String(localized: "in der Schule")))
+        }
+        // A little chat to start with.
+        await simulate { world in
+            let (anna, ben, clara) = (world.people[0].client, world.people[1].client, world.people[2].client)
+            guard let annasRef = try await anna.circles().first(where: { $0.id == ref.circleID })?.ref,
+                  let bensRef = try await ben.circles().first(where: { $0.id == ref.circleID })?.ref,
+                  let clarasRef = try await clara.circles().first(where: { $0.id == ref.circleID })?.ref
+            else { return }
+            let question = try await anna.sendMessage(String(localized: "Wer holt heute Brötchen? 🥐"), in: annasRef)
+            let answer = try await ben.sendMessage(String(localized: "Ich! Bin eh unterwegs."), replyTo: question.id, in: bensRef)
+            try await clara.sendMessage("👍", reactsTo: answer.id, in: clarasRef)
+            try await clara.sendMessage("", image: SimulatedWorld.demoSticker(), isSticker: true, in: clarasRef)
         }
         // Anna helps run it.
         if let anna = simulation?.people.first {

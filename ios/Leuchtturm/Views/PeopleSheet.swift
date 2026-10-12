@@ -78,6 +78,7 @@ struct PeopleSheet: View {
                     .padding(.bottom, 8)
                 switch tab {
                 case .people: peopleList(details, circle)
+                case .chat: ChatView(details: details)
                 case .places: List { PlacesSection(details: details, sheet: $sheet, onShowPlace: onShowPlace) }
                 case .trips: WeekView(details: details, mode: .trips)
                 case .ranking: WeekView(details: details, mode: .ranking)

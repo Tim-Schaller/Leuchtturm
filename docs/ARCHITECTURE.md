@@ -180,6 +180,16 @@ plaintext = u16 length | data | zero padding to a multiple of 64 bytes
 
 Contexts: `ctx("leuchtturm/v1/circle-meta", circleID)`, `ctx("leuchtturm/v1/member-card", circleID, deviceID)`, `ctx("leuchtturm/v1/invite-token", circleID, inviteID)`, `ctx("leuchtturm/v1/location", circleID, deviceID)`, `ctx("leuchtturm/v1/note", circleID, noteID)`. Padding hides name lengths.
 
+### `Profile` (record name `profile-<deviceID>`, one per device)
+
+| Field | Content |
+|-------|---------|
+| `blob` | encrypted and padded `{"c": colour "#RRGGBB", "e": pin emoji, "bs": banner style, "se": status emoji, "st": status text (≤ 40), "su": status end}` |
+| `photo`, `banner` | square JPEG (≤ 120 KB) and wide JPEG (≤ 300 KB), each `0x01 ‖ epoch ‖ ChaCha20-Poly1305` under the circle key, context `ctx("leuchtturm/v1/profile", circleID, deviceID) ‖ "photo"/"banner"`, not padded; empty if none |
+| `sig` | Ed25519 by **this device** over `ctx("leuchtturm/v1/profile-record", circleID, deviceID)` followed by blob, photo, banner each as u64 length ‖ bytes |
+
+The device writes the same profile to all its circles, re-encrypts it after a key rotation and deletes it when leaving. Readers show profiles only of roster members with a valid signature. Apple sees the sizes of the pictures.
+
 ## Roles and takeover
 
 The owner's device stays the only signer of the circle record. It lists **admins** in the signed meta.

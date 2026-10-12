@@ -32,6 +32,24 @@ public struct CircleMember: Sendable, Identifiable, Hashable {
     /// Latest verified position; nil if none is shared (or not yet admitted).
     public let location: SharedLocation?
     public var isAdmin = false
+    /// Picture, pin and status, if the member set them.
+    public var profile: Profile? = nil
+
+    public init(
+        id: String, userID: String?, name: String?, isOwner: Bool, isMe: Bool, isPending: Bool, safetyCode: String,
+        location: SharedLocation?, isAdmin: Bool = false, profile: Profile? = nil
+    ) {
+        self.id = id
+        self.userID = userID
+        self.name = name
+        self.isOwner = isOwner
+        self.isMe = isMe
+        self.isPending = isPending
+        self.safetyCode = safetyCode
+        self.location = location
+        self.isAdmin = isAdmin
+        self.profile = profile
+    }
 }
 
 public struct CircleDetails: Sendable, Identifiable, Hashable {
@@ -86,6 +104,8 @@ public enum ClientError: Error, Sendable, Equatable {
     /// Taking over is only possible for admins once the owner was away for
     /// three days, or after the owner offered it.
     case takeoverNotAllowed
+    /// A picture is too large, or a colour or status is not valid.
+    case invalidProfile
 }
 
 enum RecordType {
@@ -99,6 +119,7 @@ enum RecordType {
     static let history = "History"
     static let trip = "Trip"
     static let move = "Move"
+    static let profile = "Profile"
 }
 
 enum RecordName {
@@ -116,6 +137,8 @@ enum RecordName {
     static func trip(_ id: String) -> String { "trip-\(id)" }
     static let tripPrefix = "trip-"
     static func move(_ signer: String) -> String { "move-\(signer)" }
+    static func profile(_ deviceID: String) -> String { "profile-\(deviceID)" }
+    static let profilePrefix = "profile-"
 }
 
 /// High-level client. Everything is encrypted or signed here, before it
@@ -244,7 +267,7 @@ public actor LeuchtturmClient {
         guard !ref.isOwned else { throw ClientError.ownerMustDelete }
         let history = (try? await backend.snapshot(of: ref))?.records
             .filter { ($0.type == RecordType.history || $0.type == RecordType.trip) && $0.string("from") == deviceID }.map(\.name) ?? []
-        try? await backend.modify(ref, save: [], delete: [RecordName.location(deviceID)] + history, removeParticipants: [])
+        try? await backend.modify(ref, save: [], delete: [RecordName.location(deviceID), RecordName.profile(deviceID)] + history, removeParticipants: [])
         try await backend.leave(ref)
         try? secrets.deleteAll(prefix: Self.prefix(ref.circleID))
     }
@@ -307,6 +330,39 @@ public actor LeuchtturmClient {
         try await backend.modify(ref, save: save, delete: delete.sorted(), removeParticipants: [userID])
         // Re-encrypt my own card under the new key.
         _ = try? await load(ref)
+    }
+
+    // MARK: Profile
+
+    /// Writes this device's profile to all circles (or the given ones).
+    public func setProfile(_ profile: Profile, in refs: [CircleRef]? = nil) async throws {
+        guard profile.isValid else { throw ClientError.invalidProfile }
+        let targets: [CircleRef]
+        if let refs { targets = refs } else { targets = try await backend.listCircles() }
+        for ref in targets {
+            let p = try parse(try await backend.snapshot(of: ref))
+            guard let key = ensureKey(p) else { continue }
+            try await backend.modify(ref, save: [try profileRecord(profile, circleID: p.circleID, epoch: p.epoch, key: key)], delete: [], removeParticipants: [])
+        }
+    }
+
+    private nonisolated func profileRecord(_ profile: Profile, circleID: String, epoch: Int64, key: SymmetricKey) throws -> StoredRecord {
+        let sealed = try CircleCrypto.sealProfile(profile, key: key, epoch: epoch, circleID: circleID, deviceID: deviceID)
+        let sig = try identity.sign(CircleCrypto.profileRecordStatement(circleID: circleID, deviceID: deviceID, sealed: sealed))
+        return StoredRecord(type: RecordType.profile, name: RecordName.profile(deviceID), fields: [
+            "blob": .bytes(sealed.blob), "photo": .bytes(sealed.photo), "banner": .bytes(sealed.banner), "sig": .bytes(sig),
+        ])
+    }
+
+    /// A member's profile, signed by that member's device.
+    nonisolated func verifiedProfile(_ deviceID: String, _ p: Parsed) -> Profile? {
+        guard let r = p.profiles[deviceID], let m = p.members[deviceID] else { return nil }
+        let sealed = SealedProfile(blob: r.bytes("blob"), photo: r.bytes("photo"), banner: r.bytes("banner"))
+        guard CircleCrypto.verifySignature(
+            r.bytes("sig"), publicKey: m.signingKey,
+            message: CircleCrypto.profileRecordStatement(circleID: p.circleID, deviceID: deviceID, sealed: sealed)
+        ) else { return nil }
+        return try? CircleCrypto.openProfile(sealed, circleID: p.circleID, deviceID: deviceID, keyForEpoch: keyLookup(p.circleID))
     }
 
     // MARK: Roles and takeover
@@ -902,6 +958,8 @@ public actor LeuchtturmClient {
         let trips: [StoredRecord]
         /// Move notices (not verified yet).
         let moves: [StoredRecord]
+        /// Profile records by device ID (not verified yet).
+        let profiles: [String: StoredRecord]
         var circleID: String { snapshot.ref.circleID }
         var ownerDeviceID: String { DeviceID.derive(signingPublicKey: ownerSigningKey) }
     }
@@ -948,10 +1006,14 @@ public actor LeuchtturmClient {
         let history = snapshot.records.filter { $0.type == RecordType.history }
         let trips = snapshot.records.filter { $0.type == RecordType.trip && $0.name.hasPrefix(RecordName.tripPrefix) }
         let moves = snapshot.records.filter { $0.type == RecordType.move }
+        var profiles: [String: StoredRecord] = [:]
+        for r in snapshot.records where r.type == RecordType.profile && r.name.hasPrefix(RecordName.profilePrefix) {
+            profiles[String(r.name.dropFirst(RecordName.profilePrefix.count))] = r
+        }
         return Parsed(
             snapshot: snapshot, ownerSigningKey: ownerSigning, ownerAgreementKey: ownerAgreement,
             epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations, notes: notes,
-            places: places, history: history, trips: trips, moves: moves
+            places: places, history: history, trips: trips, moves: moves, profiles: profiles
         )
     }
 
@@ -1006,6 +1068,7 @@ public actor LeuchtturmClient {
                     delete.append(m.deviceID)
                     if p.locations[m.deviceID] != nil { delete.append(RecordName.location(m.deviceID)) }
                     delete += (p.notes + p.places + p.history + p.trips).filter { $0.string("from") == m.deviceID }.map(\.name)
+                    if p.profiles[m.deviceID] != nil { delete.append(RecordName.profile(m.deviceID)) }
                 } else if !newRoster.contains(m.deviceID), hasValidInvite(m, p) {
                     newRoster.insert(m.deviceID)
                 }
@@ -1040,6 +1103,11 @@ public actor LeuchtturmClient {
             }
         }
 
+        // My profile under an older key: re-encrypt it too.
+        if let key, let record = p.profiles[deviceID], CircleCrypto.contentEpoch(record.bytes("blob")) != p.epoch,
+           let mine = verifiedProfile(deviceID, p) {
+            save.append(try profileRecord(mine, circleID: p.circleID, epoch: p.epoch, key: key))
+        }
         // My places under an older key: re-encrypt, so members who joined
         // after a key rotation can read them.
         let places = verifiedPlaces(p, roster: roster)
@@ -1068,7 +1136,8 @@ public actor LeuchtturmClient {
                 safetyCode: DeviceID.safetyCode(signingPublicKey: m.signingKey, agreementPublicKey: m.agreementKey),
                 // Only admitted members share a position with the circle.
                 location: admitted || isMe ? verifiedLocation(of: m, p) : nil,
-                isAdmin: (meta?.admins ?? []).contains(m.deviceID)
+                isAdmin: (meta?.admins ?? []).contains(m.deviceID),
+                profile: admitted || isMe ? verifiedProfile(m.deviceID, p) : nil
             ))
         }
         if !sawMe, key != nil, myName != nil {

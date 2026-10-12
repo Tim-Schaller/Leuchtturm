@@ -121,3 +121,52 @@ private extension CircleRef {
         CircleRef(circleID: circleID, ownerUserID: owner, isOwned: owned)
     }
 }
+
+struct ProfileTests {
+    let cloud = InMemoryCloud()
+
+    @Test func profilesAreEncryptedSignedAndFollowKeyRotation() async throws {
+        let alice = try LeuchtturmClient(backend: cloud.backend(for: "alice"), secrets: InMemorySecretStore(), displayName: "Alice")
+        let bob = try LeuchtturmClient(backend: cloud.backend(for: "bob"), secrets: InMemorySecretStore(), displayName: "Bob")
+        let carol = try LeuchtturmClient(backend: cloud.backend(for: "carol"), secrets: InMemorySecretStore(), displayName: "Carol")
+        let ref = try await alice.createCircle(name: "Familie")
+        let link = try await alice.createInvite(for: ref)
+        let bobRef = try await bob.join(link)
+        _ = try await carol.join(link)
+        _ = try await alice.circle(ref)
+
+        let photo = Data(repeating: 0xAB, count: 90_000)
+        let profile = Profile(color: "#2F8F5B", emoji: "🦊", photo: photo, bannerStyle: "meadow",
+                              statusEmoji: "🏋️", statusText: "beim Sport", statusUntil: Date().addingTimeInterval(3600))
+        try await bob.setProfile(profile)
+        let seen = try #require(try await alice.circle(ref).members.first { $0.name == "Bob" }?.profile)
+        #expect(seen == profile)
+        #expect(seen.status(at: Date())?.text == "beim Sport")
+        #expect(seen.status(at: Date().addingTimeInterval(7200)) == nil)
+        for record in cloud.rawRecords(circleID: ref.circleID) where record.type == "Profile" {
+            for case let .bytes(bytes) in record.fields.values { #expect(bytes.range(of: Data("beim Sport".utf8)) == nil) }
+        }
+        await #expect(throws: ClientError.invalidProfile) {
+            try await bob.setProfile(Profile(photo: Data(count: Profile.maxPhotoBytes + 1)))
+        }
+
+        // Carol overwrites Bob's profile with her own signature: ignored.
+        var forged = try #require(cloud.rawRecords(circleID: ref.circleID).first { $0.name == "profile-\(bob.deviceID)" })
+        forged.fields["sig"] = .bytes(try carol.identity.sign(Data("x".utf8)))
+        try await cloud.backend(for: "carol").modify(bobRef, save: [forged], delete: [], removeParticipants: [])
+        #expect(try await alice.circle(ref).members.first { $0.name == "Bob" }?.profile == nil)
+        try await bob.setProfile(profile)
+
+        // After a rotation Bob re-encrypts; a newcomer can read it.
+        try await alice.remove(userID: "carol", from: ref)
+        _ = try await bob.circle(bobRef)
+        let dave = try LeuchtturmClient(backend: cloud.backend(for: "dave"), secrets: InMemorySecretStore(), displayName: "Dave")
+        let daveRef = try await dave.join(try await alice.createInvite(for: ref))
+        _ = try await alice.circle(ref)
+        #expect(try await dave.circle(daveRef).members.first { $0.name == "Bob" }?.profile?.emoji == "🦊")
+
+        try await bob.leave(bobRef)
+        #expect(!cloud.rawRecords(circleID: ref.circleID).contains { $0.type == "Profile" && $0.name.hasSuffix(bob.deviceID) })
+    }
+}
+

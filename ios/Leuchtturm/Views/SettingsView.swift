@@ -9,10 +9,15 @@ struct SettingsView: View {
     @State private var confirmDelete = false
     @State private var confirmReset = false
     @State private var saving = false
+    @State private var editingProfile = false
 
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Button("Profil gestalten", systemImage: "paintbrush") { editingProfile = true }
+                }
+
                 Section {
                     TextField("Dein Name", text: $name)
                         .submitLabel(.done)
@@ -158,6 +163,7 @@ struct SettingsView: View {
                 }
             }
             .onAppear { name = model.displayName }
+            .sheet(isPresented: $editingProfile) { ProfileEditor() }
             .confirmationDialog("Wirklich alles löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
                 Button("Alles löschen", role: .destructive) {
                     Task {

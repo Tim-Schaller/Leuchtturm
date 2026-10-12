@@ -58,6 +58,12 @@ struct MapHomeView: View {
 
     private var memberColors: [String: Color] { Theme.colors(for: details?.members.map(\.id) ?? []) }
 
+    private var memberProfiles: [String: Profile] {
+        var out = Dictionary((details?.members ?? []).compactMap { m in m.profile.map { (m.id, $0) } }, uniquingKeysWith: { a, _ in a })
+        if let me = model.client?.deviceID { out[me] = model.myProfile }
+        return out
+    }
+
     var body: some View {
         Map(position: $camera) {
             ForEach(details?.places ?? []) { place in
@@ -126,6 +132,7 @@ struct MapHomeView: View {
             detent = empty ? .medium : PeopleSheet.peek
         }
         .environment(\.memberColors, memberColors)
+        .environment(\.memberProfiles, memberProfiles)
         .task(id: model.externalChanges) { await model.refresh() }
         .task(id: "\(selected?.id ?? "")|\(model.externalChanges)") { await follow(selected?.ref) }
     }

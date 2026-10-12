@@ -2,6 +2,7 @@
 import CoreLocation
 import Foundation
 import LeuchtturmCore
+import UIKit
 
 /// Stand-in for iCloud with three made-up people, so the app can be tried
 /// without an Apple Account (debug builds only). The people run the real
@@ -208,6 +209,19 @@ final class SimulatedWorld {
             let (latitude, longitude) = Self.offset(home, north: north, east: east)
             try await person.client.addPlace(name: name, emoji: emoji, latitude: latitude, longitude: longitude, radius: radius, in: ref)
         }
+    }
+
+    /// A made-up profile picture: a sunflower on a sky gradient.
+    static func demoPhoto() -> Data? {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 256, height: 256), format: format).image { context in
+            let colors = [UIColor(red: 0.62, green: 0.84, blue: 0.95, alpha: 1).cgColor, UIColor(red: 0.55, green: 0.80, blue: 0.53, alpha: 1).cgColor]
+            let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors as CFArray, locations: [0, 1])!
+            context.cgContext.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: 256), options: [])
+            ("🌻" as NSString).draw(at: CGPoint(x: 48, y: 40), withAttributes: [.font: UIFont.systemFont(ofSize: 140)])
+        }
+        return image.jpegData(compressionQuality: 0.7)
     }
 
     /// Meters north and east of home: Anna walks a loop, Ben drives a bigger one, Clara stays put.

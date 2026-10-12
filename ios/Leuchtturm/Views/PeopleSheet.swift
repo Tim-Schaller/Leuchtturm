@@ -208,6 +208,11 @@ private struct PersonRow: View {
                             .accessibilityLabel("Sicherheitscode überprüft")
                     }
                 }
+                if let status = (member.isMe ? model.myProfile : member.profile)?.status(at: Date()) {
+                    Text([status.emoji, status.text].compactMap { $0 }.joined(separator: " "))
+                        .font(.subheadline.weight(.medium))
+                        .lineLimit(1)
+                }
                 Text(LocationStatus.text(for: member, model: model))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -265,17 +270,18 @@ struct MemberDetailView: View {
     @Environment(AppModel.self) private var model
     let member: CircleMember
     let ref: CircleRef?
+    @State private var editing = false
 
     var body: some View {
         List {
             Section {
-                HStack(spacing: 14) {
-                    Avatar(name: member.name, id: member.id, size: 56)
-                    Text(LocationStatus.text(for: member, model: model))
-                        .font(.headline)
+                ProfileHeader(member: member, subtitle: LocationStatus.text(for: member, model: model))
+                if member.isMe {
+                    Button("Profil gestalten", systemImage: "paintbrush") { editing = true }
                 }
             }
             .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
 
             if !member.isMe, !member.isPending, let ref {
                 ReactionPicker(member: member, ref: ref)
@@ -343,5 +349,6 @@ struct MemberDetailView: View {
         }
         .navigationTitle(member.name ?? "Mitglied")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $editing) { ProfileEditor() }
     }
 }

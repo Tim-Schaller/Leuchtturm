@@ -72,18 +72,29 @@ extension EnvironmentValues {
 /// A person as a colored circle with initials.
 struct Avatar: View {
     @Environment(\.memberColors) private var memberColors
+    @Environment(\.memberProfiles) private var memberProfiles
     let name: String?
     let id: String
     var size: CGFloat = 44
 
     var body: some View {
-        Text(initials)
-            .font(.system(size: size * 0.4, weight: .bold, design: .rounded))
-            .foregroundStyle(.white)
-            .frame(width: size, height: size)
-            .background((memberColors[id] ?? Theme.color(for: id)).gradient, in: .circle)
-            .overlay { Circle().strokeBorder(.white, lineWidth: max(2, size * 0.06)) }
-            .accessibilityHidden(true)
+        let profile = memberProfiles[id]
+        let color = Color(hex: profile?.color) ?? memberColors[id] ?? Theme.color(for: id)
+        ZStack {
+            Circle().fill(color.gradient)
+            if let data = profile?.photo, let image = UIImage(data: data) {
+                Image(uiImage: image).resizable().scaledToFill().clipShape(.circle)
+            } else if let emoji = profile?.emoji {
+                Text(emoji).font(.system(size: size * 0.55))
+            } else {
+                Text(initials)
+                    .font(.system(size: size * 0.4, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+            }
+        }
+        .frame(width: size, height: size)
+        .overlay { Circle().strokeBorder(.white, lineWidth: max(2, size * 0.06)) }
+        .accessibilityHidden(true)
     }
 
     private var initials: String {

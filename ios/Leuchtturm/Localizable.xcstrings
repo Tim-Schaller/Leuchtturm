@@ -1,6 +1,16 @@
 {
   "sourceLanguage": "de",
   "strings": {
+    "": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        }
+      }
+    },
     "%@ %@": {
       "localizations": {
         "en": {
@@ -251,6 +261,16 @@
         }
       }
     },
+    "2 Std.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 hrs"
+          }
+        }
+      }
+    },
     "2 Wochen": {
       "localizations": {
         "en": {
@@ -277,6 +297,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "8 hrs"
+          }
+        }
+      }
+    },
+    "Aa": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aa"
           }
         }
       }
@@ -581,6 +611,26 @@
         }
       }
     },
+    "Bannerbild wählen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose banner picture"
+          }
+        }
+      }
+    },
+    "Bannerbild ändern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change banner picture"
+          }
+        }
+      }
+    },
     "Beispiel-Leuchtturm „Familie“ mit allen anlegen": {
       "localizations": {
         "en": {
@@ -631,6 +681,36 @@
         }
       }
     },
+    "Bild": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Picture"
+          }
+        }
+      }
+    },
+    "Bild, Pin und Status sehen alle in deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone in your lighthouses sees your picture, pin and status, end-to-end encrypted."
+          }
+        }
+      }
+    },
+    "Bilder entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove pictures"
+          }
+        }
+      }
+    },
     "Bis": {
       "localizations": {
         "en": {
@@ -647,6 +727,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "No arrival at “%2$@” by %1$@."
+          }
+        }
+      }
+    },
+    "Bis ich es ändere": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Until I change it"
           }
         }
       }
@@ -717,6 +807,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "You are not allowed to do that."
+          }
+        }
+      }
+    },
+    "Das Bild ist zu groß oder der Status zu lang.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The picture is too large or the status too long."
           }
         }
       }
@@ -1057,6 +1157,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "You were invited to a lighthouse."
+          }
+        }
+      }
+    },
+    "Eigener Status": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom status"
           }
         }
       }
@@ -1541,6 +1651,16 @@
         }
       }
     },
+    "Initialen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Initials"
+          }
+        }
+      }
+    },
     "Jeder mit dem Link kann beitreten, bis er abläuft. Neue Mitglieder siehst du in der Mitgliederliste und kannst sie jederzeit entfernen. Entfernst du jemanden, werden alle offenen Einladungen ungültig.": {
       "localizations": {
         "en": {
@@ -1567,6 +1687,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Invite someone"
+          }
+        }
+      }
+    },
+    "Kaffeepause": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coffee break"
           }
         }
       }
@@ -2291,12 +2421,52 @@
         }
       }
     },
+    "Pin": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pin"
+          }
+        }
+      }
+    },
     "Platz %lld": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Rank %lld"
+          }
+        }
+      }
+    },
+    "Profil gestalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Design profile"
+          }
+        }
+      }
+    },
+    "Profilbild wählen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose profile picture"
+          }
+        }
+      }
+    },
+    "Profilbild ändern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change profile picture"
           }
         }
       }
@@ -2617,6 +2787,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Start"
+          }
+        }
+      }
+    },
+    "Status": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
+          }
+        }
+      }
+    },
+    "Status löschen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear status"
           }
         }
       }
@@ -3071,12 +3261,52 @@
         }
       }
     },
+    "bei der Arbeit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "at work"
+          }
+        }
+      }
+    },
+    "beim Essen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "eating"
+          }
+        }
+      }
+    },
+    "beim Sport": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "working out"
+          }
+        }
+      }
+    },
     "einmal": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "once"
+          }
+        }
+      }
+    },
+    "feiert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "celebrating"
           }
         }
       }
@@ -3141,6 +3371,16 @@
         }
       }
     },
+    "in der Schule": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "at school"
+          }
+        }
+      }
+    },
     "ist bei „%@“ angekommen": {
       "localizations": {
         "en": {
@@ -3201,12 +3441,42 @@
         }
       }
     },
+    "nicht stören": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "do not disturb"
+          }
+        }
+      }
+    },
+    "schläft": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sleeping"
+          }
+        }
+      }
+    },
     "täglich": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "daily"
+          }
+        }
+      }
+    },
+    "unterwegs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "on the go"
           }
         }
       }

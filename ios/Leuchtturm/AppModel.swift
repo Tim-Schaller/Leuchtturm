@@ -77,6 +77,9 @@ final class AppModel {
     private(set) var fog: Fog?
     var activeFog: Fog? { fog.flatMap { $0.until > Date() ? $0 : nil } }
 
+    /// This device's picture, pin and status, kept locally and written to all circles.
+    private(set) var myProfile = Profile()
+
     /// Shares today's path (and keeps `historyDays` days) with the circles.
     private(set) var sharesHistory = false
     private(set) var historyDays = 7
@@ -169,6 +172,7 @@ final class AppModel {
         sendsMorningGreeting = !isSimulation && defaults.bool(forKey: Keys.morningGreeting)
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
         knownPlaces = [:]
+        myProfile = isSimulation ? Profile() : Self.loadStoredProfile() ?? Profile()
         latestDetails = [:]
         verifiedDevices = isSimulation ? [] : Set(defaults.stringArray(forKey: Keys.verifiedDevices) ?? [])
         knownMembers = isSimulation ? [:] : (defaults.dictionary(forKey: Keys.knownMembers) as? [String: [String]] ?? [:])
@@ -280,7 +284,8 @@ final class AppModel {
     func createCircle(name: String, lasting days: Int? = nil) async -> CircleRef? {
         let expiresAt = days.map { Date().addingTimeInterval(Double($0) * 86400) }
         let ref = await run { try await $0.createCircle(name: name, expiresAt: expiresAt) }
-        if ref != nil {
+        if let ref {
+            await pushProfile(to: ref)
             await shareLocationNow()
             await refresh()
         }
@@ -289,7 +294,8 @@ final class AppModel {
 
     func join(_ link: InviteLink) async -> CircleRef? {
         let ref = await run { try await $0.join(link) }
-        if ref != nil {
+        if let ref {
+            await pushProfile(to: ref)
             await shareLocationNow()
             await refresh()
         }
@@ -480,6 +486,43 @@ final class AppModel {
         }
     }
 
+    // MARK: Profile
+
+    private static var profileURL: URL { URL.applicationSupportDirectory.appending(path: "profile.json") }
+
+    private struct StoredProfile: Codable {
+        var color, emoji, bannerStyle, statusEmoji, statusText: String?
+        var photo, banner: Data?
+        var statusUntil: Date?
+    }
+
+    private static func loadStoredProfile() -> Profile? {
+        guard let data = try? Data(contentsOf: profileURL), let s = try? JSONDecoder().decode(StoredProfile.self, from: data) else { return nil }
+        return Profile(color: s.color, emoji: s.emoji, photo: s.photo, banner: s.banner, bannerStyle: s.bannerStyle,
+                       statusEmoji: s.statusEmoji, statusText: s.statusText, statusUntil: s.statusUntil)
+    }
+
+    /// Saves locally and sends to every circle.
+    func saveProfile(_ profile: Profile) async -> Bool {
+        guard await run({ try await $0.setProfile(profile) }) != nil else { return false }
+        myProfile = profile
+        if !isSimulation {
+            let stored = StoredProfile(color: profile.color, emoji: profile.emoji, bannerStyle: profile.bannerStyle,
+                                       statusEmoji: profile.statusEmoji, statusText: profile.statusText,
+                                       photo: profile.photo, banner: profile.banner, statusUntil: profile.statusUntil)
+            try? FileManager.default.createDirectory(at: URL.applicationSupportDirectory, withIntermediateDirectories: true)
+            try? JSONEncoder().encode(stored).write(to: Self.profileURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        }
+        noteRemoteChange()
+        return true
+    }
+
+    private func pushProfile(to ref: CircleRef) async {
+        guard myProfile != Profile() else { return }
+        let profile = myProfile
+        await run { try await $0.setProfile(profile, in: [ref]) }
+    }
+
     // MARK: Key storage
 
     /// Moves all keys into or out of iCloud Keychain.
@@ -500,6 +543,7 @@ final class AppModel {
     @discardableResult
     func takeOver(_ ref: CircleRef) async -> CircleRef? {
         guard let newRef = await run({ try await $0.takeOver(ref) }) else { return nil }
+        await pushProfile(to: newRef)
         await refresh()
         noteRemoteChange()
         return newRef
@@ -890,6 +934,12 @@ final class AppModel {
             try await world.addDemoPlaces(circleID: ref.circleID, near: here)
             try await world.addDemoTrips(near: here)
         }
+        // Everyone has their own look.
+        await simulate { world in
+            try await world.people[0].client.setProfile(Profile(color: "#D9567F", bannerStyle: "sunset", statusEmoji: "☕️", statusText: String(localized: "Kaffeepause"), statusUntil: Date().addingTimeInterval(3600)))
+            try await world.people[1].client.setProfile(Profile(color: "#E0533A", emoji: "🏎️", bannerStyle: "night"))
+            try await world.people[2].client.setProfile(Profile(color: "#9576C9", photo: SimulatedWorld.demoPhoto(), bannerStyle: "lavender", statusEmoji: "📚", statusText: String(localized: "in der Schule")))
+        }
         // Anna helps run it.
         if let anna = simulation?.people.first {
             _ = await mapDetails(for: ref)
@@ -963,6 +1013,7 @@ final class AppModel {
             case .invalidNote: return String(localized: "Die Nachricht ist zu lang.")
             case .invalidPlace: return String(localized: "Bitte gib dem Ort einen Namen mit höchstens \(CirclePlace.maxNameLength) Zeichen.")
             case .notAdmin: return String(localized: "Das dürfen nur Admins.")
+            case .invalidProfile: return String(localized: "Das Bild ist zu groß oder der Status zu lang.")
             case .takeoverNotAllowed: return String(localized: "Übernehmen geht erst, wenn der Besitzer drei Tage nicht aktiv war oder dir den Leuchtturm übergibt.")
             }
         case is ProtocolError:

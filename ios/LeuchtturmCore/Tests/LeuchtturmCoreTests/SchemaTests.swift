@@ -47,3 +47,34 @@ struct SchemaTests {
         }
     }
 }
+
+/// ios/CloudKit/schema.ckdb (for `cktool import-schema`) must list the same
+/// types and fields as `CloudSchema`.
+struct SchemaFileTests {
+    @Test func schemaFileMatches() throws {
+        let url = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("CloudKit/schema.ckdb")
+        let text = try String(contentsOf: url, encoding: .utf8)
+        var file: Set<String> = []
+        var current: String?
+        for line in text.split(separator: "\n").map({ $0.trimmingCharacters(in: .whitespaces) }) {
+            if line.hasPrefix("RECORD TYPE ") {
+                current = String(line.dropFirst("RECORD TYPE ".count).prefix { $0 != " " })
+            } else if let type = current, type != "Users", line.hasPrefix("\""), !line.hasPrefix("\"___") {
+                let parts = line.split(separator: " ", omittingEmptySubsequences: true)
+                let name = parts[0].trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+                let kind = switch parts[1].trimmingCharacters(in: CharacterSet(charactersIn: ",")) {
+                case "BYTES": "bytes"
+                case "INT64": "int"
+                default: "string"
+                }
+                file.insert("\(type).\(name):\(kind)")
+            }
+        }
+        let declared = CloudSchema.entries(CloudSchema.zoneRecords)
+            .union(CloudSchema.entries(CloudSchema.privateRecords))
+            .union(CloudSchema.entries(CloudSchema.publicRecords))
+        #expect(file == declared, "only in file: \(file.subtracting(declared).sorted()), missing: \(declared.subtracting(file).sorted())")
+    }
+}

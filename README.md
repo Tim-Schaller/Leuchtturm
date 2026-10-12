@@ -11,20 +11,20 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Tim-Schaller/leuchtturm/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/Tim-Schaller/leuchtturm/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/Tim-Schaller/Leuchtturm/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/Tim-Schaller/Leuchtturm/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MPL-2.0" src="https://img.shields.io/badge/license-MPL--2.0-2F8F5B"></a>
-  <img alt="Platform: iOS 26+" src="https://img.shields.io/badge/platform-iOS%2026%2B-4E9F6E?logo=apple&amp;logoColor=white">
+  <img alt="Platforms: iOS, iPadOS, watchOS and tvOS 26+" src="https://img.shields.io/badge/platforms-iOS%20%C2%B7%20iPadOS%20%C2%B7%20watchOS%20%C2%B7%20tvOS%2026%2B-4E9F6E?logo=apple&amp;logoColor=white">
   <img alt="Swift 6" src="https://img.shields.io/badge/Swift-6-F2786B?logo=swift&amp;logoColor=white">
 </p>
 
-Leuchtturm is a native iOS app (SwiftUI, Liquid Glass) for sharing your location with the people you choose, without handing your movements to a company that monetizes them. Everything is encrypted on the iPhone before it is stored.
+Leuchtturm is a native app for iPhone, iPad, Apple Watch and Apple TV (SwiftUI, Liquid Glass) for sharing your location with the people you choose, without handing your movements to a company that monetizes them. Everything is encrypted on the iPhone before it is stored.
 
 <p align="center">
   <img src="docs/assets/screenshot-map.png" width="300" alt="The Leuchtturm map: four people as round avatar pins in Hamburg, a circle switcher on top and a people drawer with “Gerade eben · 1 km” at the bottom (simulation mode with made-up people)">
 </p>
 
 > [!NOTE]
-> **Status:** early development. Milestone M1 (encrypted circles and invites) is implemented and tested, and M2 (live location on a map) is under way: locations are shared, also in the background, and silent pushes bring news. Nothing is released or audited. Do not rely on Leuchtturm for safety-critical use.
+> **Status:** beta. The features below work and are tested, and a first TestFlight build is with internal testers. Nothing is released on the App Store or independently audited yet. Do not rely on Leuchtturm for safety-critical use.
 
 ## 🌿 At a glance
 
@@ -42,13 +42,13 @@ Leuchtturm has **no server of its own**. It stores data in **Apple iCloud (Cloud
 
 | | |
 |---|---|
-| **Apple cannot read** | circle names, display names and locations (later also places and history). They are encrypted on the iPhone with keys Apple never sees. |
+| **Apple cannot read** | names, locations, places, history, trips, chat, profile pictures and everything else you share. It is encrypted on the iPhone with keys Apple never sees. |
 | **Apple can see** | which iCloud accounts are in the same circle, who created it, when data is written (location updates are more frequent while someone moves), and approximate data sizes. Apple knows the real identities behind iCloud accounts. The map itself comes from Apple Maps, which sees the map areas you look at. |
 | **Location of the data** | Apple's data centers. Apple is a US company; storage in the EU is not guaranteed. |
 | **Requirements** | Every member needs an iPhone signed in to iCloud. The data counts (negligibly) against the circle owner's iCloud storage. |
 | **Cost** | Free. No server to run or pay for. |
 
-An earlier version of this project used a self-hosted server in the EU, which saw only anonymous keys. It was replaced by CloudKit so the app works without anyone running hardware. The trade-off is that Apple sees who is connected with whom (metadata), even though it cannot see content. See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
+There is nothing to host or run yourself. (Very early versions used a small server of their own; it was replaced by iCloud so nobody has to run hardware.) The trade-off is that Apple sees who is connected with whom (metadata), even though it cannot see content. See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
 
 ## ✨ Features
 

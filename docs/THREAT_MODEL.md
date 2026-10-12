@@ -18,7 +18,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 
 ## Non-goals (not protected against)
 
-- **Metadata at Apple.** Apple knows which iCloud accounts (real identities) share a circle, who owns it, when records are written and their approximate sizes. This is the main privacy cost of using CloudKit instead of a self-hosted server.
+- **Metadata at Apple.** Apple knows which iCloud accounts (real identities) share a circle, who owns it, when records are written and their approximate sizes. This is the main privacy cost of using CloudKit instead of a server of our own.
 - **Movement patterns from timing.** Location records are written while someone moves (more often with the app open) and not while they stand still, also in the background. Apple can therefore tell when a member is on the move, though not where. A fixed update cadence could hide this later.
 - **Chat metadata.** Apple sees when and how often messages are written and the size of pictures, not their content or who replies to whom.
 - **Picture sizes.** Profile pictures are encrypted but not padded, so Apple sees their approximate size.

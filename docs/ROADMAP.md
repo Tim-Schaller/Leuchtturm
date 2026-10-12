@@ -21,7 +21,7 @@ Each milestone should be usable and testable on its own. Dates are intentionally
 - [x] Simulation mode in debug builds: made-up members on the in-memory backend, no iCloud needed
 - [ ] First run against real iCloud with two accounts (owner, Mac + iPhone)
 
-History: M1 was first built with a self-hosted Go server (EU, anonymous device keys). It was replaced by CloudKit so nobody has to run hardware. See the README for the privacy trade-off.
+History: M1 was first built with a small Go server of its own (EU, anonymous device keys). It was replaced by CloudKit so nobody has to run hardware. See the README for the privacy trade-off.
 
 ## M2: Live location
 - [x] Encrypted, device-signed location records

@@ -56,19 +56,41 @@ struct ActionGrid: View {
     }
 
     private func tile(_ title: LocalizedStringResource, _ symbol: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
+        let text = String(localized: title)
+        return Button(action: action) {
             VStack(spacing: 6) {
-                Image(systemName: symbol).font(.title2)
-                // Two lines for longer words in other languages.
-                Text(title)
+                Image(systemName: symbol).font(.title2).frame(height: 30)
+                // One word shrinks instead of breaking ("Einche-cken"); several words may wrap.
+                Text(text)
                     .font(.caption.weight(.semibold))
                     .multilineTextAlignment(.center)
-                    .lineLimit(2, reservesSpace: true)
-                    .minimumScaleFactor(0.8)
+                    .lineLimit(text.contains(" ") ? 2 : 1)
+                    .minimumScaleFactor(0.6)
+                    .frame(minHeight: 30)
             }
-            .frame(maxWidth: .infinity, minHeight: 72)
+            .padding(.horizontal, 4)
         }
-        .buttonStyle(.glass)
+        .buttonStyle(TileButtonStyle())
+    }
+}
+
+/// A rounded glass tile that dims and shrinks a little while pressed, so the
+/// effect stays inside the list row (the interactive glass grew and was cut off).
+struct TileButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
+        configuration.label
+            .foregroundStyle(isEnabled ? AnyShapeStyle(.primary) : AnyShapeStyle(.tertiary))
+            .frame(maxWidth: .infinity, minHeight: 80)
+            .glassEffect(.regular, in: shape)
+            .overlay(shape.fill(.primary.opacity(configuration.isPressed ? 0.08 : 0)))
+            .contentShape(.hoverEffect, shape)
+            .contentShape(shape)
+            .hoverEffect(.highlight)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1)
+            .animation(.snappy(duration: 0.18), value: configuration.isPressed)
     }
 }
 

@@ -15,9 +15,12 @@ struct CircleDetailView: View {
 
     /// Someone the owner is about to remove (a member or an unverified participant).
     struct Removal: Identifiable {
-        let userID: String
+        /// The iCloud user, for the owner's removal.
+        let userID: String?
+        /// The device, for an admin's request.
+        let deviceID: String?
         let label: String
-        var id: String { userID }
+        var id: String { userID ?? deviceID ?? label }
     }
 
     var body: some View {
@@ -36,7 +39,11 @@ struct CircleDetailView: View {
                             .swipeActions {
                                 if details.isOwner, !member.isMe, let userID = member.userID {
                                     Button("Entfernen", role: .destructive) {
-                                        removal = Removal(userID: userID, label: member.name ?? "Mitglied")
+                                        removal = Removal(userID: userID, deviceID: nil, label: member.name ?? String(localized: "Mitglied"))
+                                    }
+                                } else if details.isAdmin, !member.isMe, !member.isOwner, !member.isAdmin {
+                                    Button("Entfernen", role: .destructive) {
+                                        removal = Removal(userID: nil, deviceID: member.id, label: member.name ?? String(localized: "Mitglied"))
                                     }
                                 }
                             }
@@ -54,7 +61,7 @@ struct CircleDetailView: View {
                                 Label("Unbekannter Teilnehmer", systemImage: "person.fill.questionmark")
                                 Spacer()
                                 Button("Entfernen", role: .destructive) {
-                                    removal = Removal(userID: userID, label: "Unbekannten Teilnehmer")
+                                    removal = Removal(userID: userID, deviceID: nil, label: String(localized: "Unbekannten Teilnehmer"))
                                 }
                                 .buttonStyle(.borderless)
                             }
@@ -69,7 +76,7 @@ struct CircleDetailView: View {
                 Section {
                     Button("Jemanden einladen", systemImage: "person.badge.plus") { showInvite = true }
                         .disabled(!details.hasKey)
-                    if details.isOwner {
+                    if details.isOwner || details.isAdmin {
                         Button("Umbenennen", systemImage: "pencil") {
                             newName = details.name ?? ""
                             showRename = true
@@ -107,8 +114,13 @@ struct CircleDetailView: View {
             Button("Speichern") {
                 let name = newName
                 let ref = ref
+                let isOwner = details?.isOwner == true
                 Task {
-                    await model.run { try await $0.rename(ref, to: name) }
+                    if isOwner {
+                        await model.run { try await $0.rename(ref, to: name) }
+                    } else {
+                        await model.run { try await $0.requestRename(ref, to: name) }
+                    }
                     await load()
                     await model.refresh()
                 }
@@ -122,14 +134,19 @@ struct CircleDetailView: View {
         ) { target in
             Button("Entfernen", role: .destructive) {
                 let ref = ref
-                let userID = target.userID
                 Task {
-                    await model.run { try await $0.remove(userID: userID, from: ref) }
+                    if let userID = target.userID {
+                        await model.run { try await $0.remove(userID: userID, from: ref) }
+                    } else if let deviceID = target.deviceID {
+                        await model.run { try await $0.requestRemoval(of: deviceID, in: ref) }
+                    }
                     await load()
                 }
             }
-        } message: { _ in
-            Text("Der Leuchtturm bekommt einen neuen Schlüssel. Die Person verliert den Zugriff und kann nichts mehr lesen, was danach geteilt wird.")
+        } message: { target in
+            Text(target.userID != nil
+                ? "Der Leuchtturm bekommt einen neuen Schlüssel. Die Person verliert den Zugriff und kann nichts mehr lesen, was danach geteilt wird."
+                : "Als Admin beauftragst du das Gerät des Besitzers. Es entfernt die Person beim nächsten Abgleich und vergibt einen neuen Schlüssel.")
         }
         .confirmationDialog(
             ref.isOwned ? "Leuchtturm für alle löschen?" : "Leuchtturm verlassen?",
@@ -180,12 +197,7 @@ private struct MemberRow: View {
                     if member.isMe {
                         Text("Du").font(.caption).foregroundStyle(.secondary)
                     }
-                    if member.isOwner {
-                        Image(systemName: "crown.fill")
-                            .font(.caption)
-                            .foregroundStyle(.yellow)
-                            .accessibilityLabel("Besitzer")
-                    }
+                    RoleBadge(member: member)
                     if member.isPending {
                         Text("neu")
                             .font(.caption)

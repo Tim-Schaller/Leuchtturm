@@ -54,6 +54,9 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 | Someone fakes a member's trips or driving score | Trips are signed by the driver's device; scores are computed by each reader from verified trips | M6 |
 | Someone fakes or extends a member's history | History days are signed by the member's device; only the device itself writes and deletes them | M5 |
 | History kept longer than wanted | The writing device deletes days past its retention, and everything when history is turned off or the member leaves | M5 |
+| Member redirects everyone to a circle of their own | Move notices count only from admins in the owner-signed meta, signed with the admin's own keys, which become the new owner keys | Roles |
+| Admin removes the owner or other admins | Requests can target only plain members; only the owner's device signs the roster | Roles |
+| Admin takes over while the owner is around | Allowed only with the owner's offer or after three days without a sign of life; the takeover is visible to everyone | Roles |
 | Member plants a fake place or fakes an arrival | Places and arrival notes are signed by the creating or arriving device | M4 |
 | Apple learns where "Home" is | Places are encrypted; geofences are evaluated on the device | M4 |
 | Member sends a note in someone else's name | Notes are signed by the sending device and checked against its member record | M3 |
@@ -65,7 +68,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 
 - **Background tracking depends on iOS.** Without "Always" access, sharing stops when the app goes to the background (to avoid a permanent status-bar indicator); a user who force-quits the app stops sharing until they open it again. Silent pushes can be delayed by iOS.
 - **Single device per person.** A second iPhone or iPad needs its own invite.
-- **The owner device is a single point of failure.** If the owner loses their iPhone, the circle can no longer be managed (no new admissions, removals or renames); members can still read it. Ownership transfer is not possible with CloudKit zones.
+- **Admins are trusted.** An admin can take a circle over once the owner seems inactive (or never shared a location or message). Owners should make only people admins they trust with the circle. Without any admin, a circle whose owner lost their device can no longer be managed.
 - **Pending members need the owner.** New members are visible as pending right away, but enter the signed roster only when the owner opens the app. Their admission is verified against the invite record, so if an invite expires and is cleaned up first, the owner must re-invite them.
 - **No use limits on invites.** CloudKit cannot enforce them; a link works for anyone until it expires. Owners see every new member.
 - **Safety codes are manual.** The app warns when a new key appears in a circle and shows which members were verified, but comparing codes is still up to the people.

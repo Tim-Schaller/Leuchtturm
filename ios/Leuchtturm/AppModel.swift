@@ -474,6 +474,17 @@ final class AppModel {
         }
     }
 
+    // MARK: Roles
+
+    /// Takes the Leuchtturm over (admins) and switches to the new one.
+    @discardableResult
+    func takeOver(_ ref: CircleRef) async -> CircleRef? {
+        guard let newRef = await run({ try await $0.takeOver(ref) }) else { return nil }
+        await refresh()
+        noteRemoteChange()
+        return newRef
+    }
+
     // MARK: Safety codes
 
     func setVerified(_ deviceID: String, _ verified: Bool) {
@@ -511,6 +522,11 @@ final class AppModel {
     }
 
     // MARK: Arrival watches
+
+    /// The circle as last loaded on this device.
+    func latestCircle(_ circleID: String) -> CircleDetails? {
+        latestDetails[circleID]
+    }
 
     func places(inCircle circleID: String) -> [CirclePlace] {
         latestDetails[circleID]?.places ?? knownPlaces[circleID]?.places ?? []
@@ -854,6 +870,11 @@ final class AppModel {
             try await world.addDemoPlaces(circleID: ref.circleID, near: here)
             try await world.addDemoTrips(near: here)
         }
+        // Anna helps run it.
+        if let anna = simulation?.people.first {
+            _ = await mapDetails(for: ref)
+            await run { try await $0.setAdmin(anna.client.deviceID, true, in: ref) }
+        }
         // Three evenings at the sports club, for the place suggestions.
         let (lat, lon) = SimulatedWorld.offset(home, north: -600, east: 900)
         for day in 1 ... 3 {
@@ -921,6 +942,8 @@ final class AppModel {
             case .ownerMustDelete: return String(localized: "Als Besitzer kannst du den Leuchtturm nicht verlassen, nur löschen.")
             case .invalidNote: return String(localized: "Die Nachricht ist zu lang.")
             case .invalidPlace: return String(localized: "Bitte gib dem Ort einen Namen mit höchstens \(CirclePlace.maxNameLength) Zeichen.")
+            case .notAdmin: return String(localized: "Das dürfen nur Admins.")
+            case .takeoverNotAllowed: return String(localized: "Übernehmen geht erst, wenn der Besitzer drei Tage nicht aktiv war oder dir den Leuchtturm übergibt.")
             }
         case is ProtocolError:
             return String(localized: "Die Daten konnten nicht entschlüsselt oder geprüft werden.")

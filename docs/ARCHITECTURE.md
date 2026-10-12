@@ -49,7 +49,7 @@ Everything else is verified against the pinned keys. A device without the pin (e
 | Field | Content |
 |-------|---------|
 | `epoch` | key version, starts at 1 |
-| `meta` | encrypted `{"name": …, "members": [device IDs], "expires": Unix seconds (optional)}` (the **roster**; `expires` makes it a temporary circle) |
+| `meta` | encrypted `{"name": …, "members": [device IDs], "expires": Unix seconds (optional), "admins": [device IDs] (optional)}` (the **roster**; `expires` makes it a temporary circle) |
 | `sig` | Ed25519 by the owner device over `ctx("leuchtturm/v1/circle-record", circleID) ‖ epoch ‖ meta` |
 
 A circle record with a bad signature makes the circle unreadable (`tampered`). A temporary circle ends at `expires`: from then on the owner's device deletes the zone and members' devices leave it the next time they list their circles.
@@ -179,6 +179,24 @@ plaintext = u16 length | data | zero padding to a multiple of 64 bytes
 ```
 
 Contexts: `ctx("leuchtturm/v1/circle-meta", circleID)`, `ctx("leuchtturm/v1/member-card", circleID, deviceID)`, `ctx("leuchtturm/v1/invite-token", circleID, inviteID)`, `ctx("leuchtturm/v1/location", circleID, deviceID)`, `ctx("leuchtturm/v1/note", circleID, noteID)`. Padding hides name lengths.
+
+## Roles and takeover
+
+The owner's device stays the only signer of the circle record. It lists **admins** in the signed meta.
+
+- **Requests.** An admin who removes a member or renames the circle sends a signed `Note` of kind `removeRequest` (text: target device ID) or `renameRequest` (text: new name) to the owner. The owner's device carries out requests from listed admins the next time it loads the circle (removal with key rotation as usual) and deletes them. Admins cannot target the owner or other admins; requests from non-admins are ignored.
+- **Handover.** The owner makes the chosen member an admin and sends a `handoverOffer` note to them.
+- **Takeover.** An admin may take over when the owner offered it, or when the owner's last sign of life (verified location or newest note) is three days old or unknown. CloudKit zones cannot change owner, so the admin's device creates a **new circle**: same name, roster, expiry and places (re-signed by the new owner), admins = old admins minus itself plus the old owner, and a key wrap for every roster device. It then writes a **`Move`** record in the old circle and leaves it, and posts a `tookOver` note in the new one.
+
+### `Move` (record name `move-<signer>`)
+
+| Field | Content |
+|-------|---------|
+| `from` | device ID of the new owner |
+| `blob` | encrypted under the old circle key: `{"c": new circle ID, "u": iCloud share URL, "s": signing key, "a": agreement key, "t": Unix seconds}` |
+| `sig` | Ed25519 by the **new owner's device** over `ctx("leuchtturm/v1/move-record", oldCircleID, signer) ‖ blob` |
+
+Members follow a move notice only if the signer is an admin in the (owner-signed) meta, is not the old owner, the signature verifies with the signer's member record, and the announced keys are exactly that member's keys. If several admins took over, the earliest notice wins. Following means: accept the new share, check that it is the announced circle, pin the announced keys as the new owner, load the circle (unwrapping the new key) and leave the old one. The old owner's device follows too, hides the old circle and deletes its zone three days later, so late members can still read the notice. Members who were still pending (not in the roster) are not carried over. Context: `ctx("leuchtturm/v1/move", oldCircleID, signer)`.
 
 ## Invites
 

@@ -51,6 +51,16 @@
         }
       }
     },
+    "%@ möchte dir den Leuchtturm übergeben.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ wants to hand the lighthouse over to you."
+          }
+        }
+      }
+    },
     "%@ teilt keinen Verlauf.": {
       "localizations": {
         "en": {
@@ -67,6 +77,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ leaves the lighthouse"
+          }
+        }
+      }
+    },
+    "%@ war seit drei Tagen nicht aktiv.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ has not been active for three days."
+          }
+        }
+      }
+    },
+    "%@ wird Admin und kann den Leuchtturm übernehmen. Dann ziehen alle in einen neuen Leuchtturm um, den sie besitzt; du bleibst Admin.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ becomes an admin and can take the lighthouse over. Then everyone moves to a new lighthouse they own; you stay an admin."
           }
         }
       }
@@ -271,6 +301,26 @@
         }
       }
     },
+    "Admin": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Admin"
+          }
+        }
+      }
+    },
+    "Admins können Leute einladen, Entfernen und Umbenennen beantragen und den Leuchtturm übernehmen, wenn du drei Tage nicht aktiv warst.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Admins can invite people, request removals and renames, and take the lighthouse over if you have not been active for three days."
+          }
+        }
+      }
+    },
     "Akku": {
       "localizations": {
         "en": {
@@ -357,6 +407,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Are you OK?"
+          }
+        }
+      }
+    },
+    "Als Admin beauftragst du das Gerät des Besitzers. Es entfernt die Person beim nächsten Abgleich und vergibt einen neuen Schlüssel.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As an admin you ask the owner's device. It removes the person the next time it syncs and hands out a new key."
           }
         }
       }
@@ -661,6 +721,16 @@
         }
       }
     },
+    "Das dürfen nur Admins.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only admins can do that."
+          }
+        }
+      }
+    },
     "Das ist kein gültiger Leuchtturm-Einladungslink.": {
       "localizations": {
         "en": {
@@ -747,6 +817,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your keys stay on this iPhone only and are not synced with iCloud."
+          }
+        }
+      }
+    },
+    "Der Besitzer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The owner"
           }
         }
       }
@@ -847,6 +927,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The message is too long."
+          }
+        }
+      }
+    },
+    "Die Person": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The person"
           }
         }
       }
@@ -1511,6 +1601,16 @@
         }
       }
     },
+    "Leuchtturm an %@ übergeben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hand the lighthouse over to %@"
+          }
+        }
+      }
+    },
     "Leuchtturm auf Zeit · endet %@": {
       "localizations": {
         "en": {
@@ -1627,6 +1727,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Choose lighthouse"
+          }
+        }
+      }
+    },
+    "Leuchtturm übergeben?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hand over the lighthouse?"
+          }
+        }
+      }
+    },
+    "Leuchtturm übernehmen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take over the lighthouse"
           }
         }
       }
@@ -2161,6 +2281,16 @@
         }
       }
     },
+    "Rolle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Role"
+          }
+        }
+      }
+    },
     "SOS": {
       "localizations": {
         "en": {
@@ -2541,6 +2671,16 @@
         }
       }
     },
+    "Unbekannten Teilnehmer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown participant"
+          }
+        }
+      }
+    },
     "Unbekannter Fehler.": {
       "localizations": {
         "en": {
@@ -2881,6 +3021,16 @@
         }
       }
     },
+    "hat den Leuchtturm übernommen 👑": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "took over the lighthouse 👑"
+          }
+        }
+      }
+    },
     "hat den Tag begonnen ☀️": {
       "localizations": {
         "en": {
@@ -2961,6 +3111,26 @@
         }
       }
     },
+    "möchte den Leuchtturm an %@ übergeben 👑": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wants to hand the lighthouse over to %@ 👑"
+          }
+        }
+      }
+    },
+    "möchte dir den Leuchtturm übergeben 👑": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wants to hand the lighthouse over to you 👑"
+          }
+        }
+      }
+    },
     "neu": {
       "localizations": {
         "en": {
@@ -2997,6 +3167,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "e.g. Family"
+          }
+        }
+      }
+    },
+    "Übergeben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hand over"
+          }
+        }
+      }
+    },
+    "Übernehmen geht erst, wenn der Besitzer drei Tage nicht aktiv war oder dir den Leuchtturm übergibt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can take over only once the owner has not been active for three days or hands the lighthouse over to you."
+          }
+        }
+      }
+    },
+    "Übernimmst du, ziehen alle mit Orten und Rollen in einen neuen Leuchtturm in deiner iCloud um. Die anderen folgen automatisch.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you take over, everyone moves with places and roles to a new lighthouse in your iCloud. The others follow automatically."
           }
         }
       }

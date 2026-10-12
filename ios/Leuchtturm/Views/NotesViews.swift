@@ -42,6 +42,14 @@ enum NoteText {
             return String(localized: "✅ ist in Sicherheit")
         case .lowBattery:
             return String(localized: "hat nur noch \(note.text) % Akku 🪫")
+        case .handoverOffer:
+            if note.recipientID == myID { return String(localized: "möchte dir den Leuchtturm übergeben 👑") }
+            let name = members.first { $0.id == note.recipientID }?.name ?? String(localized: "jemanden")
+            return String(localized: "möchte den Leuchtturm an \(name) übergeben 👑")
+        case .tookOver:
+            return String(localized: "hat den Leuchtturm übernommen 👑")
+        case .removeRequest, .renameRequest:
+            return ""
         }
     }
 

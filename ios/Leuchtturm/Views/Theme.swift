@@ -1,3 +1,4 @@
+import LeuchtturmCore
 import SwiftUI
 import UIKit
 
@@ -88,6 +89,25 @@ struct Avatar: View {
     private var initials: String {
         let parts = (name ?? "?").split(separator: " ").prefix(2)
         return parts.compactMap(\.first).map(String.init).joined().uppercased()
+    }
+}
+
+/// Crown for the owner, shield for admins.
+struct RoleBadge: View {
+    let member: CircleMember
+
+    var body: some View {
+        if member.isOwner {
+            Image(systemName: "crown.fill")
+                .font(.caption)
+                .foregroundStyle(.yellow)
+                .accessibilityLabel("Besitzer")
+        } else if member.isAdmin {
+            Image(systemName: "shield.lefthalf.filled")
+                .font(.caption)
+                .foregroundStyle(Color.accentColor)
+                .accessibilityLabel("Admin")
+        }
     }
 }
 

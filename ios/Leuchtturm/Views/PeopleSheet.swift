@@ -79,6 +79,9 @@ struct PeopleSheet: View {
                     Label("Warte auf den Schlüssel vom Besitzer. Er wird übertragen, sobald der Besitzer die App öffnet.", systemImage: "key")
                         .font(.callout)
                 }
+                if details.canTakeOver {
+                    TakeOverSection(details: details, onTakenOver: onSelectCircle)
+                }
                 if let end = details.expiresAt {
                     Label("Leuchtturm auf Zeit · endet \(end.formatted(.relative(presentation: .named)))", systemImage: "hourglass")
                         .font(.callout)
@@ -190,12 +193,7 @@ private struct PersonRow: View {
                     if member.isMe {
                         Text("Du").font(.caption).foregroundStyle(.secondary)
                     }
-                    if member.isOwner {
-                        Image(systemName: "crown.fill")
-                            .font(.caption)
-                            .foregroundStyle(.yellow)
-                            .accessibilityLabel("Besitzer")
-                    }
+                    RoleBadge(member: member)
                     if model.verifiedDevices.contains(member.id) {
                         Image(systemName: "checkmark.seal.fill")
                             .font(.caption)
@@ -278,6 +276,7 @@ struct MemberDetailView: View {
 
             if !member.isMe, !member.isPending, let ref {
                 ArrivalWatchSection(member: member, circleID: ref.circleID)
+                RoleSection(member: member, ref: ref)
             }
 
             if !member.isPending {

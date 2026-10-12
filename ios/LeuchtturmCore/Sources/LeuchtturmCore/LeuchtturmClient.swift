@@ -31,6 +31,7 @@ public struct CircleMember: Sendable, Identifiable, Hashable {
     public let safetyCode: String
     /// Latest verified position; nil if none is shared (or not yet admitted).
     public let location: SharedLocation?
+    public var isAdmin = false
 }
 
 public struct CircleDetails: Sendable, Identifiable, Hashable {
@@ -51,6 +52,14 @@ public struct CircleDetails: Sendable, Identifiable, Hashable {
     public let places: [CirclePlace]
     /// When a temporary circle ends.
     public var expiresAt: Date? = nil
+    /// This device is an admin.
+    public var isAdmin = false
+    /// The owner's last sign of life (position or message), if known.
+    public var ownerLastSeen: Date? = nil
+    /// The owner offered this circle to this device.
+    public var handoverOffered = false
+    /// This device may take the circle over now.
+    public var canTakeOver = false
 }
 
 public enum ClientError: Error, Sendable, Equatable {
@@ -72,6 +81,11 @@ public enum ClientError: Error, Sendable, Equatable {
     case invalidNote
     /// A place has no name, a bad emoji or an unsupported radius.
     case invalidPlace
+    /// Only admins can do this.
+    case notAdmin
+    /// Taking over is only possible for admins once the owner was away for
+    /// three days, or after the owner offered it.
+    case takeoverNotAllowed
 }
 
 enum RecordType {
@@ -84,6 +98,7 @@ enum RecordType {
     static let place = "Place"
     static let history = "History"
     static let trip = "Trip"
+    static let move = "Move"
 }
 
 enum RecordName {
@@ -100,6 +115,7 @@ enum RecordName {
     static func history(_ deviceID: String, _ day: String) -> String { "hist-\(deviceID)-\(day)" }
     static func trip(_ id: String) -> String { "trip-\(id)" }
     static let tripPrefix = "trip-"
+    static func move(_ signer: String) -> String { "move-\(signer)" }
 }
 
 /// High-level client. Everything is encrypted or signed here, before it
@@ -173,6 +189,7 @@ public actor LeuchtturmClient {
 
     public func circles() async throws -> [CircleSummary] {
         var out: [CircleSummary] = []
+        var moved = false
         for ref in try await backend.listCircles() {
             var name: String?
             var isOwner = false
@@ -188,14 +205,27 @@ public actor LeuchtturmClient {
                     if ref.isOwned { try? await deleteCircle(ref) } else { try? await leave(ref) }
                     continue
                 }
+                // Someone took it over: follow to the new one.
+                if let movedAt = movedAt(ref.circleID) {
+                    if now().timeIntervalSince(movedAt) >= Self.moveGrace { try? await deleteCircle(ref) }
+                    continue
+                }
+                if let meta = openMeta(p), await followMove(ref, p, meta: meta) {
+                    moved = true
+                    continue
+                }
             }
             out.append(CircleSummary(ref: ref, name: name, isOwner: isOwner, expiresAt: expiresAt))
         }
+        // Followed a move: list again, now with the new circle.
+        if moved { return try await circles() }
         return out.sorted { ($0.name ?? "~").localizedCaseInsensitiveCompare($1.name ?? "~") == .orderedAscending }
     }
 
     public func circle(_ ref: CircleRef) async throws -> CircleDetails {
-        try await load(ref)
+        let details = try await load(ref)
+        guard details.isOwner, ref.isOwned, try await carryOutAdminRequests(ref) else { return details }
+        return try await load(ref)
     }
 
     public func rename(_ ref: CircleRef, to name: String) async throws {
@@ -205,7 +235,7 @@ public actor LeuchtturmClient {
         guard let key = ensureKey(p),
               let meta = (try? CircleCrypto.openCircleMeta(p.metaBlob, circleID: p.circleID, keyForEpoch: keyLookup(p.circleID)))?.meta
         else { throw ClientError.missingCircleKey }
-        let record = try circleRecord(p.circleID, epoch: p.epoch, meta: CircleMeta(name: name, members: meta.members, expires: meta.expires), key: key)
+        let record = try circleRecord(p.circleID, epoch: p.epoch, meta: CircleMeta(name: name, members: meta.members, expires: meta.expires, admins: meta.admins), key: key)
         try await backend.modify(ref, save: [record], delete: [], removeParticipants: [])
     }
 
@@ -254,7 +284,9 @@ public actor LeuchtturmClient {
 
         let newEpoch = p.epoch + 1
         let newKey = CircleCrypto.newCircleKey()
-        var save = [try circleRecord(p.circleID, epoch: newEpoch, meta: CircleMeta(name: meta.name, members: roster.sorted(), expires: meta.expires), key: newKey)]
+        var save = [try circleRecord(p.circleID, epoch: newEpoch, meta: CircleMeta(
+            name: meta.name, members: roster.sorted(), expires: meta.expires, admins: meta.admins?.filter(roster.contains)
+        ), key: newKey)]
         for id in roster.sorted() where id != deviceID {
             guard let m = p.members[id] else { continue }
             let blob = try CircleCrypto.wrap(
@@ -275,6 +307,207 @@ public actor LeuchtturmClient {
         try await backend.modify(ref, save: save, delete: delete.sorted(), removeParticipants: [userID])
         // Re-encrypt my own card under the new key.
         _ = try? await load(ref)
+    }
+
+    // MARK: Roles and takeover
+
+    /// How long the owner must be away before an admin may take over, and
+    /// how long the old owner keeps a circle that moved before deleting it.
+    public static let takeoverAfter: TimeInterval = 3 * 86400
+    static let moveGrace: TimeInterval = 3 * 86400
+
+    nonisolated func openMeta(_ p: Parsed) -> CircleMeta? {
+        (try? CircleCrypto.openCircleMeta(p.metaBlob, circleID: p.circleID, keyForEpoch: keyLookup(p.circleID)))?.meta
+    }
+
+    /// Owner only: makes a member an admin, or a member again.
+    public func setAdmin(_ memberID: String, _ isAdmin: Bool, in ref: CircleRef) async throws {
+        let p = try parse(try await backend.snapshot(of: ref))
+        guard ref.isOwned, p.ownerDeviceID == deviceID else { throw ClientError.notOwner }
+        guard let key = ensureKey(p), var meta = openMeta(p) else { throw ClientError.missingCircleKey }
+        guard meta.members.contains(memberID), memberID != deviceID else { throw ClientError.unknownMember }
+        var admins = Set(meta.admins ?? [])
+        if isAdmin { admins.insert(memberID) } else { admins.remove(memberID) }
+        meta.admins = admins.sorted()
+        try await backend.modify(ref, save: [try circleRecord(p.circleID, epoch: p.epoch, meta: meta, key: key)], delete: [], removeParticipants: [])
+    }
+
+    /// Owner only: offers the circle to a member, who becomes an admin and
+    /// can take it over right away.
+    public func offerOwnership(to memberID: String, in ref: CircleRef) async throws {
+        try await setAdmin(memberID, true, in: ref)
+        try await send(.handoverOffer, to: memberID, in: ref)
+    }
+
+    /// Admins: asks the owner's device to remove a member (not the owner or
+    /// another admin). It does so, with a new key, when it next opens the circle.
+    public func requestRemoval(of memberID: String, in ref: CircleRef) async throws {
+        let p = try parse(try await backend.snapshot(of: ref))
+        guard let meta = openMeta(p), (meta.admins ?? []).contains(deviceID) else { throw ClientError.notAdmin }
+        guard memberID != p.ownerDeviceID, !(meta.admins ?? []).contains(memberID), p.members[memberID] != nil else {
+            throw ClientError.unknownMember
+        }
+        try await send(.removeRequest, text: memberID, to: p.ownerDeviceID, in: ref)
+    }
+
+    /// Admins: asks the owner's device to rename the circle.
+    public func requestRename(_ ref: CircleRef, to name: String) async throws {
+        let name = try Self.validated(name)
+        let p = try parse(try await backend.snapshot(of: ref))
+        guard let meta = openMeta(p), (meta.admins ?? []).contains(deviceID) else { throw ClientError.notAdmin }
+        try await send(.renameRequest, text: name, to: p.ownerDeviceID, in: ref)
+    }
+
+    /// The owner's device: carries out what admins asked for, then deletes
+    /// the requests. Returns true if there were any.
+    private func carryOutAdminRequests(_ ref: CircleRef) async throws -> Bool {
+        let p = try parse(try await backend.snapshot(of: ref))
+        guard let meta = openMeta(p) else { return false }
+        let admins = Set(meta.admins ?? [])
+        let requests = verifiedNotes(p, roster: Set(meta.members))
+            .filter { admins.contains($0.senderID) && ($0.kind == .removeRequest || $0.kind == .renameRequest) }
+            .sorted { $0.timestamp < $1.timestamp }
+        guard !requests.isEmpty else { return false }
+        try? await backend.modify(ref, save: [], delete: requests.map { RecordName.note($0.id) }, removeParticipants: [])
+        for request in requests {
+            switch request.kind {
+            case .renameRequest:
+                try? await rename(ref, to: request.text)
+            case .removeRequest:
+                let target = request.text
+                guard target != p.ownerDeviceID, !admins.contains(target), let userID = p.members[target]?.creator else { continue }
+                try? await remove(userID: userID, from: ref)
+            default:
+                break
+            }
+        }
+        return true
+    }
+
+    /// The owner's last sign of life: their position or newest message.
+    nonisolated func ownerLastSeen(_ p: Parsed, notes: [CircleNote]) -> Date? {
+        var seen = notes.filter { $0.senderID == p.ownerDeviceID }.map(\.timestamp)
+        if let owner = p.members[p.ownerDeviceID], let record = p.locations[owner.deviceID],
+           CircleCrypto.verifySignature(
+               record.bytes("sig"), publicKey: owner.signingKey,
+               message: CircleCrypto.locationRecordStatement(circleID: p.circleID, deviceID: owner.deviceID, blob: record.bytes("blob"))
+           ),
+           let (location, _) = try? CircleCrypto.openLocation(record.bytes("blob"), circleID: p.circleID, deviceID: owner.deviceID, keyForEpoch: keyLookup(p.circleID)) {
+            seen.append(location.timestamp)
+        }
+        return seen.max()
+    }
+
+    /// Starts a new circle with everyone in it, owned by this device, and
+    /// leaves a signed move notice in the old one so the others follow.
+    /// Allowed for admins once the owner was away for three days, or right
+    /// away after the owner offered it.
+    @discardableResult
+    public func takeOver(_ ref: CircleRef) async throws -> CircleRef {
+        let p = try parse(try await backend.snapshot(of: ref))
+        guard let key = ensureKey(p), let meta = openMeta(p) else { throw ClientError.missingCircleKey }
+        guard p.ownerDeviceID != deviceID, (meta.admins ?? []).contains(deviceID) else { throw ClientError.takeoverNotAllowed }
+        let notes = verifiedNotes(p, roster: Set(meta.members))
+        let offered = notes.contains { $0.kind == .handoverOffer && $0.senderID == p.ownerDeviceID && $0.recipientID == deviceID }
+        let away = ownerLastSeen(p, notes: notes).map { now().timeIntervalSince($0) >= Self.takeoverAfter } ?? true
+        guard offered || away else { throw ClientError.takeoverNotAllowed }
+        let myName = try Self.validated(displayName ?? "")
+
+        // The new circle: same name, people, roles and places.
+        let newID = CircleCrypto.newCircleID()
+        let newKey = CircleCrypto.newCircleKey()
+        let roster = Set(meta.members).union([p.ownerDeviceID, deviceID]).filter { p.members[$0] != nil || $0 == deviceID }
+        let admins = Set(meta.admins ?? []).subtracting([deviceID]).union([p.ownerDeviceID]).intersection(roster)
+        try storeOwner(newID, signingKey: identity.signingPublicKey, agreementKey: identity.agreementPublicKey)
+        try storeKey(newKey, circleID: newID, epoch: 1)
+        var records = [
+            try circleRecord(newID, epoch: 1, meta: CircleMeta(name: meta.name, members: roster.sorted(), expires: meta.expires, admins: admins.sorted()), key: newKey),
+            try memberRecord(newID, epoch: 1, key: newKey, name: myName, admission: nil),
+        ]
+        for id in roster.sorted() where id != deviceID {
+            guard let m = p.members[id] else { continue }
+            let blob = try CircleCrypto.wrap(
+                circleKey: newKey, circleID: newID, epoch: 1, recipientDeviceID: id, recipientAgreementKey: m.agreementKey, sender: identity
+            )
+            records.append(StoredRecord(type: RecordType.keyWrap, name: RecordName.wrap(epoch: 1, deviceID: id), fields: [
+                "epoch": .int(1), "device": .string(id), "blob": .bytes(blob),
+            ]))
+        }
+        for (place, _) in verifiedPlaces(p, roster: roster) {
+            guard let copy = CirclePlace(
+                id: CircleCrypto.newCircleID(), creatorID: deviceID, name: place.name, emoji: place.emoji,
+                latitude: place.latitude, longitude: place.longitude, radius: place.radius
+            ) else { continue }
+            records.append(try placeRecord(copy, circleID: newID, epoch: 1, key: newKey))
+        }
+        let newRef = try await backend.createCircle(id: newID, records: records)
+        let url = try await backend.inviteURL(for: newRef)
+
+        let notice = MoveNotice(
+            newCircleID: newID, shareURL: url, ownerSigningKey: identity.signingPublicKey,
+            ownerAgreementKey: identity.agreementPublicKey, timestamp: now()
+        )
+        let blob = try CircleCrypto.sealMove(notice, key: key, epoch: p.epoch, circleID: p.circleID, signer: deviceID)
+        let sig = try identity.sign(CircleCrypto.moveRecordStatement(circleID: p.circleID, signer: deviceID, blob: blob))
+        try await backend.modify(ref, save: [StoredRecord(type: RecordType.move, name: RecordName.move(deviceID), fields: [
+            "from": .string(deviceID), "blob": .bytes(blob), "sig": .bytes(sig),
+        ])], delete: [], removeParticipants: [])
+        // The notice stays in the old circle for the others; this device leaves it.
+        try? await leave(ref)
+        _ = try? await send(.tookOver, in: newRef)
+        return newRef
+    }
+
+    /// The move notice to follow: signed by an admin with that admin's own
+    /// keys. The earliest one wins if two admins took over at once.
+    nonisolated func validMove(_ p: Parsed, meta: CircleMeta) -> MoveNotice? {
+        let admins = Set(meta.admins ?? [])
+        let candidates = p.moves.compactMap { r -> (MoveNotice, String)? in
+            let signer = r.string("from")
+            guard admins.contains(signer), signer != p.ownerDeviceID, r.name == RecordName.move(signer), let m = p.members[signer],
+                  CircleCrypto.verifySignature(
+                      r.bytes("sig"), publicKey: m.signingKey,
+                      message: CircleCrypto.moveRecordStatement(circleID: p.circleID, signer: signer, blob: r.bytes("blob"))
+                  ),
+                  let move = try? CircleCrypto.openMove(r.bytes("blob"), circleID: p.circleID, signer: signer, keyForEpoch: keyLookup(p.circleID)),
+                  move.ownerSigningKey == m.signingKey, move.ownerAgreementKey == m.agreementKey,
+                  move.newCircleID != p.circleID
+            else { return nil }
+            return (move, signer)
+        }
+        return candidates.min { ($0.0.timestamp, $0.1) < ($1.0.timestamp, $1.1) }?.0
+    }
+
+    /// Joins the new circle of a valid move notice and trusts its new owner;
+    /// leaves the old one (the old owner deletes theirs a few days later).
+    private func followMove(_ ref: CircleRef, _ p: Parsed, meta: CircleMeta) async -> Bool {
+        guard let move = validMove(p, meta: meta) else { return false }
+        if let pinned = loadOwner(move.newCircleID), pinned != (move.ownerSigningKey, move.ownerAgreementKey) { return false }
+        let already = (try? await backend.listCircles())?.contains { $0.circleID == move.newCircleID } ?? false
+        if !already {
+            guard let newRef = try? await backend.accept(inviteURL: move.shareURL) else { return false }
+            guard newRef.circleID == move.newCircleID else {
+                if !newRef.isOwned { try? await backend.leave(newRef) }
+                return false
+            }
+            do {
+                try storeOwner(move.newCircleID, signingKey: move.ownerSigningKey, agreementKey: move.ownerAgreementKey)
+            } catch {
+                return false
+            }
+            _ = try? await load(newRef)
+        }
+        if ref.isOwned {
+            try? secrets.save(Data(String(Int64(now().timeIntervalSince1970)).utf8), for: Self.prefix(ref.circleID) + "moved")
+        } else {
+            try? await leave(ref)
+        }
+        return true
+    }
+
+    nonisolated func movedAt(_ circleID: String) -> Date? {
+        guard let data = try? secrets.load(Self.prefix(circleID) + "moved"), let seconds = Int64(String(decoding: data, as: UTF8.self)) else { return nil }
+        return Date(timeIntervalSince1970: TimeInterval(seconds))
     }
 
     // MARK: Invites
@@ -483,7 +716,7 @@ public actor LeuchtturmClient {
 
     /// Notes from admitted members (and this device) with a valid signature,
     /// newer than `CircleNote.lifetime`.
-    private func verifiedNotes(_ p: Parsed, roster: Set<String>) -> [CircleNote] {
+    nonisolated func verifiedNotes(_ p: Parsed, roster: Set<String>) -> [CircleNote] {
         let cutoff = now().addingTimeInterval(-CircleNote.lifetime)
         var notes: [CircleNote] = []
         for r in p.notes {
@@ -667,6 +900,8 @@ public actor LeuchtturmClient {
         let history: [StoredRecord]
         /// Trip records (not verified yet).
         let trips: [StoredRecord]
+        /// Move notices (not verified yet).
+        let moves: [StoredRecord]
         var circleID: String { snapshot.ref.circleID }
         var ownerDeviceID: String { DeviceID.derive(signingPublicKey: ownerSigningKey) }
     }
@@ -712,10 +947,11 @@ public actor LeuchtturmClient {
         let places = snapshot.records.filter { $0.type == RecordType.place && $0.name.hasPrefix(RecordName.placePrefix) }
         let history = snapshot.records.filter { $0.type == RecordType.history }
         let trips = snapshot.records.filter { $0.type == RecordType.trip && $0.name.hasPrefix(RecordName.tripPrefix) }
+        let moves = snapshot.records.filter { $0.type == RecordType.move }
         return Parsed(
             snapshot: snapshot, ownerSigningKey: ownerSigning, ownerAgreementKey: ownerAgreement,
             epoch: epoch, metaBlob: meta, members: members, invites: invites, locations: locations, notes: notes,
-            places: places, history: history, trips: trips
+            places: places, history: history, trips: trips, moves: moves
         )
     }
 
@@ -783,7 +1019,9 @@ public actor LeuchtturmClient {
                 .filter { !$0.isOwner && $0.accepted && !verifiedUsers.contains($0.userID) }
                 .map(\.userID)
             if newRoster != roster {
-                save.append(try circleRecord(p.circleID, epoch: p.epoch, meta: CircleMeta(name: meta.name, members: newRoster.sorted(), expires: meta.expires), key: key))
+                save.append(try circleRecord(p.circleID, epoch: p.epoch, meta: CircleMeta(
+                    name: meta.name, members: newRoster.sorted(), expires: meta.expires, admins: meta.admins?.filter(newRoster.contains)
+                ), key: key))
                 roster = newRoster
             }
         }
@@ -829,7 +1067,8 @@ public actor LeuchtturmClient {
                 isMe: isMe, isPending: pending && !isMe,
                 safetyCode: DeviceID.safetyCode(signingPublicKey: m.signingKey, agreementPublicKey: m.agreementKey),
                 // Only admitted members share a position with the circle.
-                location: admitted || isMe ? verifiedLocation(of: m, p) : nil
+                location: admitted || isMe ? verifiedLocation(of: m, p) : nil,
+                isAdmin: (meta?.admins ?? []).contains(m.deviceID)
             ))
         }
         if !sawMe, key != nil, myName != nil {
@@ -838,16 +1077,26 @@ public actor LeuchtturmClient {
                 location: nil
             ))
         }
+        let notes = verifiedNotes(p, roster: roster)
+        let lastSeen = ownerLastSeen(p, notes: notes)
+        let offered = notes.contains { $0.kind == .handoverOffer && $0.senderID == p.ownerDeviceID && $0.recipientID == deviceID }
         members.sort { a, b in
             if a.isOwner != b.isOwner { return a.isOwner }
+            if a.isAdmin != b.isAdmin { return a.isAdmin }
             return (a.name ?? "~").localizedCaseInsensitiveCompare(b.name ?? "~") == .orderedAscending
         }
         return CircleDetails(
             ref: ref, name: meta?.name, epoch: p.epoch, isOwner: iAmOwner, hasKey: key != nil,
-            members: members, unverifiedUserIDs: unverified, notes: verifiedNotes(p, roster: roster),
+            members: members, unverifiedUserIDs: unverified,
+            notes: notes.filter { ![.removeRequest, .renameRequest].contains($0.kind) },
             places: places.map(\.place).filter { !delete.contains(RecordName.place($0.id)) }
                 .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending },
-            expiresAt: meta?.expires.map { Date(timeIntervalSince1970: TimeInterval($0)) }
+            expiresAt: meta?.expires.map { Date(timeIntervalSince1970: TimeInterval($0)) },
+            isAdmin: (meta?.admins ?? []).contains(deviceID),
+            ownerLastSeen: lastSeen,
+            handoverOffered: offered,
+            canTakeOver: !iAmOwner && (meta?.admins ?? []).contains(deviceID)
+                && (offered || (lastSeen.map { now().timeIntervalSince($0) >= Self.takeoverAfter } ?? true))
         )
     }
 

@@ -25,6 +25,14 @@ public struct CircleNote: Sendable, Hashable, Identifiable {
         case safe
         /// The sender's battery is almost empty; `text` is the percentage.
         case lowBattery
+        /// An admin asks the owner's device to remove a member; `text` is its device ID.
+        case removeRequest
+        /// An admin asks the owner's device to rename; `text` is the new name.
+        case renameRequest
+        /// The owner offers the circle to the recipient (who is an admin).
+        case handoverOffer
+        /// Sent by the new owner in the new circle after a takeover.
+        case tookOver
     }
 
     public let id: String

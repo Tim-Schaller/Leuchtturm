@@ -188,6 +188,24 @@ struct SimulationTests {
         #expect(model.verifiedDevices.isEmpty)
     }
 
+    @Test func benHandsHisLeuchtturmOver() async throws {
+        let (model, world) = try await simulatedModel()
+        let ben = world.people[1]
+        let link = try #require(await model.simulate { try await $0.invitation(from: ben) })
+        let oldRef = try #require(await model.join(link))
+        let bensRef = try #require(try await ben.client.circles().first?.ref)
+        _ = try await ben.client.circle(bensRef)
+        try await ben.client.offerOwnership(to: try #require(model.client?.deviceID), in: bensRef)
+
+        let details = try #require(await model.mapDetails(for: oldRef))
+        #expect(details.canTakeOver && details.handoverOffered)
+        let newRef = try #require(await model.takeOver(oldRef))
+        #expect(model.circles.map(\.id) == [newRef.circleID])
+        let mine = try #require(await model.mapDetails(for: newRef))
+        #expect(mine.isOwner && mine.name == "Bens Leuchtturm")
+        #expect(mine.notes.contains { $0.kind == .tookOver })
+    }
+
     @Test func fogBlocksCheckIns() async throws {
         let (model, _) = try await simulatedModel()
         await model.createDemoCircle()

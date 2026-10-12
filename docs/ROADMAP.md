@@ -98,7 +98,7 @@ Not planned, because they would need a company server, a call center or third pa
 - [x] Accessibility pass: VoiceOver rows read as one, rank labels, Reduce Motion for map flights, map buttons scale with text size
 - [ ] Liquid Glass UI polish
 - [ ] Multi-device support and key backup
-- [ ] Owner succession if the owner's device is lost
+- [x] Roles (owner, admin, member), admin requests, handover and takeover by moving to a new circle
 - [x] Warning when a new key appears in a circle; members can be marked as verified
 
 ## M9: Monetization and release

@@ -1291,6 +1291,16 @@
         }
       }
     },
+    "Farben nach Tempo: grün zu Fuß, gelb in der Stadt, orange auf der Landstraße, rot auf der Autobahn, lila über 200 km/h": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colours by speed: green on foot, yellow in town, orange on country roads, red on the motorway, purple above 200 km/h"
+          }
+        }
+      }
+    },
     "Fertig": {
       "localizations": {
         "en": {
@@ -3187,6 +3197,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "e.g. Family"
+          }
+        }
+      }
+    },
+    "zu Fuß": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "on foot"
           }
         }
       }

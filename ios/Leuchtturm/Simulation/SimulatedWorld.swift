@@ -248,6 +248,27 @@ final class SimulatedWorld {
             )
             try await entry.person.client.shareTrip(trip)
         }
+
+        // Ben's day out: town, country road, motorway at up to 220 km/h, town again.
+        var route: [HistoryDay.Point] = []
+        var (north, east, time) = (0.0, 0.0, now.addingTimeInterval(-2 * 86400))
+        let start = time
+        var distance = 0.0
+        for (kmh, minutes) in [(30.0, 6.0), (70, 6), (100, 5), (150, 6), (220, 8), (130, 6), (80, 4), (35, 6)] {
+            for _ in 0 ..< Int(minutes * 2) {
+                let meters = kmh / 3.6 * 30
+                north += meters * 0.8
+                east += meters * 0.6
+                distance += meters
+                time = time.addingTimeInterval(30)
+                let (lat, lon) = Self.offset(home, north: north, east: east)
+                route.append(HistoryDay.Point(latitude: lat, longitude: lon, timestamp: time))
+            }
+        }
+        try await people[1].client.shareTrip(Trip(
+            id: CircleCrypto.newCircleID(), deviceID: people[1].client.deviceID, start: start, end: time,
+            distance: distance, topSpeed: 220 / 3.6, hardBrakes: 0, rapidAccelerations: 1, route: route
+        ))
     }
 
     static func offset(_ home: CLLocationCoordinate2D, north: Double, east: Double) -> (Double, Double) {

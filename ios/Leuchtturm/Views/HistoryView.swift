@@ -38,8 +38,7 @@ struct HistoryView: View {
                     }
                     Section {
                         Map(initialPosition: .automatic) {
-                            MapPolyline(coordinates: day.points.map(\.coordinate))
-                                .stroke(color, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
+                            SpeedPathContent(path: SpeedPath(day.points))
                             if let first = day.points.first {
                                 Annotation("Start", coordinate: first.coordinate) {
                                     Circle().fill(.white).stroke(color, lineWidth: 3).frame(width: 14, height: 14)
@@ -54,6 +53,7 @@ struct HistoryView: View {
                         .id(day.day)
                         .frame(height: 320)
                         .listRowInsets(EdgeInsets())
+                        SpeedLegend()
                     }
                     Section {
                         LabeledContent("Strecke", value: Self.distance(day))

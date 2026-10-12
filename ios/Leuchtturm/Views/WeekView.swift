@@ -215,8 +215,7 @@ struct TripView: View {
         List {
             Section {
                 Map(initialPosition: .automatic) {
-                    MapPolyline(coordinates: trip.route.map(\.coordinate))
-                        .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
+                    SpeedPathContent(path: SpeedPath(trip.route))
                     if let first = trip.route.first {
                         Annotation("Start", coordinate: first.coordinate) {
                             Circle().fill(.white).stroke(Color.accentColor, lineWidth: 3).frame(width: 14, height: 14)
@@ -230,6 +229,7 @@ struct TripView: View {
                 }
                 .frame(height: 300)
                 .listRowInsets(EdgeInsets())
+                SpeedLegend()
             }
             Section {
                 LabeledContent("Punkte") { ScoreBadge(score: trip.score) }

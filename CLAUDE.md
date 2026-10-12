@@ -73,7 +73,7 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 Tim's requests from 2026-10-12, in this order (Tim reads summaries in German; install every finished build on his iPhone without asking):
 
 1. ~~Drawer tabs~~ done: `DrawerTabBar` with Personen, Orte, Fahrten, Bestenliste (`Views/DrawerTabs.swift`). Add „Chat“ as a tab with item 3.
-2. **History path coloured by speed**: draw the real path; when driving, colour segments by speed so 30 km/h in town and 250 km/h on the Autobahn are clearly different (gradient, legend).
+2. ~~History path coloured by speed~~ done (`Views/SpeedPath.swift`, used in history and trip views). Was: **History path coloured by speed**: draw the real path; when driving, colour segments by speed so 30 km/h in town and 250 km/h on the Autobahn are clearly different (gradient, legend).
 3. **Profile pictures and a basic chat** (reactions exist). Pictures and messages end-to-end encrypted like everything else (CKAsset or bytes field; pictures small, e.g. 256 px JPEG).
 4. **Keys via iCloud Keychain by default** („einfach statt streng“), with an option „nur auf diesem Gerät“. Same identity on all devices of one Apple Account; only one device shares the location (setting). Update threat model.
 5. **More languages** (e.g. French, Spanish, Italian, Dutch, Polish, Turkish) in `Localizable.xcstrings` / `InfoPlist.xcstrings`.

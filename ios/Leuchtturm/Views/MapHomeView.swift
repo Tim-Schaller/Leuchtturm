@@ -70,7 +70,46 @@ struct MapHomeView: View {
         return out
     }
 
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var isRegular: Bool { sizeClass == .regular }
+
     var body: some View {
+        Group {
+            if isRegular {
+                // iPad: people in a sidebar next to the map.
+                NavigationSplitView {
+                    drawer.navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 480)
+                } detail: {
+                    mapView
+                }
+            } else {
+                mapView.sheet(isPresented: .constant(true)) {
+                    drawer
+                        .presentationDetents([PeopleSheet.peek, .medium, .large], selection: $detent)
+                        .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                        .presentationDragIndicator(.visible)
+                        .interactiveDismissDisabled()
+                }
+            }
+        }
+        .onChange(of: model.tracker.location == nil) { frameIfSomeoneNew() }
+        .onChange(of: model.hasLoadedCircles && model.circles.isEmpty, initial: true) { _, empty in
+            detent = empty ? .medium : PeopleSheet.peek
+        }
+        .environment(\.memberColors, memberColors)
+        .environment(\.memberProfiles, memberProfiles)
+        .task(id: model.externalChanges) { await model.refresh() }
+        .task(id: "\(selected?.id ?? "")|\(model.externalChanges)") { await follow(selected?.ref) }
+    }
+
+    private var drawer: some View {
+        PeopleSheet(
+            details: details, circle: selected, sheet: $sheet, path: $drawerPath,
+            onFocus: { focus($0) }, onShowPlace: showPlace, onSelectCircle: { selectedCircleID = $0.circleID }
+        )
+    }
+
+    private var mapView: some View {
         Map(position: $camera) {
             ForEach(details?.places ?? []) { place in
                 MapCircle(center: place.coordinate, radius: Double(place.radius))
@@ -121,26 +160,8 @@ struct MapHomeView: View {
             ? .hybrid(elevation: .realistic, pointsOfInterest: .excludingAll)
             : .standard(elevation: .realistic, emphasis: .muted, pointsOfInterest: .excludingAll))
         .mapControls { MapCompass() }
-        .safeAreaPadding(.bottom, 230)
+        .safeAreaPadding(.bottom, isRegular ? 0 : 230)
         .safeAreaInset(edge: .top) { controls }
-        .sheet(isPresented: .constant(true)) {
-            PeopleSheet(
-                details: details, circle: selected, sheet: $sheet, path: $drawerPath,
-                onFocus: { focus($0) }, onShowPlace: showPlace, onSelectCircle: { selectedCircleID = $0.circleID }
-            )
-            .presentationDetents([PeopleSheet.peek, .medium, .large], selection: $detent)
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-            .presentationDragIndicator(.visible)
-            .interactiveDismissDisabled()
-        }
-        .onChange(of: model.tracker.location == nil) { frameIfSomeoneNew() }
-        .onChange(of: model.hasLoadedCircles && model.circles.isEmpty, initial: true) { _, empty in
-            detent = empty ? .medium : PeopleSheet.peek
-        }
-        .environment(\.memberColors, memberColors)
-        .environment(\.memberProfiles, memberProfiles)
-        .task(id: model.externalChanges) { await model.refresh() }
-        .task(id: "\(selected?.id ?? "")|\(model.externalChanges)") { await follow(selected?.ref) }
     }
 
     /// Keeps the selected circle current: polls iCloud every 30 seconds

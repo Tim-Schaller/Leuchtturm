@@ -10,7 +10,7 @@ import WidgetKit
 extension AppModel {
     /// Writes what the widgets show for this circle and reloads them (at most once a minute).
     func updateWidgets(with details: CircleDetails) {
-        let people = details.members.filter { !$0.isMe && !$0.isPending }.map { member -> WidgetSnapshot.Person in
+        let everyone = details.members.filter { !$0.isPending }.map { member -> (isMe: Bool, person: WidgetSnapshot.Person) in
             let profile = member.profile
             var place = String(localized: "teilt keinen Standort")
             if let location = member.location {
@@ -27,14 +27,21 @@ extension AppModel {
             }
             let status = profile?.status(at: Date()).map { [$0.emoji, $0.text].compactMap { $0 }.joined(separator: " ") }
             let initials = (member.name ?? "?").split(separator: " ").prefix(2).compactMap(\.first).map(String.init).joined().uppercased()
-            return WidgetSnapshot.Person(
+            return (member.isMe, WidgetSnapshot.Person(
                 id: member.id, name: member.name ?? String(localized: "Unbekannt"), initials: initials,
                 colorHex: profile?.color ?? Theme.color(for: member.id).hex, emoji: profile?.emoji, status: status, place: place,
                 battery: member.location?.battery, updated: member.location?.timestamp,
-                photo: profile?.photo.flatMap { UIImage(data: $0) }.flatMap { ProfileEditor.compress($0, side: 64, maxBytes: 12_000, square: true) }
-            )
+                photo: profile?.photo.flatMap { UIImage(data: $0) }.flatMap { ProfileEditor.compress($0, side: 64, maxBytes: 12_000, square: true) },
+                latitude: member.location?.fogRadius == nil ? member.location?.latitude : nil,
+                longitude: member.location?.fogRadius == nil ? member.location?.longitude : nil
+            ))
         }
-        WidgetSnapshot(circleName: details.name ?? String(localized: "Leuchtturm"), people: people, written: Date()).save()
+        let circleName = details.name ?? String(localized: "Leuchtturm")
+        // Widgets and the watch show the others; the family TV shows everyone.
+        let snapshot = WidgetSnapshot(circleName: circleName, people: everyone.filter { !$0.isMe }.map(\.person), written: Date())
+        snapshot.save()
+        WatchLink.shared.send(snapshot)
+        publishToTVs(WidgetSnapshot(circleName: circleName, people: everyone.map(\.person), written: Date()))
         if Date().timeIntervalSince(lastWidgetReload) > 60 {
             lastWidgetReload = Date()
             WidgetCenter.shared.reloadAllTimelines()

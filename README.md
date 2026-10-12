@@ -65,6 +65,11 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 - Emoji reactions, quick notes ("Bin auf dem Weg"), check-ins and an opt-in good-morning greeting, all end-to-end encrypted and signed
 - Circles with encrypted names and display names, also as temporary circles that end by themselves
 - Roles: owner, admins and members; admins can take a Leuchtturm over if the owner is gone
+- Chat with replies, photos, stickers and Genmoji; profile pictures, banners, own pin colour or emoji and a status that expires
+- "Bin auf dem Weg" with arrival time, "Wo bist du?", "Hol mich ab", walk-home company and a meeting point in the middle
+- Friends across all your Leuchttürme, weekly challenges, opt-in steps from Health, "a year ago today" memories (only on your iPhone) and the weather where your people are
+- Widgets for the home and lock screen, a Live Activity while driving, Siri and Shortcuts
+- iPad, Apple Watch (people, SOS and check-in) and Apple TV (the family map on the big screen, end-to-end encrypted through your own iCloud)
 - In German and English
 - Invites via link or QR code, with expiry
 - Removing members rotates the circle key and revokes their iCloud access
@@ -73,15 +78,15 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- Multi-device support and key backup, chat, profile pictures, opt-in history with your own retention period, opt-in SOS and check-in
-- Drive detection with live speed (km/h)
+- A one-hour share link for people without the app
+- More languages
 - Adaptive tracking to keep battery drain low
 
 Safety features (live location, circles, SOS, check-in) will always be free. Optional in-app purchases only cover convenience, with no ads and no intrusive paywalls.
 
 ## 🔐 Privacy model in short
 
-- **End-to-end encryption.** Each iPhone has its own keys (CryptoKit, Keychain, this device only). Each circle has a key distributed with HPKE. Content is encrypted before upload.
+- **End-to-end encryption.** Each iPhone has its own keys (CryptoKit, iCloud Keychain by default, or only on this device if you choose). Each circle has a key distributed with HPKE. Content is encrypted before upload.
 - **Cryptographic membership.** In an iCloud share any participant can write any record, so Leuchtturm does not trust iCloud for membership: the circle record is signed by the owner's device, every member record is signed by its own device, and new members prove they knew the invite secret.
 - **Geofences will run on the device.** Apple will never learn where "Home" is.
 - **No tracking, no ads, no third-party SDKs.**
@@ -90,7 +95,9 @@ Safety features (live location, circles, SOS, check-in) will always be free. Opt
 
 | Path | Contents |
 |------|----------|
-| `ios/Leuchtturm` | SwiftUI app (iOS 26+) |
+| `ios/Leuchtturm` | SwiftUI app (iOS 26+, iPhone and iPad) |
+| `ios/LeuchtturmWidgets` | Widgets and Live Activity |
+| `ios/LeuchtturmWatch`, `ios/LeuchtturmTV` | Apple Watch and Apple TV apps |
 | `ios/LeuchtturmCore` | Crypto, record formats, CloudKit backend and client logic (Swift package; the logic also builds and is tested on Linux) |
 | `docs/` | Architecture, threat model, roadmap, test vectors |
 

@@ -178,6 +178,26 @@ Notes carry an optional `"d"` (deadline, Unix seconds).
 
 The app writes a small snapshot of the selected circle (names, initials, colours, status, the place or "unterwegs", battery, 64 px pictures) as JSON into the App Group container `group.de.timschaller.leuchtturm`, file protection "until first unlock". The widget extension (`LeuchtturmWidgets`) reads only this file, has no keys and no network access to iCloud. The Live Activity shows speed and distance while a trip runs, or destination and arrival time for "Bin auf dem Weg". App Intents ("Wo ist …?", "Nebel einschalten", "Einchecken") read the same snapshot or call into the running app.
 
+### Apple Watch
+
+The watch app (`LeuchtturmWatch`) has no keys. The iPhone sends it the widget snapshot over WatchConnectivity (`updateApplicationContext`, without pictures if it would exceed 50 KB), and the watch keeps the last copy in its own documents folder. SOS and check-in on the watch are messages to the iPhone, which sends them like its own buttons.
+
+### Apple TV (`TVSnapshot`, record name `tv-<tvID>`, private DB, default zone)
+
+The TV app (`LeuchtturmTV`) shows a family map and holds no circle keys. On first launch it creates an X25519 key, a random TV ID (16 bytes) and a pairing secret (32 bytes), kept in its own Keychain (this device only), and shows them as a QR code:
+
+```
+leuchtturm://tv?v=1&id=<tv id>&k=<X25519 public key>&s=<secret>
+```
+
+The iPhone scans it with the Camera, asks "Apple TV verbinden?" and stores the pairing with its keys. From then on, at most every two minutes when the circle refreshes, it writes one record per paired TV into the user's own **private** database:
+
+| Field | Content |
+|-------|---------|
+| `blob` | `0x01 | enc (32) | HPKE ciphertext` |
+
+HPKE in **PSK mode** (X25519 / HKDF-SHA256 / ChaCha20-Poly1305) to the TV's key, `info = "leuchtturm/v1/tv-snapshot" ‖ tvID`, PSK = pairing secret, PSK ID = TV ID. The plaintext is `length (u64) | snapshot JSON | zeros` padded to a multiple of 4 KiB; the snapshot is the widget snapshot of the selected circle including the user and coordinates (none for members in fog). The TV fetches the record by name (every 4 s while the code is shown, every minute while the map is) and ignores copies older than the one it shows. "Trennen" on the iPhone deletes the record; "Neuer Code" on the TV makes a new key and deletes the old record.
+
 ### Low battery
 
 When the device's battery drops to 15 % or less without charging, it sends a `Note` of kind `lowBattery` (text: the percentage) to every circle, once per discharge (again after charging or above 30 %).
@@ -274,6 +294,8 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 | Live location | yes | ciphertext, padded size, **when and how often it is updated** |
 | Places, history, trips, reactions (M3+) | yes | ciphertext, size, time; for history also the days with records |
 | Map area you look at | n/a | Apple Maps sees which map tiles are loaded |
+| Apple TV snapshot | yes (HPKE to the TV) | that a TV is paired, padded size, when it is written |
+| Watch snapshot | no (WatchConnectivity, device to device) | no |
 
 ## Tracking strategy (battery, M2)
 

@@ -6,7 +6,7 @@ import PackageDescription
 // swift-crypto is linked on Linux solely so the core can be tested there.
 let package = Package(
     name: "LeuchtturmCore",
-    platforms: [.iOS("26.0"), .macOS("15.0")],
+    platforms: [.iOS("26.0"), .macOS("15.0"), .tvOS("26.0"), .watchOS("26.0")],
     products: [
         .library(name: "LeuchtturmCore", targets: ["LeuchtturmCore"]),
     ],

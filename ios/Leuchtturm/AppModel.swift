@@ -51,6 +51,12 @@ final class AppModel {
     var errorMessage: String?
     /// An invite opened via link or QR code, waiting for confirmation.
     var pendingInvite: InviteLink?
+    /// An Apple TV whose code was scanned, waiting for confirmation.
+    var pendingTV: TVPairing?
+    /// Apple TVs that get an encrypted snapshot (see TVPublisher.swift).
+    var pairedTVs: [PairedTV] = []
+    @ObservationIgnored var lastTVPublish = Date.distantPast
+    @ObservationIgnored var lastTVSnapshot: WidgetSnapshot?
     /// Bumped when other members changed something; views reload on change.
     private(set) var externalChanges = 0
 
@@ -186,6 +192,8 @@ final class AppModel {
         circles = []
         hasLoadedCircles = false
         pendingInvite = nil
+        pendingTV = nil
+        pairedTVs = loadPairedTVs()
         lastShared = nil
         // An iPad shares no location unless asked to (the iPhone usually does).
         let pausedByDefault = UIDevice.current.userInterfaceIdiom != .phone
@@ -246,7 +254,7 @@ final class AppModel {
         return CloudKitBackend(containerIdentifier: AppInfo.cloudKitContainer)
     }
 
-    private var secrets: any SecretStore {
+    var secrets: any SecretStore {
         #if DEBUG
         if let simulation { return simulation.secrets }
         #endif
@@ -1056,8 +1064,11 @@ final class AppModel {
     }
 
     func handle(url: URL) {
-        guard let link = InviteLink(url: url) else { return }
-        pendingInvite = link
+        if let tv = TVPairing(url: url) {
+            pendingTV = tv
+        } else if let link = InviteLink(url: url) {
+            pendingInvite = link
+        }
     }
 
     // MARK: Settings
@@ -1074,6 +1085,7 @@ final class AppModel {
     /// Deletes own circles, leaves all others, then wipes this device.
     func deleteAllData() async {
         guard await run({ try await $0.deleteAllData() }) != nil else { return }
+        for tv in pairedTVs { await unpairTV(tv.id) }
         resetLocal()
     }
 
@@ -1083,6 +1095,7 @@ final class AppModel {
             try? secrets.delete(account)
         }
         savedName = nil
+        pairedTVs = []
         historyRecorder.clear()
         memories.clear()
         visitStore.clear()

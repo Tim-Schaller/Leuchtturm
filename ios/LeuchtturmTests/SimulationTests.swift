@@ -41,6 +41,22 @@ struct SimulationTests {
         #expect(bensView.members.contains { $0.name == "Tim" && !$0.isPending })
     }
 
+    @Test func appleTVIsPairedByLinkAndCanBeRemoved() async throws {
+        let (model, _) = try await simulatedModel()
+        let tv = TVIdentity.generate().pairing
+        model.handle(url: tv.url)
+        #expect(model.pendingTV == tv)
+        #expect(model.pendingInvite == nil)
+        model.pairTV(tv)
+        #expect(model.pendingTV == nil)
+        #expect(model.pairedTVs.map(\.pairing) == [tv])
+        // Stored with the keys, so it survives a restart.
+        #expect(model.loadPairedTVs().map(\.pairing) == [tv])
+        await model.unpairTV(tv.id)
+        #expect(model.pairedTVs.isEmpty)
+        #expect(model.loadPairedTVs().isEmpty)
+    }
+
     @Test func leavingPersonDisappears() async throws {
         let (model, world) = try await simulatedModel()
         let ref = try #require(await model.createCircle(name: "Familie"))

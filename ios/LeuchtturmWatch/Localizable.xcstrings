@@ -1,0 +1,146 @@
+{
+  "sourceLanguage": "de",
+  "strings": {
+    "%lld %%": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        }
+      }
+    },
+    "Akku %lld Prozent": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery %lld percent"
+          }
+        }
+      }
+    },
+    "Das hat nicht geklappt. Ist dein iPhone in der Nähe?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That didn't work. Is your iPhone nearby?"
+          }
+        }
+      }
+    },
+    "Dein iPhone schickt allen in deinen Leuchttürmen ein SOS mit deinem Ort.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your iPhone sends an SOS with your location to everyone in your Leuchttürme."
+          }
+        }
+      }
+    },
+    "Einchecken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check In"
+          }
+        }
+      }
+    },
+    "Eingecheckt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checked in."
+          }
+        }
+      }
+    },
+    "Leuchtturm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "SOS": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SOS"
+          }
+        }
+      }
+    },
+    "SOS an alle senden?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send SOS to everyone?"
+          }
+        }
+      }
+    },
+    "SOS gesendet.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SOS sent."
+          }
+        }
+      }
+    },
+    "SOS senden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send SOS"
+          }
+        }
+      }
+    },
+    "Stand: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %@"
+          }
+        }
+      }
+    },
+    "Öffne Leuchtturm auf deinem iPhone. Die Uhr zeigt dann deinen Leuchtturm.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Leuchtturm on your iPhone. Your watch will then show your Leuchtturm."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -57,6 +57,13 @@ struct PeopleSheet: View {
         .sheet(item: $bindable.pendingInvite) { link in
             JoinSheet(link: link, onJoined: onSelectCircle)
         }
+        .alert("Apple TV verbinden?", isPresented: Binding(get: { model.pendingTV != nil }, set: { if !$0 { model.pendingTV = nil } }),
+               presenting: model.pendingTV) { tv in
+            Button("Verbinden") { model.pairTV(tv) }
+            Button("Abbrechen", role: .cancel) { model.pendingTV = nil }
+        } message: { _ in
+            Text("Das Apple TV zeigt dann die Karte des Leuchtturms, den du gerade offen hast, mit dir und allen anderen. Es braucht dieselbe iCloud wie du und bekommt keine Schlüssel deiner Leuchttürme, nur eine verschlüsselte Kopie der Karte. Trennen kannst du es in den Einstellungen.")
+        }
     }
 
     @ViewBuilder private var content: some View {

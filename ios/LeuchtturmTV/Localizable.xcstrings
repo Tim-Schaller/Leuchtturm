@@ -1,0 +1,176 @@
+{
+  "sourceLanguage": "de",
+  "strings": {
+    "%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld %%": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        }
+      }
+    },
+    "Alle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone"
+          }
+        }
+      }
+    },
+    "Code zum Verbinden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code to connect"
+          }
+        }
+      }
+    },
+    "Das Apple TV braucht dieselbe iCloud wie dein iPhone. Es bekommt keine Schlüssel deiner Leuchttürme und sieht nur die Karte, die dein iPhone ihm verschlüsselt schickt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Apple TV needs the same iCloud account as your iPhone. It gets none of your Leuchtturm keys and only sees the map your iPhone sends it, encrypted."
+          }
+        }
+      }
+    },
+    "Deine Leute auf dem Fernseher": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your people on the big screen"
+          }
+        }
+      }
+    },
+    "Leuchtturm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm"
+          }
+        }
+      }
+    },
+    "Melde dich in den Einstellungen des Apple TV mit derselben iCloud wie auf deinem iPhone an.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the Apple TV's Settings, sign in with the same iCloud account as on your iPhone."
+          }
+        }
+      }
+    },
+    "Neuer Code": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New Code"
+          }
+        }
+      }
+    },
+    "Nicht bei iCloud angemeldet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not signed in to iCloud"
+          }
+        }
+      }
+    },
+    "Scanne den Code und tippe auf den Link.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan the code and tap the link."
+          }
+        }
+      }
+    },
+    "Stand: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %@"
+          }
+        }
+      }
+    },
+    "Tippe in Leuchtturm auf „Verbinden“.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Leuchtturm, tap “Connect”."
+          }
+        }
+      }
+    },
+    "Vorschau ansehen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch Preview"
+          }
+        }
+      }
+    },
+    "Vorschau beenden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End Preview"
+          }
+        }
+      }
+    },
+    "Vorschau mit erfundenen Personen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preview with made-up people"
+          }
+        }
+      }
+    },
+    "Öffne die Kamera auf deinem iPhone.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the Camera on your iPhone."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

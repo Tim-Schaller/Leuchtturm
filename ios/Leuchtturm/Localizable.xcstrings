@@ -681,6 +681,26 @@
         }
       }
     },
+    "Apple TV": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple TV"
+          }
+        }
+      }
+    },
+    "Apple TV verbinden?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect Apple TV?"
+          }
+        }
+      }
+    },
     "Auch bei geschlossener App": {
       "localizations": {
         "en": {
@@ -1057,6 +1077,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "You are not allowed to do that."
+          }
+        }
+      }
+    },
+    "Das Apple TV zeigt dann die Karte des Leuchtturms, den du gerade offen hast, mit dir und allen anderen. Es braucht dieselbe iCloud wie du und bekommt keine Schlüssel deiner Leuchttürme, nur eine verschlüsselte Kopie der Karte. Trennen kannst du es in den Einstellungen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Apple TV will then show the map of the Leuchtturm you have open, with you and everyone else. It needs the same iCloud account as you and gets none of your Leuchtturm keys, only an encrypted copy of the map. You can disconnect it in Settings."
           }
         }
       }
@@ -3651,6 +3681,16 @@
         }
       }
     },
+    "Trennen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disconnect"
+          }
+        }
+      }
+    },
     "Umbenennen": {
       "localizations": {
         "en": {
@@ -3747,6 +3787,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Travelling by"
+          }
+        }
+      }
+    },
+    "Verbinden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect"
           }
         }
       }
@@ -4411,6 +4461,16 @@
         }
       }
     },
+    "seit %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "since %@"
+          }
+        }
+      }
+    },
     "teilt keinen Standort": {
       "localizations": {
         "en": {
@@ -4477,6 +4537,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "on foot"
+          }
+        }
+      }
+    },
+    "Öffne Leuchtturm auf dem Apple TV und scanne den Code mit der Kamera deines iPhones. Das Apple TV zeigt dann die Karte, Ende-zu-Ende-verschlüsselt über deine eigene iCloud. Es braucht dieselbe iCloud wie du und bekommt keine Schlüssel deiner Leuchttürme.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Leuchtturm on the Apple TV and scan the code with your iPhone's camera. The Apple TV then shows the map, end-to-end encrypted through your own iCloud. It needs the same iCloud account as you and gets none of your Leuchtturm keys."
           }
         }
       }

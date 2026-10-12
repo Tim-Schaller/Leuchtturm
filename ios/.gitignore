@@ -9,3 +9,6 @@ Leuchtturm/Leuchtturm.entitlements
 .DS_Store
 LeuchtturmWidgets/Info.plist
 LeuchtturmWidgets/LeuchtturmWidgets.entitlements
+LeuchtturmWatch/Info.plist
+LeuchtturmTV/Info.plist
+LeuchtturmTV/LeuchtturmTV.entitlements

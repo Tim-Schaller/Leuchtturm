@@ -85,14 +85,14 @@ Build order (dependencies first):
 - [x] 20. Weekly challenges and streaks. 21. Steps leaderboard (HealthKit, opt-in). 22. „Heute vor einem Jahr“ from a local-only archive. 23. Weather at a person's place (WeatherKit).
 - [x] 5/17. Widgets (home and lock screen) via App Group snapshot. 7. Live Activity while driving / on the way. 18. Siri and Shortcuts (App Intents).
 - [x] 25. iPad layout (`NavigationSplitView` in `MapHomeView` for regular width; iPad shares no location by default).
-- [ ] 6. Apple Watch app and tvOS app.
+- [x] 6. Apple Watch app (`LeuchtturmWatch`, WatchConnectivity snapshot, SOS/check-in via iPhone) and Apple TV app (`LeuchtturmTV`, QR pairing, HPKE-PSK snapshot record `TVSnapshot` in the private DB; `TVLink.swift`, `TVPublisher.swift`). Demo: launch argument `-demo` on watch and TV, `-pairing` shows the TV code without iCloud.
 - [ ] 8. 1-hour share link for people without the app (CloudKit public DB, AES-GCM, key in URL fragment, static web page).
 - [ ] 2. Languages: fr, es, it, nl, pl, tr (app and permission texts).
 - [ ] 3. Privacy policy (de, en).
 - [ ] 4. TestFlight: CloudKit schema to Production, App Store Connect together with Tim in Claude in Chrome.
 
 Working notes (2026-10-12, for continuing after a context reset):
-- Done and pushed: items 1, 9–16, 19–24 (profiles, chat, journeys, friends, challenges/steps/memories/weather). Next: widgets + Live Activity + Siri (needs an App Group `group.de.timschaller.leuchtturm` and a widget extension target in project.yml; the app writes a small JSON snapshot of members/locations/profiles for the widget), then iPad layout, Watch/tvOS, share link, languages, privacy policy, TestFlight.
+- Done and pushed: items 1, 5–7, 9–25. Next: share link, languages, privacy policy, TestFlight. Record types to deploy to Production include `TVSnapshot` (private DB, field `blob`). TV builds need signing for the simulator too (CloudKit traps without the entitlement): `-allowProvisioningUpdates` instead of `CODE_SIGNING_ALLOWED=NO`.
 - Tim's iPhone was unavailable (offline) since ~08:20; install the latest build as soon as `xcrun devicectl list devices` shows it "available (paired)".
 - Helpers in the session scratchpad (recreate if missing): `apptest.sh` runs the app tests with an 8-minute cap (plain `xcodebuild test` sometimes hangs after finishing), `deploy.sh` builds/installs/launches on the iPhone, `tr.py` adds English entries to `Localizable.xcstrings` from a JSON dict on stdin and drops unused keys.
 - After UI text changes: build for the simulator, `python3 ios/scripts/check-strings.py`, add English. Demo for screenshots: `xcrun simctl launch 'iPhone 18 Pro' de.timschaller.leuchtturm -simulationDemo`.

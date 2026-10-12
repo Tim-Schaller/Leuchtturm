@@ -128,6 +128,23 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    ForEach(model.pairedTVs) { tv in
+                        LabeledContent {
+                            Text("seit \(tv.added, format: .dateTime.day().month().year())")
+                        } label: {
+                            Label("Apple TV", systemImage: "appletv")
+                        }
+                        .swipeActions {
+                            Button("Trennen", role: .destructive) { Task { await model.unpairTV(tv.id) } }
+                        }
+                    }
+                } header: {
+                    Text("Apple TV")
+                } footer: {
+                    Text("Öffne Leuchtturm auf dem Apple TV und scanne den Code mit der Kamera deines iPhones. Das Apple TV zeigt dann die Karte, Ende-zu-Ende-verschlüsselt über deine eigene iCloud. Es braucht dieselbe iCloud wie du und bekommt keine Schlüssel deiner Leuchttürme.")
+                }
+
+                Section {
                     Text("Leuchtturm speichert in iCloud (Apple). Namen von Leuchttürmen und Personen sowie Standorte werden vorher auf dem iPhone verschlüsselt, Apple kann sie nicht lesen. Apple sieht aber, welche iCloud-Konten zusammen in einem Leuchtturm sind und wann Daten geschrieben werden. Die Daten liegen in Apples Rechenzentren, nicht zwingend in der EU. Die Karte selbst kommt von Apple Karten: Beim Laden sieht Apple, welchen Kartenausschnitt du ansiehst, aber nicht, wer wo ist.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)

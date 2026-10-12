@@ -26,6 +26,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 - **Note timing.** Apple sees when a note record is written (not what it says or for whom), and which devices get a silent push for it.
 - **Weather requests.** With weather on, Apple Weather receives the members' places rounded to about 1 km.
 - **Widgets and lock screen.** Widgets and the Live Activity show names and places on the lock screen; anyone holding the phone can read them. The snapshot file lives unencrypted (besides iOS file protection) in the app's App Group container.
+- **Apple Watch and Apple TV.** The watch keeps the widget snapshot unencrypted (besides watchOS file protection). The TV shows the map of the selected circle, including the user, to anyone in the room, and caches the last snapshot. Whoever can sign in to the user's iCloud on a TV still needs the code shown on that TV to get a snapshot.
 - **Map tiles.** The map comes from Apple Maps, which sees the map areas the app loads. These are usually where the circle's members are.
 - **Data location.** iCloud data is stored in Apple's data centers; Apple is a US company. EU-only storage is not guaranteed.
 - **Apple as an active attacker on the app itself.** Apple distributes the app binary and operating system.
@@ -67,6 +68,9 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 | Member sends a note in someone else's name | Notes are signed by the sending device and checked against its member record | M3 |
 | Someone not admitted posts notes | Only notes from roster devices are shown or notified | M3 |
 | Old notes replayed | Note ID is bound into the encryption and the signature; readers notify each ID once and ignore notes older than 7 days | M3 |
+| Apple or anyone with access to the user's iCloud reads the TV map | The snapshot is HPKE-encrypted to the TV's own key, which never leaves the TV | Apple TV |
+| Someone with database access plants a fake map on the TV | HPKE PSK mode: only a device that scanned the code (pairing secret) can produce a snapshot the TV opens | Apple TV |
+| An old TV snapshot is replayed | The TV ignores snapshots older than the one it shows | Apple TV |
 | Supply chain | App uses Apple frameworks only (CryptoKit, CloudKit). swift-crypto is used only for Linux tests | M1 |
 
 ## Known limitations

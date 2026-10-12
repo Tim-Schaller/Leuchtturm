@@ -72,6 +72,8 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
         if monitor == nil {
             let monitor = await CLMonitor("places")
             self.monitor = monitor
+            // Conditions survive relaunches; start from what iOS still watches.
+            monitored = Set(await monitor.identifiers)
             monitorTask = Task { [weak self] in
                 do {
                     for try await _ in await monitor.events {

@@ -70,12 +70,16 @@ CI (`.github/workflows/ci.yml`): core tests on Linux (swift-crypto) and macOS (C
 
 ## Next steps
 
-1. Tim has no second Apple Account, so use the simulation mode for day-to-day testing.
-2. Verify on real CloudKit with **two** iCloud accounts (cannot be tested in the simulation; needs a second Apple Account, e.g. from a family member):
-   - creator/lastModified user IDs of records and `CKCurrentUserDefaultName` normalization in `CloudKitBackend.normalize`,
-   - removing a public-link participant via `share.removeParticipant`,
-   - leaving a share by deleting the `CKShare` from the shared database,
-   - `recordZoneChanges` returning all records of a shared zone,
-   - silent pushes from the database subscriptions arriving on the other device.
-3. Tim has not yet tested the builds since "Background location sharing" on his iPhone (he was asleep); background sharing, push and the "no indicator" tracker need a real-device test. Ask before installing on his iPhone.
-4. Open items, in this order: polish (accessibility, English localization), multi-device and key backup, owner succession, then release work (privacy policy, App Privacy labels, CloudKit schema to Production, TestFlight). See `docs/ROADMAP.md`.
+Tim's requests from 2026-10-12, in this order (Tim reads summaries in German; install every finished build on his iPhone without asking):
+
+1. **Drawer tabs**: the bottom sheet gets tabs, e.g. „Personen“ (start), „Bestenliste“, „Fahrten“, „Orte“ (own idea welcome).
+2. **History path coloured by speed**: draw the real path; when driving, colour segments by speed so 30 km/h in town and 250 km/h on the Autobahn are clearly different (gradient, legend).
+3. **Profile pictures and a basic chat** (reactions exist). Pictures and messages end-to-end encrypted like everything else (CKAsset or bytes field; pictures small, e.g. 256 px JPEG).
+4. **Keys via iCloud Keychain by default** („einfach statt streng“), with an option „nur auf diesem Gerät“. Same identity on all devices of one Apple Account; only one device shares the location (setting). Update threat model.
+5. **More languages** (e.g. French, Spanish, Italian, Dutch, Polish, Turkish) in `Localizable.xcstrings` / `InfoPlist.xcstrings`.
+6. **Privacy policy** (German and English) as a page in the repo for the App Store URL.
+7. **CloudKit schema**: Tim does not know this step. Explain: records types are created automatically only in the Development environment; before TestFlight the schema must be deployed to Production in the CloudKit Console. Build a debug helper that writes one record of every type in Development, then deploy together with Tim in Claude in Chrome.
+8. **TestFlight** as soon as ready (Tim tests with his girlfriend, which also covers the two-account checks below). App Store Connect is set up together in Claude in Chrome.
+9. Answer Tim's question „welche Features brauchen wir noch?“ with a short list.
+
+Still open from before: verify on real CloudKit with **two** iCloud accounts (creator/lastModified user IDs and `CKCurrentUserDefaultName` normalization, removing a public-link participant, leaving by deleting the `CKShare`, `recordZoneChanges` returning all records, silent pushes, takeover across accounts).

@@ -54,6 +54,7 @@ extension AppModel {
             friendCodeProblem = nil
             friendSetup = setup
             saveFriends()
+        } catch is CancellationError {
         } catch {
             friendCodeProblem = Self.describe(error)
         }

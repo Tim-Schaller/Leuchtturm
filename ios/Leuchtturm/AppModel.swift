@@ -332,7 +332,7 @@ final class AppModel {
             await refresh()
             return true
         } catch {
-            errorMessage = Self.describe(error)
+            report(error)
             return false
         }
     }
@@ -346,7 +346,7 @@ final class AppModel {
             circles = try await client.circles()
             hasLoadedCircles = true
         } catch {
-            errorMessage = Self.describe(error)
+            report(error)
         }
         await refreshFriendRequests()
     }
@@ -1171,7 +1171,7 @@ final class AppModel {
         do {
             return try await operation(client)
         } catch {
-            errorMessage = Self.describe(error)
+            report(error)
             return nil
         }
     }
@@ -1305,7 +1305,7 @@ final class AppModel {
         do {
             simulation = try SimulatedWorld()
         } catch {
-            errorMessage = Self.describe(error)
+            report(error)
         }
         restore()
     }
@@ -1325,13 +1325,20 @@ final class AppModel {
             externalChanges += 1
             return result
         } catch {
-            errorMessage = Self.describe(error)
+            report(error)
             return nil
         }
     }
     #endif
 
     // MARK: Errors
+
+    /// Shows the error, unless the work was only cancelled: views restart
+    /// their loading when news arrive, which cancels the running request.
+    func report(_ error: any Error) {
+        if error is CancellationError || Task.isCancelled { return }
+        errorMessage = Self.describe(error)
+    }
 
     static func describe(_ error: any Error) -> String {
         switch error {

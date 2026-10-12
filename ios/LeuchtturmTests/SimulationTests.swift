@@ -14,6 +14,24 @@ struct SimulationTests {
         return (model, world)
     }
 
+    /// Views restart their loading when news arrive and cancel the running
+    /// request; that must not show "Hoppla" (it did after „Wo bist du?“).
+    @Test func cancelledWorkShowsNoError() async throws {
+        let (model, _) = try await simulatedModel()
+        _ = await model.run { _ -> Int in throw CancellationError() }
+        #expect(model.errorMessage == nil)
+        let reload = Task { await model.run { client -> Int in
+            try await Task.sleep(for: .seconds(5))
+            return 1
+        } }
+        reload.cancel()
+        #expect(await reload.value == nil)
+        #expect(model.errorMessage == nil)
+        // Real errors still show.
+        _ = await model.run { _ -> Int in throw ClientError.notOwner }
+        #expect(model.errorMessage != nil)
+    }
+
     @Test func personJoinsWithInviteAndIsConfirmed() async throws {
         let (model, world) = try await simulatedModel()
         let ref = try #require(await model.createCircle(name: "Familie"))

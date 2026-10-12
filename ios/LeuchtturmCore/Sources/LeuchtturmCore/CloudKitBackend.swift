@@ -250,6 +250,8 @@ func mapCloudKitErrors<T>(_ operation: () async throws -> T) async throws -> T {
         throw error
     } catch let error as CKError {
         switch error.code {
+        // The calling task was cancelled (e.g. a view reloaded): not an error.
+        case .operationCancelled: throw CancellationError()
         case .notAuthenticated, .accountTemporarilyUnavailable: throw BackendError.noAccount
         case .unknownItem, .zoneNotFound, .userDeletedZone: throw BackendError.notFound
         case .permissionFailure, .participantMayNeedVerification: throw BackendError.permissionDenied

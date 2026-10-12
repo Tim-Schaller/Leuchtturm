@@ -82,7 +82,7 @@ Build order (dependencies first):
 - [x] 14. Heimweg-Begleitung: watchers' devices alert if not home by the deadline.
 - [x] 16. Treffpunkt in the middle of everyone (MKLocalSearch nearby).
 - [x] 9. Friends list across all Leuchttürme (`Views/FriendsView.swift`, map button).
-- [ ] 20. Weekly challenges and streaks. 21. Steps leaderboard (HealthKit, opt-in). 22. „Heute vor einem Jahr“ from a local-only archive. 23. Weather at a person's place (WeatherKit).
+- [x] 20. Weekly challenges and streaks. 21. Steps leaderboard (HealthKit, opt-in). 22. „Heute vor einem Jahr“ from a local-only archive. 23. Weather at a person's place (WeatherKit).
 - [ ] 5/17. Widgets (home and lock screen) via App Group snapshot. 7. Live Activity while driving / on the way. 18. Siri and Shortcuts (App Intents).
 - [ ] 25. iPad layout.
 - [ ] 6. Apple Watch app and tvOS app.

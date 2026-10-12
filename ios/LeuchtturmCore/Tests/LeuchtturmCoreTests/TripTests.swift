@@ -99,5 +99,12 @@ struct TripTests {
         let opened = try #require(try CircleCrypto.openLocation(blob, circleID: "c", deviceID: "d", keyForEpoch: { _ in key }))
         #expect(opened.location.speed == 13.9)
         #expect(SharedLocation(latitude: 0, longitude: 0, accuracy: 5, timestamp: start, speed: 400) == nil)
+        var walker = try #require(SharedLocation(latitude: 53.5, longitude: 9.9, accuracy: 5, timestamp: start))
+        walker.steps = 8421
+        walker.weekSteps = 61_000
+        let walkerBlob = try CircleCrypto.sealLocation(walker, key: key, epoch: 1, circleID: "c", deviceID: "d")
+        let back = try #require(try CircleCrypto.openLocation(walkerBlob, circleID: "c", deviceID: "d", keyForEpoch: { _ in key }))
+        #expect(back.location.steps == 8421 && back.location.weekSteps == 61_000)
+        #expect(walker.inFog(radius: 1000)?.steps == 8421)
     }
 }

@@ -97,6 +97,8 @@ struct WeekView: View {
                     }
                 }
 
+                ChallengesSection(details: details, trips: trips, walkers: walkers)
+
                 if !walkers.isEmpty {
                     Section {
                         ForEach(Array(walkers.enumerated()), id: \.element.member.id) { rank, entry in
@@ -256,5 +258,143 @@ struct TripView: View {
         }
         .navigationTitle(trip.start.formatted(.dateTime.weekday(.wide).hour().minute()))
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// Weekly challenges with progress, streaks and the steps leaderboard,
+/// all computed on this device from what the circle shares.
+struct ChallengesSection: View {
+    @Environment(AppModel.self) private var model
+    let details: CircleDetails
+    let trips: [Trip]
+    let walkers: [(member: CircleMember, meters: Double)]
+
+    static let stepsGoal = 70_000
+    static let distanceGoal = 50_000.0
+
+    private var stepCounts: [(member: CircleMember, week: Int)] {
+        details.members.compactMap { m in
+            let week = m.isMe ? (model.sharesSteps ? model.steps.week : nil) : m.location?.weekSteps
+            return week.map { (m, $0) }
+        }
+        .sorted { $0.week > $1.week }
+    }
+
+    /// Latest trips in a row without hard braking, per driver.
+    private var smoothStreaks: [(member: CircleMember, count: Int)] {
+        Dictionary(grouping: trips, by: \.deviceID).compactMap { id, trips in
+            let count = trips.sorted { $0.end > $1.end }.prefix { $0.hardBrakes == 0 }.count
+            guard count > 0, let member = details.members.first(where: { $0.id == id }) else { return nil }
+            return (member, count)
+        }
+        .sorted { $0.count > $1.count }
+    }
+
+    var body: some View {
+        let steps = stepCounts
+        if !steps.isEmpty {
+            Section {
+                ForEach(Array(steps.enumerated()), id: \.element.member.id) { rank, entry in
+                    HStack(spacing: 12) {
+                        Text(WeekView.medal(rank)).font(.title2).frame(width: 34)
+                        Avatar(name: entry.member.name, id: entry.member.id, size: 38)
+                        Text(entry.member.isMe ? String(localized: "Du") : entry.member.name ?? "").font(.headline)
+                        Spacer()
+                        Text(entry.week.formatted()).monospacedDigit().foregroundStyle(.secondary)
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            } header: {
+                Text("🚶 Schritte diese Woche")
+            } footer: {
+                Text("Nur wer „Schritte teilen“ eingeschaltet hat (Daten aus Health).")
+            }
+        }
+
+        Section("🎯 Challenges der Woche") {
+            challenge(String(localized: "70.000 Schritte"), symbol: "figure.walk",
+                      entries: steps.map { ($0.member, Double($0.week) / Double(Self.stepsGoal)) })
+            challenge(String(localized: "50 km unterwegs"), symbol: "map",
+                      entries: walkers.map { ($0.member, $0.meters / Self.distanceGoal) })
+            if !smoothStreaks.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Sanft gefahren: Serie ohne starkes Bremsen", systemImage: "flame.fill").font(.subheadline.weight(.semibold))
+                    ForEach(smoothStreaks, id: \.member.id) { entry in
+                        HStack {
+                            Avatar(name: entry.member.name, id: entry.member.id, size: 24)
+                            Text(entry.member.isMe ? String(localized: "Du") : entry.member.name ?? "")
+                            Spacer()
+                            Text("🔥 \(entry.count)").monospacedDigit()
+                        }
+                        .font(.subheadline)
+                    }
+                }
+            }
+        }
+    }
+
+    private func challenge(_ title: String, symbol: String, entries: [(CircleMember, Double)]) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: symbol).font(.subheadline.weight(.semibold))
+            if entries.isEmpty {
+                Text("Noch niemand dabei.").font(.caption).foregroundStyle(.secondary)
+            }
+            ForEach(entries, id: \.0.id) { member, progress in
+                HStack {
+                    Avatar(name: member.name, id: member.id, size: 24)
+                    ProgressView(value: min(progress, 1)).tint(progress >= 1 ? .yellow : .accentColor)
+                    Text(progress >= 1 ? "🏅" : "\(Int(progress * 100)) %").font(.caption).monospacedDigit().frame(width: 44, alignment: .trailing)
+                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("\(member.name ?? ""): \(Int(min(progress, 1) * 100)) Prozent")
+            }
+        }
+    }
+}
+
+/// "Heute vor einem Jahr": a path from the local archive.
+struct MemoryCard: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        if model.keepsMemories, let memory = model.memories.memory() {
+            Section {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label(memory.title, systemImage: "calendar.badge.clock").font(.headline)
+                    Map(initialPosition: .automatic, interactionModes: []) {
+                        SpeedPathContent(path: SpeedPath(memory.points))
+                    }
+                    .frame(height: 150)
+                    .clipShape(.rect(cornerRadius: 14))
+                    Text("\(WeekView.km(WeekView.length(memory.points))) unterwegs · nur auf diesem iPhone gespeichert")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+}
+
+/// Weather at a person's place, e.g. "☀️ 18 °C".
+struct WeatherBadge: View {
+    @Environment(AppModel.self) private var model
+    let location: SharedLocation?
+    @State private var entry: WeatherCache.Entry?
+
+    var body: some View {
+        Group {
+            if let entry {
+                Label {
+                    Text(entry.temperature.formatted(.measurement(width: .narrow, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))
+                } icon: {
+                    Image(systemName: entry.symbol).symbolRenderingMode(.multicolor)
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+        }
+        .task(id: location.map { "\(($0.latitude * 100).rounded()),\(($0.longitude * 100).rounded())" }) {
+            guard model.showsWeather, let location else { entry = nil; return }
+            entry = await model.weather.weather(at: location.coordinate)
+        }
     }
 }

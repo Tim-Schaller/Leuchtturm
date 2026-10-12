@@ -24,6 +24,9 @@ public struct SharedLocation: Sendable, Hashable {
     public static let fogRadii: ClosedRange<Int> = 100 ... 100_000
     /// Meters per second, only while the member is driving and shares trips.
     public let speed: Double?
+    /// Steps today and in the last 7 days, if the member shares them.
+    public var steps: Int? = nil
+    public var weekSteps: Int? = nil
 
     /// Returns nil for coordinates, accuracies, battery levels or fog sizes that cannot be real.
     public init?(
@@ -60,7 +63,12 @@ public struct SharedLocation: Sendable, Hashable {
         return SharedLocation(
             latitude: min(90, max(-90, lat)), longitude: min(180, max(-180, lon)), accuracy: Double(radius) * 1.5,
             timestamp: timestamp, battery: battery, isCharging: isCharging, fogRadius: radius
-        )
+        ).map { fogged in
+            var copy = fogged
+            copy.steps = steps
+            copy.weekSteps = weekSteps
+            return copy
+        }
     }
 }
 
@@ -77,6 +85,8 @@ private struct LocationPayload: Codable {
     var fog: Int?
     /// Speed in m/s while driving.
     var spd: Double?
+    var stp: Int?
+    var stw: Int?
 }
 
 extension CircleCrypto {
@@ -85,7 +95,8 @@ extension CircleCrypto {
             lat: location.latitude, lon: location.longitude, acc: location.accuracy,
             t: Int64(location.timestamp.timeIntervalSince1970),
             bat: location.battery, chg: location.battery == nil ? nil : location.isCharging, fog: location.fogRadius,
-            spd: location.speed.map { ($0 * 10).rounded() / 10 }
+            spd: location.speed.map { ($0 * 10).rounded() / 10 },
+            stp: location.steps, stw: location.weekSteps
         )
         return try sealContent(JSONEncoder().encode(payload), key: key, epoch: epoch, context: locationContext(circleID: circleID, deviceID: deviceID))
     }
@@ -100,8 +111,12 @@ extension CircleCrypto {
         guard let location = SharedLocation(
             latitude: p.lat, longitude: p.lon, accuracy: p.acc, timestamp: Date(timeIntervalSince1970: TimeInterval(p.t)),
             battery: p.bat, isCharging: p.chg ?? false, fogRadius: p.fog, speed: p.spd
-        ) else { throw ProtocolError.malformed }
-        return (location, epoch)
+        ), (p.stp ?? 0) >= 0, (p.stp ?? 0) <= 200_000, (p.stw ?? 0) >= 0, (p.stw ?? 0) <= 1_500_000
+        else { throw ProtocolError.malformed }
+        var withSteps = location
+        withSteps.steps = p.stp
+        withSteps.weekSteps = p.stw
+        return (withSteps, epoch)
     }
 
     /// Bytes a device signs for its own location record.

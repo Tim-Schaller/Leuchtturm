@@ -54,6 +54,24 @@
           }
         }
       }
+    },
+    "NSHealthShareUsageDescription": {
+      "comment": "Privacy - usage description",
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Wenn du es einschaltest, teilt Leuchtturm deine Schritte von heute und der letzten Woche mit deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you turn it on, Leuchtturm shares your steps of today and the last week with your lighthouses, end-to-end encrypted."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -168,6 +168,12 @@ Notes carry an optional `"d"` (deadline, Unix seconds).
 - `walkHome` ("Heimweg-Begleitung"): destination and latest arrival in `d`. Every other member's device schedules a local alert for `d`, withdrawn when it sees the arrival, a `journeyCancelled` note, or the walker's position at the destination.
 - `meetingPoint` ("Treffpunkt"): the centre of everyone's positions (people in fog excluded), optionally a nearby place from an Apple Maps search around that centre.
 
+### Steps, challenges, memories and weather
+
+- **Steps** (opt-in, HealthKit read access): the location payload carries `"stp"` (today) and `"stw"` (last 7 days). The leaderboard and challenges ("70.000 Schritte", "50 km unterwegs" from shared history, a streak of trips without hard braking) are computed on each reader's device.
+- **Memories**: the device keeps its own path per day (at most 300 points) in a protected local file, never in iCloud, and shows the day a year, a month or a week ago.
+- **Weather**: the current weather at members' positions comes from WeatherKit. Coordinates are rounded to 0.01° (about 1 km) before asking and cached for 30 minutes; Apple sees those rounded places, not who is there.
+
 ### Low battery
 
 When the device's battery drops to 15 % or less without charging, it sends a `Note` of kind `lowBattery` (text: the percentage) to every circle, once per discharge (again after charging or above 30 %).

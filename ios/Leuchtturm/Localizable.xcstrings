@@ -81,6 +81,16 @@
         }
       }
     },
+    "%@ unterwegs · nur auf diesem iPhone gespeichert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ on the way · stored on this iPhone only"
+          }
+        }
+      }
+    },
     "%@ verlässt den Leuchtturm": {
       "localizations": {
         "en": {
@@ -157,6 +167,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@. Tap to see where."
+          }
+        }
+      }
+    },
+    "%@: %lld Prozent": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %lld percent"
           }
         }
       }
@@ -297,6 +317,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "3 hrs"
+          }
+        }
+      }
+    },
+    "50 km unterwegs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "50 km on the way"
+          }
+        }
+      }
+    },
+    "70.000 Schritte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "70,000 steps"
           }
         }
       }
@@ -691,12 +731,12 @@
         }
       }
     },
-    "Aus, solange du es nicht einschaltest. Dann sehen deine Leuchttürme, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Leuchtturm Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt die App „Alles okay?“. Ohne Antwort bekommen deine Leuchttürme nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.": {
+    "Aus, solange du es nicht einschaltest. Dann sehen deine Leuchttürme, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Leuchtturm Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt die App „Alles okay?“. Ohne Antwort bekommen deine Leuchttürme nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.\n\nErinnerungen: Deine eigenen Wege bleiben nur auf diesem iPhone, für „Heute vor einem Jahr“. Wetter: Die App fragt Apple Wetter mit den auf etwa 1 km gerundeten Orten, ohne Namen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Off until you turn it on. Then your lighthouses see where you went in the last days, end-to-end encrypted. Your iPhone deletes older days itself. Turning it off deletes the whole history right away.\n\nYour iPhone detects trips itself from 25 km/h on and with the motion sensor, so bikes and trains do not count. If you share them, your lighthouse sees route, distance, top speed, hard braking and acceleration, your speed while driving, and you in the weekly leaderboard. Trips are deleted after 30 days, or right away when you turn this off.\n\nCrash detection: if the car stops abruptly, the app asks “Are you OK?”. Without an answer your lighthouses get an SOS with your location after 60 seconds. This is an estimate from GPS data, not an emergency service."
+            "value": "Off until you turn it on. Then your lighthouses see where you went in the last days, end-to-end encrypted. Your iPhone deletes older days itself. Turning it off deletes the whole history right away.\n\nYour iPhone detects trips itself from 25 km/h on and with the motion sensor, so bikes and trains do not count. If you share them, your lighthouse sees route, distance, top speed, hard braking and acceleration, your speed while driving, and you in the weekly leaderboard. Trips are deleted after 30 days, or right away when you turn this off.\n\nCrash detection: if the car stops abruptly, the app asks “Are you OK?”. Without an answer your lighthouses get an SOS with your location after 60 seconds. This is an estimate from GPS data, not an emergency service.\n\nMemories: your own paths stay on this iPhone only, for “On this day a year ago”. Weather: the app asks Apple Weather with places rounded to about 1 km, without names."
           }
         }
       }
@@ -1561,6 +1601,16 @@
         }
       }
     },
+    "Erinnerungen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memories"
+          }
+        }
+      }
+    },
     "Erkannt auf dem iPhone von %@. Ende-zu-Ende-verschlüsselt.": {
       "localizations": {
         "en": {
@@ -1887,6 +1937,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Today"
+          }
+        }
+      }
+    },
+    "Heute vor einem Jahr": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On this day a year ago"
+          }
+        }
+      }
+    },
+    "Heute vor einem Monat": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On this day a month ago"
+          }
+        }
+      }
+    },
+    "Heute vor einer Woche": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On this day a week ago"
           }
         }
       }
@@ -2631,6 +2711,16 @@
         }
       }
     },
+    "Noch niemand dabei.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody yet."
+          }
+        }
+      }
+    },
     "Notruf 112 anrufen": {
       "localizations": {
         "en": {
@@ -2717,6 +2807,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Only from people who turned on “Share trips”."
+          }
+        }
+      }
+    },
+    "Nur wer „Schritte teilen“ eingeschaltet hat (Daten aus Health).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only people who turned on “Share steps” (data from Health)."
           }
         }
       }
@@ -2941,6 +3041,16 @@
         }
       }
     },
+    "Sanft gefahren: Serie ohne starkes Bremsen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smooth driving: streak without hard braking"
+          }
+        }
+      }
+    },
     "Schalte „Verlauf teilen“ in den Einstellungen ein.": {
       "localizations": {
         "en": {
@@ -2997,6 +3107,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Write to your lighthouse. Everything is end-to-end encrypted."
+          }
+        }
+      }
+    },
+    "Schritte teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share steps"
           }
         }
       }
@@ -3661,6 +3781,16 @@
         }
       }
     },
+    "Wetter bei den anderen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weather for the others"
+          }
+        }
+      }
+    },
     "Wie lange?": {
       "localizations": {
         "en": {
@@ -4231,6 +4361,16 @@
         }
       }
     },
+    " Weather": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " Weather"
+          }
+        }
+      }
+    },
     "🆘 %@ braucht Hilfe": {
       "localizations": {
         "en": {
@@ -4261,6 +4401,26 @@
         }
       }
     },
+    "🎯 Challenges der Woche": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🎯 Challenges of the week"
+          }
+        }
+      }
+    },
+    "🏅": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🏅"
+          }
+        }
+      }
+    },
     "🏆 Sicher gefahren": {
       "localizations": {
         "en": {
@@ -4277,6 +4437,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "👟 Most on the move"
+          }
+        }
+      }
+    },
+    "🔥 %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔥 %lld"
+          }
+        }
+      }
+    },
+    "🚶 Schritte diese Woche": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🚶 Steps this week"
           }
         }
       }

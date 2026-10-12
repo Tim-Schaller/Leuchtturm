@@ -31,6 +31,9 @@ final class AppModel {
         static let tripDetector = "tripDetector"
         static let detectsCrashes = "detectsCrashes"
         static let journey = "journey"
+        static let sharesSteps = "sharesSteps"
+        static let keepsMemories = "keepsMemories"
+        static let showsWeather = "showsWeather"
         static let lowBatteryWarned = "lowBatteryWarned"
         static let arrivalWatches = "arrivalWatches"
         static let verifiedDevices = "verifiedDevices"
@@ -77,6 +80,17 @@ final class AppModel {
     /// While set and not expired, only an approximate area is shared.
     private(set) var fog: Fog?
     var activeFog: Fog? { fog.flatMap { $0.until > Date() ? $0 : nil } }
+
+    /// Keeps own paths on this device for memories. On by default.
+    private(set) var keepsMemories = true
+    private(set) var memories = MemoryArchive(persistent: false)
+    /// Shows the weather at people's places (asks Apple Weather). On by default.
+    private(set) var showsWeather = true
+    @ObservationIgnored let weather = WeatherCache()
+
+    /// Shares today's and this week's steps from Health. Off by default.
+    private(set) var sharesSteps = false
+    @ObservationIgnored let steps = StepsMonitor()
 
     /// "Bin auf dem Weg" or "Heimweg" of this device, until arrival.
     private(set) var journey: Journey?
@@ -178,6 +192,10 @@ final class AppModel {
         sendsMorningGreeting = !isSimulation && defaults.bool(forKey: Keys.morningGreeting)
         lastMorningGreeting = isSimulation ? nil : defaults.object(forKey: Keys.lastMorningGreeting) as? Date
         knownPlaces = [:]
+        sharesSteps = !isSimulation && defaults.bool(forKey: Keys.sharesSteps)
+        keepsMemories = isSimulation || (defaults.object(forKey: Keys.keepsMemories) as? Bool ?? true)
+        showsWeather = isSimulation || (defaults.object(forKey: Keys.showsWeather) as? Bool ?? true)
+        memories = MemoryArchive(persistent: !isSimulation)
         journey = isSimulation ? nil : defaults.data(forKey: Keys.journey).flatMap { try? JSONDecoder().decode(Journey.self, from: $0) }
         myProfile = isSimulation ? Profile() : Self.loadStoredProfile() ?? Profile()
         latestDetails = [:]
@@ -354,11 +372,19 @@ final class AppModel {
         let forced = forceShare
         forceShare = false
         guard forced || policy.shouldShare(location, after: lastShared),
-              let exact = SharedLocation(
+              var exact = SharedLocation(
                   location, battery: battery, isCharging: charging,
                   speed: sharesTrips && tripDetector.isDriving && location.speed >= 0 ? location.speed : nil
               )
         else { return }
+        if keepsMemories {
+            memories.add(HistoryDay.Point(latitude: exact.latitude, longitude: exact.longitude, timestamp: exact.timestamp))
+        }
+        if sharesSteps {
+            await steps.refresh()
+            exact.steps = steps.today
+            exact.weekSteps = steps.week
+        }
         // In fog the exact position never leaves the device.
         let shared = activeFog.flatMap { exact.inFog(radius: $0.radius) } ?? exact
         lastShared = location
@@ -498,6 +524,28 @@ final class AppModel {
             saveTripDetector()
             await run { try await $0.deleteTrips() }
         }
+    }
+
+    // MARK: Memories and weather
+
+    func setKeepsMemories(_ on: Bool) {
+        keepsMemories = on
+        if !isSimulation { UserDefaults.standard.set(on, forKey: Keys.keepsMemories) }
+        if !on { memories.clear() }
+    }
+
+    func setShowsWeather(_ on: Bool) {
+        showsWeather = on
+        if !isSimulation { UserDefaults.standard.set(on, forKey: Keys.showsWeather) }
+    }
+
+    // MARK: Steps
+
+    func setSharesSteps(_ on: Bool) async {
+        sharesSteps = on
+        if !isSimulation { UserDefaults.standard.set(on, forKey: Keys.sharesSteps) }
+        if on { await steps.requestAccess() } else { steps.reset() }
+        await shareLocationNow()
     }
 
     // MARK: Journeys
@@ -1025,6 +1073,7 @@ final class AppModel {
         }
         savedName = nil
         historyRecorder.clear()
+        memories.clear()
         visitStore.clear()
         client = nil
         circles = []
@@ -1083,6 +1132,12 @@ final class AppModel {
             _ = await mapDetails(for: ref)
             await run { try await $0.setAdmin(anna.client.deviceID, true, in: ref) }
         }
+        // A walk around the lake a week ago, for the memories.
+        memories.set((0 ..< 60).map { i in
+            let a = Double(i) / 60 * 2 * .pi
+            let (lat, lon) = SimulatedWorld.offset(home, north: 700 + 450 * sin(a), east: 500 + 450 * cos(a))
+            return HistoryDay.Point(latitude: lat, longitude: lon, timestamp: Date().addingTimeInterval(-7 * 86400 + Double(i) * 60))
+        }, on: Date().addingTimeInterval(-7 * 86400))
         // Three evenings at the sports club, for the place suggestions.
         let (lat, lon) = SimulatedWorld.offset(home, north: -600, east: 900)
         for day in 1 ... 3 {

@@ -83,6 +83,20 @@ struct SettingsView: View {
                         get: { model.sharesTrips },
                         set: { on in Task { await model.setSharesTrips(on) } }
                     ))
+                    if StepsMonitor.isAvailable {
+                        Toggle("Schritte teilen", isOn: Binding(
+                            get: { model.sharesSteps },
+                            set: { on in Task { await model.setSharesSteps(on) } }
+                        ))
+                    }
+                    Toggle("Erinnerungen", isOn: Binding(
+                        get: { model.keepsMemories },
+                        set: { model.setKeepsMemories($0) }
+                    ))
+                    Toggle("Wetter bei den anderen", isOn: Binding(
+                        get: { model.showsWeather },
+                        set: { model.setShowsWeather($0) }
+                    ))
                     Toggle("Unfallerkennung", isOn: Binding(
                         get: { model.detectsCrashes },
                         set: { model.setDetectsCrashes($0) }
@@ -90,7 +104,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Verlauf und Fahrten")
                 } footer: {
-                    Text("Aus, solange du es nicht einschaltest. Dann sehen deine Leuchttürme, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Leuchtturm Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt die App „Alles okay?“. Ohne Antwort bekommen deine Leuchttürme nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.")
+                    Text("Aus, solange du es nicht einschaltest. Dann sehen deine Leuchttürme, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Leuchtturm Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt die App „Alles okay?“. Ohne Antwort bekommen deine Leuchttürme nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.\n\nErinnerungen: Deine eigenen Wege bleiben nur auf diesem iPhone, für „Heute vor einem Jahr“. Wetter: Die App fragt Apple Wetter mit den auf etwa 1 km gerundeten Orten, ohne Namen.")
                 }
 
                 Section {

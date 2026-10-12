@@ -168,10 +168,14 @@ final class SimulatedWorld {
             case 1: (min(100, 34 + Int(t / 60)), true)
             default: (9, false)
             }
-            guard let position = SharedLocation(
+            guard var position = SharedLocation(
                 latitude: latitude, longitude: longitude, accuracy: index == 1 ? 25 : 10, timestamp: now,
                 battery: battery, isCharging: charging, speed: index == 1 ? 2 * .pi * 1500 / 600 : nil
             ) else { continue }
+            // Everyone shares steps: Anna walks a lot, Clara even more.
+            let (stepsToday, stepsWeek) = [(7200, 52_000), (3100, 21_000), (9800, 71_500)][index]
+            position.steps = stepsToday + Int(t / 2)
+            position.weekSteps = stepsWeek + Int(t / 2)
             lastMoved[person.id] = now
             lastPositions[person.id] = position
             if battery <= 15, !charging, batteryWarned.insert(person.id).inserted {

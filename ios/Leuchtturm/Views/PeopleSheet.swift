@@ -116,6 +116,7 @@ struct PeopleSheet: View {
                         .tint(.primary)
                     }
                 }
+                MemoryCard()
                 if let journey = model.journey, journey.circleID == details.id {
                     Section { JourneyBanner(journey: journey) }
                 }
@@ -218,8 +219,11 @@ private struct PersonRow: View {
                     .lineLimit(1)
             }
             Spacer(minLength: 0)
+            VStack(alignment: .trailing, spacing: 3) {
+                WeatherBadge(location: member.isMe ? model.tracker.location.flatMap { SharedLocation($0) } : member.location)
             if let battery = member.location?.battery {
                 BatteryBadge(level: battery, isCharging: member.location?.isCharging ?? false)
+            }
             }
             Image(systemName: "chevron.right")
                 .font(.caption.bold())
@@ -283,6 +287,17 @@ struct MemberDetailView: View {
         List {
             Section {
                 ProfileHeader(member: member, subtitle: LocationStatus.text(for: member, model: model))
+                if model.showsWeather, member.location != nil || member.isMe {
+                    HStack {
+                        WeatherBadge(location: member.isMe ? model.tracker.location.flatMap { SharedLocation($0) } : member.location)
+                        Spacer()
+                        Link("\u{F8FF} Weather", destination: model.weather.attribution?.legalPageURL
+                             ?? URL(string: "https://weatherkit.apple.com/legal-attribution.html")!)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal)
+                }
                 if member.isMe {
                     Button("Profil gestalten", systemImage: "paintbrush") { editing = true }
                 }

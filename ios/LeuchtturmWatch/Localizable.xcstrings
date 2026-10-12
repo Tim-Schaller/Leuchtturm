@@ -36,7 +36,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your iPhone sends an SOS with your location to everyone in your Leuchttürme."
+            "value": "Your iPhone sends an SOS with your location to everyone in your lighthouses."
           }
         }
       }
@@ -136,7 +136,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open Leuchtturm on your iPhone. Your watch will then show your Leuchtturm."
+            "value": "Open Leuchtturm on your iPhone. Your watch will then show your lighthouse."
           }
         }
       }

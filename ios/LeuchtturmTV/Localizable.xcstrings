@@ -46,7 +46,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Apple TV needs the same iCloud account as your iPhone. It gets none of your Leuchtturm keys and only sees the map your iPhone sends it, encrypted."
+            "value": "The Apple TV needs the same iCloud account as your iPhone. It gets none of your lighthouse keys and only sees the map your iPhone sends it, encrypted."
           }
         }
       }

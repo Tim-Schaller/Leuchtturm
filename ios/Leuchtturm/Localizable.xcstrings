@@ -1096,7 +1096,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Apple TV will then show the map of the Leuchtturm you have open, with you and everyone else. It needs the same iCloud account as you and gets none of your Leuchtturm keys, only an encrypted copy of the map. You can disconnect it in Settings."
+            "value": "The Apple TV will then show the map of the lighthouse you have open, with you and everyone else. It needs the same iCloud account as you and gets none of your lighthouse keys, only an encrypted copy of the map. You can disconnect it in Settings."
           }
         }
       }
@@ -4656,7 +4656,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open Leuchtturm on the Apple TV and scan the code with your iPhone's camera. The Apple TV then shows the map, end-to-end encrypted through your own iCloud. It needs the same iCloud account as you and gets none of your Leuchtturm keys."
+            "value": "Open Leuchtturm on the Apple TV and scan the code with your iPhone's camera. The Apple TV then shows the map, end-to-end encrypted through your own iCloud. It needs the same iCloud account as you and gets none of your lighthouse keys."
           }
         }
       }

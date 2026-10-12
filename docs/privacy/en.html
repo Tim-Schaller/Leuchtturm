@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Privacy · Leuchtturm</title>
+  <link rel="icon" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/page.css">
+</head>
+<body>
+<main>
+  <header>
+    <img src="../assets/icon.svg" alt="" width="44" height="44">
+    <a href="../">Leuchtturm</a>
+  </header>
+  <nav><a href="./" hreflang="de" lang="de">Deutsche Fassung</a> (legally binding)</nav>
+
+  <h1>Privacy Policy</h1>
+  <p class="lead">Leuchtturm is an app for family and friends to see each other's location. The developer runs no server: everything is stored in iCloud, and content is encrypted on your device before it leaves it.</p>
+  <p>Last updated: October 12, 2026</p>
+
+  <div class="box">
+    <strong>In short</strong>
+    <ul>
+      <li>Locations, names, messages, pictures, places and all other content are end-to-end encrypted. Only the members of your lighthouses can read them. Neither the developer nor Apple can.</li>
+      <li>Apple sees metadata: which iCloud accounts are in a lighthouse together, who owns it, when and how often data is written and its approximate size.</li>
+      <li>No ads, no tracking, no analytics or advertising SDKs, no selling or sharing of data.</li>
+      <li>You can stop sharing, leave lighthouses and delete all your data in the app at any time.</li>
+    </ul>
+  </div>
+
+  <h2>1. Controller</h2>
+  <p>Tim Schaller<br>
+    <span class="todo">[Address]</span><br>
+    Email: <span class="todo">[Email address]</span></p>
+  <p>The app's source code is public: <a href="https://github.com/Tim-Schaller/Leuchtturm">github.com/Tim-Schaller/Leuchtturm</a>. You can check there what this policy describes.</p>
+
+  <h2>2. Where your data is stored</h2>
+  <p>Leuchtturm stores data in iCloud through Apple's CloudKit service. Each lighthouse (a group of people) lives in its owner's iCloud and is shared with its members. Your contract for iCloud is with Apple (in the EU, Apple Distribution International Ltd., Ireland); Apple's terms and privacy policy apply. The data may be stored in Apple data centers outside the EU, including the United States. Apple is certified under the EU-U.S. Data Privacy Framework.</p>
+  <p>Before anything leaves your device, it is encrypted with keys that only the members of the lighthouse have. Your keys are kept in iCloud Keychain (end-to-end encrypted by Apple) so your iPad or a new iPhone works right away, or, if you choose "keys only on this device", only on this device.</p>
+
+  <h2>3. What data is processed</h2>
+  <table>
+    <tr><th>Data</th><th>When</th><th>Who can read it</th></tr>
+    <tr><td>Location (coordinates, accuracy, time), battery level, speed while driving</td><td>while "Share Location" is on</td><td>members of your lighthouses</td></tr>
+    <tr><td>Name, profile picture, banner, colour, emoji, status</td><td>when you set them</td><td>members of your lighthouses</td></tr>
+    <tr><td>Chat messages, photos, stickers, reactions</td><td>when you send them</td><td>members of the lighthouse</td></tr>
+    <tr><td>Notes such as check-ins, "on my way", "pick me up", "where are you?", SOS, low battery, arriving at and leaving places</td><td>when you trigger them or your device reports them</td><td>members of the lighthouse</td></tr>
+    <tr><td>Places (e.g. home, school)</td><td>when someone adds them</td><td>members of the lighthouse</td></tr>
+    <tr><td>History (your paths of the last days)</td><td>only if you turn on "Share History"</td><td>members of your lighthouses</td></tr>
+    <tr><td>Trips (route, distance, top speed, hard braking and acceleration)</td><td>only if you turn on "Share Trips"</td><td>members of your lighthouses</td></tr>
+    <tr><td>Today's and this week's steps from Apple Health</td><td>only if you turn on "Share Steps" and allow access in iOS</td><td>members of your lighthouses</td></tr>
+    <tr><td>Public keys, signatures, invite expiry times</td><td>always</td><td>members and Apple (not secret)</td></tr>
+  </table>
+  <p>Everything in the table except the last row is encrypted and signed on your device. In fog mode your exact location does not leave the device; only a rough area is shared.</p>
+
+  <h3>Only on your device</h3>
+  <ul>
+    <li><strong>Memories</strong> ("a year ago today"): your own paths, only on this iPhone, can be turned off.</li>
+    <li><strong>Visits</strong> for place suggestions: 30 days, only on this iPhone.</li>
+    <li><strong>Widgets, Live Activity, Siri and Shortcuts</strong>: a small copy (names, places, battery, small pictures) in the app's protected storage on the device.</li>
+    <li><strong>"Not arrived yet" alerts and walk-home company</strong> are checked on the devices.</li>
+  </ul>
+
+  <h3>Apple Watch and Apple TV</h3>
+  <p>The Apple Watch gets the widget copy directly from your iPhone (no server). An Apple TV you connect with its QR code gets an encrypted copy of the map through your own private iCloud; only that Apple TV can open it. Anyone in front of the TV sees the map.</p>
+
+  <h3>Live link for people without the app</h3>
+  <p>When you create a live link, your iPhone writes your location (and name, battery level), encrypted, to the app's public iCloud database for one hour. The key is only in the link after the "#". The web page (hosted on GitHub Pages) decrypts it in the browser. Anyone with the link sees your location until it ends. When the page is opened, GitHub (web page) and Apple (CloudKit) see the browser's IP address, but not the key. After one hour, or with "End Link", the entry is deleted.</p>
+
+  <h3>Other Apple services</h3>
+  <ul>
+    <li><strong>Apple Maps</strong> provides the map. Apple sees which map area you load, but not who is where.</li>
+    <li><strong>Apple Weather</strong> (can be turned off): for the weather where your people are, the app asks with places rounded to about 1 km, without names.</li>
+    <li><strong>Notifications</strong>: Apple wakes the app with silent push notifications when something changes. The app decrypts the content on the device and shows it as a local notification.</li>
+    <li><strong>TestFlight</strong> (test versions only): Apple gives the developer crash reports and feedback if you allow it in TestFlight.</li>
+  </ul>
+
+  <h2>4. What the developer sees</h2>
+  <p>None of your content. The developer runs no server and holds no keys. In Apple's CloudKit console, the developer sees only aggregate usage numbers and the encrypted entries of the public database (live links) with an anonymous user identifier assigned by Apple. With TestFlight, crash reports and feedback are added if you share them.</p>
+
+  <h2>5. Purposes and legal bases</h2>
+  <ul>
+    <li>The app features you use (sharing your location, lighthouses, chat and so on): Art. 6(1)(b) GDPR.</li>
+    <li>Location access, motion data, Apple Health and all features you have to turn on: your consent, Art. 6(1)(a) GDPR, for steps from Apple Health also Art. 9(2)(a) GDPR. You can withdraw it at any time in the app or in iOS Settings.</li>
+    <li>Security (signatures, checking invites): legitimate interest in a secure app, Art. 6(1)(f) GDPR.</li>
+  </ul>
+
+  <h2>6. How long data is kept</h2>
+  <ul>
+    <li>Your location is replaced with every update and deleted at once when you stop sharing.</li>
+    <li>History: as many days as you choose (today, 7 or 30 days), deleted at once when you turn it off.</li>
+    <li>Trips and chat messages: 30 days. Notes (check-ins and the like) are no longer shown after 7 days and are deleted by your device.</li>
+    <li>Live links: one hour.</li>
+    <li>When you leave a lighthouse or are removed, your entries there are deleted and the lighthouse gets a new key. When the owner deletes a lighthouse, it is gone for everyone.</li>
+    <li>"Delete all my data" in Settings deletes your own lighthouses, leaves all others and removes your keys.</li>
+  </ul>
+
+  <h2>7. Your rights</h2>
+  <p>You have the right of access, rectification, erasure, restriction of processing, data portability (e.g. exporting your history as GPX) and objection, and the right to withdraw consent. Because the developer cannot read your content, you do most of this directly in the app. For data held by Apple, contact Apple. You can lodge a complaint with a data protection supervisory authority.</p>
+
+  <h2>8. Children</h2>
+  <p>Leuchtturm is made for families. Children under 16 should use the app only with their parents' consent. Sharing your location is sensitive: please talk as a family about who can see whom.</p>
+
+  <h2>9. Changes</h2>
+  <p>When the app changes, this policy is updated. The current version is always here; earlier versions are in the source code history.</p>
+
+  <footer>Leuchtturm · <a href="https://github.com/Tim-Schaller/Leuchtturm">Source code</a></footer>
+</main>
+</body>
+</html>

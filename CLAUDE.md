@@ -88,7 +88,7 @@ Build order (dependencies first):
 - [x] 6. Apple Watch app (`LeuchtturmWatch`, WatchConnectivity snapshot, SOS/check-in via iPhone) and Apple TV app (`LeuchtturmTV`, QR pairing, HPKE-PSK snapshot record `TVSnapshot` in the private DB; `TVLink.swift`, `TVPublisher.swift`). Demo: launch argument `-demo` on watch and TV, `-pairing` shows the TV code without iCloud.
 - [x] 8. 1-hour live link (`LiveLink.swift`, `LiveLinkSharing.swift`, page in `docs/live`). **Needs Tim before it works:** GitHub Pages from `main` `/docs`; a CloudKit API token (read-only web access) in `docs/live/config.js`; record type `LiveLocation` (public DB, field `blob`, World read) appears in Development on the first save and must go to Production; optional MapKit JS token for an embedded map.
 - [ ] 2. Languages: fr, es, it, nl, pl, tr (app and permission texts).
-- [ ] 3. Privacy policy (de, en).
+- [x] 3. Privacy policy `docs/privacy/index.html` (de, binding) and `en.html`, landing page `docs/index.html` (GitHub Pages from `/docs`, `.nojekyll`). **Tim must fill in address and email** (marked `[Anschrift]`/`[E-Mail-Adresse]`).
 - [ ] 4. TestFlight: CloudKit schema to Production, App Store Connect together with Tim in Claude in Chrome.
 
 Working notes (2026-10-12, for continuing after a context reset):

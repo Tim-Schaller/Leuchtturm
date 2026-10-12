@@ -8,13 +8,13 @@
         "de": {
           "stringUnit": {
             "state": "new",
-            "value": "Leuchtturm zeigt deinen Standort den Kreisen, die du auswählst. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt."
+            "value": "Leuchtturm zeigt deinen Standort den Leuchttürmen, in denen du bist. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leuchtturm shows your location to the circles you choose. It is encrypted on your iPhone before it leaves it."
+            "value": "Leuchtturm shows your location to the lighthouses you are in. It is encrypted on your iPhone before it leaves it."
           }
         }
       }
@@ -26,13 +26,13 @@
         "de": {
           "stringUnit": {
             "state": "new",
-            "value": "Damit deine Kreise dich auch sehen, wenn die App geschlossen ist, braucht Leuchtturm den Standort im Hintergrund. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt."
+            "value": "Damit deine Leuchttürme dich auch sehen, wenn die App geschlossen ist, braucht Leuchtturm den Standort im Hintergrund. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "So your circles see you even when the app is closed, Leuchtturm needs your location in the background. It is encrypted on your iPhone before it leaves it."
+            "value": "So your lighthouses see you even when the app is closed, Leuchtturm needs your location in the background. It is encrypted on your iPhone before it leaves it."
           }
         }
       }

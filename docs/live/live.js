@@ -1,41 +1,43 @@
 import { config } from "./config.js";
 import { base64Decode, openLive, parseFragment } from "./live-crypto.js";
 
-const german = (navigator.language || "de").toLowerCase().startsWith("de");
-document.documentElement.lang = german ? "de" : "en";
-const text = german
-  ? {
-      loading: "Einen Moment …",
-      sharing: (name) => `${name} teilt den Standort mit dir`,
-      until: (time) => `Live bis ${time} Uhr`,
-      updated: "Aktualisiert", accuracy: "Genauigkeit", battery: "Akku", expires: "Link gültig bis",
-      open: "In Apple Karten öffnen", route: "Route",
-      invalid: "Dieser Link ist unvollständig", invalidHint: "Bitte öffne den ganzen Link aus der Nachricht, auch den Teil nach #.",
-      ended: "Dieser Link ist beendet", endedHint: "Die Person teilt ihren Standort hier nicht mehr.",
-      expired: "Dieser Link ist abgelaufen", expiredHint: "Live-Links gelten eine Stunde.",
-      setup: "Noch nicht eingerichtet", setupHint: "Diese Seite braucht noch einen CloudKit-Zugang.",
-      offline: "Keine Verbindung", offlineHint: "Neuer Versuch in ein paar Sekunden.",
-      note: "Ende-zu-Ende-verschlüsselt: Der Schlüssel steht nur im Link hinter dem #, den dein Browser nie an einen Server schickt. Apple (iCloud) speichert nur verschlüsselte Daten.",
-      source: "Leuchtturm ist Open Source",
-    }
-  : {
-      loading: "One moment …",
-      sharing: (name) => `${name} is sharing their location with you`,
-      until: (time) => `Live until ${time}`,
-      updated: "Updated", accuracy: "Accuracy", battery: "Battery", expires: "Link valid until",
-      open: "Open in Apple Maps", route: "Directions",
-      invalid: "This link is incomplete", invalidHint: "Please open the whole link from the message, including the part after #.",
-      ended: "This link has ended", endedHint: "The location is no longer shared here.",
-      expired: "This link has expired", expiredHint: "Live links last one hour.",
-      setup: "Not set up yet", setupHint: "This page still needs CloudKit access.",
-      offline: "No connection", offlineHint: "Trying again in a few seconds.",
-      note: "End-to-end encrypted: the key is only in the link after the #, which your browser never sends to a server. Apple (iCloud) stores only encrypted data.",
-      source: "Leuchtturm is open source",
-    };
+// Texts per language; {name} and {time} are filled in.
+const texts = {
+  de: {
+    loading: "Einen Moment …", sharing: "{name} teilt den Standort mit dir", until: "Live bis {time} Uhr",
+    updated: "Aktualisiert", accuracy: "Genauigkeit", battery: "Akku", expires: "Link gültig bis",
+    open: "In Apple Karten öffnen", route: "Route",
+    invalid: "Dieser Link ist unvollständig", invalidHint: "Bitte öffne den ganzen Link aus der Nachricht, auch den Teil nach #.",
+    ended: "Dieser Link ist beendet", endedHint: "Die Person teilt ihren Standort hier nicht mehr.",
+    expired: "Dieser Link ist abgelaufen", expiredHint: "Live-Links gelten eine Stunde.",
+    setup: "Noch nicht eingerichtet", setupHint: "Diese Seite braucht noch einen CloudKit-Zugang.",
+    offline: "Keine Verbindung", offlineHint: "Neuer Versuch in ein paar Sekunden.",
+    note: "Ende-zu-Ende-verschlüsselt: Der Schlüssel steht nur im Link hinter dem #, den dein Browser nie an einen Server schickt. Apple (iCloud) speichert nur verschlüsselte Daten.",
+    source: "Leuchtturm ist Open Source",
+  },
+  en: {
+    loading: "One moment …", sharing: "{name} is sharing their location with you", until: "Live until {time}",
+    updated: "Updated", accuracy: "Accuracy", battery: "Battery", expires: "Link valid until",
+    open: "Open in Apple Maps", route: "Directions",
+    invalid: "This link is incomplete", invalidHint: "Please open the whole link from the message, including the part after #.",
+    ended: "This link has ended", endedHint: "The location is no longer shared here.",
+    expired: "This link has expired", expiredHint: "Live links last one hour.",
+    setup: "Not set up yet", setupHint: "This page still needs CloudKit access.",
+    offline: "No connection", offlineHint: "Trying again in a few seconds.",
+    note: "End-to-end encrypted: the key is only in the link after the #, which your browser never sends to a server. Apple (iCloud) stores only encrypted data.",
+    source: "Leuchtturm is open source",
+  },
+};
+const language = (navigator.languages || [navigator.language || "en"]).map((tag) => tag.slice(0, 2).toLowerCase()).find((tag) => texts[tag]) || "en";
+document.documentElement.lang = language;
+const strings = texts[language];
+const text = Object.fromEntries(Object.entries(strings).map(([key, value]) => [key, value.includes("{")
+  ? (fill) => value.replace("{name}", fill).replace("{time}", fill)
+  : value]));
 
 const $ = (id) => document.getElementById(id);
-const time = (date) => date.toLocaleTimeString(german ? "de-DE" : undefined, { hour: "2-digit", minute: "2-digit" });
-const relative = new Intl.RelativeTimeFormat(german ? "de" : "en", { numeric: "auto" });
+const time = (date) => date.toLocaleTimeString(language, { hour: "2-digit", minute: "2-digit" });
+const relative = new Intl.RelativeTimeFormat(language, { numeric: "auto" });
 const ago = (date) => {
   const seconds = Math.round((date - Date.now()) / 1000);
   return Math.abs(seconds) < 60 ? relative.format(seconds, "second") : relative.format(Math.round(seconds / 60), "minute");

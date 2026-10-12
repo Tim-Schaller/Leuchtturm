@@ -15,6 +15,7 @@ enum HomeSheet: Identifiable {
     case meetingPoint(CircleRef)
     case addPlace(CircleRef, PlaceSuggestion?)
     case sos
+    case liveLink
     #if DEBUG
     case simulation
     #endif
@@ -31,6 +32,7 @@ enum HomeSheet: Identifiable {
         case let .meetingPoint(ref): "meet-\(ref.circleID)"
         case let .addPlace(ref, suggestion): "place-\(ref.circleID)-\(suggestion?.id ?? "")"
         case .sos: "sos"
+        case .liveLink: "live"
         #if DEBUG
         case .simulation: "simulation"
         #endif

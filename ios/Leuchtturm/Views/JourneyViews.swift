@@ -33,10 +33,10 @@ struct ActionGrid: View {
 
     var body: some View {
         let ref = details.ref
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 8) {
             tile("Einchecken", "mappin.and.ellipse") { Task { await model.send(.checkIn, in: ref) } }
                 .disabled(!details.hasKey || model.activeFog != nil)
-            tile("Bin auf dem Weg", "figure.walk.motion") { sheet = .journey(ref, walkHome: false) }
+            tile("Auf dem Weg", "figure.walk.motion") { sheet = .journey(ref, walkHome: false) }
                 .disabled(!details.hasKey || model.journey != nil)
             tile("Heimweg", "house.and.flag") { sheet = .journey(ref, walkHome: true) }
                 .disabled(!details.hasKey || model.journey != nil)
@@ -49,6 +49,7 @@ struct ActionGrid: View {
             } else {
                 tile("Nebel", "circle.dashed") { sheet = .fog }
             }
+            tile(model.liveLink == nil ? "Live-Link" : "Link läuft", "link") { sheet = .liveLink }
         }
         .listRowBackground(Color.clear)
         .listRowInsets(EdgeInsets())

@@ -51,7 +51,7 @@ Everything a family expects from a location app, built so that it works on the d
 | SOS, crash detection | Alert to the circle; no call center | M7 |
 | Temporary circles, leaderboards | Circles that expire; opt-in weekly ranking computed on the device | M8 |
 
-Not planned, because they would need a company server, a call center or third parties: emergency dispatch, roadside assistance, insurance, identity-theft services, crime data, tracker hardware. Never: ads, selling or sharing data. Maybe later: weather alerts via WeatherKit. Done since: Apple Watch app (snapshot from the iPhone, SOS and check-in) and Apple TV app (paired by QR code, encrypted snapshot in the user's own iCloud). Next: a one-hour web link for people without the app (static page, key in the URL fragment).
+Not planned, because they would need a company server, a call center or third parties: emergency dispatch, roadside assistance, insurance, identity-theft services, crime data, tracker hardware. Never: ads, selling or sharing data. Maybe later: weather alerts via WeatherKit. Done since: Apple Watch app (snapshot from the iPhone, SOS and check-in) and Apple TV app (paired by QR code, encrypted snapshot in the user's own iCloud). Also done: a one-hour web link for people without the app (static page in `docs/live`, key in the URL fragment).
 
 ## M3: Reactions and check-ins
 - [x] Emoji reactions and quick notes, end-to-end encrypted, signed by the sender

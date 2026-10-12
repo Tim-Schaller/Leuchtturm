@@ -178,6 +178,8 @@ struct PeopleSheet: View {
             AddPlaceSheet(ref: ref, suggestion: suggestion)
         case .sos:
             SOSSheet()
+        case .liveLink:
+            LiveLinkSheet()
         #if DEBUG
         case .simulation:
             SimulationView { receivedInvite = $0 }

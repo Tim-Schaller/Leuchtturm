@@ -57,6 +57,9 @@ final class AppModel {
     var pairedTVs: [PairedTV] = []
     @ObservationIgnored var lastTVPublish = Date.distantPast
     @ObservationIgnored var lastTVSnapshot: WidgetSnapshot?
+    /// The running one-hour web link, if any (see LiveLinkSharing.swift).
+    var liveLink: LiveLink?
+    @ObservationIgnored var lastLivePublish = Date.distantPast
     /// Bumped when other members changed something; views reload on change.
     private(set) var externalChanges = 0
 
@@ -194,6 +197,7 @@ final class AppModel {
         pendingInvite = nil
         pendingTV = nil
         pairedTVs = loadPairedTVs()
+        restoreLiveLink()
         lastShared = nil
         // An iPad shares no location unless asked to (the iPhone usually does).
         let pausedByDefault = UIDevice.current.userInterfaceIdiom != .phone
@@ -407,6 +411,7 @@ final class AppModel {
         // In fog the exact position never leaves the device.
         let shared = activeFog.flatMap { exact.inFog(radius: $0.radius) } ?? exact
         lastShared = location
+        await publishLiveLink(shared)
         // Finish the upload even if iOS suspends the app right after this update.
         // History: exact points, but never while in fog.
         let history = sharesHistory && activeFog == nil
@@ -426,7 +431,7 @@ final class AppModel {
         UIApplication.shared.endBackgroundTask(backgroundTask)
     }
 
-    private func shareLocationNow() async {
+    func shareLocationNow() async {
         lastShared = nil
         if let location = tracker.location { await share(location) }
     }
@@ -1086,6 +1091,7 @@ final class AppModel {
     func deleteAllData() async {
         guard await run({ try await $0.deleteAllData() }) != nil else { return }
         for tv in pairedTVs { await unpairTV(tv.id) }
+        await endLiveLink()
         resetLocal()
     }
 
@@ -1096,6 +1102,7 @@ final class AppModel {
         }
         savedName = nil
         pairedTVs = []
+        liveLink = nil
         historyRecorder.clear()
         memories.clear()
         visitStore.clear()

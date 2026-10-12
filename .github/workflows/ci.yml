@@ -20,6 +20,13 @@ jobs:
         working-directory: ios/LeuchtturmCore
         run: swift test
 
+  web:
+    name: Live link page (WebCrypto against the Swift vector)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node docs/test-vectors/check-live.mjs
+
   ios:
     name: iOS (core on CryptoKit + CloudKit, app build + test)
     # Liquid Glass needs the iOS 26 SDK (Xcode 26). If this runner label is not

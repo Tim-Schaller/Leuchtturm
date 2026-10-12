@@ -711,6 +711,16 @@
         }
       }
     },
+    "Auf dem Weg": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On My Way"
+          }
+        }
+      }
+    },
     "Auf dem Weg zu %@": {
       "localizations": {
         "en": {
@@ -1851,6 +1861,16 @@
         }
       }
     },
+    "Für Leute ohne die App: Sie sehen eine Stunde lang auf einer Webseite, wo du bist. Dein iPhone verschlüsselt den Standort, der Schlüssel steht nur im Link. Apple sieht, dass du einen Link teilst, aber nicht wo du bist. Im Nebel zeigt der Link nur die ungefähre Gegend.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For people without the app: for one hour they see on a web page where you are. Your iPhone encrypts the location, and the key is only in the link. Apple sees that you share a link, but not where you are. In fog the link shows only the rough area."
+          }
+        }
+      }
+    },
     "Gefragt, Standort kommt gleich": {
       "localizations": {
         "en": {
@@ -2067,6 +2087,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "On this day a week ago"
+          }
+        }
+      }
+    },
+    "Hier siehst du eine Stunde lang, wo ich bin.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Here you can see where I am for the next hour."
           }
         }
       }
@@ -2471,6 +2501,46 @@
         }
       }
     },
+    "Link beenden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End Link"
+          }
+        }
+      }
+    },
+    "Link für eine Stunde erstellen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create Link for One Hour"
+          }
+        }
+      }
+    },
+    "Link läuft": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Link Active"
+          }
+        }
+      }
+    },
+    "Link senden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send Link"
+          }
+        }
+      }
+    },
     "Link teilen": {
       "localizations": {
         "en": {
@@ -2481,12 +2551,32 @@
         }
       }
     },
+    "Live-Link": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Link"
+          }
+        }
+      }
+    },
     "Los geht's": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Let's go"
+          }
+        }
+      }
+    },
+    "Läuft bis %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active until %@"
           }
         }
       }
@@ -3197,6 +3287,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Smooth driving: streak without hard braking"
+          }
+        }
+      }
+    },
+    "Schalte zuerst „Standort teilen“ ein.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn on “Share Location” first."
           }
         }
       }
@@ -3947,6 +4047,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Road tripper: more than 100 km driven"
+          }
+        }
+      }
+    },
+    "Wer den Link hat, sieht bis dahin deinen Standort, auch ohne die App. Beenden löscht ihn sofort.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anyone with the link sees your location until then, even without the app. Ending deletes it right away."
           }
         }
       }

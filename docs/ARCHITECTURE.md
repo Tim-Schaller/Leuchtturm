@@ -198,6 +198,22 @@ The iPhone scans it with the Camera, asks "Apple TV verbinden?" and stores the p
 
 HPKE in **PSK mode** (X25519 / HKDF-SHA256 / ChaCha20-Poly1305) to the TV's key, `info = "leuchtturm/v1/tv-snapshot" ‖ tvID`, PSK = pairing secret, PSK ID = TV ID. The plaintext is `length (u64) | snapshot JSON | zeros` padded to a multiple of 4 KiB; the snapshot is the widget snapshot of the selected circle including the user and coordinates (none for members in fog). The TV fetches the record by name (every 4 s while the code is shown, every minute while the map is) and ignores copies older than the one it shows. "Trennen" on the iPhone deletes the record; "Neuer Code" on the TV makes a new key and deletes the old record.
 
+### Live link (`LiveLocation`, record name `live-<linkID>`, public DB, default zone)
+
+For people without the app, a member can share a web link for one hour:
+
+```
+https://tim-schaller.github.io/Leuchtturm/live/#<env>.<link id>.<key>
+```
+
+`env` is `d` (CloudKit Development, debug builds) or `p` (Production), the link ID 16 random bytes and the key 32 random bytes, both base64url. Browsers never send the fragment to a server. With every shared position (at most every 20 s, blurred while in fog) the iPhone writes one record to the **public** database:
+
+| Field | Content |
+|-------|---------|
+| `blob` | `nonce (12) | ciphertext | tag (16)`: AES-256-GCM (CryptoKit combined form), AAD `"leuchtturm/v1/live" ‖ link id` |
+
+The plaintext is JSON `{v: 1, n: name, la, lo, ac: accuracy (m), t: unix s, b: battery?, e: expires}` padded with spaces to a multiple of 256 bytes. Public-database records can be read by anyone and changed only by their creator. The page (`docs/live`, static, GitHub Pages) reads the record through CloudKit Web Services with a read-only API token, decrypts it with WebCrypto and shows name, time, accuracy, battery and an Apple Maps link (a map too, if a MapKit JS token is configured). It refreshes every 20 s and stops when the record is gone or `e` has passed. "Link beenden" deletes the record; so does the app after the hour (on the next location update or launch). AES-GCM rather than ChaCha20 because browsers support it natively. Known-answer vector: `docs/test-vectors/live-v1.json`, checked by the Swift tests and by `node docs/test-vectors/check-live.mjs`.
+
 ### Low battery
 
 When the device's battery drops to 15 % or less without charging, it sends a `Note` of kind `lowBattery` (text: the percentage) to every circle, once per discharge (again after charging or above 30 %).
@@ -295,6 +311,7 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 | Places, history, trips, reactions (M3+) | yes | ciphertext, size, time; for history also the days with records |
 | Map area you look at | n/a | Apple Maps sees which map tiles are loaded |
 | Apple TV snapshot | yes (HPKE to the TV) | that a TV is paired, padded size, when it is written |
+| Live link | yes (AES-GCM, key only in the link) | that you share a link, when it is updated, and the viewers' IP addresses (CloudKit Web Services); GitHub sees page visits, not the fragment |
 | Watch snapshot | no (WatchConnectivity, device to device) | no |
 
 ## Tracking strategy (battery, M2)

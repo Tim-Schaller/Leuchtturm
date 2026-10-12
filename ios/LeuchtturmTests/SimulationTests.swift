@@ -57,6 +57,24 @@ struct SimulationTests {
         #expect(model.loadPairedTVs().isEmpty)
     }
 
+    @Test func liveLinkRunsForAnHourAndEnds() async throws {
+        let (model, _) = try await simulatedModel()
+        let url = try #require(await model.startLiveLink())
+        #expect(url.absoluteString.hasPrefix(AppInfo.liveLinkPage.absoluteString + "#d."))
+        let parsed = try #require(LiveLink(url: url))
+        let link = try #require(model.liveLink)
+        #expect(parsed.id == link.id && parsed.key == link.key)
+        #expect(abs(link.expires.timeIntervalSinceNow - 3600) < 5)
+        // Survives a restart of the app.
+        model.liveLink = nil
+        model.restoreLiveLink()
+        #expect(model.liveLink == link)
+        await model.endLiveLink()
+        #expect(model.liveLink == nil)
+        model.restoreLiveLink()
+        #expect(model.liveLink == nil)
+    }
+
     @Test func leavingPersonDisappears() async throws {
         let (model, world) = try await simulatedModel()
         let ref = try #require(await model.createCircle(name: "Familie"))

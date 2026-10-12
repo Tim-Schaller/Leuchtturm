@@ -1,0 +1,39 @@
+:root {
+  color-scheme: light dark;
+  --sky: #BFE8EA; --mist: #DDF3EC; --meadow: #EAF7EE;
+  --ink: #12372A; --muted: #4F6B60; --card: rgba(255, 255, 255, 0.82); --green: #2F8F5B; --line: rgba(18, 55, 42, 0.12); --on-green: #FFFFFF;
+  --hills: url("../assets/hills.svg");
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sky: #0E2A33; --mist: #12332E; --meadow: #0F2A22;
+    --ink: #E6F4EC; --muted: #9DBFAF; --card: rgba(16, 38, 31, 0.84); --green: #5FD08F; --line: rgba(230, 244, 236, 0.14); --on-green: #0B2A1E;
+    --hills: url("../assets/hills-dark.svg");
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  font: 17px/1.45 ui-rounded, -apple-system, "SF Pro Rounded", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--hills) bottom center / 100% auto no-repeat fixed, linear-gradient(var(--sky), var(--mist) 55%, var(--meadow)) fixed;
+  min-height: 100vh;
+}
+main { max-width: 520px; margin: 0 auto; padding: max(20px, env(safe-area-inset-top)) 16px 120px; }
+header { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; color: var(--green); margin: 8px 4px 18px; }
+header img { border-radius: 10px; }
+.card { background: var(--card); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: 28px; padding: 22px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12); }
+.person { display: flex; gap: 14px; align-items: center; }
+.avatar { flex: none; width: 56px; height: 56px; border-radius: 50%; background: var(--green); color: var(--on-green); display: grid; place-items: center; font-weight: 800; font-size: 24px; }
+h1 { font-size: 22px; margin: 0; line-height: 1.2; }
+#subtitle { margin: 4px 0 0; color: var(--muted); }
+#map { height: 280px; border-radius: 20px; overflow: hidden; margin-top: 18px; }
+dl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 0; }
+dl div { background: var(--line); border-radius: 16px; padding: 10px 12px; }
+dt { font-size: 13px; color: var(--muted); }
+dd { margin: 2px 0 0; font-weight: 600; }
+.actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.button { flex: 1 1 140px; text-align: center; text-decoration: none; padding: 13px 16px; border-radius: 999px; font-weight: 700; color: var(--green); background: var(--line); }
+.button.primary { background: var(--green); color: var(--on-green); }
+.note { color: var(--muted); font-size: 14px; margin: 16px 6px; }
+.note a { color: inherit; }

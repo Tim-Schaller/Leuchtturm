@@ -27,6 +27,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 - **Weather requests.** With weather on, Apple Weather receives the members' places rounded to about 1 km.
 - **Widgets and lock screen.** Widgets and the Live Activity show names and places on the lock screen; anyone holding the phone can read them. The snapshot file lives unencrypted (besides iOS file protection) in the app's App Group container.
 - **Apple Watch and Apple TV.** The watch keeps the widget snapshot unencrypted (besides watchOS file protection). The TV shows the map of the selected circle, including the user, to anyone in the room, and caches the last snapshot. Whoever can sign in to the user's iCloud on a TV still needs the code shown on that TV to get a snapshot.
+- **Live links.** Anyone who gets the link sees the position until it ends; it cannot be limited to one viewer. Apple sees that a public record is written and read (and the readers' IP addresses), GitHub sees visits to the page. If the phone dies, the last position stays readable for anyone with the link until the hour is over, then the page shows it as expired; the record itself is deleted the next time the app runs.
 - **Map tiles.** The map comes from Apple Maps, which sees the map areas the app loads. These are usually where the circle's members are.
 - **Data location.** iCloud data is stored in Apple's data centers; Apple is a US company. EU-only storage is not guaranteed.
 - **Apple as an active attacker on the app itself.** Apple distributes the app binary and operating system.
@@ -71,6 +72,9 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 | Apple or anyone with access to the user's iCloud reads the TV map | The snapshot is HPKE-encrypted to the TV's own key, which never leaves the TV | Apple TV |
 | Someone with database access plants a fake map on the TV | HPKE PSK mode: only a device that scanned the code (pairing secret) can produce a snapshot the TV opens | Apple TV |
 | An old TV snapshot is replayed | The TV ignores snapshots older than the one it shows | Apple TV |
+| Apple or the web host reads a live link | AES-GCM with a key that exists only in the link fragment, which browsers never send to servers | Live link |
+| Someone overwrites a live record with a fake position | Public records can only be changed by their creator; a forged one fails AES-GCM authentication without the key | Live link |
+| A live link stays open forever | The expiry is inside the encrypted payload; the page stops after it and the app deletes the record | Live link |
 | Supply chain | App uses Apple frameworks only (CryptoKit, CloudKit). swift-crypto is used only for Linux tests | M1 |
 
 ## Known limitations

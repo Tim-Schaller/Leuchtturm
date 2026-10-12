@@ -69,6 +69,7 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 - "Bin auf dem Weg" with arrival time, "Wo bist du?", "Hol mich ab", walk-home company and a meeting point in the middle
 - Friends across all your Leuchttürme, weekly challenges, opt-in steps from Health, "a year ago today" memories (only on your iPhone) and the weather where your people are
 - Widgets for the home and lock screen, a Live Activity while driving, Siri and Shortcuts
+- A one-hour live link for people without the app: a web page that decrypts your position in the browser
 - iPad, Apple Watch (people, SOS and check-in) and Apple TV (the family map on the big screen, end-to-end encrypted through your own iCloud)
 - In German and English
 - Invites via link or QR code, with expiry
@@ -78,7 +79,6 @@ An earlier version of this project used a self-hosted server in the EU, which sa
 
 **Planned:**
 
-- A one-hour share link for people without the app
 - More languages
 - Adaptive tracking to keep battery drain low
 

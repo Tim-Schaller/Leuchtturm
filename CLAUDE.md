@@ -86,7 +86,7 @@ Build order (dependencies first):
 - [x] 5/17. Widgets (home and lock screen) via App Group snapshot. 7. Live Activity while driving / on the way. 18. Siri and Shortcuts (App Intents).
 - [x] 25. iPad layout (`NavigationSplitView` in `MapHomeView` for regular width; iPad shares no location by default).
 - [x] 6. Apple Watch app (`LeuchtturmWatch`, WatchConnectivity snapshot, SOS/check-in via iPhone) and Apple TV app (`LeuchtturmTV`, QR pairing, HPKE-PSK snapshot record `TVSnapshot` in the private DB; `TVLink.swift`, `TVPublisher.swift`). Demo: launch argument `-demo` on watch and TV, `-pairing` shows the TV code without iCloud.
-- [ ] 8. 1-hour share link for people without the app (CloudKit public DB, AES-GCM, key in URL fragment, static web page).
+- [x] 8. 1-hour live link (`LiveLink.swift`, `LiveLinkSharing.swift`, page in `docs/live`). **Needs Tim before it works:** GitHub Pages from `main` `/docs`; a CloudKit API token (read-only web access) in `docs/live/config.js`; record type `LiveLocation` (public DB, field `blob`, World read) appears in Development on the first save and must go to Production; optional MapKit JS token for an embedded map.
 - [ ] 2. Languages: fr, es, it, nl, pl, tr (app and permission texts).
 - [ ] 3. Privacy policy (de, en).
 - [ ] 4. TestFlight: CloudKit schema to Production, App Store Connect together with Tim in Claude in Chrome.

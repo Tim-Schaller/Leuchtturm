@@ -49,6 +49,7 @@ struct FriendsView: View {
     @State private var confirmNewCode = false
     @State private var ending: Friend?
     @State private var copied = false
+    @State private var retrying = false
 
     var body: some View {
         NavigationStack {
@@ -127,6 +128,24 @@ struct FriendsView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 6)
+            } else if let problem = model.friendCodeProblem {
+                VStack(alignment: .leading, spacing: 10) {
+                    Label("Dein Code konnte gerade nicht erstellt werden.", systemImage: "exclamationmark.icloud")
+                        .font(.headline)
+                    Text(problem).font(.callout).foregroundStyle(.secondary)
+                    Button {
+                        Task {
+                            retrying = true
+                            await model.prepareFriendCode()
+                            retrying = false
+                        }
+                    } label: {
+                        if retrying { ProgressView() } else { Text("Nochmal versuchen") }
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(retrying)
+                }
+                .padding(.vertical, 4)
             } else {
                 HStack {
                     ProgressView()
@@ -276,7 +295,7 @@ private struct CodeActionLabel: View {
 
     var body: some View {
         VStack(spacing: 4) {
-            Image(systemName: symbol).font(.title3)
+            Image(systemName: symbol).font(.title3).frame(height: 26)
             Text(title).font(.caption).lineLimit(1).minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity, minHeight: 44)

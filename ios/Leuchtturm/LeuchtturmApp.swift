@@ -76,22 +76,27 @@ struct RootView: View {
 }
 
 /// Shows `AppModel.errorMessage`. Attached to the root and to every sheet,
-/// because an alert on the root cannot appear above a presented sheet.
+/// because an alert on the root cannot appear above a presented sheet; only
+/// the one that appeared last shows it.
 struct ErrorAlert: ViewModifier {
     @Environment(AppModel.self) private var model
+    @State private var id = UUID()
 
     func body(content: Content) -> some View {
-        content.alert(
-            "Hoppla",
-            isPresented: Binding(
-                get: { model.errorMessage != nil },
-                set: { if !$0 { model.errorMessage = nil } }
-            )
-        ) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(model.errorMessage ?? "")
-        }
+        content
+            .onAppear { model.errorPresenters.append(id) }
+            .onDisappear { model.errorPresenters.removeAll { $0 == id } }
+            .alert(
+                "Hoppla",
+                isPresented: Binding(
+                    get: { model.errorMessage != nil && model.errorPresenters.last == id },
+                    set: { if !$0 { model.errorMessage = nil } }
+                )
+            ) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(model.errorMessage ?? "")
+            }
     }
 }
 

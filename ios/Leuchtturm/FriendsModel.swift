@@ -45,12 +45,18 @@ extension AppModel {
     }
 
     /// Creates the friend code on first use and keeps the card's name current.
+    /// Problems show in the friends menu, not as an alert.
     func prepareFriendCode() async {
+        guard let client else { return }
         let setup = friendSetup ?? FriendSetup.generate()
-        let db = publicDatabase
-        guard await run({ try await $0.publishFriendCard(setup, in: db) }) != nil else { return }
-        friendSetup = setup
-        saveFriends()
+        do {
+            try await client.publishFriendCard(setup, in: publicDatabase)
+            friendCodeProblem = nil
+            friendSetup = setup
+            saveFriends()
+        } catch {
+            friendCodeProblem = Self.describe(error)
+        }
     }
 
     /// A new code; the old one stops working, open requests to it are lost.

@@ -25,72 +25,148 @@ func activeJourney(of memberID: String, in notes: [CircleNote], now: Date = Date
     return start
 }
 
-/// Big glass buttons for what you can do right now.
+/// Round coloured buttons for what you can do right now. Each one answers
+/// a tap: it gives way, the phone ticks, and what is sent right away shows
+/// a spinner and then a check mark.
 struct ActionGrid: View {
     @Environment(AppModel.self) private var model
     let details: CircleDetails
     @Binding var sheet: HomeSheet?
 
+    enum Sent { case checkIn, pickUp }
+    @State private var sending: Sent?
+    @State private var sent: Sent?
+    @State private var taps = 0
+    @State private var successes = 0
+
     var body: some View {
         let ref = details.ref
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 8) {
-            tile("Einchecken", "mappin.and.ellipse") { Task { await model.send(.checkIn, in: ref) } }
-                .disabled(!details.hasKey || model.activeFog != nil)
-            tile("Auf dem Weg", "figure.walk.motion") { sheet = .journey(ref, walkHome: false) }
-                .disabled(!details.hasKey || model.journey != nil)
-            tile("Heimweg", "house.and.flag") { sheet = .journey(ref, walkHome: true) }
-                .disabled(!details.hasKey || model.journey != nil)
-            tile("Hol mich ab", "car.side") { Task { await model.send(.pickUp, in: ref) } }
-                .disabled(!details.hasKey || model.activeFog != nil)
-            tile("Treffpunkt", "point.3.connected.trianglepath.dotted") { sheet = .meetingPoint(ref) }
-                .disabled(!details.hasKey)
-            if model.activeFog != nil {
-                tile("Nebel beenden", "circle.dashed") { Task { await model.endFog() } }
-            } else {
-                tile("Nebel", "circle.dashed") { sheet = .fog }
+        let fog = model.activeFog != nil
+        VStack(spacing: 18) {
+            HStack(alignment: .top, spacing: 4) {
+                QuickButton(
+                    title: sent == .checkIn ? "Eingecheckt" : "Einchecken", symbol: "mappin.and.ellipse", color: .green,
+                    working: sending == .checkIn, done: sent == .checkIn
+                ) { send(.checkIn, as: .checkIn) }
+                    .disabled(!details.hasKey || fog)
+                QuickButton(title: "Auf dem Weg", symbol: "figure.walk.motion", color: .blue) { open(.journey(ref, walkHome: false)) }
+                    .disabled(!details.hasKey || model.journey != nil)
+                QuickButton(title: "Heimweg", symbol: "house.and.flag.fill", color: .indigo) { open(.journey(ref, walkHome: true)) }
+                    .disabled(!details.hasKey || model.journey != nil)
+                QuickButton(
+                    title: sent == .pickUp ? "Abgeschickt" : "Hol mich ab", symbol: "car.side.fill", color: .orange,
+                    working: sending == .pickUp, done: sent == .pickUp
+                ) { send(.pickUp, as: .pickUp) }
+                    .disabled(!details.hasKey || fog)
             }
-            tile(model.liveLink == nil ? "Live-Link" : "Link läuft", "link") { sheet = .liveLink }
+            HStack(alignment: .top, spacing: 4) {
+                QuickButton(title: "Treffpunkt", symbol: "point.3.filled.connected.trianglepath.dotted", color: .teal) { open(.meetingPoint(ref)) }
+                    .disabled(!details.hasKey)
+                if fog {
+                    QuickButton(title: "Nebel beenden", symbol: "cloud.fog.fill", color: .gray, active: true) {
+                        taps += 1
+                        Task { await model.endFog() }
+                    }
+                } else {
+                    QuickButton(title: "Nebel", symbol: "cloud.fog.fill", color: .gray) { open(.fog) }
+                }
+                QuickButton(
+                    title: model.liveLink == nil ? "Live-Link" : "Link läuft", symbol: "link", color: .pink,
+                    active: model.liveLink != nil
+                ) { open(.liveLink) }
+            }
+            .padding(.horizontal, 36)
         }
-        .listRowBackground(Color.clear)
-        .listRowInsets(EdgeInsets())
+        .padding(.vertical, 10)
+        .sensoryFeedback(.impact(weight: .light), trigger: taps)
+        .sensoryFeedback(.success, trigger: successes)
     }
 
-    private func tile(_ title: LocalizedStringResource, _ symbol: String, action: @escaping () -> Void) -> some View {
-        let text = String(localized: title)
-        return Button(action: action) {
-            VStack(spacing: 6) {
-                Image(systemName: symbol).font(.title2).frame(height: 30)
-                // One word shrinks instead of breaking ("Einche-cken"); several words may wrap.
-                Text(text)
-                    .font(.caption.weight(.semibold))
-                    .multilineTextAlignment(.center)
-                    .lineLimit(text.contains(" ") ? 2 : 1)
-                    .minimumScaleFactor(0.6)
-                    .frame(minHeight: 30)
-            }
-            .padding(.horizontal, 4)
+    private func open(_ target: HomeSheet) {
+        taps += 1
+        sheet = target
+    }
+
+    /// Sends at once; the button shows that it worked.
+    private func send(_ kind: CircleNote.Kind, as action: Sent) {
+        taps += 1
+        sending = action
+        Task {
+            let ok = await model.send(kind, in: details.ref)
+            sending = nil
+            guard ok else { return }
+            sent = action
+            successes += 1
+            try? await Task.sleep(for: .seconds(3))
+            if sent == action { sent = nil }
         }
-        .buttonStyle(TileButtonStyle())
     }
 }
 
-/// A rounded glass tile that dims and shrinks a little while pressed, so the
-/// effect stays inside the list row (the interactive glass grew and was cut off).
-struct TileButtonStyle: ButtonStyle {
+/// A coloured circle with a symbol and a title below.
+private struct QuickButton: View {
+    let title: LocalizedStringResource
+    let symbol: String
+    let color: Color
+    var working = false
+    var done = false
+    /// Something is running (fog, live link): a ring around the circle.
+    var active = false
+    let action: () -> Void
+    @ScaledMetric(relativeTo: .title2) private var size = 58
+
+    var body: some View {
+        let text = String(localized: title)
+        Button(action: action) {
+            VStack(spacing: 7) {
+                ZStack {
+                    Circle()
+                        .fill((done ? Color.green : color).gradient)
+                    if working {
+                        ProgressView().tint(.white)
+                    } else {
+                        Image(systemName: done ? "checkmark" : symbol)
+                            .font(.title2.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .contentTransition(.symbolEffect(.replace))
+                    }
+                }
+                .frame(width: size, height: size)
+                .overlay {
+                    if active { Circle().stroke(color, lineWidth: 2.5).padding(-5) }
+                }
+                .shadow(color: color.opacity(0.3), radius: 5, y: 3)
+                // One word shrinks instead of breaking ("Einche-cken"); several words may wrap.
+                Text(text)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(text.contains(" ") ? 2 : 1)
+                    .minimumScaleFactor(0.7)
+                    .contentTransition(.opacity)
+            }
+            .frame(maxWidth: .infinity)
+            .animation(.snappy, value: done)
+            .animation(.snappy, value: working)
+        }
+        .buttonStyle(QuickButtonStyle())
+        .disabled(working)
+    }
+}
+
+/// Gives way while pressed; grey when it cannot be used.
+private struct QuickButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
 
     func makeBody(configuration: Configuration) -> some View {
-        let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
         configuration.label
-            .foregroundStyle(isEnabled ? AnyShapeStyle(.primary) : AnyShapeStyle(.tertiary))
-            .frame(maxWidth: .infinity, minHeight: 80)
-            .glassEffect(.regular, in: shape)
-            .overlay(shape.fill(.primary.opacity(configuration.isPressed ? 0.08 : 0)))
-            .contentShape(.hoverEffect, shape)
-            .contentShape(shape)
-            .hoverEffect(.highlight)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
-            .animation(.snappy(duration: 0.18), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.86 : 1)
+            .brightness(configuration.isPressed ? -0.1 : 0)
+            .saturation(isEnabled ? 1 : 0)
+            .opacity(isEnabled ? 1 : 0.4)
+            .contentShape(.rect)
+            .hoverEffect(.lift)
+            .animation(.snappy(duration: 0.16), value: configuration.isPressed)
     }
 }
 

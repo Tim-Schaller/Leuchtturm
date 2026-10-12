@@ -7,7 +7,7 @@
       "localizations": {
         "de": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Wenn du es einschaltest, teilt Leuchtturm deine Schritte von heute und der letzten Woche mit deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt."
           }
         },
@@ -115,7 +115,7 @@
       "localizations": {
         "de": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Damit deine Leuchttürme dich auch sehen, wenn die App geschlossen ist, braucht Leuchtturm den Standort im Hintergrund. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt."
           }
         },
@@ -169,7 +169,7 @@
       "localizations": {
         "de": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Leuchtturm zeigt deinen Standort den Leuchttürmen, in denen du bist. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt."
           }
         },
@@ -223,7 +223,7 @@
       "localizations": {
         "de": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Leuchtturm erkennt mit Bewegungsdaten, wann du fährst, um Akku zu sparen und deine Geschwindigkeit zu zeigen."
           }
         },

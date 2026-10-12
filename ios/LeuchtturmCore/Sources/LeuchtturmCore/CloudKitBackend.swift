@@ -238,25 +238,30 @@ public final class CloudKitBackend: CircleBackend, @unchecked Sendable {
 
     /// Translates CloudKit errors into `BackendError`.
     private func mapped<T>(_ operation: () async throws -> T) async throws -> T {
-        do {
-            return try await operation()
-        } catch let error as BackendError {
-            throw error
-        } catch let error as CKError {
-            switch error.code {
-            case .notAuthenticated, .accountTemporarilyUnavailable: throw BackendError.noAccount
-            case .unknownItem, .zoneNotFound, .userDeletedZone: throw BackendError.notFound
-            case .permissionFailure, .participantMayNeedVerification: throw BackendError.permissionDenied
-            case .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy:
-                throw BackendError.network
-            case .quotaExceeded: throw BackendError.quotaExceeded
-            case .partialFailure:
-                if let first = error.partialErrorsByItemID?.values.first as? CKError {
-                    throw BackendError.other("\(first.code.rawValue): \(first.localizedDescription)")
-                }
-                throw BackendError.other(error.localizedDescription)
-            default: throw BackendError.other("\(error.code.rawValue): \(error.localizedDescription)")
+        try await mapCloudKitErrors(operation)
+    }
+}
+
+/// Translates CloudKit errors into `BackendError`; also for the public database.
+func mapCloudKitErrors<T>(_ operation: () async throws -> T) async throws -> T {
+    do {
+        return try await operation()
+    } catch let error as BackendError {
+        throw error
+    } catch let error as CKError {
+        switch error.code {
+        case .notAuthenticated, .accountTemporarilyUnavailable: throw BackendError.noAccount
+        case .unknownItem, .zoneNotFound, .userDeletedZone: throw BackendError.notFound
+        case .permissionFailure, .participantMayNeedVerification: throw BackendError.permissionDenied
+        case .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy:
+            throw BackendError.network
+        case .quotaExceeded: throw BackendError.quotaExceeded
+        case .partialFailure:
+            if let first = error.partialErrorsByItemID?.values.first as? CKError {
+                throw BackendError.other("\(first.code.rawValue): \(first.localizedDescription)")
             }
+            throw BackendError.other(error.localizedDescription)
+        default: throw BackendError.other("\(error.code.rawValue): \(error.localizedDescription)")
         }
     }
 }

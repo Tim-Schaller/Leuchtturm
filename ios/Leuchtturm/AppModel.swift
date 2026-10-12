@@ -49,6 +49,10 @@ final class AppModel {
     private(set) var hasLoadedCircles = false
     var isLoading = false
     var errorMessage: String?
+    /// Views that can show `errorMessage`, in the order they appeared; only
+    /// the newest (the topmost sheet) shows it. Two alerts at once made iOS
+    /// close the sheet in front and left the app stuck.
+    var errorPresenters: [UUID] = []
     /// An invite opened via link or QR code, waiting for confirmation.
     var pendingInvite: InviteLink?
     /// An Apple TV whose code was scanned, waiting for confirmation.
@@ -61,6 +65,8 @@ final class AppModel {
     @ObservationIgnored var lastTVSnapshot: WidgetSnapshot?
     /// Friend code and requests (see FriendsModel.swift).
     var friendSetup: FriendSetup?
+    /// Why the friend code could not be published, shown in the friends menu.
+    var friendCodeProblem: String?
     var incomingFriendRequests: [IncomingFriendRequest] = []
     var outgoingFriendRequests: [OutgoingFriendRequest] = []
     @ObservationIgnored var handledFriendRequests: Set<String> = []

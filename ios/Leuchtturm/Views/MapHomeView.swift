@@ -16,6 +16,7 @@ enum HomeSheet: Identifiable {
     case addPlace(CircleRef, PlaceSuggestion?)
     case sos
     case liveLink
+    case features
     #if DEBUG
     case simulation
     #endif
@@ -33,6 +34,7 @@ enum HomeSheet: Identifiable {
         case let .addPlace(ref, suggestion): "place-\(ref.circleID)-\(suggestion?.id ?? "")"
         case .sos: "sos"
         case .liveLink: "live"
+        case .features: "features"
         #if DEBUG
         case .simulation: "simulation"
         #endif
@@ -57,6 +59,10 @@ struct MapHomeView: View {
     @State private var sheet: HomeSheet?
     @State private var drawerPath: [DrawerRoute] = []
     @State private var detent: PresentationDetent = PeopleSheet.peek
+    /// Where the map and the drawer are on screen, for framing. Not state
+    /// that redraws: it changes on every frame while the drawer moves.
+    @State private var layout = MapLayout()
+    @AppStorage("featuresIntroShown") private var featuresIntroShown = false
 
     private var selected: CircleSummary? {
         model.circles.first { $0.id == selectedCircleID } ?? model.leuchttuerme.first ?? model.circles.first
@@ -87,6 +93,7 @@ struct MapHomeView: View {
             } else {
                 mapView.sheet(isPresented: .constant(true)) {
                     drawer
+                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { layout.drawerTop = $0 }
                         .presentationDetents([PeopleSheet.peek, .medium, .large], selection: $detent)
                         .presentationBackgroundInteraction(.enabled(upThrough: .medium))
                         .presentationDragIndicator(.visible)
@@ -101,6 +108,13 @@ struct MapHomeView: View {
         // A friend code opened as a link goes to the friends menu.
         .onChange(of: model.pendingFriendCode, initial: true) { _, code in
             if code != nil { sheet = .friends }
+        }
+        .task(id: model.hasLoadedCircles && !model.leuchttuerme.isEmpty) {
+            guard model.hasLoadedCircles, !model.leuchttuerme.isEmpty, !featuresIntroShown else { return }
+            try? await Task.sleep(for: .seconds(1.5))
+            guard sheet == nil, !Task.isCancelled else { return }
+            featuresIntroShown = true
+            sheet = .features
         }
         .environment(\.memberColors, memberColors)
         .environment(\.memberProfiles, memberProfiles)
@@ -166,8 +180,19 @@ struct MapHomeView: View {
             ? .hybrid(elevation: .realistic, pointsOfInterest: .excludingAll)
             : .standard(elevation: .realistic, emphasis: .muted, pointsOfInterest: .excludingAll))
         .mapControls { MapCompass() }
+        .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { layout.map = $0 }
+        // MapKit reports the part it fits cameras into; its shape tells how
+        // tall that part is.
+        .onMapCameraChange(frequency: .onEnd) { context in
+            if context.rect.width > 0 { layout.safeAspect = context.rect.height / context.rect.width }
+        }
         .safeAreaPadding(.bottom, isRegular ? 0 : 230)
-        .safeAreaInset(edge: .top) { controls }
+        // Only the top row counts as covered: the button column floats, so
+        // MapKit does not squeeze everyone below it.
+        .overlay(alignment: .topTrailing) { buttonColumn }
+        .safeAreaInset(edge: .top) {
+            topRow.onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { layout.safeTop = $0 }
+        }
     }
 
     /// Keeps the selected circle current: polls iCloud every 30 seconds
@@ -204,40 +229,69 @@ struct MapHomeView: View {
 
     /// Everyone with a position in view, but never closer than about 1.5 km.
     private func frameEveryone() {
-        let points = placedPoints
-        guard let first = points.first else { return }
-        var (south, north, west, east) = (first.latitude, first.latitude, first.longitude, first.longitude)
-        for point in points {
-            south = min(south, point.latitude)
-            north = max(north, point.latitude)
-            west = min(west, point.longitude)
-            east = max(east, point.longitude)
-        }
-        let region = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: (south + north) / 2, longitude: (west + east) / 2),
-            span: MKCoordinateSpan(latitudeDelta: max(0.015, (north - south) * 1.6), longitudeDelta: max(0.015, (east - west) * 1.6))
-        )
-        withAnimation(reduceMotion ? nil : .smooth(duration: 0.6)) { camera = .region(region) }
-        framedCount = points.count
+        show(placedPoints, atLeast: 1500)
+        framedCount = placedPoints.count
     }
 
     /// Flies to the person; with `showDetails` the drawer opens halfway.
     private func focus(_ member: CircleMember, showDetails: Bool = true) {
         focusedID = member.id
-        if showDetails { detent = .medium }
+        if showDetails && !isRegular && detent != .large { detent = .medium }
         let coordinate = member.isMe ? model.tracker.location?.coordinate : member.location?.coordinate
         guard let coordinate else { return }
-        withAnimation(reduceMotion ? nil : .smooth(duration: 0.6)) {
-            camera = .region(MKCoordinateRegion(center: coordinate, latitudinalMeters: 900, longitudinalMeters: 900))
+        show([coordinate], atLeast: 900, drawer: showDetails ? .medium : nil)
+    }
+
+    /// Puts `points` in the middle of the part of the map that the buttons
+    /// on top and the drawer below leave free, with room for the pins above
+    /// their points. `atLeast` meters stay in view.
+    /// `drawer` is where the drawer is about to be, if it is moving.
+    private func show(_ points: [CLLocationCoordinate2D], atLeast meters: Double, drawer: PresentationDetent? = nil) {
+        guard let first = points.first else { return }
+        let mapPoints = points.map(MKMapPoint.init)
+        let minX = mapPoints.map(\.x).min() ?? 0, maxX = mapPoints.map(\.x).max() ?? 0
+        let minY = mapPoints.map(\.y).min() ?? 0, maxY = mapPoints.map(\.y).max() ?? 0
+        let perMeter = MKMapPointsPerMeterAtLatitude(first.latitude)
+        // MapKit fits the camera rect into the map's safe area (below the
+        // top row, above the drawer's usual height).
+        let safe = layout.safeRect
+        guard safe.width > 100, safe.height > 100 else {
+            let side = max(maxX - minX, maxY - minY, perMeter * meters) * 1.6
+            let size = MKMapSize(width: side, height: side)
+            withAnimation(reduceMotion ? nil : .smooth(duration: 0.6)) {
+                camera = .rect(MKMapRect(origin: MKMapPoint(x: (minX + maxX - size.width) / 2, y: (minY + maxY - size.height) / 2), size: size))
+            }
+            return
         }
+        // Where the pins may go: room above for the pin, and above the
+        // drawer where it really is (or is about to be).
+        // Pins are about 50 points wide; the button column covers the right edge.
+        let pinHeight: CGFloat = 60, margin: CGFloat = 28, left: CGFloat = 52, right: CGFloat = 80
+        var bottom = safe.maxY
+        if !isRegular {
+            let drawerTop = switch drawer {
+            case .medium?: layout.map.maxY * 0.5
+            case PeopleSheet.peek?: safe.maxY
+            default: layout.drawerTop ?? safe.maxY
+            }
+            bottom = min(bottom, drawerTop)
+        }
+        let top = pinHeight + margin
+        let free = CGRect(x: left, y: top, width: safe.width - left - right, height: max(bottom - safe.minY - margin - top, 60))
+        let scale = max((maxX - minX) / free.width, (maxY - minY) / free.height, perMeter * meters / min(free.width, free.height))
+        let rect = MKMapRect(
+            x: (minX + maxX) / 2 - free.midX * scale,
+            y: (minY + maxY) / 2 - free.midY * scale,
+            width: safe.width * scale,
+            height: safe.height * scale
+        )
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.6)) { camera = .rect(rect) }
     }
 
     private func showPlace(_ place: SharedLocation) {
         focusedID = nil
-        detent = PeopleSheet.peek
-        withAnimation(reduceMotion ? nil : .smooth(duration: 0.6)) {
-            camera = .region(MKCoordinateRegion(center: place.coordinate, latitudinalMeters: 600, longitudinalMeters: 600))
-        }
+        if !isRegular { detent = PeopleSheet.peek }
+        show([place.coordinate], atLeast: 600, drawer: PeopleSheet.peek)
     }
 
     /// From a pin: focus and show the person in the drawer.
@@ -248,41 +302,40 @@ struct MapHomeView: View {
 
     // MARK: Controls on the map
 
-    private var controls: some View {
-        VStack(alignment: .trailing, spacing: 12) {
-            HStack {
-                MapButton("Einstellungen", systemImage: "gearshape") { sheet = .settings }
-                Spacer()
-                circleMenu
-                Spacer()
-                MapButton("Jemanden einladen", systemImage: "person.badge.plus") {
-                    if let ref = selected?.ref { sheet = .invite(ref) }
+    private var topRow: some View {
+        HStack(spacing: 10) {
+            MapButton("Einstellungen", systemImage: "gearshape") { sheet = .settings }
+            circleMenu
+            Spacer(minLength: 0)
+            FriendsButton(requests: model.incomingFriendRequests.count) { sheet = .friends }
+        }
+        .padding(.horizontal)
+        .padding(.bottom, 4)
+    }
+
+    private var buttonColumn: some View {
+        GlassEffectContainer(spacing: 10) {
+            VStack(spacing: 10) {
+                #if DEBUG
+                if model.isSimulation {
+                    MapButton("Simulation", systemImage: "testtube.2", tint: .orange) { sheet = .simulation }
                 }
-                .disabled(details?.hasKey != true)
-            }
-            GlassEffectContainer(spacing: 10) {
-                VStack(spacing: 10) {
-                    #if DEBUG
-                    if model.isSimulation {
-                        MapButton("Simulation", systemImage: "testtube.2", tint: .orange) { sheet = .simulation }
-                    }
-                    #endif
-                    MapButton("SOS", systemImage: "sos", tint: .red) { sheet = .sos }
-                    MapButton("Freunde", systemImage: "person.crop.circle.badge.checkmark") { sheet = .friends }
-                    MapButton("Mein Standort", systemImage: "location.fill") {
-                        if let me = details?.members.first(where: \.isMe) { focus(me, showDetails: false) }
-                    }
-                    MapButton("Alle zeigen", systemImage: "person.2.fill") {
-                        focusedID = nil
-                        frameEveryone()
-                    }
-                    MapButton(satellite ? "Karte" : "Satellit", systemImage: satellite ? "map.fill" : "globe.europe.africa.fill") {
-                        satellite.toggle()
-                    }
+                #endif
+                MapButton("SOS", systemImage: "sos", tint: .red) { sheet = .sos }
+                MapButton("Mein Standort", systemImage: "location.fill") {
+                    if let me = details?.members.first(where: \.isMe) { focus(me, showDetails: false) }
+                }
+                MapButton("Alle zeigen", systemImage: "person.2.fill") {
+                    focusedID = nil
+                    frameEveryone()
+                }
+                MapButton(satellite ? "Karte" : "Satellit", systemImage: satellite ? "map.fill" : "globe.europe.africa.fill") {
+                    satellite.toggle()
                 }
             }
         }
-        .padding(.horizontal)
+        .padding(.top, 8)
+        .padding(.trailing)
     }
 
     private var circleMenu: some View {
@@ -302,6 +355,9 @@ struct MapHomeView: View {
                 }
             }
             Divider()
+            if let selected, !selected.isFriendship, details?.hasKey == true {
+                Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(selected.ref) }
+            }
             Button("Leuchtturm gründen", systemImage: "plus.circle") { sheet = .createCircle }
             Button("Einladung einfügen", systemImage: "link") { sheet = .join }
         } label: {
@@ -317,6 +373,38 @@ struct MapHomeView: View {
             .glassEffect(.regular.interactive(), in: .capsule)
         }
         .accessibilityLabel("Leuchtturm wählen")
+    }
+}
+
+/// The friends menu, with its name on it and the number of open requests.
+private struct FriendsButton: View {
+    let requests: Int
+    let action: () -> Void
+    @ScaledMetric(relativeTo: .title3) private var height = 30
+
+    var body: some View {
+        Button(action: action) {
+            Label("Freunde", systemImage: "person.2.fill")
+                .font(.headline)
+                .labelStyle(.titleAndIcon)
+                .frame(height: height)
+                .padding(.horizontal, 2)
+        }
+        .buttonStyle(.glass)
+        .buttonBorderShape(.capsule)
+        .overlay(alignment: .topTrailing) {
+            if requests > 0 {
+                Text(requests, format: .number)
+                    .font(.caption2.bold())
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(.red, in: .capsule)
+                    .offset(x: 4, y: -4)
+                    .accessibilityHidden(true)
+            }
+        }
+        .accessibilityLabel(requests > 0 ? "Freunde, \(requests) offene Anfragen" : "Freunde")
     }
 }
 
@@ -346,5 +434,22 @@ private struct MapButton: View {
         .buttonBorderShape(.circle)
         .tint(tint)
         .accessibilityLabel(label)
+    }
+}
+
+/// Where the map and the drawer are on screen (global coordinates).
+final class MapLayout {
+    var map: CGRect = .zero
+    /// The map's safe area starts below the top row ...
+    var safeTop: CGFloat?
+    /// ... and is this tall per point of width (from MapKit).
+    var safeAspect: CGFloat?
+    var drawerTop: CGFloat?
+
+    /// The part of the screen MapKit fits a camera rect into.
+    var safeRect: CGRect {
+        let top = safeTop ?? map.minY + 120
+        let height = safeAspect.map { map.width * $0 } ?? (map.maxY - 264 - top)
+        return CGRect(x: map.minX, y: top, width: map.width, height: height)
     }
 }

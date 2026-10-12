@@ -67,6 +67,10 @@ public struct CloudKitPublicDatabase: PublicDatabase {
     }
 
     public func save(_ record: StoredRecord) async throws {
+        try await mapCloudKitErrors { try await saveRecord(record) }
+    }
+
+    private func saveRecord(_ record: StoredRecord) async throws {
         let ck = CKRecord(recordType: record.type, recordID: CKRecord.ID(recordName: record.name))
         for (key, value) in record.fields {
             switch value {
@@ -80,28 +84,34 @@ public struct CloudKitPublicDatabase: PublicDatabase {
     }
 
     public func fetch(_ name: String) async throws -> StoredRecord? {
-        do {
-            return Self.stored(try await container.publicCloudDatabase.record(for: CKRecord.ID(recordName: name)))
-        } catch let error as CKError where error.code == .unknownItem {
-            return nil
+        try await mapCloudKitErrors {
+            do {
+                return Self.stored(try await container.publicCloudDatabase.record(for: CKRecord.ID(recordName: name)))
+            } catch let error as CKError where error.code == .unknownItem {
+                return nil
+            }
         }
     }
 
     public func query(type: String, field: String, equals value: String) async throws -> [StoredRecord] {
         let query = CKQuery(recordType: type, predicate: NSPredicate(format: "%K == %@", field, value))
-        do {
-            let (results, _) = try await container.publicCloudDatabase.records(matching: query, resultsLimit: 100)
-            return results.compactMap { try? $0.1.get() }.map(Self.stored)
-        } catch let error as CKError where error.code == .unknownItem {
-            // The record type does not exist yet (nobody has written one).
-            return []
+        return try await mapCloudKitErrors {
+            do {
+                let (results, _) = try await container.publicCloudDatabase.records(matching: query, resultsLimit: 100)
+                return results.compactMap { try? $0.1.get() }.map(Self.stored)
+            } catch let error as CKError where error.code == .unknownItem {
+                // The record type does not exist yet (nobody has written one).
+                return []
+            }
         }
     }
 
     public func delete(_ name: String) async throws {
-        do {
-            _ = try await container.publicCloudDatabase.deleteRecord(withID: CKRecord.ID(recordName: name))
-        } catch let error as CKError where error.code == .unknownItem {}
+        try await mapCloudKitErrors {
+            do {
+                _ = try await container.publicCloudDatabase.deleteRecord(withID: CKRecord.ID(recordName: name))
+            } catch let error as CKError where error.code == .unknownItem {}
+        }
     }
 
     static func stored(_ record: CKRecord) -> StoredRecord {

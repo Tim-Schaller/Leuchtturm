@@ -122,6 +122,10 @@ struct PeopleSheet: View {
                         }
                         .tint(.primary)
                     }
+                    if !details.isFriendship {
+                        Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(circle.ref) }
+                            .disabled(!details.hasKey)
+                    }
                 }
                 MemoryCard()
                 if let journey = model.journey, journey.circleID == details.id {
@@ -133,12 +137,11 @@ struct PeopleSheet: View {
                     if details.isFriendship {
                         Button("Freunde verwalten", systemImage: "person.2") { sheet = .friends }
                     } else {
-                        Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(circle.ref) }
-                            .disabled(!details.hasKey)
                         NavigationLink(value: DrawerRoute.manage(circle.ref)) {
                             Label("Leuchtturm verwalten", systemImage: "gearshape")
                         }
                     }
+                    Button("Funktionen", systemImage: "sparkles") { sheet = .features }
                 } footer: {
                     Label("Ende-zu-Ende-verschlüsselt", systemImage: "lock.fill")
                         .font(.caption)
@@ -184,6 +187,8 @@ struct PeopleSheet: View {
             SOSSheet()
         case .liveLink:
             LiveLinkSheet()
+        case .features:
+            FeaturesSheet()
         #if DEBUG
         case .simulation:
             SimulationView { receivedInvite = $0 }

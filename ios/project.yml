@@ -82,6 +82,7 @@ targets:
               - leuchtturm
         NSLocationWhenInUseUsageDescription: Leuchtturm zeigt deinen Standort den Leuchttürmen, in denen du bist. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt.
         NSLocationAlwaysAndWhenInUseUsageDescription: Damit deine Leuchttürme dich auch sehen, wenn die App geschlossen ist, braucht Leuchtturm den Standort im Hintergrund. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt.
+        NSHealthUpdateUsageDescription: Leuchtturm schreibt nichts in Health. Es liest nur deine Schritte, wenn du „Schritte teilen“ einschaltest.
         NSHealthShareUsageDescription: Wenn du es einschaltest, teilt Leuchtturm deine Schritte von heute und der letzten Woche mit deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt.
         NSMotionUsageDescription: Leuchtturm erkennt mit Bewegungsdaten, wann du fährst, um Akku zu sparen und deine Geschwindigkeit zu zeigen.
   LeuchtturmWidgets:
@@ -174,6 +175,7 @@ targets:
     entitlements:
       path: LeuchtturmTV/LeuchtturmTV.entitlements
       properties:
+        aps-environment: development
         com.apple.developer.icloud-container-identifiers:
           - iCloud.de.timschaller.leuchtturm
         com.apple.developer.icloud-services:

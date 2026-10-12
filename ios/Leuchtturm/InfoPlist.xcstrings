@@ -1,56 +1,110 @@
 {
   "sourceLanguage": "de",
   "strings": {
-    "NSLocationWhenInUseUsageDescription": {
+    "NSHealthShareUsageDescription": {
       "comment": "Privacy - usage description",
       "extractionState": "extracted_with_value",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "new",
-            "value": "Leuchtturm zeigt deinen Standort den Leuchttürmen, in denen du bist. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt."
+            "value": "Wenn du es einschaltest, teilt Leuchtturm deine Schritte von heute und der letzten Woche mit deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leuchtturm shows your location to the lighthouses you are in. It is encrypted on your iPhone before it leaves it."
+            "value": "If you turn it on, Leuchtturm shares your steps of today and the last week with your lighthouses, end-to-end encrypted."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leuchtturm muestra tu ubicación a los faros de los que formas parte. Se cifra en tu iPhone antes de salir de él."
+            "value": "Si lo activas, Leuchtturm comparte tus pasos de hoy y de la última semana con tus faros, con cifrado de extremo a extremo."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leuchtturm montre ta position aux phares dont tu fais partie. Elle est chiffrée sur ton iPhone avant de le quitter."
+            "value": "Si tu l'actives, Leuchtturm partage tes pas d'aujourd'hui et de la semaine passée avec tes phares, chiffrés de bout en bout."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leuchtturm mostra la tua posizione ai fari di cui fai parte. Viene crittografata sul tuo iPhone prima di lasciarlo."
+            "value": "Se lo attivi, Leuchtturm condivide con i tuoi fari i tuoi passi di oggi e dell'ultima settimana, con crittografia end-to-end."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leuchtturm toont je locatie aan de vuurtorens waarvan je lid bent. Je locatie wordt op je iPhone versleuteld voordat die het toestel verlaat."
+            "value": "Als je het aanzet, deelt Leuchtturm je stappen van vandaag en van de afgelopen week met je vuurtorens, end-to-end versleuteld."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leuchtturm pokazuje twoją lokalizację latarniom, do których należysz. Jest ona szyfrowana na twoim iPhonie, zanim go opuści."
+            "value": "Jeśli to włączysz, Leuchtturm udostępni twoim latarniom twoje kroki z dzisiaj i z ostatniego tygodnia, z szyfrowaniem end-to-end."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leuchtturm, konumunu içinde bulunduğun fenerlere gösterir. Konumun iPhone’undan çıkmadan önce orada şifrelenir."
+            "value": "Açarsan Leuchtturm bugünkü ve geçen haftaki adımlarını fenerlerinle uçtan uca şifreli olarak paylaşır."
+          }
+        }
+      }
+    },
+    "NSHealthUpdateUsageDescription": {
+      "comment": "Privacy - usage description",
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm schreibt nichts in Health. Es liest nur deine Schritte, wenn du „Schritte teilen“ einschaltest."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm does not write anything to Health. It only reads your steps if you turn on “Share steps”."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm no escribe nada en Salud. Solo lee tus pasos si activas «Compartir pasos»."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm n'écrit rien dans Santé. L'app lit seulement tes pas si tu actives « Partager les pas »."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm non scrive nulla in Salute. Legge solo i tuoi passi se attivi “Condividi passi”."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm schrijft niets naar Gezondheid. De app leest alleen je stappen als je ‘Deel stappen’ aanzet."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm nic nie zapisuje w aplikacji Zdrowie. Odczytuje tylko twoje kroki, jeśli włączysz „Udostępniaj kroki”."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm Sağlık’a hiçbir şey yazmaz. Yalnızca “Adımları paylaş” seçeneğini açarsan adımlarını okur."
           }
         }
       }
@@ -109,6 +163,60 @@
         }
       }
     },
+    "NSLocationWhenInUseUsageDescription": {
+      "comment": "Privacy - usage description",
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Leuchtturm zeigt deinen Standort den Leuchttürmen, in denen du bist. Er wird auf deinem iPhone verschlüsselt, bevor er es verlässt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm shows your location to the lighthouses you are in. It is encrypted on your iPhone before it leaves it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm muestra tu ubicación a los faros de los que formas parte. Se cifra en tu iPhone antes de salir de él."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm montre ta position aux phares dont tu fais partie. Elle est chiffrée sur ton iPhone avant de le quitter."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm mostra la tua posizione ai fari di cui fai parte. Viene crittografata sul tuo iPhone prima di lasciarlo."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm toont je locatie aan de vuurtorens waarvan je lid bent. Je locatie wordt op je iPhone versleuteld voordat die het toestel verlaat."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm pokazuje twoją lokalizację latarniom, do których należysz. Jest ona szyfrowana na twoim iPhonie, zanim go opuści."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm, konumunu içinde bulunduğun fenerlere gösterir. Konumun iPhone’undan çıkmadan önce orada şifrelenir."
+          }
+        }
+      }
+    },
     "NSMotionUsageDescription": {
       "comment": "Privacy - usage description",
       "extractionState": "extracted_with_value",
@@ -159,60 +267,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Leuchtturm, pil tasarrufu yapmak ve hızını göstermek için hareket verileriyle ne zaman araç kullandığını algılar."
-          }
-        }
-      }
-    },
-    "NSHealthShareUsageDescription": {
-      "comment": "Privacy - usage description",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "new",
-            "value": "Wenn du es einschaltest, teilt Leuchtturm deine Schritte von heute und der letzten Woche mit deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "If you turn it on, Leuchtturm shares your steps of today and the last week with your lighthouses, end-to-end encrypted."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Si lo activas, Leuchtturm comparte tus pasos de hoy y de la última semana con tus faros, con cifrado de extremo a extremo."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Si tu l'actives, Leuchtturm partage tes pas d'aujourd'hui et de la semaine passée avec tes phares, chiffrés de bout en bout."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se lo attivi, Leuchtturm condivide con i tuoi fari i tuoi passi di oggi e dell'ultima settimana, con crittografia end-to-end."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Als je het aanzet, deelt Leuchtturm je stappen van vandaag en van de afgelopen week met je vuurtorens, end-to-end versleuteld."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jeśli to włączysz, Leuchtturm udostępni twoim latarniom twoje kroki z dzisiaj i z ostatniego tygodnia, z szyfrowaniem end-to-end."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Açarsan Leuchtturm bugünkü ve geçen haftaki adımlarını fenerlerinle uçtan uca şifreli olarak paylaşır."
           }
         }
       }

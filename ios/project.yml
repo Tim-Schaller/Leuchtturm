@@ -51,6 +51,8 @@ targets:
       properties:
         CFBundleDisplayName: Leuchtturm
         NSSupportsLiveActivities: true
+        # Only Apple's built-in encryption (CryptoKit), exempt from export documentation.
+        ITSAppUsesNonExemptEncryption: false
         CFBundleDevelopmentRegion: de
         CFBundleLocalizations:
           - de
@@ -183,6 +185,7 @@ targets:
     info:
       path: LeuchtturmTV/Info.plist
       properties:
+        ITSAppUsesNonExemptEncryption: false
         CFBundleDisplayName: Leuchtturm
         CFBundleDevelopmentRegion: de
         CFBundleLocalizations:

@@ -1,6 +1,7 @@
 #if DEBUG
 import LeuchtturmCore
 import SwiftUI
+import UIKit
 
 /// Controls for the made-up people.
 struct SimulationView: View {
@@ -27,6 +28,24 @@ struct SimulationView: View {
                                 dismiss()
                             }
                         }
+                    }
+
+                    Section {
+                        Button("Max schickt dir eine Freundschaftsanfrage", systemImage: "person.badge.plus") {
+                            Task {
+                                if model.friendSetup == nil { await model.prepareFriendCode() }
+                                guard let code = model.friendSetup?.friendCode else { return }
+                                await model.simulate { try await $0.maxSendsRequest(to: code) }
+                                await model.refreshFriendRequests(force: true)
+                            }
+                        }
+                        Button("Max' Freundescode kopieren", systemImage: "doc.on.doc") {
+                            Task { UIPasteboard.general.string = await world.maxCode()?.description }
+                        }
+                    } header: {
+                        Text("Freunde")
+                    } footer: {
+                        Text("Max ist in keinem Leuchtturm. Füge ihn mit seinem Code im Freunde-Menü hinzu; er nimmt sofort an.")
                     }
 
                     Section {

@@ -41,6 +41,44 @@ struct SimulationTests {
         #expect(bensView.members.contains { $0.name == "Tim" && !$0.isPending })
     }
 
+    @Test func friendsAddedByCodeBothWays() async throws {
+        let (model, world) = try await simulatedModel()
+        // Tim types Max's code.
+        let code = try #require(await world.maxCode())
+        let card = try #require(await model.lookUpFriend(code))
+        #expect(card.name == "Max")
+        #expect(await model.sendFriendRequest(to: card))
+        #expect(model.outgoingFriendRequests.map(\.name) == ["Max"])
+        await world.tick() // Max accepts
+        await model.refreshFriendRequests(force: true)
+        #expect(model.outgoingFriendRequests.isEmpty)
+        let friendship = try #require(model.friendships.first)
+        #expect(model.leuchttuerme.isEmpty)
+        await model.checkForNews()
+        #expect(model.title(of: friendship) == "Max")
+        #expect(model.friends.contains { $0.member.name == "Max" && $0.friendship?.id == friendship.id })
+
+        // A request to the own code is refused, a wrong code finds nobody.
+        await model.prepareFriendCode()
+        let mine = try #require(model.friendSetup?.friendCode)
+        #expect(await model.lookUpFriend(mine) == nil)
+        #expect(await model.lookUpFriend(FriendCode.generate()) == nil)
+        model.errorMessage = nil
+
+        // Ending it removes it.
+        await model.endFriendship(friendship)
+        #expect(model.friendships.isEmpty)
+
+        // The other way: Max sends Tim a request, Tim accepts.
+        await model.simulate { try await $0.maxSendsRequest(to: mine) }
+        await model.refreshFriendRequests(force: true)
+        let incoming = try #require(model.incomingFriendRequests.first)
+        #expect(incoming.request.name == "Max")
+        await model.accept(incoming)
+        #expect(model.incomingFriendRequests.isEmpty)
+        #expect(model.friendships.count == 1)
+    }
+
     @Test func appleTVIsPairedByLinkAndCanBeRemoved() async throws {
         let (model, _) = try await simulatedModel()
         let tv = TVIdentity.generate().pairing

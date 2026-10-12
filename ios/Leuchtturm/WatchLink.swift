@@ -39,7 +39,7 @@ final class WatchLink: NSObject, WCSessionDelegate {
             switch action {
             case "sos": reply.handler(["ok": await model.sendSOS()])
             case "checkIn":
-                if let ref = model.circles.first?.ref { reply.handler(["ok": await model.send(.checkIn, in: ref)]) } else { reply.handler(["ok": false]) }
+                if let ref = (model.leuchttuerme.first ?? model.circles.first)?.ref { reply.handler(["ok": await model.send(.checkIn, in: ref)]) } else { reply.handler(["ok": false]) }
             default: reply.handler(["ok": false])
             }
         }

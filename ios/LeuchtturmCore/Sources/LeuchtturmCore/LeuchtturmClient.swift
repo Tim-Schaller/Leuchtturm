@@ -14,6 +14,8 @@ public struct CircleSummary: Sendable, Identifiable, Hashable {
     public let isOwner: Bool
     /// When a temporary circle ends.
     public var expiresAt: Date? = nil
+    /// A friendship (two people, added by friend code), not a Leuchtturm.
+    public var isFriendship = false
 }
 
 /// A member device, decrypted where possible.
@@ -70,6 +72,8 @@ public struct CircleDetails: Sendable, Identifiable, Hashable {
     public let places: [CirclePlace]
     /// When a temporary circle ends.
     public var expiresAt: Date? = nil
+    /// A friendship, not a Leuchtturm.
+    public var isFriendship = false
     /// This device is an admin.
     public var isAdmin = false
     /// The owner's last sign of life (position or message), if known.
@@ -150,10 +154,11 @@ enum RecordName {
 /// reaches the backend (iCloud).
 public actor LeuchtturmClient {
     public nonisolated let identity: DeviceIdentity
-    private let backend: any CircleBackend
+    let backend: any CircleBackend
     private let secrets: any SecretStore
-    private let now: @Sendable () -> Date
+    let now: @Sendable () -> Date
     private var displayName: String?
+    var currentDisplayName: String? { displayName }
     /// Newest location seen per circle and device, so a replayed older
     /// record cannot move someone back in time.
     private var newestLocations: [String: SharedLocation] = [:]
@@ -199,7 +204,7 @@ public actor LeuchtturmClient {
     // MARK: Circles
 
     /// Creates a circle; with `expiresAt` it ends by itself at that time.
-    public func createCircle(name: String, expiresAt: Date? = nil) async throws -> CircleRef {
+    public func createCircle(name: String, expiresAt: Date? = nil, isFriendship: Bool = false) async throws -> CircleRef {
         let circleName = try Self.validated(name)
         let myName = try Self.validated(displayName ?? "")
         let circleID = CircleCrypto.newCircleID()
@@ -208,7 +213,8 @@ public actor LeuchtturmClient {
         try storeKey(key, circleID: circleID, epoch: 1)
         let records = [
             try circleRecord(circleID, epoch: 1, meta: CircleMeta(
-                name: circleName, members: [deviceID], expires: expiresAt.map { Int64($0.timeIntervalSince1970) }
+                name: circleName, members: [deviceID], expires: expiresAt.map { Int64($0.timeIntervalSince1970) },
+                kind: isFriendship ? CircleMeta.friendKind : nil
             ), key: key),
             try memberRecord(circleID, epoch: 1, key: key, name: myName, admission: nil),
         ]
@@ -222,12 +228,14 @@ public actor LeuchtturmClient {
             var name: String?
             var isOwner = false
             var expiresAt: Date?
+            var isFriendship = false
             if let snapshot = try? await backend.snapshot(of: ref), let p = try? parse(snapshot) {
                 _ = ensureKey(p)
                 let meta = (try? CircleCrypto.openCircleMeta(p.metaBlob, circleID: p.circleID, keyForEpoch: keyLookup(p.circleID)))?.meta
                 name = meta?.name
                 isOwner = p.ownerDeviceID == deviceID
                 expiresAt = meta?.expires.map { Date(timeIntervalSince1970: TimeInterval($0)) }
+                isFriendship = meta?.isFriendship ?? false
                 // A temporary circle that ended: the owner deletes it, the others leave.
                 if let expiresAt, expiresAt <= now() {
                     if ref.isOwned { try? await deleteCircle(ref) } else { try? await leave(ref) }
@@ -243,7 +251,7 @@ public actor LeuchtturmClient {
                     continue
                 }
             }
-            out.append(CircleSummary(ref: ref, name: name, isOwner: isOwner, expiresAt: expiresAt))
+            out.append(CircleSummary(ref: ref, name: name, isOwner: isOwner, expiresAt: expiresAt, isFriendship: isFriendship))
         }
         // Followed a move: list again, now with the new circle.
         if moved { return try await circles() }
@@ -263,7 +271,7 @@ public actor LeuchtturmClient {
         guard let key = ensureKey(p),
               let meta = (try? CircleCrypto.openCircleMeta(p.metaBlob, circleID: p.circleID, keyForEpoch: keyLookup(p.circleID)))?.meta
         else { throw ClientError.missingCircleKey }
-        let record = try circleRecord(p.circleID, epoch: p.epoch, meta: CircleMeta(name: name, members: meta.members, expires: meta.expires, admins: meta.admins), key: key)
+        let record = try circleRecord(p.circleID, epoch: p.epoch, meta: CircleMeta(name: name, members: meta.members, expires: meta.expires, admins: meta.admins, kind: meta.kind), key: key)
         try await backend.modify(ref, save: [record], delete: [], removeParticipants: [])
     }
 
@@ -313,7 +321,7 @@ public actor LeuchtturmClient {
         let newEpoch = p.epoch + 1
         let newKey = CircleCrypto.newCircleKey()
         var save = [try circleRecord(p.circleID, epoch: newEpoch, meta: CircleMeta(
-            name: meta.name, members: roster.sorted(), expires: meta.expires, admins: meta.admins?.filter(roster.contains)
+            name: meta.name, members: roster.sorted(), expires: meta.expires, admins: meta.admins?.filter(roster.contains), kind: meta.kind
         ), key: newKey)]
         for id in roster.sorted() where id != deviceID {
             guard let m = p.members[id] else { continue }
@@ -548,7 +556,7 @@ public actor LeuchtturmClient {
         try storeOwner(newID, signingKey: identity.signingPublicKey, agreementKey: identity.agreementPublicKey)
         try storeKey(newKey, circleID: newID, epoch: 1)
         var records = [
-            try circleRecord(newID, epoch: 1, meta: CircleMeta(name: meta.name, members: roster.sorted(), expires: meta.expires, admins: admins.sorted()), key: newKey),
+            try circleRecord(newID, epoch: 1, meta: CircleMeta(name: meta.name, members: roster.sorted(), expires: meta.expires, admins: admins.sorted(), kind: meta.kind), key: newKey),
             try memberRecord(newID, epoch: 1, key: newKey, name: myName, admission: nil),
         ]
         for id in roster.sorted() where id != deviceID {
@@ -1158,7 +1166,7 @@ public actor LeuchtturmClient {
                 .map(\.userID)
             if newRoster != roster {
                 save.append(try circleRecord(p.circleID, epoch: p.epoch, meta: CircleMeta(
-                    name: meta.name, members: newRoster.sorted(), expires: meta.expires, admins: meta.admins?.filter(newRoster.contains)
+                    name: meta.name, members: newRoster.sorted(), expires: meta.expires, admins: meta.admins?.filter(newRoster.contains), kind: meta.kind
                 ), key: key))
                 roster = newRoster
             }
@@ -1236,6 +1244,7 @@ public actor LeuchtturmClient {
             places: places.map(\.place).filter { !delete.contains(RecordName.place($0.id)) }
                 .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending },
             expiresAt: meta?.expires.map { Date(timeIntervalSince1970: TimeInterval($0)) },
+            isFriendship: meta?.isFriendship ?? false,
             isAdmin: (meta?.admins ?? []).contains(deviceID),
             ownerLastSeen: lastSeen,
             handoverOffered: offered,

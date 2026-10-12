@@ -28,7 +28,12 @@ public enum CloudSchema {
     public static let privateRecords: [String: [String: Kind]] = ["TVSnapshot": ["blob": .bytes]]
 
     /// The public database: live links. Readable by anyone, writable by the creator.
-    public static let publicRecords: [String: [String: Kind]] = ["LiveLocation": ["blob": .bytes]]
+    public static let publicRecords: [String: [String: Kind]] = [
+        "LiveLocation": ["blob": .bytes],
+        FriendRecord.card: ["blob": .bytes],
+        // `to` must be queryable (see ios/CloudKit/schema.ckdb).
+        FriendRecord.request: ["to": .string, "blob": .bytes],
+    ]
 
     /// One record per type with every field set, named `schema-<type>`.
     public static func samples(_ types: [String: [String: Kind]]) -> [StoredRecord] {

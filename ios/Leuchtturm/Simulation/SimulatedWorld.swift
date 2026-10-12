@@ -31,8 +31,15 @@ final class SimulatedWorld {
     }
 
     let people: [Person]
+    /// Not in any Leuchtturm: someone to add by friend code.
+    let max: Person
+    let maxSetup = FriendSetup.generate()
+    let publicStore = InMemoryPublicStore()
     /// Storage and keys of this device (you).
     let backend: InMemoryBackend
+    var publicDatabase: any PublicDatabase { publicStore.database(for: "sim-me") }
+    private var maxPublished = false
+    private var maxOutgoing: [OutgoingFriendRequest] = []
     let secrets = InMemorySecretStore()
     /// The name chosen during setup.
     var savedName: String?
@@ -68,12 +75,47 @@ final class SimulatedWorld {
             let client = try LeuchtturmClient(backend: cloud.backend(for: id), secrets: InMemorySecretStore(), displayName: name)
             return Person(id: id, name: name, client: client)
         }
+        max = Person(id: "sim-max", name: "Max", client: try LeuchtturmClient(
+            backend: cloud.backend(for: "sim-max"), secrets: InMemorySecretStore(), displayName: "Max"
+        ))
+    }
+
+    /// Max's friend code, ready to be typed in.
+    func maxCode() async -> FriendCode? {
+        if !maxPublished {
+            try? await max.client.publishFriendCard(maxSetup, in: publicStore.database(for: max.id))
+            maxPublished = true
+        }
+        return maxSetup.friendCode
+    }
+
+    /// Max types your code and sends you a request.
+    func maxSendsRequest(to code: FriendCode) async throws {
+        let db = publicStore.database(for: max.id)
+        guard let card = try await max.client.lookUpFriend(code, in: db) else { throw BackendError.notFound }
+        maxOutgoing.append(try await max.client.sendFriendRequest(to: card, in: db))
+    }
+
+    /// Max accepts your requests, tidies his own and shares where he is.
+    private func maxAnswers() async {
+        let db = publicStore.database(for: max.id)
+        for request in (try? await max.client.friendRequests(for: maxSetup, in: db)) ?? [] {
+            _ = try? await max.client.accept(request)
+        }
+        maxOutgoing = (try? await max.client.tidyFriendRequests(maxOutgoing, in: db)) ?? maxOutgoing
+        guard !((try? await max.client.circles()) ?? []).isEmpty else { return }
+        for circle in (try? await max.client.circles()) ?? [] { _ = try? await max.client.circle(circle.ref) }
+        let (lat, lon) = Self.offset(home ?? Self.fallbackHome, north: 1800, east: -1200)
+        if let here = SharedLocation(latitude: lat, longitude: lon, accuracy: 15, timestamp: Date(), battery: 64) {
+            try? await max.client.shareLocation(here)
+        }
     }
 
     /// The people open their app: owners confirm new members, everyone picks
     /// up new keys and keeps their member card current. Notes sent to them
     /// get a friendly answer, and Anna likes what you write in the chat.
     func tick() async {
+        await maxAnswers()
         for person in people {
             for circle in (try? await person.client.circles()) ?? [] {
                 guard let details = try? await person.client.circle(circle.ref) else { continue }
@@ -166,7 +208,7 @@ final class SimulatedWorld {
             let (latitude, longitude) = Self.offset(home, north: north, east: east)
             // Anna's battery drains, Ben charges in the car, Clara runs low.
             let (battery, charging): (Int, Bool) = switch index {
-            case 0: (max(20, 82 - Int(t / 120)), false)
+            case 0: (Swift.max(20, 82 - Int(t / 120)), false)
             case 1: (min(100, 34 + Int(t / 60)), true)
             default: (9, false)
             }

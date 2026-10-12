@@ -97,7 +97,8 @@ struct InviteSheet: View {
         let seconds = validity.rawValue
         let ref = ref
         Task {
-            if let created = await model.run({ try await $0.createInvite(for: ref, validFor: seconds) }) {
+            if var created = await model.run({ try await $0.createInvite(for: ref, validFor: seconds) }) {
+                created.environment = model.isSimulation ? nil : AppInfo.cloudTag
                 qrImage = QRCode.image(for: created.url.absoluteString)
                 link = created
             }

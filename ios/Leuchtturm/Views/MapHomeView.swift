@@ -59,7 +59,7 @@ struct MapHomeView: View {
     @State private var detent: PresentationDetent = PeopleSheet.peek
 
     private var selected: CircleSummary? {
-        model.circles.first { $0.id == selectedCircleID } ?? model.circles.first
+        model.circles.first { $0.id == selectedCircleID } ?? model.leuchttuerme.first ?? model.circles.first
     }
 
     private var myID: String { model.client?.deviceID ?? "" }
@@ -97,6 +97,10 @@ struct MapHomeView: View {
         .onChange(of: model.tracker.location == nil) { frameIfSomeoneNew() }
         .onChange(of: model.hasLoadedCircles && model.circles.isEmpty, initial: true) { _, empty in
             detent = empty ? .medium : PeopleSheet.peek
+        }
+        // A friend code opened as a link goes to the friends menu.
+        .onChange(of: model.pendingFriendCode, initial: true) { _, code in
+            if code != nil { sheet = .friends }
         }
         .environment(\.memberColors, memberColors)
         .environment(\.memberProfiles, memberProfiles)
@@ -284,8 +288,17 @@ struct MapHomeView: View {
     private var circleMenu: some View {
         Menu {
             Picker("Leuchtturm", selection: Binding(get: { selected?.id ?? "" }, set: { selectedCircleID = $0 })) {
-                ForEach(model.circles) { circle in
-                    Text(circle.name ?? "Unbekannter Leuchtturm").tag(circle.id)
+                ForEach(model.leuchttuerme) { circle in
+                    Text(model.title(of: circle)).tag(circle.id)
+                }
+            }
+            if !model.friendships.isEmpty {
+                Section("Freunde") {
+                    Picker("Freund", selection: Binding(get: { selected?.id ?? "" }, set: { selectedCircleID = $0 })) {
+                        ForEach(model.friendships) { circle in
+                            Label(model.title(of: circle), systemImage: "person").tag(circle.id)
+                        }
+                    }
                 }
             }
             Divider()
@@ -293,7 +306,7 @@ struct MapHomeView: View {
             Button("Einladung einfügen", systemImage: "link") { sheet = .join }
         } label: {
             HStack(spacing: 6) {
-                Text(selected?.name ?? AppInfo.name)
+                Text(selected.map { model.title(of: $0) } ?? AppInfo.name)
                     .font(.headline)
                     .lineLimit(1)
                 Image(systemName: "chevron.down")

@@ -11,6 +11,14 @@ settings:
     SWIFT_VERSION: "6.0"
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
+  # iCloud: debug builds use the Development database, TestFlight and the App
+  # Store Production. Builds for testing on a real iPhone pass
+  # CLOUDKIT_ENVIRONMENT=Production so they meet TestFlight users.
+  configs:
+    Debug:
+      CLOUDKIT_ENVIRONMENT: Development
+    Release:
+      CLOUDKIT_ENVIRONMENT: Production
 packages:
   LeuchtturmCore:
     path: LeuchtturmCore
@@ -40,6 +48,7 @@ targets:
           - iCloud.de.timschaller.leuchtturm
         com.apple.developer.icloud-services:
           - CloudKit
+        com.apple.developer.icloud-container-environment: $(CLOUDKIT_ENVIRONMENT)
         aps-environment: development
         com.apple.developer.usernotifications.time-sensitive: true
         com.apple.developer.healthkit: true
@@ -50,6 +59,7 @@ targets:
       path: Leuchtturm/Info.plist
       properties:
         CFBundleDisplayName: Leuchtturm
+        LeuchtturmCloudKitEnvironment: $(CLOUDKIT_ENVIRONMENT)
         NSSupportsLiveActivities: true
         # Only Apple's built-in encryption (CryptoKit), exempt from export documentation.
         ITSAppUsesNonExemptEncryption: false
@@ -182,6 +192,7 @@ targets:
           - iCloud.de.timschaller.leuchtturm
         com.apple.developer.icloud-services:
           - CloudKit
+        com.apple.developer.icloud-container-environment: $(CLOUDKIT_ENVIRONMENT)
     info:
       path: LeuchtturmTV/Info.plist
       properties:

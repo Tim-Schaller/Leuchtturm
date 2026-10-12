@@ -233,6 +233,10 @@ struct InviteLinkTests {
         let parsed = InviteLink(string: link.url.absoluteString)
         #expect(parsed == link)
         #expect(InviteLink(string: "  \(link.url.absoluteString)\n") == link)
+        var tagged = link
+        tagged.environment = "d"
+        #expect(InviteLink(url: tagged.url)?.environment == "d")
+        #expect(InviteLink(string: link.url.absoluteString + "&e=x")?.environment == nil)
     }
 
     @Test func rejectsGarbage() {

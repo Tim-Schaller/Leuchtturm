@@ -19,11 +19,7 @@ extension AppModel {
 
     /// Starts a link and publishes the current position right away.
     func startLiveLink() async -> URL? {
-        #if DEBUG
-        let link = LiveLink.create(production: false)
-        #else
-        let link = LiveLink.create(production: true)
-        #endif
+        let link = LiveLink.create(production: AppInfo.usesProductionCloud)
         liveLink = link
         if let data = try? JSONEncoder().encode(link) { try? secrets.save(data, for: Self.liveAccount) }
         lastLivePublish = .distantPast

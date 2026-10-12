@@ -21,12 +21,19 @@ public struct CircleMeta: Codable, Sendable, Equatable {
     /// Device IDs of admins: they can ask the owner's device to remove or
     /// rename, and take the circle over. nil or empty for none.
     public var admins: [String]?
-    public init(name: String, members: [String], expires: Int64? = nil, admins: [String]? = nil) {
+    /// "friend" for a friendship between two people, added by friend code;
+    /// nil for a Leuchtturm.
+    public var kind: String?
+    public init(name: String, members: [String], expires: Int64? = nil, admins: [String]? = nil, kind: String? = nil) {
         self.name = name
         self.members = members
         self.expires = expires
         self.admins = admins
+        self.kind = kind
     }
+
+    public var isFriendship: Bool { kind == Self.friendKind }
+    public static let friendKind = "friend"
 }
 
 /// What a joiner learns from an invite: the circle key and, authenticated

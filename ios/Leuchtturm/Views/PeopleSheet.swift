@@ -31,7 +31,7 @@ struct PeopleSheet: View {
         @Bindable var bindable = model
         NavigationStack(path: $path) {
             content
-                .navigationTitle(circle?.name ?? AppInfo.name)
+                .navigationTitle(circle.map { model.title(of: $0) } ?? AppInfo.name)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationDestination(for: DrawerRoute.self) { route in
                     switch route {
@@ -130,10 +130,14 @@ struct PeopleSheet: View {
                 Section { ActionGrid(details: details, sheet: $sheet) }
                 NewsSection(details: details, onShowPlace: onShowPlace)
                 Section {
-                    Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(circle.ref) }
-                        .disabled(!details.hasKey)
-                    NavigationLink(value: DrawerRoute.manage(circle.ref)) {
-                        Label("Leuchtturm verwalten", systemImage: "gearshape")
+                    if details.isFriendship {
+                        Button("Freunde verwalten", systemImage: "person.2") { sheet = .friends }
+                    } else {
+                        Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(circle.ref) }
+                            .disabled(!details.hasKey)
+                        NavigationLink(value: DrawerRoute.manage(circle.ref)) {
+                            Label("Leuchtturm verwalten", systemImage: "gearshape")
+                        }
                     }
                 } footer: {
                     Label("Ende-zu-Ende-verschlüsselt", systemImage: "lock.fill")
@@ -169,7 +173,7 @@ struct PeopleSheet: View {
             MeetingPointSheet(ref: ref)
         case .friends:
             FriendsView { friend in
-                if let first = friend.circles.first, let ref = model.circles.first(where: { $0.id == first.id })?.ref {
+                if let ref = friend.friendship?.ref ?? friend.circles.first.flatMap({ first in model.circles.first { $0.id == first.id }?.ref }) {
                     onSelectCircle(ref)
                     path = [.member(friend.id)]
                 }

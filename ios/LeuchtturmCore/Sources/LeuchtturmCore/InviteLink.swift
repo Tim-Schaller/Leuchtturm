@@ -16,6 +16,9 @@ public struct InviteLink: Sendable, Equatable, Identifiable {
     public let shareURL: URL
     public let inviteID: String
     public let secret: Data
+    /// iCloud database of the inviting app: "d" (Development, test builds) or
+    /// "p" (Production). Links without it are treated as matching.
+    public var environment: String?
 
     public init(shareURL: URL, inviteID: String, secret: Data) {
         self.shareURL = shareURL
@@ -33,6 +36,7 @@ public struct InviteLink: Sendable, Equatable, Identifiable {
             URLQueryItem(name: "id", value: inviteID),
             URLQueryItem(name: "k", value: Base64URL.encode(secret)),
         ]
+        if let environment { c.queryItems?.append(URLQueryItem(name: "e", value: environment)) }
         return c.url!
     }
 
@@ -53,6 +57,7 @@ public struct InviteLink: Sendable, Equatable, Identifiable {
               let k = items["k"], let secret = Base64URL.decode(k), secret.count == 32
         else { return nil }
         self.init(shareURL: share, inviteID: id, secret: secret)
+        if let e = items["e"], ["d", "p"].contains(e) { environment = e }
     }
 
     public init?(url: URL) {

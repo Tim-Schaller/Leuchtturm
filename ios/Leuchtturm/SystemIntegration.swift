@@ -156,7 +156,7 @@ struct CheckInIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        guard let model = AppModel.current, let ref = model.circles.first?.ref else { return .result(dialog: "Öffne Leuchtturm einmal.") }
+        guard let model = AppModel.current, let ref = (model.leuchttuerme.first ?? model.circles.first)?.ref else { return .result(dialog: "Öffne Leuchtturm einmal.") }
         let ok = await model.send(.checkIn, in: ref)
         return .result(dialog: ok ? "Eingecheckt." : "Das hat nicht geklappt.")
     }

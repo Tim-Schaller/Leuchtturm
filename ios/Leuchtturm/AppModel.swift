@@ -53,10 +53,18 @@ final class AppModel {
     var pendingInvite: InviteLink?
     /// An Apple TV whose code was scanned, waiting for confirmation.
     var pendingTV: TVPairing?
+    /// A friend code opened as a link, for the friends menu.
+    var pendingFriendCode: FriendCode?
     /// Apple TVs that get an encrypted snapshot (see TVPublisher.swift).
     var pairedTVs: [PairedTV] = []
     @ObservationIgnored var lastTVPublish = Date.distantPast
     @ObservationIgnored var lastTVSnapshot: WidgetSnapshot?
+    /// Friend code and requests (see FriendsModel.swift).
+    var friendSetup: FriendSetup?
+    var incomingFriendRequests: [IncomingFriendRequest] = []
+    var outgoingFriendRequests: [OutgoingFriendRequest] = []
+    @ObservationIgnored var handledFriendRequests: Set<String> = []
+    @ObservationIgnored var lastFriendCheck = Date.distantPast
     /// The running one-hour web link, if any (see LiveLinkSharing.swift).
     var liveLink: LiveLink?
     @ObservationIgnored var lastLivePublish = Date.distantPast
@@ -142,7 +150,8 @@ final class AppModel {
     /// "Not arrived yet" alerts set on this device.
     private(set) var arrivalWatches: [ArrivalWatch] = []
     /// Every circle as last loaded, for arrival checks.
-    @ObservationIgnored private var latestDetails: [String: CircleDetails] = [:]
+    /// Observed: the friends list and titles of friendships come from it.
+    var latestDetails: [String: CircleDetails] = [:]
     /// Places of every circle, from the last time each circle was loaded.
     @ObservationIgnored private var knownPlaces: [String: (ref: CircleRef, places: [CirclePlace])] = [:]
     @ObservationIgnored private var placeTracker = PlaceTracker()
@@ -154,7 +163,7 @@ final class AppModel {
     @ObservationIgnored var activityDistance: CLLocationDistance = 0
 
     /// Off in unit tests, which must not start CoreLocation or ask for notifications.
-    private let usesDeviceServices: Bool
+    let usesDeviceServices: Bool
 
     init(usesDeviceServices: Bool = true) {
         self.usesDeviceServices = usesDeviceServices
@@ -200,6 +209,7 @@ final class AppModel {
         pendingTV = nil
         pairedTVs = loadPairedTVs()
         restoreLiveLink()
+        restoreFriends()
         lastShared = nil
         // An iPad shares no location unless asked to (the iPhone usually does).
         let pausedByDefault = UIDevice.current.userInterfaceIdiom != .phone
@@ -326,6 +336,7 @@ final class AppModel {
         } catch {
             errorMessage = Self.describe(error)
         }
+        await refreshFriendRequests()
     }
 
     func createCircle(name: String, lasting days: Int? = nil) async -> CircleRef? {
@@ -340,6 +351,13 @@ final class AppModel {
     }
 
     func join(_ link: InviteLink) async -> CircleRef? {
+        // Test builds and TestFlight/App Store builds use separate iCloud databases.
+        if !isSimulation, let environment = link.environment, environment != AppInfo.cloudTag {
+            errorMessage = environment == "d"
+                ? String(localized: "Diese Einladung kommt aus einer Testversion von Leuchtturm, die einen eigenen iCloud-Bereich nutzt. Bitte die Person, die TestFlight- oder App-Store-Version zu installieren und dich neu einzuladen.")
+                : String(localized: "Diese Einladung kommt aus der TestFlight- oder App-Store-Version. Du hast eine Testversion mit eigenem iCloud-Bereich; installiere Leuchtturm über TestFlight, um beizutreten.")
+            return nil
+        }
         let ref = await run { try await $0.join(link) }
         if let ref {
             await pushProfile(to: ref)
@@ -689,7 +707,7 @@ final class AppModel {
         return true
     }
 
-    private func pushProfile(to ref: CircleRef) async {
+    func pushProfile(to ref: CircleRef) async {
         guard myProfile != Profile() else { return }
         let profile = myProfile
         await run { try await $0.setProfile(profile, in: [ref]) }
@@ -1094,6 +1112,8 @@ final class AppModel {
     func handle(url: URL) {
         if let tv = TVPairing(url: url) {
             pendingTV = tv
+        } else if url.host == "friend", let code = FriendCode(url.absoluteString) {
+            pendingFriendCode = code
         } else if let link = InviteLink(url: url) {
             pendingInvite = link
         }
@@ -1106,6 +1126,8 @@ final class AppModel {
         if ok {
             displayName = name.trimmingCharacters(in: .whitespacesAndNewlines)
             savedName = displayName
+            // The friend card carries the name too.
+            if friendSetup != nil { await prepareFriendCode() }
         }
         return ok
     }
@@ -1114,6 +1136,11 @@ final class AppModel {
     func deleteAllData() async {
         guard await run({ try await $0.deleteAllData() }) != nil else { return }
         for tv in pairedTVs { await unpairTV(tv.id) }
+        if let setup = friendSetup {
+            let db = publicDatabase
+            await run { try await $0.withdrawFriendCard(setup, in: db) }
+            for request in outgoingFriendRequests { try? await db.delete(request.id) }
+        }
         await endLiveLink()
         resetLocal()
     }
@@ -1125,6 +1152,9 @@ final class AppModel {
         }
         savedName = nil
         pairedTVs = []
+        friendSetup = nil
+        incomingFriendRequests = []
+        outgoingFriendRequests = []
         liveLink = nil
         historyRecorder.clear()
         memories.clear()

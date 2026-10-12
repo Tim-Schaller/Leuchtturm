@@ -27,11 +27,11 @@ struct SharePolicyTests {
         #expect(SharePolicy.foreground.shouldShare(fix(0, after: 61), after: last))
     }
 
-    @Test func drivingSharesEveryTenSeconds() {
+    @Test func drivingSharesEveryFiveSeconds() {
         let last = fix(0, after: 0)
-        #expect(!SharePolicy.driving.shouldShare(fix(150, after: 5), after: last))
-        #expect(SharePolicy.driving.shouldShare(fix(140, after: 10), after: last))
-        #expect(SharePolicy.driving.shouldShare(fix(0, after: 31), after: last))
+        #expect(!SharePolicy.driving.shouldShare(fix(80, after: 3), after: last))
+        #expect(SharePolicy.driving.shouldShare(fix(70, after: 5), after: last))
+        #expect(SharePolicy.driving.shouldShare(fix(0, after: 16), after: last))
     }
 
     @Test func backgroundSavesBattery() {

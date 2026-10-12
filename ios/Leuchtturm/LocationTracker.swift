@@ -272,8 +272,8 @@ struct SharePolicy {
     var minInterval: TimeInterval
     var heartbeat: TimeInterval
 
-    /// Driving: the others see the car move, every 10 seconds.
-    static let driving = SharePolicy(minDistance: 30, minInterval: 10, heartbeat: 30)
+    /// Driving: the others see the car move, every 5 seconds.
+    static let driving = SharePolicy(minDistance: 20, minInterval: 5, heartbeat: 15)
     /// App open: someone may be watching.
     static let foreground = SharePolicy(minDistance: 15, minInterval: 10, heartbeat: 60)
     /// App closed: a little calmer, for the battery.

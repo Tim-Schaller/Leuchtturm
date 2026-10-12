@@ -195,8 +195,9 @@ struct MapHomeView: View {
         }
     }
 
-    /// Keeps the selected circle current: polls iCloud every 30 seconds
-    /// (push updates come later), the simulation every few seconds.
+    /// Keeps the selected circle current: polls iCloud every 10 seconds
+    /// (pushes may come later), the simulation every few seconds; asks
+    /// devices with an old position for a fresh one.
     private func follow(_ ref: CircleRef?) async {
         guard let ref else {
             details = nil
@@ -212,8 +213,9 @@ struct MapHomeView: View {
             if let loaded = await model.mapDetails(for: ref) {
                 details = loaded
                 frameIfSomeoneNew()
+                await model.askForFreshPositions(loaded)
             }
-            try? await Task.sleep(for: .seconds(model.isSimulation ? 4 : 30))
+            try? await Task.sleep(for: .seconds(model.isSimulation ? 4 : 10))
         }
     }
 

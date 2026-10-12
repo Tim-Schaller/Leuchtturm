@@ -1,3 +1,4 @@
+import BackgroundTasks
 import CoreLocation
 import Foundation
 import LeuchtturmCore
@@ -83,6 +84,11 @@ final class AppModel {
     /// Last successful upload, so the user can check that background sharing works.
     private(set) var lastSharedAt: Date?
     @ObservationIgnored private var lastShared: CLLocation?
+    @ObservationIgnored private var lastSharedBattery: Int?
+    @ObservationIgnored private var lastSharedCharging = false
+    @ObservationIgnored private var lastTripSave = Date.distantPast
+    /// When this device last asked a circle for fresh positions, by circle.
+    @ObservationIgnored private var lastRefreshAsk: [String: Date] = [:]
 
     #if DEBUG
     /// Runs instead of iCloud while set. Debug builds only.
@@ -400,9 +406,15 @@ final class AppModel {
         if sharesTrips && !isSimulation { motion.start() } else { motion.stop() }
         tracker.onVisit = { [weak self] visit in self?.visitStore.add(visit) }
         Task { _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) }
-        tracker.start(background: isSharingLocation && !isSimulation) { [weak self] location in
-            Task { await self?.share(location) }
+        tracker.start(background: isSharingLocation && !isSimulation) { [weak self] locations in
+            Task { await self?.received(locations) }
         }
+    }
+
+    /// Every point counts for the trip's route; the newest one is shared.
+    private func received(_ locations: [CLLocation]) async {
+        for location in locations.dropLast() { await watchTrips(location) }
+        if let latest = locations.last { await share(latest) }
     }
 
     private func share(_ location: CLLocation) async {
@@ -410,16 +422,20 @@ final class AppModel {
         await watchPlaces(location)
         await watchTrips(location)
         let inBackground = UIApplication.shared.applicationState != .active
-        let policy: SharePolicy = inBackground ? .background : .foreground
+        let driving = tripDetector.isDriving || location.speed >= 6
+        let policy: SharePolicy = driving ? .driving : inBackground ? .background : .foreground
         let device = UIDevice.current
         let battery = device.batteryLevel >= 0 ? Int((device.batteryLevel * 100).rounded()) : nil
         let charging = device.batteryState == .charging || device.batteryState == .full
+        // A changed battery level is news too.
+        let batteryChanged = charging != lastSharedCharging
+            || (battery.flatMap { now in lastSharedBattery.map { abs(now - $0) >= 5 } } ?? false)
         await warnIfBatteryLow(battery, charging: charging)
         await watchJourney(location)
         if usesDeviceServices && !isSimulation {
             updateLiveActivity(location: location, driving: sharesTrips && tripDetector.isDriving)
         }
-        let forced = forceShare
+        let forced = forceShare || batteryChanged
         forceShare = false
         guard forced || policy.shouldShare(location, after: lastShared),
               var exact = SharedLocation(
@@ -438,6 +454,8 @@ final class AppModel {
         // In fog the exact position never leaves the device.
         let shared = activeFog.flatMap { exact.inFog(radius: $0.radius) } ?? exact
         lastShared = location
+        lastSharedBattery = battery
+        lastSharedCharging = charging
         await publishLiveLink(shared)
         // Finish the upload even if iOS suspends the app right after this update.
         // History: exact points, but never while in fog.
@@ -456,6 +474,26 @@ final class AppModel {
             if inBackground { await checkForNews() }
         }
         UIApplication.shared.endBackgroundTask(backgroundTask)
+    }
+
+    static let refreshTask = "de.timschaller.leuchtturm.refresh"
+
+    /// Asks iOS for a background refresh in about 15 minutes (iOS decides when).
+    static func scheduleRefresh() {
+        let request = BGAppRefreshTaskRequest(identifier: refreshTask)
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60)
+        try? BGTaskScheduler.shared.submit(request)
+    }
+
+    /// While standing still iOS sends no positions: share a fresh one with
+    /// the battery level, and look for news.
+    func backgroundRefresh() async {
+        guard phase == .ready, !isSimulation else { return }
+        if isSharingLocation, let fresh = await tracker.freshLocation() {
+            forceShare = true
+            await share(fresh)
+        }
+        await checkForNews()
     }
 
     func shareLocationNow() async {
@@ -544,12 +582,18 @@ final class AppModel {
     // MARK: Trips
 
     private func watchTrips(_ location: CLLocation) async {
-        guard sharesTrips || detectsCrashes, let client else { return }
+        // Wi-Fi or cell positions would make the route zigzag.
+        guard sharesTrips || detectsCrashes, let client, (0 ... 65).contains(location.horizontalAccuracy) else { return }
+        let wasDriving = tripDetector.isDriving
         let trip = tripDetector.update(
             latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
             speed: location.speed, at: location.timestamp, deviceID: client.deviceID, automotive: motion.automotive
         )
-        saveTripDetector()
+        // Not on every point: the running route can be long.
+        if trip != nil || wasDriving != tripDetector.isDriving || Date().timeIntervalSince(lastTripSave) > 15 {
+            lastTripSave = Date()
+            saveTripDetector()
+        }
         if tripDetector.takeCrash() != nil, detectsCrashes { startCrashCheck() }
         if let trip { await finished(trip) }
     }
@@ -1033,6 +1077,20 @@ final class AppModel {
         }
     }
 
+    /// While the map is open: if someone's position is older than two
+    /// minutes, ask the circle's devices (silently) for fresh ones, at most
+    /// every three minutes per circle.
+    func askForFreshPositions(_ details: CircleDetails) async {
+        guard UIApplication.shared.applicationState == .active, details.hasKey, let client else { return }
+        let now = Date()
+        let stale = details.members.contains { member in
+            !member.isMe && !member.isPending && (member.location.map { now.timeIntervalSince($0.timestamp) > 120 } ?? true)
+        }
+        guard stale, now.timeIntervalSince(lastRefreshAsk[details.id] ?? .distantPast) > 180 else { return }
+        lastRefreshAsk[details.id] = now
+        _ = try? await client.send(.refresh, in: details.ref)
+    }
+
     /// Notifies once about each new note from others that is for me or for
     /// everyone.
     func deliverNews(_ details: CircleDetails) {
@@ -1072,13 +1130,16 @@ final class AppModel {
         }
         guard !fresh.isEmpty else { return }
         markSeen(fresh.map(\.id))
-        if fresh.contains(where: { $0.kind == .locationRequest && $0.recipientID == me }), isSharingLocation {
+        let asked = fresh.contains { $0.kind == .locationRequest && $0.recipientID == me }
+        // Someone is looking at the map: a fresh position, at most every 30 seconds.
+        let looking = fresh.contains { $0.kind == .refresh } && (lastSharedAt.map { Date().timeIntervalSince($0) > 30 } ?? true)
+        if asked || looking, isSharingLocation {
             forceShare = true
             tracker.requestFresh()
             if let here = tracker.location { Task { await share(here) } }
         }
         guard usesDeviceServices else { return }
-        for note in fresh.reversed() {
+        for note in fresh.reversed() where note.kind != .refresh {
             let sender = details.members.first { $0.id == note.senderID }?.name ?? String(localized: "Jemand")
             let content = UNMutableNotificationContent()
             content.title = sender

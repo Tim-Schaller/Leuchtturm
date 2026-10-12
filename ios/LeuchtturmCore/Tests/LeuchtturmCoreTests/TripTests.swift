@@ -38,6 +38,48 @@ struct TripTests {
         #expect(trip.route.count > 5 && trip.route.count <= Trip.maxRoutePoints)
     }
 
+    @Test func routesKeepTheirCurves() throws {
+        // 2 km north, a right turn, 2 km east: dense points while driving.
+        var detector = TripDetector()
+        var time = 0.0
+        func sample(_ north: Double, _ east: Double) -> Trip? {
+            time += 1
+            return detector.update(
+                latitude: 53.5 + north / 111_320, longitude: 9.9 + east / (111_320 * cos(53.5 * .pi / 180)), speed: 20,
+                at: start.addingTimeInterval(time), deviceID: "me"
+            )
+        }
+        for i in 0 ... 100 { _ = sample(Double(i) * 20, 0) }
+        for i in 1 ... 100 { _ = sample(2000, Double(i) * 20) }
+        let ended = detector.update(latitude: 53.5, longitude: 9.9, speed: 0, at: start.addingTimeInterval(time + 600), deviceID: "me")
+        let trip = try #require(ended)
+        // Every 20 m sample was kept (spacing 15 m) ...
+        #expect(trip.route.count > 150 && trip.route.count <= Trip.maxRoutePoints)
+        // ... and simplifying keeps the corner, not every n-th point.
+        let simple = RouteShape.simplify(trip.route, maxCount: 3)
+        #expect(simple.count == 3)
+        #expect(abs(simple[1].latitude - (53.5 + 2000 / 111_320)) < 1e-6)
+    }
+
+    @Test func longTripsStayWithinTheLimit() throws {
+        var detector = TripDetector()
+        var north = 0.0
+        // About an hour at 90 km/h with a gentle wiggle.
+        var trips: [Trip] = []
+        for i in 0 ..< 3600 {
+            north += 25
+            if let trip = detector.update(
+                latitude: 53.5 + north / 111_320, longitude: 9.9 + sin(Double(i) / 60) * 0.01, speed: 25,
+                at: start.addingTimeInterval(Double(i)), deviceID: "me"
+            ) { trips.append(trip) }
+        }
+        let ended = detector.update(latitude: 53.5 + north / 111_320, longitude: 9.9, speed: 0, at: start.addingTimeInterval(4000), deviceID: "me")
+        let trip = try #require(ended)
+        #expect(trips.isEmpty)
+        #expect(trip.route.count <= Trip.maxRoutePoints && trip.route.count > 100)
+        #expect(trip.route.first.map { $0.timestamp.timeIntervalSince(start) <= 1 } == true)
+    }
+
     @Test func suspectsACrashOnlyOnAnAbruptStop() {
         var detector = TripDetector()
         var north = 0.0

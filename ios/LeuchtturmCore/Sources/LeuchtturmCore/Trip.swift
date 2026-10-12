@@ -72,6 +72,10 @@ public struct TripDetector: Sendable, Codable, Equatable {
     static let endAfter: TimeInterval = 180
     static let hardBrake = -3.5
     static let rapidAcceleration = 3.0
+    /// Meters between recorded route points while driving.
+    static let routeSpacing = 15.0
+    /// Raw points kept during a trip before it is simplified.
+    static let maxRunningPoints = 2000
 
     private var running: Running?
     private var pendingFast: Date?
@@ -140,9 +144,13 @@ public struct TripDetector: Sendable, Codable, Equatable {
             }
         }
         if speed >= Self.movingSpeed { r.lastFast = time }
+        // Dense enough for curves; long trips are simplified as they go.
         if let last = r.route.last,
-           Self.meters(last.latitude, last.longitude, latitude, longitude) >= 100 || time.timeIntervalSince(last.timestamp) >= 30 {
+           Self.meters(last.latitude, last.longitude, latitude, longitude) >= Self.routeSpacing || time.timeIntervalSince(last.timestamp) >= 15 {
             r.route.append(HistoryDay.Point(latitude: latitude, longitude: longitude, timestamp: time))
+            if r.route.count > Self.maxRunningPoints {
+                r.route = RouteShape.simplify(r.route, maxCount: Self.maxRunningPoints / 2)
+            }
         }
         r.lastTime = time
         r.lastSpeed = speed
@@ -164,10 +172,9 @@ public struct TripDetector: Sendable, Codable, Equatable {
         running = nil
         let end = r.lastFast
         guard r.distance >= 1000, end.timeIntervalSince(r.start) >= 120 else { return nil }
-        // Keep the route within the limit by thinning it evenly.
-        let route = r.route.filter { $0.timestamp <= end }
-        let stride = max(1, Int((Double(route.count) / Double(Trip.maxRoutePoints)).rounded(.up)))
-        let thinned = route.enumerated().filter { $0.offset % stride == 0 || $0.offset == route.count - 1 }.map(\.element)
+        // Keep the route within the limit, but keep its shape: curves keep
+        // their points, straight stretches lose them.
+        let thinned = RouteShape.simplify(r.route.filter { $0.timestamp <= end }, maxCount: Trip.maxRoutePoints)
         return Trip(
             id: CircleCrypto.newCircleID(), deviceID: deviceID, start: r.start, end: end, distance: r.distance,
             topSpeed: r.topSpeed, hardBrakes: r.hardBrakes, rapidAccelerations: r.rapidAccelerations, route: thinned
@@ -284,5 +291,57 @@ extension CircleCrypto {
 
     static func tripContext(circleID: String, tripID: String) -> Data {
         Wire.context("leuchtturm/v1/trip", circleID, tripID)
+    }
+}
+
+/// Simplifies a route to a number of points while keeping its shape
+/// (Douglas–Peucker with the smallest tolerance that fits).
+enum RouteShape {
+    static func simplify(_ points: [HistoryDay.Point], maxCount: Int) -> [HistoryDay.Point] {
+        guard points.count > maxCount, maxCount >= 2 else { return points }
+        // Local flat coordinates in meters around the first point.
+        let origin = points[0]
+        let cosLat = cos(origin.latitude * .pi / 180)
+        let xy = points.map { ((($0.longitude - origin.longitude) * 111_320 * cosLat), ($0.latitude - origin.latitude) * 111_320) }
+        var low = 0.0, high = 1.0
+        while keep(xy, tolerance: high).count > maxCount { high *= 2 }
+        var best = keep(xy, tolerance: high)
+        for _ in 0 ..< 24 {
+            let mid = (low + high) / 2
+            let kept = keep(xy, tolerance: mid)
+            if kept.count > maxCount { low = mid } else { high = mid; best = kept }
+        }
+        return best.map { points[$0] }
+    }
+
+    /// Indices Douglas–Peucker keeps at `tolerance` meters.
+    private static func keep(_ xy: [(Double, Double)], tolerance: Double) -> [Int] {
+        var keep = [Bool](repeating: false, count: xy.count)
+        keep[0] = true
+        keep[xy.count - 1] = true
+        var stack = [(0, xy.count - 1)]
+        while let (first, last) = stack.popLast() {
+            guard last > first + 1 else { continue }
+            var farthest = first, distance = -1.0
+            for i in first + 1 ..< last {
+                let d = offset(xy[i], from: xy[first], to: xy[last])
+                if d > distance { distance = d; farthest = i }
+            }
+            if distance > tolerance {
+                keep[farthest] = true
+                stack.append((first, farthest))
+                stack.append((farthest, last))
+            }
+        }
+        return keep.indices.filter { keep[$0] }
+    }
+
+    /// Distance of `p` from the segment `a`–`b`.
+    private static func offset(_ p: (Double, Double), from a: (Double, Double), to b: (Double, Double)) -> Double {
+        let (dx, dy) = (b.0 - a.0, b.1 - a.1)
+        let length = dx * dx + dy * dy
+        guard length > 0 else { return hypot(p.0 - a.0, p.1 - a.1) }
+        let t = max(0, min(1, ((p.0 - a.0) * dx + (p.1 - a.1) * dy) / length))
+        return hypot(p.0 - (a.0 + t * dx), p.1 - (a.1 + t * dy))
     }
 }

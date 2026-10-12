@@ -65,7 +65,7 @@ enum NoteText {
             return note.text.isEmpty
                 ? String(localized: "ist nicht mehr unterwegs")
                 : String(localized: "ist nicht mehr auf dem Weg zu „\(note.text)“")
-        case .removeRequest, .renameRequest:
+        case .removeRequest, .renameRequest, .refresh:
             return ""
         }
     }
@@ -86,9 +86,11 @@ struct NewsSection: View {
     let onShowPlace: (SharedLocation) -> Void
 
     var body: some View {
-        if !details.notes.isEmpty {
+        // Refresh requests are only for the devices.
+        let notes = details.notes.filter { $0.kind != .refresh }
+        if !notes.isEmpty {
             Section("Neuigkeiten") {
-                ForEach(details.notes.prefix(5)) { note in
+                ForEach(notes.prefix(5)) { note in
                     if let place = note.location {
                         Button { onShowPlace(place) } label: { row(note) }
                             .tint(.primary)

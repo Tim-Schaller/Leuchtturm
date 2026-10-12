@@ -25,6 +25,19 @@ struct ClientTests {
         Set(details.members.compactMap(\.name))
     }
 
+    @Test func aNewRefreshReplacesTheOldOne() async throws {
+        let alice = try client("alice", "Alice")
+        let bob = try client("bob", "Bob")
+        let ref = try await alice.createCircle(name: "Familie")
+        let bobRef = try await bob.join(try #require(InviteLink(string: try await alice.createInvite(for: ref).url.absoluteString)))
+        _ = try await alice.circle(ref)
+        _ = try await bob.send(.refresh, in: bobRef)
+        _ = try await bob.send(.refresh, in: bobRef)
+        let refreshes = try await alice.circle(ref).notes.filter { $0.kind == .refresh }
+        #expect(refreshes.count == 1)
+        #expect(refreshes.first?.senderID == bob.deviceID)
+    }
+
     @Test func fullLifecycle() async throws {
         let alice = try client("alice", "Alice")
         let bob = try client("bob", "Bob")

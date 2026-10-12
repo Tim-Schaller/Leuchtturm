@@ -834,10 +834,12 @@ public actor LeuchtturmClient {
         let record = StoredRecord(type: RecordType.note, name: RecordName.note(note.id), fields: [
             "from": .string(deviceID), "blob": .bytes(blob), "sig": .bytes(sig),
         ])
+        // Old notes go, and a new refresh replaces the previous one.
         let expired = p.notes.compactMap { r -> String? in
             guard r.string("from") == deviceID else { return nil }
             guard let mine = try? openNote(r, p) else { return r.name }
-            return mine.timestamp < now().addingTimeInterval(-2 * 24 * 3600) ? r.name : nil
+            let replaced = kind == .refresh && mine.kind == .refresh
+            return replaced || mine.timestamp < now().addingTimeInterval(-2 * 24 * 3600) ? r.name : nil
         }
         try await backend.modify(ref, save: [record], delete: expired, removeParticipants: [])
         return note

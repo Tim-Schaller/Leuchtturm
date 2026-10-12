@@ -1,3 +1,4 @@
+import BackgroundTasks
 import SwiftUI
 import UIKit
 
@@ -22,6 +23,17 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         application.registerForRemoteNotifications()
         WatchLink.shared.activate()
+        // Now and then while the app is closed: a fresh position and battery level.
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: AppModel.refreshTask, using: .main) { [model] task in
+            MainActor.assumeIsolated {
+                AppModel.scheduleRefresh()
+                let work = Task {
+                    await model.backgroundRefresh()
+                    task.setTaskCompleted(success: true)
+                }
+                task.expirationHandler = { work.cancel() }
+            }
+        }
         return true
     }
 
@@ -71,6 +83,7 @@ struct RootView: View {
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { model.tracker.refreshAuthorization() }
+            if phase == .background { AppModel.scheduleRefresh() }
         }
     }
 }

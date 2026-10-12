@@ -90,6 +90,9 @@ targets:
         UIBackgroundModes:
           - location
           - remote-notification
+          - fetch
+        BGTaskSchedulerPermittedIdentifiers:
+          - de.timschaller.leuchtturm.refresh
         CFBundleURLTypes:
           - CFBundleURLName: de.timschaller.leuchtturm.invite
             CFBundleURLSchemes:

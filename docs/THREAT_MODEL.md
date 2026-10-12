@@ -91,6 +91,7 @@ Status: v1.1 for CloudKit (M1: identity, circles, invites; M2 in progress: encry
 - **Pending members need the owner.** New members are visible as pending right away, but enter the signed roster only when the owner opens the app. Their admission is verified against the invite record, so if an invite expires and is cleaned up first, the owner must re-invite them.
 - **No use limits on invites.** CloudKit cannot enforce them; a link works for anyone until it expires. Owners see every new member.
 - **Safety codes are manual.** The app warns when a new key appears in a circle and shows which members were verified, but comparing codes is still up to the people.
+- **Members can wake each other's phones.** Refresh and „Wo bist du?“ notes make the others' devices take a fresh position, which costs battery. A device answers refresh notes at most every 30 seconds and the app sends them at most every three minutes per circle; a modified client could send more, but the answers stay limited, and members see such a person in the circle and can remove them.
 - **No forward secrecy within an epoch.** Anyone with a circle key can decrypt everything under that epoch. Periodic rotation may be added later.
 
 ## Open questions

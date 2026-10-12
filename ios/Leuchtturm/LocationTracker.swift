@@ -7,10 +7,12 @@ import UIKit
 ///
 /// In the foreground: regular updates. In the background only with
 /// "Always" access, which lets iOS run updates without the blue status-bar
-/// indicator. iOS pauses them while the iPhone stands still; significant
-/// location changes and visits wake the app again (also after iOS
-/// terminated it), and updates resume. With "When In Use" iOS would show
-/// the indicator the whole time, so tracking stops in the background then.
+/// indicator. iOS pauses them while the iPhone stands still; leaving a
+/// 100 m fence around that spot, significant location changes and visits
+/// wake the app again (also after iOS terminated it), and updates resume.
+/// While moving fast (driving) it measures with GPS precision every 10 m.
+/// With "When In Use" iOS would show the indicator the whole time, so
+/// tracking stops in the background then.
 @MainActor
 @Observable
 final class LocationTracker: NSObject, CLLocationManagerDelegate {
@@ -21,7 +23,13 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
     private(set) var isAlwaysAllowed = false
 
     @ObservationIgnored private let manager = CLLocationManager()
-    @ObservationIgnored private var onUpdate: (@MainActor (CLLocation) -> Void)?
+    /// Every new position in order (iOS may deliver several at once).
+    @ObservationIgnored private var onUpdate: (@MainActor ([CLLocation]) -> Void)?
+    /// Last time the device moved like a car; precise updates until a while after.
+    @ObservationIgnored private var lastFast: Date?
+    @ObservationIgnored private var fastMode = false
+    /// Waiting for one fresh position (`freshLocation`).
+    @ObservationIgnored private var waiting: [CheckedContinuation<CLLocation?, Never>] = []
     /// Finished stays (with "Always" access), for place suggestions.
     @ObservationIgnored var onVisit: (@MainActor (Visit) -> Void)?
     @ObservationIgnored private var running = false
@@ -52,7 +60,7 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     /// Starts updates; `background` asks to keep going while the app is closed.
-    func start(background: Bool, onUpdate: @escaping @MainActor (CLLocation) -> Void) {
+    func start(background: Bool, onUpdate: @escaping @MainActor ([CLLocation]) -> Void) {
         self.onUpdate = onUpdate
         wantsBackground = background
         running = true
@@ -69,23 +77,11 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
         guard !updatingMonitor else { return }
         updatingMonitor = true
         defer { updatingMonitor = false }
-        if monitor == nil {
-            let monitor = await CLMonitor("places")
-            self.monitor = monitor
-            // Conditions survive relaunches; start from what iOS still watches.
-            monitored = Set(await monitor.identifiers)
-            monitorTask = Task { [weak self] in
-                do {
-                    for try await _ in await monitor.events {
-                        self?.resumeIfPaused()
-                    }
-                } catch {}
-            }
-        }
-        guard let monitor else { return }
+        guard let monitor = await placeMonitor() else { return }
         while let places = pendingPlaces {
             pendingPlaces = nil
-            let wanted = Dictionary(places.prefix(20).map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+            // One of iOS's 20 conditions is the fence around a stop.
+            let wanted = Dictionary(places.prefix(19).map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
             for id in monitored.subtracting(wanted.keys) { await monitor.remove(id) }
             for (id, place) in wanted where !monitored.contains(id) {
                 let condition = CLMonitor.CircularGeographicCondition(center: place.coordinate, radius: Double(place.radius))
@@ -93,6 +89,40 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
             }
             monitored = Set(wanted.keys)
         }
+    }
+
+    /// The one monitor (a second with the same name blocks the app).
+    private func placeMonitor() async -> CLMonitor? {
+        if let monitor { return monitor }
+        guard isAlwaysAllowed else { return nil }
+        let monitor = await CLMonitor("places")
+        guard self.monitor == nil else { return self.monitor }
+        self.monitor = monitor
+        // Conditions survive relaunches; start from what iOS still watches.
+        monitored = Set(await monitor.identifiers).subtracting([Self.fence])
+        monitorTask = Task { [weak self] in
+            do {
+                for try await event in await monitor.events {
+                    self?.monitorEvent(event.identifier, inside: event.state == .satisfied)
+                }
+            } catch {}
+        }
+        return monitor
+    }
+
+    private static let fence = "stop-fence"
+
+    /// Leaving the fence around a stop, or any place event: measure again.
+    private func monitorEvent(_ identifier: String, inside: Bool) {
+        if identifier == Self.fence && inside { return }
+        resumeIfPaused()
+    }
+
+    /// iOS paused updates because the iPhone stands still: wake up as soon as
+    /// it leaves the spot, not only after a significant change (often 500 m+).
+    private func fenceIn() async {
+        guard let here = location, let monitor = await placeMonitor() else { return }
+        await monitor.add(CLMonitor.CircularGeographicCondition(center: here.coordinate, radius: 100), identifier: Self.fence)
     }
 
     func stop() {
@@ -107,6 +137,23 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
     func requestFresh() {
         resumeIfPaused()
         manager.requestLocation()
+    }
+
+    /// Waits for the next position (at most `timeout`), e.g. in a background refresh.
+    func freshLocation(timeout: Duration = .seconds(10)) async -> CLLocation? {
+        requestFresh()
+        let timer = Task { [weak self] in
+            try? await Task.sleep(for: timeout)
+            self?.deliverWaiting(nil)
+        }
+        defer { timer.cancel() }
+        return await withCheckedContinuation { waiting.append($0) }
+    }
+
+    private func deliverWaiting(_ location: CLLocation?) {
+        let continuations = waiting
+        waiting = []
+        for continuation in continuations { continuation.resume(returning: location ?? self.location) }
     }
 
     /// Asks iOS for "Always". Returns false when iOS will not ask, then the
@@ -142,17 +189,38 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
             manager.stopUpdatingLocation()
             return
         }
-        manager.desiredAccuracy = inBackground ? kCLLocationAccuracyHundredMeters : kCLLocationAccuracyNearestTenMeters
-        manager.distanceFilter = inBackground ? 50 : 10
-        paused = false
-        manager.startUpdatingLocation()
+        if fastMode {
+            // Driving: GPS precision and a point every 10 m, for smooth routes.
+            manager.activityType = .automotiveNavigation
+            manager.desiredAccuracy = kCLLocationAccuracyBest
+            manager.distanceFilter = 10
+        } else {
+            manager.activityType = .other
+            manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            manager.distanceFilter = inBackground ? 25 : 10
+        }
+        resume()
     }
 
-    /// After a pause, the next significant change or departure wakes us: resume.
+    /// After a pause, leaving the fence, a significant change or a departure wakes us: resume.
     private func resumeIfPaused() {
         guard paused, running else { return }
+        resume()
+    }
+
+    private func resume() {
         paused = false
         manager.startUpdatingLocation()
+        if let monitor { Task { await monitor.remove(Self.fence) } }
+    }
+
+    /// Faster than about 22 km/h means precise updates, until two minutes after.
+    private func updateFastMode(_ latest: CLLocation) {
+        if latest.speed >= 6 { lastFast = latest.timestamp }
+        let fast = lastFast.map { latest.timestamp.timeIntervalSince($0) < 120 } ?? false
+        guard fast != fastMode else { return }
+        fastMode = fast
+        configure()
     }
 
     // MARK: CLLocationManagerDelegate (called on the main thread, where the manager was made)
@@ -162,12 +230,17 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
             guard let latest = locations.last else { return }
             resumeIfPaused()
             location = latest
-            onUpdate?(latest)
+            updateFastMode(latest)
+            onUpdate?(locations)
+            deliverWaiting(latest)
         }
     }
 
     nonisolated func locationManagerDidPauseLocationUpdates(_ manager: CLLocationManager) {
-        MainActor.assumeIsolated { paused = true }
+        MainActor.assumeIsolated {
+            paused = true
+            Task { await fenceIn() }
+        }
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
@@ -185,21 +258,26 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
         MainActor.assumeIsolated { configure() }
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {}
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+        MainActor.assumeIsolated { deliverWaiting(nil) }
+    }
 }
 
 /// When to upload a new position: after moving, but not more often than
 /// `minInterval`, and at least every `heartbeat` while updates arrive.
-/// iOS pauses updates while standing still, so there is no heartbeat then.
+/// iOS pauses updates while standing still; then the background refresh and
+/// the others' refresh requests bring a fresh position and battery level.
 struct SharePolicy {
     var minDistance: CLLocationDistance
     var minInterval: TimeInterval
     var heartbeat: TimeInterval
 
+    /// Driving: the others see the car move, every 10 seconds.
+    static let driving = SharePolicy(minDistance: 30, minInterval: 10, heartbeat: 30)
     /// App open: someone may be watching.
-    static let foreground = SharePolicy(minDistance: 25, minInterval: 15, heartbeat: 120)
-    /// App closed: fewer uploads, less battery.
-    static let background = SharePolicy(minDistance: 100, minInterval: 60, heartbeat: 600)
+    static let foreground = SharePolicy(minDistance: 15, minInterval: 10, heartbeat: 60)
+    /// App closed: a little calmer, for the battery.
+    static let background = SharePolicy(minDistance: 50, minInterval: 30, heartbeat: 300)
 
     func shouldShare(_ location: CLLocation, after last: CLLocation?) -> Bool {
         guard let last else { return true }

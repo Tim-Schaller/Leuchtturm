@@ -163,6 +163,7 @@ With "Always" access iOS reports visits (`CLVisit`). The device keeps finished s
 Notes carry an optional `"d"` (deadline, Unix seconds).
 
 - `locationRequest` ("Wo bist du?", to one member): the recipient's device, woken by the silent push, takes a fresh position and shares it right away, and the recipient sees who asked.
+- `refresh` (to the whole circle, never shown): sent while a member has the map open and someone's position is older than two minutes, at most every three minutes per circle. Every device that shares its location answers with a fresh position and battery level (at most every 30 seconds). Each sender keeps only its newest `refresh`: sending one deletes the previous. Older app versions cannot open the kind and skip it.
 - `pickUp` ("Hol mich ab"): with the sender's exact position.
 - `onMyWay` ("Bin auf dem Weg"): destination name and position, expected arrival in `d` (computed with Apple Maps directions, so Apple sees start and destination for that request). The sender's device sends an `arrival` note within 150 m of the destination.
 - `walkHome` ("Heimweg-Begleitung"): destination and latest arrival in `d`. Every other member's device schedules a local alert for `d`, withdrawn when it sees the arrival, a `journeyCancelled` note, or the walker's position at the destination.
@@ -339,9 +340,10 @@ The owner cannot leave; deleting the zone deletes the circle for everyone. Owner
 Updates will be delivered through CloudKit subscriptions (silent push), so near-real-time rather than instant.
 
 Current state:
-- `CLLocationManager` standard updates (10 m filter in the foreground, 50 m / 100 m accuracy in the background). Background updates only with "Always" access, with `showsBackgroundLocationIndicator = false`, so iOS shows no permanent blue indicator. iOS pauses them while the device is stationary (`pausesLocationUpdatesAutomatically`); significant location changes and visit departures wake the app (also after termination) and updates resume. With "When In Use" iOS would show the indicator the whole time a background app tracks, so tracking stops when the app goes to the background and sharing happens only while it is open.
-- Uploads: app open, after 25 m but at most every 15 s, at least every 2 min while moving; app closed, after 100 m but at most every minute, at least every 10 min while moving. Each upload runs inside a background task so a suspension does not cut it off.
-- Not yet: driving mode, visits, geofence wake-ups (CLMonitor, M3) and push.
+- `CLLocationManager` standard updates with 10 m accuracy (10 m filter in the foreground, 25 m in the background). Moving faster than about 22 km/h switches to driving mode until two minutes after: best accuracy, 10 m filter, activity type automotive navigation (fewer pauses at traffic lights). Background updates only with "Always" access, with `showsBackgroundLocationIndicator = false`. iOS pauses updates when the iPhone stands still; the app then puts a 100 m `CLMonitor` fence around the spot (one of iOS's 20 conditions, places get 19) and resumes as soon as the device leaves it. Significant changes, visits and place events wake it as well.
+- All points iOS delivers (it batches them in the background) go to the trip detector, only points with 65 m accuracy or better. The running route keeps a point every 15 m or 15 s; long trips are simplified on the way and at the end to at most 300 points with Douglas–Peucker (the smallest tolerance that fits), so curves keep their points.
+- Uploads: driving, every 10 s (after 30 m, at least every 30 s); app open, after 15 m but at most every 10 s, at least every minute; app closed, after 50 m but at most every 30 s, at least every 5 minutes while updates arrive; and right away when the battery level changed by 5 points or charging started or stopped. A background app refresh (about every 15 minutes or less often, as iOS decides) shares a fresh position with the battery level while standing still. Each upload runs inside a background task so a suspension does not cut it off.
+- The map polls the open circle every 10 seconds besides the silent pushes, and sends `refresh` notes for old positions.
 
 ## License
 

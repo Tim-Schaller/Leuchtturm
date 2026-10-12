@@ -46,6 +46,9 @@ public struct CircleNote: Sendable, Hashable, Identifiable {
         case meetingPoint
         /// Ends an onMyWay or walkHome without arriving.
         case journeyCancelled
+        /// Someone is looking at the map: devices share a fresh position and
+        /// battery level. Never shown; one per sender at a time.
+        case refresh
     }
 
     public let id: String

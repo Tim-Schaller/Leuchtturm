@@ -130,7 +130,7 @@ struct ReactionPicker: View {
                 Label("„\(sent)“ gesendet", systemImage: "checkmark.circle.fill")
                     .foregroundStyle(.tint)
             } else {
-                Text("Ende-zu-Ende-verschlüsselt. Alle im Kreis können es lesen.")
+                Text("Ende-zu-Ende-verschlüsselt. Alle im Leuchtturm können es lesen.")
             }
         }
         .sensoryFeedback(.success, trigger: sent)

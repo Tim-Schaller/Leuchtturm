@@ -76,7 +76,7 @@ struct CircleDetailView: View {
                         }
                     }
                     Button(
-                        ref.isOwned ? "Kreis löschen" : "Kreis verlassen",
+                        ref.isOwned ? "Leuchtturm löschen" : "Leuchtturm verlassen",
                         systemImage: ref.isOwned ? "trash" : "rectangle.portrait.and.arrow.right",
                         role: .destructive
                     ) {
@@ -95,13 +95,13 @@ struct CircleDetailView: View {
                 .listRowBackground(Color.clear)
             }
         }
-        .navigationTitle(details?.name ?? "Kreis")
+        .navigationTitle(details?.name ?? "Leuchtturm")
         .refreshable { await load() }
         .task(id: model.externalChanges) { await load() }
         .sheet(isPresented: $showInvite) {
             InviteSheet(ref: ref, circleName: details?.name)
         }
-        .alert("Kreis umbenennen", isPresented: $showRename) {
+        .alert("Leuchtturm umbenennen", isPresented: $showRename) {
             TextField("Name", text: $newName)
             Button("Abbrechen", role: .cancel) {}
             Button("Speichern") {
@@ -129,10 +129,10 @@ struct CircleDetailView: View {
                 }
             }
         } message: { _ in
-            Text("Der Kreis bekommt einen neuen Schlüssel. Die Person verliert den Zugriff und kann nichts mehr lesen, was danach geteilt wird.")
+            Text("Der Leuchtturm bekommt einen neuen Schlüssel. Die Person verliert den Zugriff und kann nichts mehr lesen, was danach geteilt wird.")
         }
         .confirmationDialog(
-            ref.isOwned ? "Kreis für alle löschen?" : "Kreis verlassen?",
+            ref.isOwned ? "Leuchtturm für alle löschen?" : "Leuchtturm verlassen?",
             isPresented: $confirmLeave,
             titleVisibility: .visible
         ) {
@@ -153,7 +153,7 @@ struct CircleDetailView: View {
             }
         } message: {
             Text(ref.isOwned
-                ? "Der Kreis liegt in deiner iCloud. Löschst du ihn, ist er für alle Mitglieder weg."
+                ? "Der Leuchtturm liegt in deiner iCloud. Löschst du ihn, ist er für alle Mitglieder weg."
                 : "Du kannst nur über eine neue Einladung zurückkommen.")
         }
     }

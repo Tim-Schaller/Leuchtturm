@@ -28,10 +28,10 @@ struct CreateCircleSheet: View {
                         Text("2 Wochen").tag(14)
                     }
                 } footer: {
-                    Text("Ein Kreis auf Zeit, z. B. für einen Ausflug, endet von selbst: Danach ist er für alle weg, samt Standorten und Nachrichten.")
+                    Text("Ein Leuchtturm auf Zeit, z. B. für einen Ausflug, endet von selbst: Danach ist er für alle weg, samt Standorten und Nachrichten.")
                 }
             }
-            .navigationTitle("Neuer Kreis")
+            .navigationTitle("Neuer Leuchtturm")
             .navigationBarTitleDisplayMode(.inline)
             .errorAlert()
             .toolbar {
@@ -92,18 +92,18 @@ struct JoinSheet: View {
                     }
                 } else {
                     Section {
-                        Label("Du wurdest in einen Kreis eingeladen.", systemImage: "envelope.open")
+                        Label("Du wurdest in einen Leuchtturm eingeladen.", systemImage: "envelope.open")
                     } footer: {
                         Text("Nach dem Beitritt sehen die Mitglieder deinen Namen und deinen Standort, Ende-zu-Ende-verschlüsselt. Das Teilen kannst du in den Einstellungen jederzeit pausieren.")
                     }
                 }
                 Section {
-                    Label("Der Kreis liegt verschlüsselt in der iCloud des Besitzers. Mit dem Beitritt sieht Apple, dass dein iCloud-Konto dazugehört.", systemImage: "icloud")
+                    Label("Der Leuchtturm liegt verschlüsselt in der iCloud des Besitzers. Mit dem Beitritt sieht Apple, dass dein iCloud-Konto dazugehört.", systemImage: "icloud")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
             }
-            .navigationTitle("Kreis beitreten")
+            .navigationTitle("Leuchtturm beitreten")
             .navigationBarTitleDisplayMode(.inline)
             .errorAlert()
             .toolbar {

@@ -64,11 +64,11 @@ struct PeopleSheet: View {
     @ViewBuilder private var content: some View {
         if model.circles.isEmpty && model.hasLoadedCircles {
             ContentUnavailableView {
-                Label("Noch keine Kreise", systemImage: "person.3")
+                Label("Noch keine Leuchttürme", systemImage: "person.3")
             } description: {
-                Text("Erstelle einen Kreis für deine Familie oder Freunde, oder tritt über eine Einladung bei.")
+                Text("Gründe einen Leuchtturm für deine Familie oder Freunde, oder tritt über eine Einladung bei.")
             } actions: {
-                Button("Kreis erstellen") { sheet = .createCircle }
+                Button("Leuchtturm gründen") { sheet = .createCircle }
                     .buttonStyle(.glassProminent)
                 Button("Einladung einfügen") { sheet = .join }
                     .buttonStyle(.glass)
@@ -80,7 +80,7 @@ struct PeopleSheet: View {
                         .font(.callout)
                 }
                 if let end = details.expiresAt {
-                    Label("Kreis auf Zeit · endet \(end.formatted(.relative(presentation: .named)))", systemImage: "hourglass")
+                    Label("Leuchtturm auf Zeit · endet \(end.formatted(.relative(presentation: .named)))", systemImage: "hourglass")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 }
@@ -123,7 +123,7 @@ struct PeopleSheet: View {
                     Button("Jemanden einladen", systemImage: "person.badge.plus") { sheet = .invite(circle.ref) }
                         .disabled(!details.hasKey)
                     NavigationLink(value: DrawerRoute.manage(circle.ref)) {
-                        Label("Kreis verwalten", systemImage: "gearshape")
+                        Label("Leuchtturm verwalten", systemImage: "gearshape")
                     }
                 } footer: {
                     Label("Ende-zu-Ende-verschlüsselt", systemImage: "lock.fill")

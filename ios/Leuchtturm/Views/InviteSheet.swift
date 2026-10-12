@@ -45,7 +45,7 @@ struct InviteSheet: View {
                                 .frame(maxWidth: .infinity)
                                 .accessibilityLabel("QR-Code der Einladung")
                         }
-                        ShareLink(item: link.url, message: Text("Komm in meinen Leuchtturm-Kreis \(circleName ?? "")")) {
+                        ShareLink(item: link.url, message: Text("Komm in meinen Leuchtturm \(circleName ?? "")")) {
                             Label("Link teilen", systemImage: "square.and.arrow.up")
                                 .frame(maxWidth: .infinity)
                         }

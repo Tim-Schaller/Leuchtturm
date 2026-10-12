@@ -502,7 +502,7 @@ final class AppModel {
         guard usesDeviceServices, !fresh.isEmpty else { return }
         for member in fresh {
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "Neu in „\(details.name ?? "deinem Kreis")“: \(member.name ?? "Unbekannt")")
+            content.title = String(localized: "Neu in „\(details.name ?? "deinem Leuchtturm")“: \(member.name ?? "Unbekannt")")
             content.body = String(localized: "Vergleicht den Sicherheitscode persönlich, bevor ihr euch darauf verlasst: \(member.safetyCode)")
             content.sound = .default
             content.threadIdentifier = details.id
@@ -636,7 +636,7 @@ final class AppModel {
         if usesDeviceServices {
             let content = UNMutableNotificationContent()
             content.title = String(localized: "Alles okay?")
-            content.body = String(localized: "Es sah nach einem Unfall aus. Ohne Antwort alarmiert Leuchtturm in 60 Sekunden deine Kreise.")
+            content.body = String(localized: "Es sah nach einem Unfall aus. Ohne Antwort alarmiert die App in 60 Sekunden deine Leuchttürme.")
             content.sound = .default
             content.interruptionLevel = .timeSensitive
             content.categoryIdentifier = Self.crashCategory
@@ -901,7 +901,7 @@ final class AppModel {
             switch error {
             case .noAccount:
                 return String(localized: "Bitte melde dich in den Einstellungen bei iCloud an. Leuchtturm speichert seine verschlüsselten Daten in deiner iCloud.")
-            case .notFound: return String(localized: "Nicht gefunden. Vielleicht wurde der Kreis gelöscht oder du wurdest entfernt.")
+            case .notFound: return String(localized: "Nicht gefunden. Vielleicht wurde der Leuchtturm gelöscht oder du wurdest entfernt.")
             case .permissionDenied: return String(localized: "Dafür fehlen dir die Rechte.")
             case .network: return String(localized: "Keine Verbindung zu iCloud. Bitte versuch es gleich noch einmal.")
             case .quotaExceeded: return String(localized: "Dein iCloud-Speicher ist voll.")
@@ -909,16 +909,16 @@ final class AppModel {
             }
         case let error as ClientError:
             switch error {
-            case .missingCircleKey: return String(localized: "Auf diesem Gerät fehlt noch der Schlüssel für den Kreis. Der Besitzer muss die App einmal öffnen.")
-            case .notOwner: return String(localized: "Das darf nur der Besitzer des Kreises.")
+            case .missingCircleKey: return String(localized: "Auf diesem Gerät fehlt noch der Schlüssel für den Leuchtturm. Der Besitzer muss die App einmal öffnen.")
+            case .notOwner: return String(localized: "Das darf nur der Besitzer des Leuchtturms.")
             case .unknownMember: return String(localized: "Dieses Mitglied gibt es nicht.")
             case .invalidName: return String(localized: "Namen müssen 1 bis \(LeuchtturmClient.maxNameLength) Zeichen lang sein.")
             case .invalidDuration: return String(localized: "Ungültige Gültigkeitsdauer.")
             case .inviteInvalid: return String(localized: "Die Einladung ist ungültig oder wurde zurückgezogen.")
             case .inviteExpired: return String(localized: "Die Einladung ist abgelaufen. Bitte um eine neue.")
-            case .untrustedCircle: return String(localized: "Dieses Gerät kann den Kreis nicht prüfen, z. B. nach einer Neuinstallation. Lass dich neu einladen.")
-            case .tampered: return String(localized: "Die Kreisdaten wurden verändert und sind nicht vom Besitzer signiert.")
-            case .ownerMustDelete: return String(localized: "Als Besitzer kannst du den Kreis nicht verlassen, nur löschen.")
+            case .untrustedCircle: return String(localized: "Dieses Gerät kann den Leuchtturm nicht prüfen, z. B. nach einer Neuinstallation. Lass dich neu einladen.")
+            case .tampered: return String(localized: "Die Daten des Leuchtturms wurden verändert und sind nicht vom Besitzer signiert.")
+            case .ownerMustDelete: return String(localized: "Als Besitzer kannst du den Leuchtturm nicht verlassen, nur löschen.")
             case .invalidNote: return String(localized: "Die Nachricht ist zu lang.")
             case .invalidPlace: return String(localized: "Bitte gib dem Ort einen Namen mit höchstens \(CirclePlace.maxNameLength) Zeichen.")
             }

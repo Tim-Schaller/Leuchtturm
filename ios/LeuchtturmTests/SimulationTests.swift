@@ -31,7 +31,7 @@ struct SimulationTests {
         let ben = world.people[1]
         let link = try #require(await model.simulate { try await $0.invitation(from: ben) })
         let ref = try #require(await model.join(link))
-        #expect(model.circles.map(\.name) == ["Bens Kreis"])
+        #expect(model.circles.map(\.name) == ["Bens Leuchtturm"])
 
         // Ben's device confirms the new member and sees the name.
         await world.tick()

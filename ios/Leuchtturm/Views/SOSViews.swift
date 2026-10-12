@@ -11,7 +11,7 @@ struct SOSSheet: View {
         NavigationStack {
             VStack(spacing: 28) {
                 if let sentAt = model.sosSentAt {
-                    Label("Deine Kreise wurden \(sentAt.formatted(.relative(presentation: .named))) alarmiert.", systemImage: "checkmark.circle.fill")
+                    Label("Deine Leuchttürme wurden \(sentAt.formatted(.relative(presentation: .named))) alarmiert.", systemImage: "checkmark.circle.fill")
                         .font(.headline)
                         .foregroundStyle(Color.accentColor)
                         .multilineTextAlignment(.center)
@@ -28,7 +28,7 @@ struct SOSSheet: View {
                     }
                     .buttonStyle(.glass)
                 } else {
-                    Text("Halte den Knopf 3 Sekunden gedrückt. Alle deine Kreise bekommen eine dringende Nachricht mit deinem genauen Ort, auch im Nebel.")
+                    Text("Halte den Knopf 3 Sekunden gedrückt. Alle deine Leuchttürme bekommen eine dringende Nachricht mit deinem genauen Ort, auch im Nebel.")
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
                     ZStack {
@@ -54,7 +54,7 @@ struct SOSSheet: View {
                         holding = pressing
                     }
                     .accessibilityLabel("SOS")
-                    .accessibilityHint("Drei Sekunden gedrückt halten, um deine Kreise zu alarmieren")
+                    .accessibilityHint("Drei Sekunden gedrückt halten, um deine Leuchttürme zu alarmieren")
                     .accessibilityAction { send() }
                     Text("Leuchtturm ist kein Notrufdienst. In Lebensgefahr ruf direkt die 112 an.")
                         .font(.footnote)
@@ -102,7 +102,7 @@ struct CrashCheckView: View {
             if let deadline = model.crashCheckDeadline {
                 TimelineView(.periodic(from: .now, by: 1)) { context in
                     let left = max(0, Int(deadline.timeIntervalSince(context.date).rounded(.up)))
-                    Text("Es sah nach einem Unfall aus. In \(left) Sekunden alarmiert Leuchtturm deine Kreise.")
+                    Text("Es sah nach einem Unfall aus. In \(left) Sekunden alarmiert die App deine Leuchttürme.")
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.white.opacity(0.9))
                         .monospacedDigit()

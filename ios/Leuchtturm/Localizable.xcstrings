@@ -41,12 +41,12 @@
         }
       }
     },
-    "%@ löscht den Kreis": {
+    "%@ löscht den Leuchtturm": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ deletes the circle"
+            "value": "%@ deletes the lighthouse"
           }
         }
       }
@@ -61,12 +61,12 @@
         }
       }
     },
-    "%@ verlässt den Kreis": {
+    "%@ verlässt den Leuchtturm": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ leaves the circle"
+            "value": "%@ leaves the lighthouse"
           }
         }
       }
@@ -311,12 +311,12 @@
         }
       }
     },
-    "Alle erfundenen Personen sind schon im Kreis.": {
+    "Alle erfundenen Personen sind schon im Leuchtturm.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "All made-up people are already in the circle."
+            "value": "All made-up people are already in the lighthouse."
           }
         }
       }
@@ -361,12 +361,12 @@
         }
       }
     },
-    "Als Besitzer kannst du den Kreis nicht verlassen, nur löschen.": {
+    "Als Besitzer kannst du den Leuchtturm nicht verlassen, nur löschen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "As the owner you cannot leave the circle, only delete it."
+            "value": "As the owner you cannot leave the lighthouse, only delete it."
           }
         }
       }
@@ -471,12 +471,12 @@
         }
       }
     },
-    "Auf diesem Gerät fehlt noch der Schlüssel für den Kreis. Der Besitzer muss die App einmal öffnen.": {
+    "Auf diesem Gerät fehlt noch der Schlüssel für den Leuchtturm. Der Besitzer muss die App einmal öffnen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This device does not have the circle's key yet. The owner needs to open the app once."
+            "value": "This device does not have the lighthouse's key yet. The owner needs to open the app once."
           }
         }
       }
@@ -511,22 +511,22 @@
         }
       }
     },
-    "Aus, solange du es nicht einschaltest. Dann sehen deine Kreise, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Kreis Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt Leuchtturm „Alles okay?“. Ohne Antwort bekommen deine Kreise nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.": {
+    "Aus, solange du es nicht einschaltest. Dann sehen deine Leuchttürme, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Leuchtturm Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt die App „Alles okay?“. Ohne Antwort bekommen deine Leuchttürme nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Off until you turn it on. Then your circles see where you went in the last days, end-to-end encrypted. Your iPhone deletes older days itself. Turning it off deletes the whole history right away.\n\nYour iPhone detects trips itself from 25 km/h on and with the motion sensor, so bikes and trains do not count. If you share them, your circle sees route, distance, top speed, hard braking and acceleration, your speed while driving, and you in the weekly leaderboard. Trips are deleted after 30 days, or right away when you turn this off.\n\nCrash detection: if the car stops abruptly, Leuchtturm asks “Are you OK?”. Without an answer your circles get an SOS with your location after 60 seconds. This is an estimate from GPS data, not an emergency service."
+            "value": "Off until you turn it on. Then your lighthouses see where you went in the last days, end-to-end encrypted. Your iPhone deletes older days itself. Turning it off deletes the whole history right away.\n\nYour iPhone detects trips itself from 25 km/h on and with the motion sensor, so bikes and trains do not count. If you share them, your lighthouse sees route, distance, top speed, hard braking and acceleration, your speed while driving, and you in the weekly leaderboard. Trips are deleted after 30 days, or right away when you turn this off.\n\nCrash detection: if the car stops abruptly, the app asks “Are you OK?”. Without an answer your lighthouses get an SOS with your location after 60 seconds. This is an estimate from GPS data, not an emergency service."
           }
         }
       }
     },
-    "Beispielkreis „Familie“ mit allen anlegen": {
+    "Beispiel-Leuchtturm „Familie“ mit allen anlegen": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Create sample circle “Familie” with everyone"
+            "value": "Create sample lighthouse “Familie” with everyone"
           }
         }
       }
@@ -651,12 +651,12 @@
         }
       }
     },
-    "Das darf nur der Besitzer des Kreises.": {
+    "Das darf nur der Besitzer des Leuchtturms.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Only the circle's owner can do that."
+            "value": "Only the lighthouse's owner can do that."
           }
         }
       }
@@ -711,12 +711,12 @@
         }
       }
     },
-    "Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Kreisen geteilt. Mit Standortzugriff „Immer“ sehen sie dich auch, wenn die App geschlossen ist, ohne dauerhaften blauen Hinweis in der Statusleiste. Mit „Beim Verwenden“ teilt Leuchtturm nur, solange die App offen ist, weil iOS sonst den Hinweis ständig zeigen würde. Steht dein iPhone still, pausiert die Ortung und spart Akku. Ausschalten entfernt deinen Standort sofort aus allen Kreisen. Der Guten-Morgen-Gruß sagt deinen Kreisen Bescheid, wenn du morgens zum ersten Mal unterwegs bist.": {
+    "Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Leuchttürmen geteilt. Mit Standortzugriff „Immer“ sehen sie dich auch, wenn die App geschlossen ist, ohne dauerhaften blauen Hinweis in der Statusleiste. Mit „Beim Verwenden“ teilt die App nur, solange die App offen ist, weil iOS sonst den Hinweis ständig zeigen würde. Steht dein iPhone still, pausiert die Ortung und spart Akku. Ausschalten entfernt deinen Standort sofort aus allen Leuchttürmen. Der Guten-Morgen-Gruß sagt deinen Leuchttürmen Bescheid, wenn du morgens zum ersten Mal unterwegs bist.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your location is encrypted on this iPhone and shared only with your circles. With location access “Always” they see you even when the app is closed, without a permanent blue indicator in the status bar. With “While Using” Leuchtturm shares only while the app is open, because iOS would otherwise show the indicator all the time. When your iPhone stands still, tracking pauses to save battery. Turning sharing off removes your location from all circles right away. The good-morning greeting tells your circles when you first head out in the morning."
+            "value": "Your location is encrypted on this iPhone and shared only with your lighthouses. With location access “Always” they see you even when the app is closed, without a permanent blue indicator in the status bar. With “While Using” the app shares only while the app is open, because iOS would otherwise show the indicator all the time. When your iPhone stands still, tracking pauses to save battery. Turning sharing off removes your location from all lighthouses right away. The good-morning greeting tells your lighthouses when you first head out in the morning."
           }
         }
       }
@@ -731,12 +731,12 @@
         }
       }
     },
-    "Deine Kreise wurden %@ alarmiert.": {
+    "Deine Leuchttürme wurden %@ alarmiert.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your circles were alerted %@."
+            "value": "Your lighthouses were alerted %@."
           }
         }
       }
@@ -761,32 +761,32 @@
         }
       }
     },
-    "Der Kreis bekommt einen neuen Schlüssel. Die Person verliert den Zugriff und kann nichts mehr lesen, was danach geteilt wird.": {
+    "Der Leuchtturm bekommt einen neuen Schlüssel. Die Person verliert den Zugriff und kann nichts mehr lesen, was danach geteilt wird.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The circle gets a new key. The person loses access and cannot read anything shared afterwards."
+            "value": "The lighthouse gets a new key. The person loses access and cannot read anything shared afterwards."
           }
         }
       }
     },
-    "Der Kreis liegt in deiner iCloud. Löschst du ihn, ist er für alle Mitglieder weg.": {
+    "Der Leuchtturm liegt in deiner iCloud. Löschst du ihn, ist er für alle Mitglieder weg.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The circle is stored in your iCloud. If you delete it, it is gone for all members."
+            "value": "The lighthouse is stored in your iCloud. If you delete it, it is gone for all members."
           }
         }
       }
     },
-    "Der Kreis liegt verschlüsselt in der iCloud des Besitzers. Mit dem Beitritt sieht Apple, dass dein iCloud-Konto dazugehört.": {
+    "Der Leuchtturm liegt verschlüsselt in der iCloud des Besitzers. Mit dem Beitritt sieht Apple, dass dein iCloud-Konto dazugehört.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The circle is stored encrypted in the owner's iCloud. When you join, Apple sees that your iCloud account belongs to it."
+            "value": "The lighthouse is stored encrypted in the owner's iCloud. When you join, Apple sees that your iCloud account belongs to it."
           }
         }
       }
@@ -797,6 +797,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The name is encrypted and visible only to members."
+          }
+        }
+      }
+    },
+    "Die Daten des Leuchtturms wurden verändert und sind nicht vom Besitzer signiert.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The lighthouse data was changed and is not signed by the owner."
           }
         }
       }
@@ -831,16 +841,6 @@
         }
       }
     },
-    "Die Kreisdaten wurden verändert und sind nicht vom Besitzer signiert.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The circle data was changed and is not signed by the owner."
-          }
-        }
-      }
-    },
     "Die Nachricht ist zu lang.": {
       "localizations": {
         "en": {
@@ -851,12 +851,12 @@
         }
       }
     },
-    "Die Person lädt dich in ihren eigenen Kreis ein. Damit jemand deinem Kreis beitritt: Kreis öffnen, „Jemanden einladen“, Einladung erstellen.": {
+    "Die Person lädt dich in ihren eigenen Leuchtturm ein. Damit jemand deinem Leuchtturm beitritt: Leuchtturm öffnen, „Jemanden einladen“, Einladung erstellen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The person invites you to their own circle. To have someone join your circle: open the circle, “Invite someone”, create an invite."
+            "value": "The person invites you to their own lighthouse. To have someone join your lighthouse: open the lighthouse, “Invite someone”, create an invite."
           }
         }
       }
@@ -891,12 +891,12 @@
         }
       }
     },
-    "Dieses Gerät kann den Kreis nicht prüfen, z. B. nach einer Neuinstallation. Lass dich neu einladen.": {
+    "Dieses Gerät kann den Leuchtturm nicht prüfen, z. B. nach einer Neuinstallation. Lass dich neu einladen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This device cannot verify the circle, e.g. after reinstalling. Ask for a new invite."
+            "value": "This device cannot verify the lighthouse, e.g. after reinstalling. Ask for a new invite."
           }
         }
       }
@@ -911,12 +911,12 @@
         }
       }
     },
-    "Drei Sekunden gedrückt halten, um deine Kreise zu alarmieren": {
+    "Drei Sekunden gedrückt halten, um deine Leuchttürme zu alarmieren": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hold for three seconds to alert your circles"
+            "value": "Hold for three seconds to alert your lighthouses"
           }
         }
       }
@@ -941,22 +941,22 @@
         }
       }
     },
-    "Du wurdest in einen Kreis eingeladen.": {
+    "Du wurdest in einen Leuchtturm eingeladen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You were invited to a circle."
+            "value": "You were invited to a lighthouse."
           }
         }
       }
     },
-    "Ein Kreis auf Zeit, z. B. für einen Ausflug, endet von selbst: Danach ist er für alle weg, samt Standorten und Nachrichten.": {
+    "Ein Leuchtturm auf Zeit, z. B. für einen Ausflug, endet von selbst: Danach ist er für alle weg, samt Standorten und Nachrichten.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A temporary circle, e.g. for a trip, ends by itself: afterwards it is gone for everyone, including locations and messages."
+            "value": "A temporary lighthouse, e.g. for a trip, ends by itself: afterwards it is gone for everyone, including locations and messages."
           }
         }
       }
@@ -1051,12 +1051,12 @@
         }
       }
     },
-    "Ende-zu-Ende-verschlüsselt. Alle im Kreis können es lesen.": {
+    "Ende-zu-Ende-verschlüsselt. Alle im Leuchtturm können es lesen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "End-to-end encrypted. Everyone in the circle can read it."
+            "value": "End-to-end encrypted. Everyone in the lighthouse can read it."
           }
         }
       }
@@ -1141,16 +1141,6 @@
         }
       }
     },
-    "Erstelle einen Kreis für deine Familie oder Freunde, oder tritt über eine Einladung bei.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Create a circle for your family or friends, or join with an invite."
-          }
-        }
-      }
-    },
     "Erstellen": {
       "localizations": {
         "en": {
@@ -1161,22 +1151,22 @@
         }
       }
     },
-    "Es sah nach einem Unfall aus. In %lld Sekunden alarmiert Leuchtturm deine Kreise.": {
+    "Es sah nach einem Unfall aus. In %lld Sekunden alarmiert die App deine Leuchttürme.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "It looked like a crash. Leuchtturm alerts your circles in %lld seconds."
+            "value": "It looked like a crash. The app alerts your lighthouses in %lld seconds."
           }
         }
       }
     },
-    "Es sah nach einem Unfall aus. Ohne Antwort alarmiert Leuchtturm in 60 Sekunden deine Kreise.": {
+    "Es sah nach einem Unfall aus. Ohne Antwort alarmiert die App in 60 Sekunden deine Leuchttürme.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "It looked like a crash. Without an answer, Leuchtturm alerts your circles in 60 seconds."
+            "value": "It looked like a crash. Without an answer, the app alerts your lighthouses in 60 seconds."
           }
         }
       }
@@ -1261,12 +1251,12 @@
         }
       }
     },
-    "Gespeichert wird in deiner iCloud. Apple sieht nur verschlüsselte Daten, aber welche iCloud-Konten gemeinsam in einem Kreis sind. Alle Mitglieder brauchen ein iCloud-Konto.": {
+    "Gespeichert wird in deiner iCloud. Apple sieht nur verschlüsselte Daten, aber welche iCloud-Konten gemeinsam in einem Leuchtturm sind. Alle Mitglieder brauchen ein iCloud-Konto.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Data is stored in your iCloud. Apple sees only encrypted data, but also which iCloud accounts share a circle. All members need an iCloud account."
+            "value": "Data is stored in your iCloud. Apple sees only encrypted data, but also which iCloud accounts share a lighthouse. All members need an iCloud account."
           }
         }
       }
@@ -1311,6 +1301,16 @@
         }
       }
     },
+    "Gründe einen Leuchtturm für deine Familie oder Freunde, oder tritt über eine Einladung bei.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start a lighthouse for your family or friends, or join with an invite."
+          }
+        }
+      }
+    },
     "Guten-Morgen-Gruß": {
       "localizations": {
         "en": {
@@ -1331,12 +1331,12 @@
         }
       }
     },
-    "Halte den Knopf 3 Sekunden gedrückt. Alle deine Kreise bekommen eine dringende Nachricht mit deinem genauen Ort, auch im Nebel.": {
+    "Halte den Knopf 3 Sekunden gedrückt. Alle deine Leuchttürme bekommen eine dringende Nachricht mit deinem genauen Ort, auch im Nebel.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hold the button for 3 seconds. All your circles get an urgent message with your exact location, even in fog."
+            "value": "Hold the button for 3 seconds. All your lighthouses get an urgent message with your exact location, even in fog."
           }
         }
       }
@@ -1471,132 +1471,22 @@
         }
       }
     },
-    "Komm in meinen Leuchtturm-Kreis %@": {
+    "Komm in meinen Leuchtturm %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Join my Leuchtturm circle %@"
+            "value": "Join my lighthouse %@"
           }
         }
       }
     },
-    "Kommt jemand an oder geht, bekommt der Kreis Bescheid. Das prüft jedes iPhone selbst, kein Server kennt eure Orte. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.": {
+    "Kommt jemand an oder geht, bekommt der Leuchtturm Bescheid. Das prüft jedes iPhone selbst, kein Server kennt eure Orte. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When someone arrives or leaves, the circle is told. Each iPhone checks this itself; no server knows your places. Suggestions come from your stays, which are stored only on this iPhone."
-          }
-        }
-      }
-    },
-    "Kreis": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Circle"
-          }
-        }
-      }
-    },
-    "Kreis auf Zeit · endet %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Temporary circle · ends %@"
-          }
-        }
-      }
-    },
-    "Kreis beitreten": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Join circle"
-          }
-        }
-      }
-    },
-    "Kreis erstellen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Create circle"
-          }
-        }
-      }
-    },
-    "Kreis für alle löschen?": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete circle for everyone?"
-          }
-        }
-      }
-    },
-    "Kreis löschen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete circle"
-          }
-        }
-      }
-    },
-    "Kreis umbenennen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rename circle"
-          }
-        }
-      }
-    },
-    "Kreis verlassen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leave circle"
-          }
-        }
-      }
-    },
-    "Kreis verlassen?": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leave circle?"
-          }
-        }
-      }
-    },
-    "Kreis verwalten": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Manage circle"
-          }
-        }
-      }
-    },
-    "Kreis wählen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose circle"
+            "value": "When someone arrives or leaves, the lighthouse is told. Each iPhone checks this itself; no server knows your places. Suggestions come from your stays, which are stored only on this iPhone."
           }
         }
       }
@@ -1611,6 +1501,56 @@
         }
       }
     },
+    "Leuchtturm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lighthouse"
+          }
+        }
+      }
+    },
+    "Leuchtturm auf Zeit · endet %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temporary lighthouse · ends %@"
+          }
+        }
+      }
+    },
+    "Leuchtturm beitreten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join lighthouse"
+          }
+        }
+      }
+    },
+    "Leuchtturm für alle löschen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete lighthouse for everyone?"
+          }
+        }
+      }
+    },
+    "Leuchtturm gründen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start a lighthouse"
+          }
+        }
+      }
+    },
     "Leuchtturm ist kein Notrufdienst. In Lebensgefahr ruf direkt die 112 an.": {
       "localizations": {
         "en": {
@@ -1621,12 +1561,72 @@
         }
       }
     },
-    "Leuchtturm speichert in iCloud (Apple). Kreisnamen, Namen und Standorte werden vorher auf dem iPhone verschlüsselt, Apple kann sie nicht lesen. Apple sieht aber, welche iCloud-Konten zusammen in einem Kreis sind und wann Daten geschrieben werden. Die Daten liegen in Apples Rechenzentren, nicht zwingend in der EU. Die Karte selbst kommt von Apple Karten: Beim Laden sieht Apple, welchen Kartenausschnitt du ansiehst, aber nicht, wer wo ist.": {
+    "Leuchtturm löschen": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leuchtturm stores data in iCloud (Apple). Circle names, names and locations are encrypted on the iPhone first; Apple cannot read them. Apple does see which iCloud accounts are in a circle together and when data is written. The data is in Apple's data centers, not necessarily in the EU. The map itself comes from Apple Maps: when it loads, Apple sees which map area you look at, but not who is where."
+            "value": "Delete lighthouse"
+          }
+        }
+      }
+    },
+    "Leuchtturm speichert in iCloud (Apple). Namen von Leuchttürmen und Personen sowie Standorte werden vorher auf dem iPhone verschlüsselt, Apple kann sie nicht lesen. Apple sieht aber, welche iCloud-Konten zusammen in einem Leuchtturm sind und wann Daten geschrieben werden. Die Daten liegen in Apples Rechenzentren, nicht zwingend in der EU. Die Karte selbst kommt von Apple Karten: Beim Laden sieht Apple, welchen Kartenausschnitt du ansiehst, aber nicht, wer wo ist.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtturm stores data in iCloud (Apple). Names of lighthouses and people and locations are encrypted on the iPhone first; Apple cannot read them. Apple does see which iCloud accounts are in a lighthouse together and when data is written. The data is in Apple's data centers, not necessarily in the EU. The map itself comes from Apple Maps: when it loads, Apple sees which map area you look at, but not who is where."
+          }
+        }
+      }
+    },
+    "Leuchtturm umbenennen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rename lighthouse"
+          }
+        }
+      }
+    },
+    "Leuchtturm verlassen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave lighthouse"
+          }
+        }
+      }
+    },
+    "Leuchtturm verlassen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave lighthouse?"
+          }
+        }
+      }
+    },
+    "Leuchtturm verwalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage lighthouse"
+          }
+        }
+      }
+    },
+    "Leuchtturm wählen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose lighthouse"
           }
         }
       }
@@ -1671,22 +1671,22 @@
         }
       }
     },
-    "Löschen entfernt deine eigenen Kreise für alle, verlässt alle anderen und löscht deine Schlüssel. Das lässt sich nicht rückgängig machen.": {
+    "Löschen entfernt deine eigenen Leuchttürme für alle, verlässt alle anderen und löscht deine Schlüssel. Das lässt sich nicht rückgängig machen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deleting removes your own circles for everyone, leaves all others and deletes your keys. This cannot be undone."
+            "value": "Deleting removes your own lighthouses for everyone, leaves all others and deletes your keys. This cannot be undone."
           }
         }
       }
     },
-    "Löscht die Schlüssel auf diesem iPhone. Deine Kreise in iCloud bleiben bestehen, du kannst sie danach aber nicht mehr lesen und brauchst neue Einladungen.": {
+    "Löscht die Schlüssel auf diesem iPhone. Deine Leuchttürme in iCloud bleiben bestehen, du kannst sie danach aber nicht mehr lesen und brauchst neue Einladungen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deletes the keys on this iPhone. Your circles in iCloud remain, but you can no longer read them and need new invites."
+            "value": "Deletes the keys on this iPhone. Your lighthouses in iCloud remain, but you can no longer read them and need new invites."
           }
         }
       }
@@ -1891,12 +1891,12 @@
         }
       }
     },
-    "Neuer Kreis": {
+    "Neuer Leuchtturm": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "New circle"
+            "value": "New lighthouse"
           }
         }
       }
@@ -1931,22 +1931,22 @@
         }
       }
     },
-    "Nicht gefunden. Vielleicht wurde der Kreis gelöscht oder du wurdest entfernt.": {
+    "Nicht gefunden. Vielleicht wurde der Leuchtturm gelöscht oder du wurdest entfernt.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Not found. Maybe the circle was deleted or you were removed."
+            "value": "Not found. Maybe the lighthouse was deleted or you were removed."
           }
         }
       }
     },
-    "Noch keine Kreise": {
+    "Noch keine Leuchttürme": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No circles yet"
+            "value": "No lighthouses yet"
           }
         }
       }
@@ -2301,22 +2301,22 @@
         }
       }
     },
-    "So sehen dich die Mitglieder deiner Kreise. Nur sie können ihn lesen.": {
+    "So sehen dich die Mitglieder deiner Leuchttürme. Nur sie können ihn lesen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This is how members of your circles see you. Only they can read it."
+            "value": "This is how members of your lighthouses see you. Only they can read it."
           }
         }
       }
     },
-    "Solange der Nebel aktiv ist, verlässt dein genauer Standort dein iPhone nicht. Dein Kreis sieht nur die Gegend und deinen Akkustand. Check-ins sind so lange aus. Danach wird automatisch wieder genau geteilt.": {
+    "Solange der Nebel aktiv ist, verlässt dein genauer Standort dein iPhone nicht. Dein Leuchtturm sieht nur die Gegend und deinen Akkustand. Check-ins sind so lange aus. Danach wird automatisch wieder genau geteilt.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "While fog is on, your exact location does not leave your iPhone. Your circle sees only the area and your battery level. Check-ins are off meanwhile. Afterwards, exact sharing resumes automatically."
+            "value": "While fog is on, your exact location does not leave your iPhone. Your lighthouse sees only the area and your battery level. Check-ins are off meanwhile. Afterwards, exact sharing resumes automatically."
           }
         }
       }
@@ -2791,12 +2791,12 @@
         }
       }
     },
-    "Wird in allen deinen Kreisen verschlüsselt aktualisiert.": {
+    "Wird in allen deinen Leuchttürmen verschlüsselt aktualisiert.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Updated, encrypted, in all your circles."
+            "value": "Updated, encrypted, in all your lighthouses."
           }
         }
       }

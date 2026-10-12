@@ -36,14 +36,14 @@ struct OnboardingView: View {
                 } header: {
                     Text("Name")
                 } footer: {
-                    Text("So sehen dich die Mitglieder deiner Kreise. Nur sie können ihn lesen.")
+                    Text("So sehen dich die Mitglieder deiner Leuchttürme. Nur sie können ihn lesen.")
                 }
 
                 Section {
                     Label {
                         model.isSimulation
                             ? Text("Simulation: Alles bleibt im Speicher dieser App, nichts geht an iCloud. Beendest du die App, ist alles weg.")
-                            : Text("Gespeichert wird in deiner iCloud. Apple sieht nur verschlüsselte Daten, aber welche iCloud-Konten gemeinsam in einem Kreis sind. Alle Mitglieder brauchen ein iCloud-Konto.")
+                            : Text("Gespeichert wird in deiner iCloud. Apple sieht nur verschlüsselte Daten, aber welche iCloud-Konten gemeinsam in einem Leuchtturm sind. Alle Mitglieder brauchen ein iCloud-Konto.")
                     } icon: {
                         Image(systemName: model.isSimulation ? "testtube.2" : "icloud")
                     }

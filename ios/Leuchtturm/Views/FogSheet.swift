@@ -29,7 +29,7 @@ struct FogSheet: View {
                 } header: {
                     Text("Wie lange?")
                 } footer: {
-                    Text("Solange der Nebel aktiv ist, verlässt dein genauer Standort dein iPhone nicht. Dein Kreis sieht nur die Gegend und deinen Akkustand. Check-ins sind so lange aus. Danach wird automatisch wieder genau geteilt.")
+                    Text("Solange der Nebel aktiv ist, verlässt dein genauer Standort dein iPhone nicht. Dein Leuchtturm sieht nur die Gegend und deinen Akkustand. Check-ins sind so lange aus. Danach wird automatisch wieder genau geteilt.")
                 }
             }
             .navigationTitle("Nebel")

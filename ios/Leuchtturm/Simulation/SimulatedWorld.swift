@@ -115,7 +115,7 @@ final class SimulatedWorld {
         if let owned = try await person.client.circles().first(where: \.isOwner)?.ref {
             ref = owned
         } else {
-            ref = try await person.client.createCircle(name: "\(person.name)s Kreis")
+            ref = try await person.client.createCircle(name: "\(person.name)s Leuchtturm")
         }
         return try await person.client.createInvite(for: ref)
     }

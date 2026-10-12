@@ -101,7 +101,7 @@ struct PlacesSection: View {
         } header: {
             Text("Orte")
         } footer: {
-            Text("Kommt jemand an oder geht, bekommt der Kreis Bescheid. Das prüft jedes iPhone selbst, kein Server kennt eure Orte. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.")
+            Text("Kommt jemand an oder geht, bekommt der Leuchtturm Bescheid. Das prüft jedes iPhone selbst, kein Server kennt eure Orte. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.")
         }
     }
 

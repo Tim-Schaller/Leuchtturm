@@ -21,7 +21,7 @@ struct SimulationView: View {
 
                 if let world = model.simulation, model.client != nil {
                     Section {
-                        Button("Beispielkreis „Familie“ mit allen anlegen", systemImage: "person.3.fill") {
+                        Button("Beispiel-Leuchtturm „Familie“ mit allen anlegen", systemImage: "person.3.fill") {
                             Task {
                                 await model.createDemoCircle()
                                 dismiss()
@@ -70,7 +70,7 @@ struct SimulationView: View {
                     } header: {
                         Text("Einladungen")
                     } footer: {
-                        Text("Die Person lädt dich in ihren eigenen Kreis ein. Damit jemand deinem Kreis beitritt: Kreis öffnen, „Jemanden einladen“, Einladung erstellen.")
+                        Text("Die Person lädt dich in ihren eigenen Leuchtturm ein. Damit jemand deinem Leuchtturm beitritt: Leuchtturm öffnen, „Jemanden einladen“, Einladung erstellen.")
                     }
 
                     ForEach(model.circles) { circle in
@@ -78,7 +78,7 @@ struct SimulationView: View {
                             ForEach(memberships[circle.id] ?? []) { membership in
                                 let name = membership.person.name
                                 Button(
-                                    membership.isOwner ? "\(name) löscht den Kreis" : "\(name) verlässt den Kreis",
+                                    membership.isOwner ? "\(name) löscht den Leuchtturm" : "\(name) verlässt den Leuchtturm",
                                     systemImage: membership.isOwner ? "trash" : "rectangle.portrait.and.arrow.right"
                                 ) {
                                     Task { await model.simulate { try await $0.leave(membership.person, circleID: circle.id) } }
@@ -90,7 +90,7 @@ struct SimulationView: View {
                                 }
                             }
                         } header: {
-                            Text(circle.name ?? "Unbekannter Kreis")
+                            Text(circle.name ?? "Unbekannter Leuchtturm")
                         } footer: {
                             if circle.isOwner {
                                 Text("Der Fremde hat den iCloud-Freigabelink, aber nicht den Schlüssel aus der Einladung. Er erscheint bei dir unter „Nicht bestätigt“ und sieht nur verschlüsselte Daten.")
@@ -144,7 +144,7 @@ struct SimulatedRecipients: View {
                     }
                 }
                 if candidates.isEmpty {
-                    Text("Alle erfundenen Personen sind schon im Kreis.")
+                    Text("Alle erfundenen Personen sind schon im Leuchtturm.")
                         .foregroundStyle(.secondary)
                 }
             }

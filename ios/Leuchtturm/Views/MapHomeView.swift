@@ -246,13 +246,13 @@ struct MapHomeView: View {
 
     private var circleMenu: some View {
         Menu {
-            Picker("Kreis", selection: Binding(get: { selected?.id ?? "" }, set: { selectedCircleID = $0 })) {
+            Picker("Leuchtturm", selection: Binding(get: { selected?.id ?? "" }, set: { selectedCircleID = $0 })) {
                 ForEach(model.circles) { circle in
-                    Text(circle.name ?? "Unbekannter Kreis").tag(circle.id)
+                    Text(circle.name ?? "Unbekannter Leuchtturm").tag(circle.id)
                 }
             }
             Divider()
-            Button("Kreis erstellen", systemImage: "plus.circle") { sheet = .createCircle }
+            Button("Leuchtturm gründen", systemImage: "plus.circle") { sheet = .createCircle }
             Button("Einladung einfügen", systemImage: "link") { sheet = .join }
         } label: {
             HStack(spacing: 6) {
@@ -266,7 +266,7 @@ struct MapHomeView: View {
             .padding(.vertical, 12)
             .glassEffect(.regular.interactive(), in: .capsule)
         }
-        .accessibilityLabel("Kreis wählen")
+        .accessibilityLabel("Leuchtturm wählen")
     }
 }
 

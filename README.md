@@ -28,6 +28,8 @@ Leuchtturm is a native iOS app (SwiftUI, Liquid Glass) for sharing your location
 
 ## 🌿 At a glance
 
+In the app, a circle of people is called a *Leuchtturm* (lighthouse): you start one for your family or friends and invite them.
+
 - **End-to-end encrypted.** Content is encrypted on the iPhone with keys Apple never sees.
 - **No server of its own.** Each circle lives in the iCloud of the person who created it.
 - **Honest about metadata.** Apple can see which iCloud accounts share a circle, but not what is inside it.

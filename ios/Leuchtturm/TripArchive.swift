@@ -24,6 +24,13 @@ final class TripArchive {
         save()
     }
 
+    /// A changed answer (driver or passenger) for a stored trip.
+    func update(_ trip: Trip) {
+        guard let i = trips.firstIndex(where: { $0.id == trip.id }) else { return add(trip) }
+        trips[i] = trip
+        save()
+    }
+
     func clear() {
         trips = []
         if let fileURL { try? FileManager.default.removeItem(at: fileURL) }
@@ -43,15 +50,19 @@ final class TripArchive {
         var start, end: Date
         var distance, topSpeed: Double
         var hardBrakes, rapidAccelerations: Int
+        /// Rode along: does not count (older files do not have it).
+        var passenger: Bool?
 
         init(_ trip: Trip) {
             (id, start, end, distance, topSpeed) = (trip.id, trip.start, trip.end, trip.distance, trip.topSpeed)
             (hardBrakes, rapidAccelerations) = (trip.hardBrakes, trip.rapidAccelerations)
+            passenger = trip.isPassenger ? true : nil
         }
 
         var trip: Trip {
             Trip(id: id, deviceID: "", start: start, end: end, distance: distance, topSpeed: topSpeed,
-                 hardBrakes: hardBrakes, rapidAccelerations: rapidAccelerations, route: [])
+                 hardBrakes: hardBrakes, rapidAccelerations: rapidAccelerations, route: [],
+                 role: passenger == true ? .passenger : nil)
         }
     }
 }

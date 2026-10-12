@@ -6,7 +6,7 @@ import SwiftUI
 enum DrawerRoute: Hashable {
     case member(String)
     case history(String)
-    case trip(Trip)
+    case ride(SharedRide)
     case manage(CircleRef)
 }
 
@@ -43,8 +43,8 @@ struct PeopleSheet: View {
                         if let member = details?.members.first(where: { $0.id == id }), let ref = circle?.ref {
                             HistoryView(member: member, ref: ref)
                         }
-                    case let .trip(trip):
-                        TripView(trip: trip, member: details?.members.first { $0.id == trip.deviceID })
+                    case let .ride(ride):
+                        TripView(ride: ride, members: details?.members ?? [])
                     case let .manage(ref):
                         CircleDetailView(ref: ref)
                     }

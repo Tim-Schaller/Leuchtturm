@@ -185,6 +185,190 @@
         }
       }
     },
+    "%@ ist gefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ drove"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condujo %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ conduisait"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha guidato %@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ reed"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prowadził(a) %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ sürdü"
+          }
+        }
+      }
+    },
+    "%@ ist vermutlich gefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ probably drove"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probablemente condujo %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ conduisait sans doute"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probabilmente ha guidato %@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ reed waarschijnlijk"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prawdopodobnie prowadził(a) %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muhtemelen %@ sürdü"
+          }
+        }
+      }
+    },
+    "%@ ist vermutlich gefahren · CarPlay": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ probably drove · CarPlay"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probablemente condujo %@ · CarPlay"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ conduisait sans doute · CarPlay"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probabilmente ha guidato %@ · CarPlay"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ reed waarschijnlijk · CarPlay"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prawdopodobnie prowadził(a) %@ · CarPlay"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muhtemelen %@ sürdü · CarPlay"
+          }
+        }
+      }
+    },
+    "%@ ist vermutlich gefahren · mit „%@“ verbunden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ probably drove · connected to “%@”"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probablemente condujo %@ · conectado a «%@»"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ conduisait sans doute · connecté à « %@ »"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probabilmente ha guidato %@ · collegato a «%@»"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ reed waarschijnlijk · verbonden met ‘%@’"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prawdopodobnie prowadził(a) %@ · połączono z „%@”"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muhtemelen %@ sürdü · “%@” ile bağlı"
+          }
+        }
+      }
+    },
     "%@ lädt dich ein": {
       "localizations": {
         "en": {
@@ -733,6 +917,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ · siste"
+          }
+        }
+      }
+    },
+    "%@ · mitgefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · passenger"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · de copiloto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · passager"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · passeggero"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · meegereden"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · pasażer"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · yolcu"
           }
         }
       }
@@ -9155,52 +9385,6 @@
         }
       }
     },
-    "Entfernt die Fahrt für alle, sie zählt dann nicht für deine Punkte.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Removes the trip for everyone; it no longer counts for your score."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quita el trayecto para todos; ya no cuenta para tus puntos."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Retire le trajet pour tout le monde ; il ne compte alors plus pour tes points."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rimuove il tragitto per tutti; non conta più per i tuoi punti."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verwijdert de rit voor iedereen; hij telt dan niet mee voor je punten."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Usuwa przejazd dla wszystkich; nie liczy się on wtedy do twoich punktów."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sürüşü herkes için kaldırır; artık puanına sayılmaz."
-          }
-        }
-      }
-    },
     "Entfernung": {
       "localizations": {
         "en": {
@@ -9431,6 +9615,52 @@
         }
       }
     },
+    "Erkannt, weil ihr zur selben Zeit dieselbe Strecke gefahren seid. In der Bestenliste zählt nur die Fahrt des Fahrers. Mit CarPlay oder einem deiner Autos per Bluetooth vermutet die App, dass du gefahren bist.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detected because you travelled the same route at the same time. Only the driver’s trip counts on the leaderboard. With CarPlay or one of your cars over Bluetooth, the app assumes you drove."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detectado porque hicisteis la misma ruta a la vez. En la clasificación solo cuenta el trayecto de quien conduce. Con CarPlay o uno de tus coches por Bluetooth, la app supone que condujiste tú."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Détecté car vous avez fait le même trajet au même moment. Seul le trajet du conducteur compte dans le classement. Avec CarPlay ou l’une de tes voitures en Bluetooth, l’app suppose que tu conduisais."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rilevato perché avete fatto lo stesso percorso nello stesso momento. In classifica conta solo il viaggio di chi guidava. Con CarPlay o una delle tue auto via Bluetooth, l’app presume che guidassi tu."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herkend omdat jullie tegelijk dezelfde route reden. In het klassement telt alleen de rit van de bestuurder. Met CarPlay of een van je auto’s via Bluetooth neemt de app aan dat jij reed."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozpoznano, bo jechaliście tą samą trasą w tym samym czasie. W rankingu liczy się tylko jazda kierowcy. Przy CarPlay lub jednym z twoich aut przez Bluetooth aplikacja zakłada, że to ty prowadziłeś(-aś)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aynı anda aynı rotada olduğunuz için algılandı. Sıralamada yalnızca sürücünün yolculuğu sayılır. CarPlay veya Bluetooth ile arabalarından birine bağlıysan uygulama senin sürdüğünü varsayar."
+          }
+        }
+      }
+    },
     "Erkennt Autofahrten mit Strecke und Tempo, für deinen Wochenrückblick und die Bestenliste.": {
       "localizations": {
         "en": {
@@ -9657,6 +9887,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Henüz çok az kişi konumunu paylaşıyor."
+          }
+        }
+      }
+    },
+    "Fahrer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Driver"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conductor"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conducteur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conducente"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestuurder"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kierowca"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sürücü"
           }
         }
       }
@@ -10811,6 +11087,98 @@
         }
       }
     },
+    "Gemeinsame Fahrt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shared Ride"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trayecto compartido"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trajet commun"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viaggio insieme"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gezamenlijke rit"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wspólna jazda"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ortak yolculuk"
+          }
+        }
+      }
+    },
+    "Gemeinsame Fahrt mit %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shared ride with %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trayecto compartido con %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trajet commun avec %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viaggio insieme a %@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gezamenlijke rit met %@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wspólna jazda z: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ile ortak yolculuk"
+          }
+        }
+      }
+    },
     "Genau die Mitte": {
       "localizations": {
         "en": {
@@ -11175,6 +11543,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dün"
+          }
+        }
+      }
+    },
+    "Gestrichelt: keine Daten, z. B. im Tunnel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dashed: no data, e.g. in a tunnel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discontinuo: sin datos, p. ej. en un túnel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En pointillés : aucune donnée, p. ex. dans un tunnel"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tratteggiato: nessun dato, ad es. in galleria"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestreept: geen gegevens, bijv. in een tunnel"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przerywana linia: brak danych, np. w tunelu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kesikli: veri yok, ör. tünelde"
           }
         }
       }
@@ -12145,6 +12559,144 @@
         }
       }
     },
+    "Ich": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Me"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moi"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Io"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ik"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ja"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ben"
+          }
+        }
+      }
+    },
+    "Ich bin gefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I Drove"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conduje yo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "J’ai conduit"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ho guidato io"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ik reed"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ja prowadziłem(-am)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ben sürdüm"
+          }
+        }
+      }
+    },
+    "Ich bin mitgefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I Was a Passenger"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iba de copiloto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "J’étais passager"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ero passeggero"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ik reed mee"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Byłem(-am) pasażerem"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yolcuydum"
+          }
+        }
+      }
+    },
     "Ich bin nur mitgefahren": {
       "localizations": {
         "en": {
@@ -12467,6 +13019,52 @@
         }
       }
     },
+    "Ist dein iPhone bei einer Fahrt mit CarPlay oder per Bluetooth mit einem dieser Autos verbunden, vermutet die App, dass du gefahren bist. Fahrt ihr zu mehreren, zählt in der Bestenliste nur die Fahrt des Fahrers. Den Namen des Autos sehen deine Leuchttürme bei der Fahrt, Ende-zu-Ende-verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If your iPhone is connected to CarPlay or to one of these cars over Bluetooth during a trip, the app assumes you drove. When several of you ride together, only the driver’s trip counts on the leaderboard. Your lighthouses see the car’s name with the trip, end-to-end encrypted."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si tu iPhone está conectado a CarPlay o por Bluetooth a uno de estos coches durante un trayecto, la app supone que conducías tú. Si vais varios, en la clasificación solo cuenta el trayecto de quien conduce. Tus faros ven el nombre del coche con el trayecto, cifrado de extremo a extremo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si ton iPhone est connecté à CarPlay ou en Bluetooth à l’une de ces voitures pendant un trajet, l’app suppose que tu conduisais. Si vous êtes plusieurs, seul le trajet du conducteur compte dans le classement. Tes phares voient le nom de la voiture avec le trajet, chiffré de bout en bout."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se durante un viaggio il tuo iPhone è collegato a CarPlay o via Bluetooth a una di queste auto, l’app presume che guidassi tu. Se siete in più, in classifica conta solo il viaggio di chi guidava. I tuoi fari vedono il nome dell’auto con il viaggio, crittografato end-to-end."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Is je iPhone tijdens een rit verbonden met CarPlay of via Bluetooth met een van deze auto’s, dan neemt de app aan dat jij reed. Rijden jullie met meerderen, dan telt in het klassement alleen de rit van de bestuurder. Je vuurtorens zien de naam van de auto bij de rit, end-to-end versleuteld."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeśli podczas jazdy twój iPhone jest połączony z CarPlay lub przez Bluetooth z jednym z tych aut, aplikacja zakłada, że to ty prowadziłeś(-aś). Gdy jedziecie razem, w rankingu liczy się tylko jazda kierowcy. Twoje latarnie widzą nazwę auta przy jeździe, zaszyfrowaną end-to-end."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yolculuk sırasında iPhone’un CarPlay’e veya Bluetooth ile bu arabalardan birine bağlıysa uygulama senin sürdüğünü varsayar. Birlikte yolculuk yaparsanız sıralamada yalnızca sürücünün yolculuğu sayılır. Fenerlerin arabanın adını yolculukta uçtan uca şifreli olarak görür."
+          }
+        }
+      }
+    },
     "Jeder mit dem Link kann beitreten, bis er abläuft. Neue Mitglieder siehst du in der Mitgliederliste und kannst sie jederzeit entfernen. Entfernst du jemanden, werden alle offenen Einladungen ungültig.": {
       "localizations": {
         "en": {
@@ -12555,6 +13153,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Biri"
+          }
+        }
+      }
+    },
+    "Jemand anderes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Someone Else"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otra persona"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quelqu’un d’autre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qualcun altro"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iemand anders"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ktoś inny"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başka biri"
           }
         }
       }
@@ -14905,6 +15549,52 @@
         }
       }
     },
+    "Meine Autos": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My Cars"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mis coches"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mes voitures"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le mie auto"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mijn auto’s"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moje auta"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arabalarım"
+          }
+        }
+      }
+    },
     "Melden, wenn nicht angekommen": {
       "localizations": {
         "en": {
@@ -15085,6 +15775,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kamerayla tara, Leuchtturm kodunla açılır."
+          }
+        }
+      }
+    },
+    "Mitgefahrene Fahrten zählen nicht für die Bestenliste und deine Statistik.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trips as a passenger don’t count for the leaderboard or your statistics."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los trayectos como copiloto no cuentan para la clasificación ni para tus estadísticas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les trajets en tant que passager ne comptent ni pour le classement ni pour tes statistiques."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I viaggi da passeggero non contano per la classifica né per le tue statistiche."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritten als passagier tellen niet mee voor het klassement en je statistieken."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jazdy jako pasażer nie liczą się do rankingu ani twoich statystyk."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yolcu olarak yapılan yolculuklar sıralamaya ve istatistiklerine sayılmaz."
           }
         }
       }
@@ -16603,6 +17339,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bu hafta henüz paylaşılan sürüş yok."
+          }
+        }
+      }
+    },
+    "Noch keine. Sag nach einer Fahrt „Ich bin gefahren“, während dein iPhone per Bluetooth mit dem Auto verbunden war, dann merkt es sich das Auto.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None yet. After a trip during which your iPhone was connected to the car over Bluetooth, say “I drove” and it will remember the car."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ninguno aún. Tras un trayecto en el que tu iPhone estuvo conectado al coche por Bluetooth, responde «Conduje yo» y recordará el coche."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune pour l’instant. Après un trajet où ton iPhone était connecté à la voiture en Bluetooth, réponds « J’ai conduit » et il retiendra la voiture."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna per ora. Dopo un viaggio in cui il tuo iPhone era collegato all’auto via Bluetooth, rispondi «Ho guidato io» e ricorderà l’auto."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog geen. Zeg na een rit waarin je iPhone via Bluetooth met de auto verbonden was ‘Ik reed’, dan onthoudt hij de auto."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeszcze żadnych. Po jeździe, podczas której iPhone był połączony z autem przez Bluetooth, odpowiedz „Ja prowadziłem(-am)”, a zapamięta auto."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz yok. iPhone’un Bluetooth ile arabaya bağlı olduğu bir yolculuktan sonra “Ben sürdüm” dersen arabayı hatırlar."
           }
         }
       }
@@ -22817,6 +23599,98 @@
         }
       }
     },
+    "Wer ist gefahren?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who Drove?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Quién condujo?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qui conduisait ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi ha guidato?"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie reed er?"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kto prowadził?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kim sürdü?"
+          }
+        }
+      }
+    },
+    "Wer ist gefahren? Deine Antwort zählt für die Bestenliste.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who drove? Your answer counts for the leaderboard."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Quién condujo? Tu respuesta cuenta para la clasificación."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qui conduisait ? Ta réponse compte pour le classement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi ha guidato? La tua risposta conta per la classifica."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie reed er? Je antwoord telt voor het klassement."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kto prowadził? Twoja odpowiedź liczy się do rankingu."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kim sürdü? Cevabın sıralamada sayılır."
+          }
+        }
+      }
+    },
     "Wetter": {
       "localizations": {
         "en": {
@@ -24795,6 +25669,52 @@
         }
       }
     },
+    "ist gefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "drove"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "condujo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "conduisait"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ha guidato"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "reed"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "prowadził(a)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sürdü"
+          }
+        }
+      }
+    },
     "ist nicht mehr auf dem Weg zu „%@“": {
       "localizations": {
         "en": {
@@ -25021,6 +25941,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "bildiriyor: her şey yolunda 📍"
+          }
+        }
+      }
+    },
+    "mitgefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "passenger"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "copiloto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "passager"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "passeggero"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "meegereden"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pasażer"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yolcu"
           }
         }
       }
@@ -25531,6 +26497,52 @@
         }
       }
     },
+    "unklar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "unclear"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sin aclarar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "incertain"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "non chiaro"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "onduidelijk"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "niejasne"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "belirsiz"
+          }
+        }
+      }
+    },
     "unterwegs": {
       "localizations": {
         "en": {
@@ -25619,6 +26631,144 @@
           "stringUnit": {
             "state": "translated",
             "value": "yolda · %@"
+          }
+        }
+      }
+    },
+    "vermutlich gefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probably drove"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probablemente condujo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "conduisait sans doute"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probabilmente ha guidato"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "reed waarschijnlijk"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "prawdopodobnie prowadził(a)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "muhtemelen sürdü"
+          }
+        }
+      }
+    },
+    "vermutlich · CarPlay": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probably · CarPlay"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probablemente · CarPlay"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sans doute · CarPlay"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probabilmente · CarPlay"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "waarschijnlijk · CarPlay"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "prawdopodobnie · CarPlay"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "muhtemelen · CarPlay"
+          }
+        }
+      }
+    },
+    "vermutlich · „%@“": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probably · “%@”"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probablemente · «%@»"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sans doute · « %@ »"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probabilmente · «%@»"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "waarschijnlijk · ‘%@’"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "prawdopodobnie · „%@”"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "muhtemelen · “%@”"
           }
         }
       }

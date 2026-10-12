@@ -359,12 +359,23 @@ final class SimulatedWorld {
                 route.append(HistoryDay.Point(latitude: lat, longitude: lon, timestamp: time))
             }
         }
+        // A tunnel on the motorway: two minutes without data, drawn dashed.
+        route.removeSubrange(40 ..< 44)
+        // Ben drove with CarPlay; Clara rode along and her iPhone saw the same drive.
         let dayOut = Trip(
             id: CircleCrypto.newCircleID(), deviceID: people[1].client.deviceID, start: start, end: time,
-            distance: distance, topSpeed: 220 / 3.6, hardBrakes: 0, rapidAccelerations: 1, route: route
+            distance: distance, topSpeed: 220 / 3.6, hardBrakes: 0, rapidAccelerations: 1, route: route, gaps: [40],
+            role: .driver, reason: .carPlay
         )
         try await people[1].client.shareTrip(dayOut)
         sharedTrips[people[1].id, default: []].append(dayOut)
+        let alongside = Trip(
+            id: CircleCrypto.newCircleID(), deviceID: people[2].client.deviceID, start: start.addingTimeInterval(20), end: time,
+            distance: distance, topSpeed: 218 / 3.6, hardBrakes: 0, rapidAccelerations: 1,
+            route: route.map { HistoryDay.Point(latitude: $0.latitude + 0.0001, longitude: $0.longitude, timestamp: $0.timestamp) },
+            gaps: [40]
+        )
+        try await people[2].client.shareTrip(alongside)
     }
 
     /// The person's driving totals: this week's trips plus a made-up year

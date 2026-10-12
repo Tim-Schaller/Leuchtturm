@@ -87,6 +87,14 @@ final class AppModel {
     @ObservationIgnored private var lastSharedBattery: Int?
     @ObservationIgnored private var lastSharedCharging = false
     @ObservationIgnored private var lastTripSave = Date.distantPast
+    /// Shared rides (see SharedRidesModel.swift).
+    var myCars: [String] = []
+    @ObservationIgnored var tripCars: [String: String] = [:]
+    @ObservationIgnored var askedRides: Set<String> = []
+    @ObservationIgnored var rideOthers: [String: [String]] = [:]
+    @ObservationIgnored var carSamples = CarSamples()
+    @ObservationIgnored var lastCarSample = Date.distantPast
+    @ObservationIgnored var lastRideCheck = Date.distantPast
     /// When this device last asked a circle for fresh positions, by circle.
     @ObservationIgnored private var lastRefreshAsk: [String: Date] = [:]
 
@@ -184,15 +192,25 @@ final class AppModel {
         if usesDeviceServices {
             let center = UNUserNotificationCenter.current()
             center.delegate = notificationPresenter
-            center.setNotificationCategories([UNNotificationCategory(
-                identifier: Self.crashCategory,
-                actions: [
-                    UNNotificationAction(identifier: Self.crashOK, title: String(localized: "Mir geht's gut")),
-                    UNNotificationAction(identifier: Self.crashHelp, title: String(localized: "Hilfe rufen"), options: [.destructive]),
-                ],
-                intentIdentifiers: []
-            )])
-            notificationPresenter.onAction = { [weak self] action in self?.handleNotificationAction(action) }
+            center.setNotificationCategories([
+                UNNotificationCategory(
+                    identifier: Self.crashCategory,
+                    actions: [
+                        UNNotificationAction(identifier: Self.crashOK, title: String(localized: "Mir geht's gut")),
+                        UNNotificationAction(identifier: Self.crashHelp, title: String(localized: "Hilfe rufen"), options: [.destructive]),
+                    ],
+                    intentIdentifiers: []
+                ),
+                UNNotificationCategory(
+                    identifier: Self.rideCategory,
+                    actions: [
+                        UNNotificationAction(identifier: Self.rideDriver, title: String(localized: "Ich bin gefahren")),
+                        UNNotificationAction(identifier: Self.ridePassenger, title: String(localized: "Ich bin mitgefahren")),
+                    ],
+                    intentIdentifiers: []
+                ),
+            ])
+            notificationPresenter.onAction = { [weak self] action, requestID in self?.handleNotificationAction(action, requestID: requestID) }
         }
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
@@ -247,6 +265,7 @@ final class AppModel {
             .mapValues { Set($0) }
         visitStore = VisitStore(persistent: !isSimulation)
         tripArchive = TripArchive(persistent: !isSimulation)
+        restoreRides()
         arrivalWatches = isSimulation ? [] : defaults.data(forKey: Keys.arrivalWatches)
             .flatMap { try? JSONDecoder().decode([ArrivalWatch].self, from: $0) } ?? []
         sharesHistory = !isSimulation && defaults.bool(forKey: Keys.sharesHistory)
@@ -589,6 +608,7 @@ final class AppModel {
             latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
             speed: location.speed, at: location.timestamp, deviceID: client.deviceID, automotive: motion.automotive
         )
+        if tripDetector.isDriving { sampleCarAudio(newTrip: !wasDriving) }
         // Not on every point: the running route can be long.
         if trip != nil || wasDriving != tripDetector.isDriving || Date().timeIntervalSince(lastTripSave) > 15 {
             lastTripSave = Date()
@@ -600,6 +620,7 @@ final class AppModel {
 
     /// Keeps the trip for the statistics and shares it if wanted.
     private func finished(_ trip: Trip) async {
+        let trip = guessDriver(trip)
         tripArchive.add(trip)
         guard sharesTrips, let client else { return }
         try? await client.shareTrip(trip)
@@ -1005,10 +1026,11 @@ final class AppModel {
         await sendSOS(reason: String(localized: "Möglicher Unfall erkannt"))
     }
 
-    private func handleNotificationAction(_ action: String) {
+    private func handleNotificationAction(_ action: String, requestID: String) {
         switch action {
         case Self.crashOK: cancelCrashCheck()
         case Self.crashHelp: Task { await confirmCrashHelp() }
+        case Self.rideDriver, Self.ridePassenger: answerRideFromNotification(action, requestID: requestID)
         default: break
         }
     }
@@ -1075,6 +1097,7 @@ final class AppModel {
         for circle in (try? await client.circles()) ?? [] {
             if let details = try? await client.circle(circle.ref) { deliverNews(details) }
         }
+        await checkSharedRides()
     }
 
     /// While the map is open: if someone's position is older than two
@@ -1226,6 +1249,7 @@ final class AppModel {
         historyRecorder.clear()
         memories.clear()
         tripArchive.clear()
+        clearRides()
         visitStore.clear()
         client = nil
         circles = []

@@ -62,7 +62,8 @@ public struct DriveStats: Sendable, Hashable, Codable {
     public static func summarize(_ trips: [Trip], now: Date = Date()) -> [Period: DriveStats] {
         Dictionary(uniqueKeysWithValues: Period.allCases.map { period in
             let since = period.start(before: now)
-            return (period, DriveStats(trips.filter { since == nil || $0.end >= since! }))
+            // Rides as a passenger do not count.
+            return (period, DriveStats(trips.filter { !$0.isPassenger && (since == nil || $0.end >= since!) }))
         })
     }
 

@@ -20,14 +20,40 @@ public struct Trip: Sendable, Hashable, Identifiable {
     public let rapidAccelerations: Int
     /// At most `maxRoutePoints`.
     public let route: [HistoryDay.Point]
+    /// Route indices `i` where the phone sent nothing between point `i - 1`
+    /// and `i` (a tunnel, no GPS): drawn dashed, not as a road.
+    public let gaps: [Int]
+
+    /// Who drove, as far as this device knows (see `SharedRide`).
+    public enum Role: String, Sendable, Hashable {
+        case driver = "d"
+        case passenger = "p"
+    }
+
+    /// Why: connected to CarPlay or to one of „Meine Autos“ (a guess), or
+    /// the person said so.
+    public enum Reason: String, Sendable, Hashable {
+        case carPlay = "c"
+        case bluetooth = "b"
+        case confirmed = "y"
+    }
+
+    public var role: Role?
+    public var reason: Reason?
+    /// The car's Bluetooth name, with reason `bluetooth`.
+    public var carName: String?
+    /// For a passenger: the device that drove, if known.
+    public var driverID: String?
 
     public static let maxRoutePoints = 300
+    public static let maxCarName = 40
     /// Above this (130 km/h) a trip loses points.
     public static let speedingLimit = 36.1
 
     public init(
         id: String, deviceID: String, start: Date, end: Date, distance: Double, topSpeed: Double,
-        hardBrakes: Int, rapidAccelerations: Int, route: [HistoryDay.Point]
+        hardBrakes: Int, rapidAccelerations: Int, route: [HistoryDay.Point], gaps: [Int] = [],
+        role: Role? = nil, reason: Reason? = nil, carName: String? = nil, driverID: String? = nil
     ) {
         self.id = id
         self.deviceID = deviceID
@@ -37,8 +63,17 @@ public struct Trip: Sendable, Hashable, Identifiable {
         self.topSpeed = topSpeed
         self.hardBrakes = hardBrakes
         self.rapidAccelerations = rapidAccelerations
-        self.route = Array(route.prefix(Self.maxRoutePoints))
+        let kept = Array(route.prefix(Self.maxRoutePoints))
+        self.route = kept
+        self.gaps = gaps.filter { $0 > 0 && $0 < kept.count }
+        self.role = role
+        self.reason = reason
+        self.carName = carName
+        self.driverID = driverID
     }
+
+    /// Counts for the leaderboard and statistics unless this device was a passenger.
+    public var isPassenger: Bool { role == .passenger }
 
     public var duration: TimeInterval { end.timeIntervalSince(start) }
 
@@ -65,6 +100,8 @@ public struct TripDetector: Sendable, Codable, Equatable {
         var rapidAccelerations: Int
         var lastEvent: Date
         var route: [HistoryDay.Point]
+        /// Timestamps of route points that came after a gap (no updates).
+        var gapEnds: [Date]?
     }
 
     static let startSpeed = 7.0
@@ -76,6 +113,9 @@ public struct TripDetector: Sendable, Codable, Equatable {
     static let routeSpacing = 15.0
     /// Raw points kept during a trip before it is simplified.
     static let maxRunningPoints = 2000
+    /// No update for this long while moving this far: a gap, not a road.
+    static let gapTime: TimeInterval = 45
+    static let gapDistance = 300.0
 
     private var running: Running?
     private var pendingFast: Date?
@@ -145,11 +185,17 @@ public struct TripDetector: Sendable, Codable, Equatable {
         }
         if speed >= Self.movingSpeed { r.lastFast = time }
         // Dense enough for curves; long trips are simplified as they go.
-        if let last = r.route.last,
-           Self.meters(last.latitude, last.longitude, latitude, longitude) >= Self.routeSpacing || time.timeIntervalSince(last.timestamp) >= 15 {
-            r.route.append(HistoryDay.Point(latitude: latitude, longitude: longitude, timestamp: time))
-            if r.route.count > Self.maxRunningPoints {
-                r.route = RouteShape.simplify(r.route, maxCount: Self.maxRunningPoints / 2)
+        if let last = r.route.last {
+            let meters = Self.meters(last.latitude, last.longitude, latitude, longitude)
+            let seconds = time.timeIntervalSince(last.timestamp)
+            if meters >= Self.routeSpacing || seconds >= 15 {
+                if seconds > Self.gapTime && meters > Self.gapDistance { r.gapEnds = (r.gapEnds ?? []) + [time] }
+                r.route.append(HistoryDay.Point(latitude: latitude, longitude: longitude, timestamp: time))
+                if r.route.count > Self.maxRunningPoints {
+                    r.route = RouteShape.simplify(
+                        r.route, maxCount: Self.maxRunningPoints / 2, keeping: Self.gapEdges(r.route, r.gapEnds ?? [])
+                    )
+                }
             }
         }
         r.lastTime = time
@@ -174,11 +220,25 @@ public struct TripDetector: Sendable, Codable, Equatable {
         guard r.distance >= 1000, end.timeIntervalSince(r.start) >= 120 else { return nil }
         // Keep the route within the limit, but keep its shape: curves keep
         // their points, straight stretches lose them.
-        let thinned = RouteShape.simplify(r.route.filter { $0.timestamp <= end }, maxCount: Trip.maxRoutePoints)
+        let route = r.route.filter { $0.timestamp <= end }
+        let ends = Set(r.gapEnds ?? [])
+        let thinned = RouteShape.simplify(route, maxCount: Trip.maxRoutePoints, keeping: Self.gapEdges(route, ends))
         return Trip(
             id: CircleCrypto.newCircleID(), deviceID: deviceID, start: r.start, end: end, distance: r.distance,
-            topSpeed: r.topSpeed, hardBrakes: r.hardBrakes, rapidAccelerations: r.rapidAccelerations, route: thinned
+            topSpeed: r.topSpeed, hardBrakes: r.hardBrakes, rapidAccelerations: r.rapidAccelerations, route: thinned,
+            gaps: thinned.indices.filter { $0 > 0 && ends.contains(thinned[$0].timestamp) }
         )
+    }
+
+    /// Both ends of every gap, so simplifying keeps them.
+    static func gapEdges(_ route: [HistoryDay.Point], _ ends: some Collection<Date>) -> Set<Int> {
+        let ends = Set(ends)
+        var edges = Set<Int>()
+        for i in route.indices where i > 0 && ends.contains(route[i].timestamp) {
+            edges.insert(i - 1)
+            edges.insert(i)
+        }
+        return edges
     }
 
     static func meters(_ lat1: Double, _ lon1: Double, _ lat2: Double, _ lon2: Double) -> Double {
@@ -255,6 +315,12 @@ private struct TripPayload: Codable {
     let hb: Int
     let ra: Int
     let p: [[Double]]
+    /// Gaps, role, reason, car name, driver: optional, older versions skip them.
+    var g: [Int]? = nil
+    var r: String? = nil
+    var rw: String? = nil
+    var cn: String? = nil
+    var dv: String? = nil
 }
 
 extension CircleCrypto {
@@ -262,7 +328,9 @@ extension CircleCrypto {
         let payload = TripPayload(
             s: trip.start.timeIntervalSince1970, e: trip.end.timeIntervalSince1970, d: trip.distance.rounded(),
             v: (trip.topSpeed * 10).rounded() / 10, hb: trip.hardBrakes, ra: trip.rapidAccelerations,
-            p: trip.route.map { [($0.latitude * 1e6).rounded() / 1e6, ($0.longitude * 1e6).rounded() / 1e6, $0.timestamp.timeIntervalSince1970] }
+            p: trip.route.map { [($0.latitude * 1e6).rounded() / 1e6, ($0.longitude * 1e6).rounded() / 1e6, $0.timestamp.timeIntervalSince1970] },
+            g: trip.gaps.isEmpty ? nil : trip.gaps, r: trip.role?.rawValue, rw: trip.reason?.rawValue,
+            cn: trip.carName, dv: trip.driverID
         )
         return try sealContent(JSONEncoder().encode(payload), key: key, epoch: epoch, context: tripContext(circleID: circleID, tripID: trip.id))
     }
@@ -279,9 +347,15 @@ extension CircleCrypto {
             guard t.count == 3, (-90 ... 90).contains(t[0]), (-180 ... 180).contains(t[1]) else { throw ProtocolError.malformed }
             return HistoryDay.Point(latitude: t[0], longitude: t[1], timestamp: Date(timeIntervalSince1970: t[2]))
         }
+        let gaps = p.g ?? []
+        guard gaps.allSatisfy({ $0 > 0 && $0 < route.count }), zip(gaps, gaps.dropFirst()).allSatisfy({ $0 < $1 }),
+              (p.cn ?? "x").count <= Trip.maxCarName, p.dv.map({ DeviceID.raw($0) != nil && $0 != deviceID }) ?? true
+        else { throw ProtocolError.malformed }
+        // Unknown roles from newer versions count as no answer.
         return Trip(
             id: id, deviceID: deviceID, start: Date(timeIntervalSince1970: p.s), end: Date(timeIntervalSince1970: p.e),
-            distance: p.d, topSpeed: p.v, hardBrakes: p.hb, rapidAccelerations: p.ra, route: route
+            distance: p.d, topSpeed: p.v, hardBrakes: p.hb, rapidAccelerations: p.ra, route: route, gaps: gaps,
+            role: p.r.flatMap(Trip.Role.init), reason: p.rw.flatMap(Trip.Reason.init), carName: p.cn, driverID: p.dv
         )
     }
 
@@ -297,29 +371,31 @@ extension CircleCrypto {
 /// Simplifies a route to a number of points while keeping its shape
 /// (Douglas–Peucker with the smallest tolerance that fits).
 enum RouteShape {
-    static func simplify(_ points: [HistoryDay.Point], maxCount: Int) -> [HistoryDay.Point] {
+    static func simplify(_ points: [HistoryDay.Point], maxCount: Int, keeping: Set<Int> = []) -> [HistoryDay.Point] {
         guard points.count > maxCount, maxCount >= 2 else { return points }
+        // Points that must stay (gap ends), unless there are too many of them.
+        let forced: Set<Int> = keeping.count + 2 <= maxCount ? keeping.filter { points.indices.contains($0) } : []
         // Local flat coordinates in meters around the first point.
         let origin = points[0]
         let cosLat = cos(origin.latitude * .pi / 180)
         let xy = points.map { ((($0.longitude - origin.longitude) * 111_320 * cosLat), ($0.latitude - origin.latitude) * 111_320) }
         var low = 0.0, high = 1.0
-        while keep(xy, tolerance: high).count > maxCount { high *= 2 }
-        var best = keep(xy, tolerance: high)
+        while keep(xy, tolerance: high, forced: forced).count > maxCount, high < 1e8 { high *= 2 }
+        var best = keep(xy, tolerance: high, forced: forced)
         for _ in 0 ..< 24 {
             let mid = (low + high) / 2
-            let kept = keep(xy, tolerance: mid)
+            let kept = keep(xy, tolerance: mid, forced: forced)
             if kept.count > maxCount { low = mid } else { high = mid; best = kept }
         }
         return best.map { points[$0] }
     }
 
     /// Indices Douglas–Peucker keeps at `tolerance` meters.
-    private static func keep(_ xy: [(Double, Double)], tolerance: Double) -> [Int] {
+    private static func keep(_ xy: [(Double, Double)], tolerance: Double, forced: Set<Int>) -> [Int] {
         var keep = [Bool](repeating: false, count: xy.count)
-        keep[0] = true
-        keep[xy.count - 1] = true
-        var stack = [(0, xy.count - 1)]
+        let anchors = (Set([0, xy.count - 1]).union(forced)).sorted()
+        for i in anchors { keep[i] = true }
+        var stack = Array(zip(anchors, anchors.dropFirst()))
         while let (first, last) = stack.popLast() {
             guard last > first + 1 else { continue }
             var farthest = first, distance = -1.0

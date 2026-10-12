@@ -6,7 +6,8 @@ import UserNotifications
 /// on answers like "Mir geht's gut".
 @MainActor
 final class NotificationPresenter: NSObject, UNUserNotificationCenterDelegate {
-    var onAction: ((String) -> Void)?
+    /// The action and the notification's identifier.
+    var onAction: ((String, String) -> Void)?
 
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter, willPresent notification: UNNotification
@@ -16,7 +17,8 @@ final class NotificationPresenter: NSObject, UNUserNotificationCenterDelegate {
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let action = response.actionIdentifier
-        await MainActor.run { onAction?(action) }
+        let requestID = response.notification.request.identifier
+        await MainActor.run { onAction?(action, requestID) }
     }
 }
 

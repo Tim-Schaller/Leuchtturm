@@ -108,6 +108,26 @@ struct SettingsView: View {
                     Text("Aus, solange du es nicht einschaltest. Dann sehen deine Leuchttürme, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Leuchtturm Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt die App „Alles okay?“. Ohne Antwort bekommen deine Leuchttürme nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.\n\nErinnerungen: Deine eigenen Wege bleiben nur auf diesem iPhone, für „Heute vor einem Jahr“. Wetter: Die App fragt Apple Wetter mit den auf etwa 1 km gerundeten Orten, ohne Namen.")
                 }
 
+                if model.sharesTrips {
+                    Section {
+                        if model.myCars.isEmpty {
+                            Text("Noch keine. Sag nach einer Fahrt „Ich bin gefahren“, während dein iPhone per Bluetooth mit dem Auto verbunden war, dann merkt es sich das Auto.")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                        }
+                        ForEach(model.myCars, id: \.self) { car in
+                            Label(car, systemImage: "car.fill")
+                        }
+                        .onDelete { offsets in
+                            for car in offsets.map({ model.myCars[$0] }) { model.removeCar(car) }
+                        }
+                    } header: {
+                        Text("Meine Autos")
+                    } footer: {
+                        Text("Ist dein iPhone bei einer Fahrt mit CarPlay oder per Bluetooth mit einem dieser Autos verbunden, vermutet die App, dass du gefahren bist. Fahrt ihr zu mehreren, zählt in der Bestenliste nur die Fahrt des Fahrers. Den Namen des Autos sehen deine Leuchttürme bei der Fahrt, Ende-zu-Ende-verschlüsselt.")
+                    }
+                }
+
                 Section {
                     if let client = model.client {
                         LabeledContent("Sicherheitscode") {

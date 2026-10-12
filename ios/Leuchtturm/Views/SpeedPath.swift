@@ -6,7 +6,8 @@ import SwiftUI
 /// A path split into runs of similar speed, each drawn in its own colour:
 /// green on foot, yellow in town, orange on country roads, red on the
 /// motorway, purple above 200 km/h. Gaps of more than 15 minutes are left
-/// out instead of drawing a straight line across them.
+/// out instead of drawing a straight line across them; a trip's known gaps
+/// (no data, e.g. a tunnel) are drawn dashed.
 struct SpeedPath {
     struct Run {
         let coordinates: [CLLocationCoordinate2D]
@@ -14,16 +15,22 @@ struct SpeedPath {
     }
 
     let runs: [Run]
+    /// Stretches without data, from one point to the next.
+    let gaps: [[CLLocationCoordinate2D]]
 
-    init(_ points: [HistoryDay.Point]) {
+    init(_ points: [HistoryDay.Point], gaps gapIndices: [Int] = []) {
         var runs: [Run] = []
+        var gaps: [[CLLocationCoordinate2D]] = []
+        let gapSet = Set(gapIndices)
         var current: [CLLocationCoordinate2D] = []
         var currentBucket: Int?
-        for (a, b) in zip(points, points.dropFirst()) {
+        for (index, (a, b)) in zip(points, points.dropFirst()).enumerated() {
             let seconds = b.timestamp.timeIntervalSince(a.timestamp)
             let from = CLLocation(latitude: a.latitude, longitude: a.longitude)
             let to = CLLocation(latitude: b.latitude, longitude: b.longitude)
-            guard seconds > 0, seconds <= 15 * 60 else {
+            let isGap = gapSet.contains(index + 1)
+            if isGap { gaps.append([a.coordinate, b.coordinate]) }
+            guard seconds > 0, seconds <= 15 * 60, !isGap else {
                 if current.count > 1, let bucket = currentBucket { runs.append(Run(coordinates: current, color: Self.color(bucket: bucket))) }
                 current = []
                 currentBucket = nil
@@ -42,6 +49,7 @@ struct SpeedPath {
         }
         if current.count > 1, let bucket = currentBucket { runs.append(Run(coordinates: current, color: Self.color(bucket: bucket))) }
         self.runs = runs
+        self.gaps = gaps
     }
 
     /// Colour stops in km/h.
@@ -70,6 +78,10 @@ struct SpeedPathContent: MapContent {
     let path: SpeedPath
 
     var body: some MapContent {
+        ForEach(Array(path.gaps.enumerated()), id: \.offset) { _, gap in
+            MapPolyline(coordinates: gap)
+                .stroke(.gray.opacity(0.8), style: StrokeStyle(lineWidth: 4, lineCap: .round, dash: [2, 9]))
+        }
         ForEach(Array(path.runs.enumerated()), id: \.offset) { _, run in
             MapPolyline(coordinates: run.coordinates)
                 .stroke(run.color, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))

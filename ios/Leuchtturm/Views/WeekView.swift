@@ -26,20 +26,9 @@ struct WeekView: View {
                         Text("Noch keine geteilten Fahrten diese Woche.")
                             .foregroundStyle(.secondary)
                     }
-                    ForEach(trips) { trip in
-                        NavigationLink(value: DrawerRoute.trip(trip)) {
-                            HStack(spacing: 12) {
-                                Avatar(name: member(trip.deviceID)?.name, id: trip.deviceID, size: 32)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("\(Self.km(trip.distance)) · \(Self.minutes(trip.duration))")
-                                        .font(.subheadline.weight(.semibold))
-                                    Text("\(member(trip.deviceID)?.name ?? String(localized: "Unbekannt")) · \(trip.start.formatted(.dateTime.weekday(.wide).hour().minute()))")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                ScoreBadge(score: trip.score)
-                            }
+                    ForEach(SharedRide.group(trips)) { ride in
+                        NavigationLink(value: DrawerRoute.ride(ride)) {
+                            RideRow(ride: ride, members: details.members)
                         }
                     }
                 } header: {
@@ -47,7 +36,9 @@ struct WeekView: View {
                 } footer: {
                     Text("Nur von Leuten, die „Fahrten teilen“ eingeschaltet haben.")
                 }
-            } else if let trips {
+            } else if let all = trips {
+                // A car of four counts once: only the driver's trip.
+                let trips = SharedRide.counted(all)
                 let board = DriverStats.leaderboard(trips)
                 Section {
                     if board.isEmpty {
@@ -125,7 +116,7 @@ struct WeekView: View {
             }
         }
         .contentMargins(.top, 0, for: .scrollContent)
-        .task(id: details.id) { await load() }
+        .task(id: "\(details.id)|\(model.externalChanges)") { await load() }
     }
 
     private func member(_ id: String) -> CircleMember? {
@@ -206,18 +197,87 @@ struct ScoreBadge: View {
     }
 }
 
-/// One trip: the route and how it went.
+/// A trip in the list: one person, or a shared ride with everyone in it.
+struct RideRow: View {
+    @Environment(AppModel.self) private var model
+    let ride: SharedRide
+    let members: [CircleMember]
+
+    var body: some View {
+        let main = ride.mainTrip
+        HStack(spacing: 12) {
+            ZStack(alignment: .leading) {
+                ForEach(Array(ride.devices.prefix(3).enumerated()), id: \.offset) { index, id in
+                    Avatar(name: name(id), id: id, size: 32)
+                        .overlay(Circle().stroke(Color(.systemBackground), lineWidth: 2))
+                        .offset(x: CGFloat(index) * 14)
+                }
+            }
+            .frame(width: 32 + CGFloat(min(ride.devices.count, 3) - 1) * 14, alignment: .leading)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(WeekView.km(main.distance)) · \(WeekView.minutes(main.duration))")
+                    .font(.subheadline.weight(.semibold))
+                Text(ride.isShared ? RideText.driverLine(ride, name: name) : RideText.single(main, name: name(main.deviceID)))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(main.start.formatted(.dateTime.weekday(.wide).hour().minute()))
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            Spacer()
+            ScoreBadge(score: main.score)
+        }
+    }
+
+    private func name(_ id: String) -> String {
+        members.first { $0.id == id }.map { $0.isMe ? String(localized: "Du") : $0.name ?? String(localized: "Mitglied") } ?? model.name(of: id)
+    }
+}
+
+/// How a ride's driver reads.
+enum RideText {
+    static func driverLine(_ ride: SharedRide, name: (String) -> String) -> String {
+        let together = String(localized: "Gemeinsame Fahrt")
+        guard let driver = ride.driver else { return together + " · " + String(localized: "Wer ist gefahren?") }
+        let who = name(driver.deviceID)
+        switch (driver.certainty, driver.reason) {
+        case (.confirmed, _): return together + " · " + String(localized: "\(who) ist gefahren")
+        case (_, .carPlay?): return together + " · " + String(localized: "\(who) ist vermutlich gefahren · CarPlay")
+        case (_, .bluetooth?): return together + " · " + String(localized: "\(who) ist vermutlich gefahren · mit „\(driver.carName ?? "")“ verbunden")
+        default: return together + " · " + String(localized: "\(who) ist vermutlich gefahren")
+        }
+    }
+
+    static func single(_ trip: Trip, name: String) -> String {
+        trip.isPassenger ? String(localized: "\(name) · mitgefahren") : name
+    }
+}
+
+extension SharedRide {
+    /// The trip to show: the driver's, else the one with the most points.
+    var mainTrip: Trip {
+        if let driver, let trip = trips.first(where: { $0.deviceID == driver.deviceID }) { return trip }
+        return trips.max { $0.route.count < $1.route.count } ?? trips[0]
+    }
+}
+
+/// One trip or shared ride: the route, how it went, and who drove.
 struct TripView: View {
     @Environment(AppModel.self) private var model
-    @Environment(\.dismiss) private var dismiss
-    let trip: Trip
-    let member: CircleMember?
+    let ride: SharedRide
+    let members: [CircleMember]
+    /// The answer given here, until the ride reloads.
+    @State private var answered: String??
+
+    private var trip: Trip { ride.mainTrip }
+    private var me: String? { model.client?.deviceID }
+    private var mine: Trip? { ride.trips.first { $0.deviceID == me } }
 
     var body: some View {
         List {
             Section {
                 Map(initialPosition: .automatic) {
-                    SpeedPathContent(path: SpeedPath(trip.route))
+                    SpeedPathContent(path: SpeedPath(trip.route, gaps: trip.gaps))
                     if let first = trip.route.first {
                         Annotation("Start", coordinate: first.coordinate) {
                             Circle().fill(.white).stroke(Color.accentColor, lineWidth: 3).frame(width: 14, height: 14)
@@ -232,6 +292,14 @@ struct TripView: View {
                 .frame(height: 300)
                 .listRowInsets(EdgeInsets())
                 SpeedLegend()
+                if !trip.gaps.isEmpty {
+                    Label("Gestrichelt: keine Daten, z. B. im Tunnel", systemImage: "line.diagonal")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            if ride.isShared || mine != nil {
+                driverSection
             }
             Section {
                 LabeledContent("Punkte") { ScoreBadge(score: trip.score) }
@@ -241,23 +309,74 @@ struct TripView: View {
                 LabeledContent("Stark gebremst", value: "\(trip.hardBrakes)×")
                 LabeledContent("Schnell beschleunigt", value: "\(trip.rapidAccelerations)×")
             } footer: {
-                Text("Erkannt auf dem iPhone von \(member?.name ?? "diesem Mitglied"). Ende-zu-Ende-verschlüsselt.")
-            }
-            if member?.isMe == true {
-                Section {
-                    Button("Ich bin nur mitgefahren", systemImage: "person.2.badge.minus", role: .destructive) {
-                        let id = trip.id
-                        Task {
-                            if await model.run({ try await $0.deleteTrip(id) }) != nil { dismiss() }
-                        }
-                    }
-                } footer: {
-                    Text("Entfernt die Fahrt für alle, sie zählt dann nicht für deine Punkte.")
-                }
+                Text("Erkannt auf dem iPhone von \(name(trip.deviceID)). Ende-zu-Ende-verschlüsselt.")
             }
         }
         .navigationTitle(trip.start.formatted(.dateTime.weekday(.wide).hour().minute()))
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var driverSection: some View {
+        Section {
+            if ride.isShared {
+                ForEach(ride.devices, id: \.self) { id in
+                    HStack(spacing: 12) {
+                        Avatar(name: name(id), id: id, size: 32)
+                        Text(name(id))
+                        Spacer()
+                        Text(roleText(id)).font(.subheadline).foregroundStyle(.secondary)
+                    }
+                }
+            }
+            if let mine {
+                Picker(selection: Binding(
+                    get: { answered ?? currentAnswer(mine) },
+                    set: { choice in
+                        answered = .some(choice)
+                        Task { await model.answerRide(tripID: mine.id, driverID: choice) }
+                    }
+                )) {
+                    Text("Ich").tag(String?.some(mine.deviceID))
+                    ForEach(ride.devices.filter { $0 != mine.deviceID }, id: \.self) { id in
+                        Text(name(id)).tag(String?.some(id))
+                    }
+                    Text(ride.isShared ? "Jemand anderes" : "Ich bin nur mitgefahren").tag(String?.none)
+                } label: {
+                    Text("Wer ist gefahren?")
+                }
+            }
+        } header: {
+            Text(ride.isShared ? "Gemeinsame Fahrt" : "Fahrer")
+        } footer: {
+            Text(ride.isShared
+                 ? "Erkannt, weil ihr zur selben Zeit dieselbe Strecke gefahren seid. In der Bestenliste zählt nur die Fahrt des Fahrers. Mit CarPlay oder einem deiner Autos per Bluetooth vermutet die App, dass du gefahren bist."
+                 : "Mitgefahrene Fahrten zählen nicht für die Bestenliste und deine Statistik.")
+        }
+    }
+
+    /// My current answer as a picker tag: nil while unanswered counts as "Ich" if I likely drove.
+    private func currentAnswer(_ mine: Trip) -> String? {
+        if mine.isPassenger { return mine.driverID }
+        if mine.role == .driver { return mine.deviceID }
+        if let driver = ride.driver { return driver.deviceID }
+        return mine.deviceID
+    }
+
+    private func roleText(_ id: String) -> String {
+        guard let driver = ride.driver else {
+            return ride.trips.first { $0.deviceID == id }?.isPassenger == true ? String(localized: "mitgefahren") : String(localized: "unklar")
+        }
+        guard driver.deviceID == id else { return String(localized: "mitgefahren") }
+        switch (driver.certainty, driver.reason) {
+        case (.confirmed, _): return String(localized: "ist gefahren")
+        case (_, .carPlay?): return String(localized: "vermutlich · CarPlay")
+        case (_, .bluetooth?): return String(localized: "vermutlich · „\(driver.carName ?? "")“")
+        default: return String(localized: "vermutlich gefahren")
+        }
+    }
+
+    private func name(_ id: String) -> String {
+        members.first { $0.id == id }.map { $0.isMe ? String(localized: "Du") : $0.name ?? String(localized: "Mitglied") } ?? model.name(of: id)
     }
 }
 

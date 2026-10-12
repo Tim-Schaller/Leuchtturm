@@ -194,8 +194,12 @@ struct SimulationTests {
         let ref = try #require(model.circles.first?.ref)
         _ = await model.mapDetails(for: ref) // the owner's device confirms the new members
         let trips = try #require(await model.run { try await $0.trips(in: ref, since: Date().addingTimeInterval(-7 * 86400)) })
-        #expect(trips.count == 7)
-        let board = DriverStats.leaderboard(trips)
+        #expect(trips.count == 8)
+        // Clara rode along on Ben's day out (CarPlay on Ben's phone): it counts once, for Ben.
+        let shared = try #require(SharedRide.group(trips).first { $0.isShared })
+        #expect(shared.driver?.deviceID == world.people[1].client.deviceID && shared.driver?.reason == .carPlay)
+        #expect(SharedRide.counted(trips).count == 7)
+        let board = DriverStats.leaderboard(SharedRide.counted(trips))
         #expect(board.map(\.deviceID) == [world.people[1].client.deviceID, world.people[2].client.deviceID])
     }
 

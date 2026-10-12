@@ -131,7 +131,7 @@ struct PeopleSheet: View {
                 if let journey = model.journey, journey.circleID == details.id {
                     Section { JourneyBanner(journey: journey) }
                 }
-                Section { ActionGrid(details: details, sheet: $sheet) }
+                ActionSections(details: details, sheet: $sheet)
                 NewsSection(details: details, onShowPlace: onShowPlace)
                 Section {
                     if details.isFriendship {

@@ -105,7 +105,8 @@ private struct ActionButtons: View {
 
     var body: some View {
         @Bindable var model = model
-        Button("Einchecken", systemImage: "mappin.and.ellipse") {
+        // Sends a check-in with the position: "alles gut" to everyone.
+        Button("Alles gut", systemImage: "hand.thumbsup.fill") {
             Task { await model.checkIn() }
         }
         .disabled(model.busy)

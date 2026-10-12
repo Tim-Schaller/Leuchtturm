@@ -22,7 +22,7 @@ final class WatchModel: NSObject, WCSessionDelegate {
     }
 
     func checkIn() async {
-        await perform("checkIn", done: String(localized: "Eingecheckt."))
+        await perform("checkIn", done: String(localized: "„Alles gut“ ist raus."))
     }
 
     func sendSOS() async {

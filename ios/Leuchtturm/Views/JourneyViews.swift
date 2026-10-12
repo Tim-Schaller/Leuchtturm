@@ -25,61 +25,64 @@ func activeJourney(of memberID: String, in notes: [CircleNote], now: Date = Date
     return start
 }
 
-/// Round coloured buttons for what you can do right now. Each one answers
-/// a tap: it gives way, the phone ticks, and what is sent right away shows
-/// a spinner and then a check mark.
-struct ActionGrid: View {
+/// What you can do right now, in three groups: getting somewhere, meeting
+/// up, and how your location is shared. Each row says what it does; the
+/// row lights up when tapped, the phone ticks, and "Hol mich ab" shows a
+/// spinner and then a check mark.
+struct ActionSections: View {
     @Environment(AppModel.self) private var model
     let details: CircleDetails
     @Binding var sheet: HomeSheet?
 
-    enum Sent { case checkIn, pickUp }
-    @State private var sending: Sent?
-    @State private var sent: Sent?
+    @State private var sendingPickUp = false
+    @State private var sentPickUp = false
     @State private var taps = 0
     @State private var successes = 0
 
     var body: some View {
         let ref = details.ref
-        let fog = model.activeFog != nil
-        VStack(spacing: 18) {
-            HStack(alignment: .top, spacing: 4) {
-                QuickButton(
-                    title: sent == .checkIn ? "Eingecheckt" : "Einchecken", symbol: "mappin.and.ellipse", color: .green,
-                    working: sending == .checkIn, done: sent == .checkIn
-                ) { send(.checkIn, as: .checkIn) }
-                    .disabled(!details.hasKey || fog)
-                QuickButton(title: "Auf dem Weg", symbol: "figure.walk.motion", color: .blue) { open(.journey(ref, walkHome: false)) }
-                    .disabled(!details.hasKey || model.journey != nil)
-                QuickButton(title: "Heimweg", symbol: "house.and.flag.fill", color: .indigo) { open(.journey(ref, walkHome: true)) }
-                    .disabled(!details.hasKey || model.journey != nil)
-                QuickButton(
-                    title: sent == .pickUp ? "Abgeschickt" : "Hol mich ab", symbol: "car.side.fill", color: .orange,
-                    working: sending == .pickUp, done: sent == .pickUp
-                ) { send(.pickUp, as: .pickUp) }
-                    .disabled(!details.hasKey || fog)
-            }
-            HStack(alignment: .top, spacing: 4) {
-                QuickButton(title: "Treffpunkt", symbol: "point.3.filled.connected.trianglepath.dotted", color: .teal) { open(.meetingPoint(ref)) }
-                    .disabled(!details.hasKey)
-                if fog {
-                    QuickButton(title: "Nebel beenden", symbol: "cloud.fog.fill", color: .gray, active: true) {
-                        taps += 1
-                        Task { await model.endFog() }
-                    }
-                } else {
-                    QuickButton(title: "Nebel", symbol: "cloud.fog.fill", color: .gray) { open(.fog) }
-                }
-                QuickButton(
-                    title: model.liveLink == nil ? "Live-Link" : "Link läuft", symbol: "link", color: .pink,
-                    active: model.liveLink != nil
-                ) { open(.liveLink) }
-            }
-            .padding(.horizontal, 36)
+        let fog = model.activeFog
+        Section("Unterwegs") {
+            ActionRow(title: "Auf dem Weg", subtitle: "Alle sehen, wann du ankommst. Die Ankunft meldet sich von selbst.",
+                      symbol: "figure.walk.motion", color: .blue) { open(.journey(ref, walkHome: false)) }
+                .disabled(!details.hasKey || model.journey != nil)
+                // On one row only: on a section it would tick once per row.
+                .sensoryFeedback(.impact(weight: .light), trigger: taps)
+                .sensoryFeedback(.success, trigger: successes)
+            ActionRow(title: "Heimweg", subtitle: "Bist du bis zu einer Uhrzeit nicht zu Hause, schlagen die anderen Alarm.",
+                      symbol: "house.and.flag.fill", color: .indigo) { open(.journey(ref, walkHome: true)) }
+                .disabled(!details.hasKey || model.journey != nil)
         }
-        .padding(.vertical, 10)
-        .sensoryFeedback(.impact(weight: .light), trigger: taps)
-        .sensoryFeedback(.success, trigger: successes)
+        Section("Treffen") {
+            ActionRow(
+                title: sentPickUp ? "Abgeschickt" : "Hol mich ab",
+                subtitle: fog != nil ? "Im Nebel aus, weil dein genauer Ort dazugehört." : "Schickt allen deinen genauen Ort mit der Bitte, dich abzuholen.",
+                symbol: "car.side.fill", color: .orange, opensSheet: false, working: sendingPickUp, done: sentPickUp
+            ) { sendPickUp() }
+                .disabled(!details.hasKey || fog != nil)
+            ActionRow(title: "Treffpunkt", subtitle: "Sucht ein Café oder einen Park in der Mitte zwischen allen.",
+                      symbol: "point.3.filled.connected.trianglepath.dotted", color: .teal) { open(.meetingPoint(ref)) }
+                .disabled(!details.hasKey)
+        }
+        Section("Dein Standort") {
+            if let fog {
+                ActionRow(title: "Nebel beenden", subtitle: "Nebel bis \(fog.until.formatted(date: .omitted, time: .shortened)). Danach wieder genau.",
+                          symbol: "cloud.fog.fill", color: .gray, opensSheet: false) {
+                    taps += 1
+                    Task { await model.endFog() }
+                }
+            } else {
+                ActionRow(title: "Nebel", subtitle: "Für eine Weile nur ungefähr zeigen, wo du bist.",
+                          symbol: "cloud.fog.fill", color: .gray) { open(.fog) }
+            }
+            if let link = model.liveLink {
+                ActionRow(title: "Live-Link läuft", subtitle: "Bis \(link.expires.formatted(date: .omitted, time: .shortened)). Tippen zum Teilen oder Beenden.",
+                          symbol: "link", color: .pink) { open(.liveLink) }
+            } else {
+                ActionRow(title: "Live-Link", subtitle: "Eine Stunde lang für Leute ohne die App, als Link.",
+                          symbol: "link", color: .pink) { open(.liveLink) }
+            }
+        }
     }
 
     private func open(_ target: HomeSheet) {
@@ -87,86 +90,72 @@ struct ActionGrid: View {
         sheet = target
     }
 
-    /// Sends at once; the button shows that it worked.
-    private func send(_ kind: CircleNote.Kind, as action: Sent) {
+    /// Sends at once; the row shows that it worked.
+    private func sendPickUp() {
         taps += 1
-        sending = action
+        sendingPickUp = true
         Task {
-            let ok = await model.send(kind, in: details.ref)
-            sending = nil
+            let ok = await model.send(.pickUp, in: details.ref)
+            sendingPickUp = false
             guard ok else { return }
-            sent = action
+            sentPickUp = true
             successes += 1
             try? await Task.sleep(for: .seconds(3))
-            if sent == action { sent = nil }
+            sentPickUp = false
         }
     }
 }
 
-/// A coloured circle with a symbol and a title below.
-private struct QuickButton: View {
+/// A row with a coloured symbol, a title and what it does.
+private struct ActionRow: View {
     let title: LocalizedStringResource
+    let subtitle: LocalizedStringResource
     let symbol: String
     let color: Color
+    /// Opens a sheet (chevron) or acts right away.
+    var opensSheet = true
     var working = false
     var done = false
-    /// Something is running (fog, live link): a ring around the circle.
-    var active = false
     let action: () -> Void
-    @ScaledMetric(relativeTo: .title2) private var size = 58
+    @Environment(\.isEnabled) private var isEnabled
+    @ScaledMetric(relativeTo: .body) private var size = 38
 
     var body: some View {
-        let text = String(localized: title)
         Button(action: action) {
-            VStack(spacing: 7) {
+            HStack(spacing: 14) {
                 ZStack {
-                    Circle()
+                    RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
                         .fill((done ? Color.green : color).gradient)
                     if working {
                         ProgressView().tint(.white)
                     } else {
                         Image(systemName: done ? "checkmark" : symbol)
-                            .font(.title2.weight(.semibold))
+                            .font(.body.weight(.semibold))
                             .foregroundStyle(.white)
                             .contentTransition(.symbolEffect(.replace))
                     }
                 }
                 .frame(width: size, height: size)
-                .overlay {
-                    if active { Circle().stroke(color, lineWidth: 2.5).padding(-5) }
+                .saturation(isEnabled ? 1 : 0)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.body.weight(.semibold))
+                    Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
                 }
-                .shadow(color: color.opacity(0.3), radius: 5, y: 3)
-                // One word shrinks instead of breaking ("Einche-cken"); several words may wrap.
-                Text(text)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.primary)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(text.contains(" ") ? 2 : 1)
-                    .minimumScaleFactor(0.7)
-                    .contentTransition(.opacity)
+                .foregroundStyle(isEnabled ? .primary : .secondary)
+                Spacer(minLength: 0)
+                if opensSheet {
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
             }
-            .frame(maxWidth: .infinity)
+            .padding(.vertical, 2)
+            .contentShape(.rect)
             .animation(.snappy, value: done)
             .animation(.snappy, value: working)
         }
-        .buttonStyle(QuickButtonStyle())
+        .tint(.primary)
         .disabled(working)
-    }
-}
-
-/// Gives way while pressed; grey when it cannot be used.
-private struct QuickButtonStyle: ButtonStyle {
-    @Environment(\.isEnabled) private var isEnabled
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.86 : 1)
-            .brightness(configuration.isPressed ? -0.1 : 0)
-            .saturation(isEnabled ? 1 : 0)
-            .opacity(isEnabled ? 1 : 0.4)
-            .contentShape(.rect)
-            .hoverEffect(.lift)
-            .animation(.snappy(duration: 0.16), value: configuration.isPressed)
     }
 }
 

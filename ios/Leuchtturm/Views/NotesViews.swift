@@ -29,7 +29,7 @@ enum NoteText {
         case .text:
             return "„\(note.text)“ \(recipient(note, members: members, myID: myID))".trimmingCharacters(in: .whitespaces)
         case .checkIn:
-            return String(localized: "hat eingecheckt 📍")
+            return String(localized: "meldet: alles gut 📍")
         case .morning:
             return String(localized: "hat den Tag begonnen ☀️")
         case .arrival:

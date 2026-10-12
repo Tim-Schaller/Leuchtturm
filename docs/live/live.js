@@ -207,7 +207,7 @@ let last = null;
 
 async function fetchBlob() {
   const environment = link.environment === "p" ? "production" : "development";
-  const url = `https://api.apple-cloudkit.com/database/1/${encodeURIComponent(config.container)}/${environment}/public/records/lookup?ckAPIToken=${encodeURIComponent(config.cloudKitToken)}`;
+  const url = `https://api.apple-cloudkit.com/database/1/${encodeURIComponent(config.container)}/${environment}/public/records/lookup?ckAPIToken=${encodeURIComponent(config.cloudKitTokens[environment])}`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -312,7 +312,7 @@ async function updateMap(where) {
 
 if (!link) {
   show(text.invalid, text.invalidHint);
-} else if (!config.cloudKitToken) {
+} else if (!config.cloudKitTokens[link.environment === "p" ? "production" : "development"]) {
   show(text.setup, text.setupHint);
 } else {
   show(text.loading);

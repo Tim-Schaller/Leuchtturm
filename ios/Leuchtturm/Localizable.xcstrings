@@ -1657,6 +1657,52 @@
         }
       }
     },
+    "1 Stunde für Leute ohne App": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 hour for people without the app"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 hora para quien no tiene la app"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 heure pour les personnes sans l’app"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 ora per chi non ha l’app"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 uur voor mensen zonder de app"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 godzina dla osób bez aplikacji"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulaması olmayanlar için 1 saat"
+          }
+        }
+      }
+    },
     "1 Tag": {
       "localizations": {
         "en": {
@@ -1745,6 +1791,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 hafta"
+          }
+        }
+      }
+    },
+    "100 Punkte pro Fahrt, Abzug für hartes Fahren.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 points per trip, minus points for rough driving."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 puntos por trayecto, menos por conducción brusca."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 points par trajet, moins pour une conduite brusque."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 punti per viaggio, meno per una guida brusca."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 punten per rit, aftrek voor ruw rijden."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 punktów za jazdę, minus za ostrą jazdę."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yolculuk başına 100 puan, sert sürüşte puan düşer."
           }
         }
       }
@@ -2623,6 +2715,52 @@
         }
       }
     },
+    "Aktiv bis %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active until %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activo hasta las %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actif jusqu’à %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attivo fino alle %@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actief tot %@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktywne do %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ saatine kadar açık"
+          }
+        }
+      }
+    },
     "Aktualisiert": {
       "localizations": {
         "en": {
@@ -2665,6 +2803,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Güncellendi"
+          }
+        }
+      }
+    },
+    "Alarm, falls du nicht ankommst": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alert if you don’t arrive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerta si no llegas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerte si tu n’arrives pas"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allarme se non arrivi"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alarm als je niet aankomt"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alarm, jeśli nie dotrzesz"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Varmazsan uyarı"
           }
         }
       }
@@ -2853,48 +3037,94 @@
         }
       }
     },
-    "Alle sehen, wann du ankommst. Die Ankunft meldet sich von selbst.": {
+    "Alle zeigen": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Everyone sees when you’ll arrive. Your arrival is reported by itself."
+            "value": "Show Everyone"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Todos ven cuándo llegas. La llegada se avisa sola."
+            "value": "Mostrar a todos"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tout le monde voit quand tu arrives. Ton arrivée est signalée toute seule."
+            "value": "Tout afficher"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tutti vedono quando arrivi. L’arrivo viene segnalato da solo."
+            "value": "Mostra tutti"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iedereen ziet wanneer je aankomt. Je aankomst wordt vanzelf gemeld."
+            "value": "Iedereen tonen"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wszyscy widzą, kiedy dotrzesz. Przybycie zgłosi się samo."
+            "value": "Pokaż wszystkich"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Herkes ne zaman varacağını görür. Varışın kendiliğinden bildirilir."
+            "value": "Herkesi göster"
+          }
+        }
+      }
+    },
+    "Alles aus, bis du es einschaltest. Was du teilst, ist Ende-zu-Ende-verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything is off until you turn it on. What you share is end-to-end encrypted."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo está desactivado hasta que lo actives. Lo que compartes está cifrado de extremo a extremo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout est désactivé tant que tu ne l’actives pas. Ce que tu partages est chiffré de bout en bout."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto è spento finché non lo attivi. Ciò che condividi è crittografato end-to-end."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles staat uit tot je het aanzet. Wat je deelt, is end-to-end versleuteld."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wszystko jest wyłączone, dopóki tego nie włączysz. To, co udostępniasz, jest szyfrowane end-to-end."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen açana kadar her şey kapalı. Paylaştıkların uçtan uca şifrelenir."
           }
         }
       }
@@ -3267,6 +3497,52 @@
         }
       }
     },
+    "Ankommen und Gehen meldet jedes iPhone selbst.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each iPhone reports arriving and leaving itself."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada iPhone avisa por sí mismo de llegadas y salidas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chaque iPhone signale lui-même les arrivées et départs."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni iPhone segnala da sé arrivi e partenze."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elke iPhone meldt aankomst en vertrek zelf."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Każdy iPhone sam zgłasza przybycie i wyjście."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her iPhone varışı ve ayrılışı kendisi bildirir."
+          }
+        }
+      }
+    },
     "Ankunft": {
       "localizations": {
         "en": {
@@ -3447,6 +3723,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Varış: %@"
+          }
+        }
+      }
+    },
+    "Ankunftszeit für alle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrival time for everyone"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hora de llegada para todos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heure d’arrivée pour tous"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orario di arrivo per tutti"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aankomsttijd voor iedereen"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Godzina przybycia dla wszystkich"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herkes için varış saati"
           }
         }
       }
@@ -5199,6 +5521,52 @@
         }
       }
     },
+    "Bis %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Until %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hasta las %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jusqu’à %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fino alle %@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tot %@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ saatine kadar"
+          }
+        }
+      }
+    },
     "Bis %@ gab es keine Ankunft bei „%@“.": {
       "localizations": {
         "en": {
@@ -5241,52 +5609,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ saatine kadar “%@” konumuna varış olmadı."
-          }
-        }
-      }
-    },
-    "Bis %@. Tippen zum Teilen oder Beenden.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Until %@. Tap to share or end."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hasta las %@. Toca para compartir o terminar."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jusqu’à %@. Touche pour partager ou arrêter."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fino alle %@. Tocca per condividere o terminare."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tot %@. Tik om te delen of te stoppen."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Do %@. Stuknij, aby udostępnić lub zakończyć."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ saatine kadar. Paylaşmak veya bitirmek için dokun."
           }
         }
       }
@@ -5379,52 +5701,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "O saate kadar varmazsan fenerin bir uyarı alır. Varınca eşlik kendiliğinden biter."
-          }
-        }
-      }
-    },
-    "Bist du bis zu einer Uhrzeit nicht zu Hause, schlagen die anderen Alarm.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "If you’re not home by a set time, the others get an alert."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Si no estás en casa a una hora fijada, los demás reciben una alerta."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Si tu n’es pas rentré·e à une heure donnée, les autres sont alertés."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se non sei a casa entro un orario, gli altri ricevono un allarme."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ben je op een tijdstip niet thuis, dan krijgen de anderen een alarm."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jeśli nie będziesz w domu do ustalonej godziny, inni dostaną alarm."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Belirlenen saate kadar evde değilsen diğerleri uyarı alır."
           }
         }
       }
@@ -6763,6 +7039,52 @@
         }
       }
     },
+    "Dein Ort an alle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your location to everyone"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu ubicación a todos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta position à tous"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua posizione a tutti"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je locatie naar iedereen"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twoja lokalizacja dla wszystkich"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konumun herkese"
+          }
+        }
+      }
+    },
     "Dein Standort": {
       "localizations": {
         "en": {
@@ -7127,6 +7449,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anahtarların iCloud Anahtar Zinciri ile (Apple tarafından uçtan uca şifreli) diğer aygıtlarına gider. Böylece iPad ve yeni bir iPhone hemen çalışır. Daha sıkı gizlilik istersen “yalnızca bu aygıtta” seçeneğini aç."
+          }
+        }
+      }
+    },
+    "Deine Schlüssel reisen sicher mit dem iCloud-Schlüsselbund auf deine Geräte.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your keys travel securely to your devices with iCloud Keychain."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus claves viajan de forma segura a tus dispositivos con el llavero de iCloud."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tes clés voyagent en sécurité vers tes appareils avec le trousseau iCloud."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le tue chiavi viaggiano in sicurezza sui tuoi dispositivi con il portachiavi iCloud."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je sleutels gaan veilig met de iCloud-sleutelhanger naar je apparaten."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twoje klucze bezpiecznie trafiają na twoje urządzenia przez pęk kluczy iCloud."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anahtarların iCloud Anahtar Zinciri ile cihazlarına güvenle taşınır."
           }
         }
       }
@@ -8695,6 +9063,52 @@
         }
       }
     },
+    "Ein Ort in der Mitte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A place in the middle"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un sitio en el medio"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un lieu à mi-chemin"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un posto a metà strada"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Een plek in het midden"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miejsce pośrodku"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ortada bir yer"
+          }
+        }
+      }
+    },
     "Einchecken": {
       "localizations": {
         "en": {
@@ -8737,52 +9151,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Check-in yap"
-          }
-        }
-      }
-    },
-    "Eine Stunde lang für Leute ohne die App, als Link.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "For one hour, as a link for people without the app."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Durante una hora, como enlace para quien no tiene la app."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pendant une heure, en lien pour les personnes sans l’app."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Per un’ora, come link per chi non ha l’app."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Een uur lang, als link voor mensen zonder de app."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Przez godzinę, jako link dla osób bez aplikacji."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bir saat boyunca, uygulaması olmayanlar için bağlantı olarak."
           }
         }
       }
@@ -10995,52 +11363,6 @@
         }
       }
     },
-    "Für eine Weile nur ungefähr zeigen, wo du bist.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show only roughly where you are for a while."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostrar solo aproximadamente dónde estás durante un rato."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ne montrer qu’à peu près où tu es pendant un moment."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostra solo più o meno dove sei per un po’."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Een tijdje alleen ongeveer laten zien waar je bent."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Przez jakiś czas pokazuj tylko w przybliżeniu, gdzie jesteś."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bir süre yalnızca yaklaşık olarak nerede olduğunu göster."
-          }
-        }
-      }
-    },
     "Gefragt, Standort kommt gleich": {
       "localizations": {
         "en": {
@@ -12835,48 +13157,48 @@
         }
       }
     },
-    "Im Nebel aus, weil dein genauer Ort dazugehört.": {
+    "Im Nebel aus": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Off in fog, because it includes your exact location."
+            "value": "Off in fog"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Desactivado con niebla, porque incluye tu ubicación exacta."
+            "value": "Desactivado con niebla"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Désactivé dans le brouillard, car ta position exacte en fait partie."
+            "value": "Désactivé dans le brouillard"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Disattivato con la nebbia, perché include la tua posizione esatta."
+            "value": "Disattivato con la nebbia"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uit in de mist, omdat je exacte locatie erbij hoort."
+            "value": "Uit in de mist"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wyłączone we mgle, bo zawiera twoją dokładną lokalizację."
+            "value": "Wyłączone we mgle"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Siste kapalı, çünkü tam konumunu içerir."
+            "value": "Siste kapalı"
           }
         }
       }
@@ -13291,6 +13613,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kahve molası"
+          }
+        }
+      }
+    },
+    "Karte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Map"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carte"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mappa"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaart"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harita"
           }
         }
       }
@@ -15549,6 +15917,52 @@
         }
       }
     },
+    "Mein Standort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My Location"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi ubicación"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ma position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La mia posizione"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mijn locatie"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moja lokalizacja"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konumum"
+          }
+        }
+      }
+    },
     "Meine Autos": {
       "localizations": {
         "en": {
@@ -15683,6 +16097,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "İyiyim"
+          }
+        }
+      }
+    },
+    "Mit CarPlay oder einem dieser Autos verbunden heißt: Du bist vermutlich gefahren.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connected to CarPlay or one of these cars means you probably drove."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectado a CarPlay o a uno de estos coches: probablemente condujiste tú."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecté à CarPlay ou à l’une de ces voitures : tu conduisais sans doute."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collegato a CarPlay o a una di queste auto: probabilmente guidavi tu."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbonden met CarPlay of een van deze auto’s: je reed waarschijnlijk zelf."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Połączenie z CarPlay lub jednym z tych aut oznacza: prawdopodobnie prowadziłeś(-aś)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CarPlay’e veya bu arabalardan birine bağlıysan muhtemelen sen sürdün."
           }
         }
       }
@@ -16469,52 +16929,6 @@
         }
       }
     },
-    "Nebel bis %@. Danach wieder genau.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fog until %@. Exact again afterwards."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Niebla hasta las %@. Después, exacto de nuevo."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Brouillard jusqu’à %@. Ensuite à nouveau précis."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nebbia fino alle %@. Poi di nuovo preciso."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mist tot %@. Daarna weer precies."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mgła do %@. Potem znów dokładnie."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ saatine kadar sis. Sonra yine tam konum."
-          }
-        }
-      }
-    },
     "Nebel einschalten": {
       "localizations": {
         "en": {
@@ -17063,6 +17477,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bulunamadı. Fener silinmiş ya da sen çıkarılmış olabilirsin."
+          }
+        }
+      }
+    },
+    "Nimm nur Anfragen von Leuten an, die du kennst.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only accept requests from people you know."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acepta solo solicitudes de personas que conozcas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N’accepte que les demandes de personnes que tu connais."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accetta solo richieste da persone che conosci."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accepteer alleen verzoeken van mensen die je kent."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akceptuj tylko zaproszenia od znajomych."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca tanıdığın kişilerin isteklerini kabul et."
           }
         }
       }
@@ -17891,6 +18351,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yalnızca uygulama çalışırken"
+          }
+        }
+      }
+    },
+    "Nur ungefähr zeigen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show only roughly"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar solo aproximadamente"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne montrer qu’à peu près"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra solo più o meno"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alleen ongeveer tonen"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokazuj tylko w przybliżeniu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca yaklaşık göster"
           }
         }
       }
@@ -19321,6 +19827,98 @@
         }
       }
     },
+    "Satellit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satellite"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satélite"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satellite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satellite"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satelliet"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satelita"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uydu"
+          }
+        }
+      }
+    },
+    "Scanne den Code auf dem Apple TV mit der Kamera deines iPhones.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan the code on the Apple TV with your iPhone’s camera."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanea el código del Apple TV con la cámara de tu iPhone."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanne le code sur l’Apple TV avec l’appareil photo de ton iPhone."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scansiona il codice sull’Apple TV con la fotocamera del tuo iPhone."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan de code op de Apple TV met de camera van je iPhone."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeskanuj kod na Apple TV aparatem iPhone’a."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple TV’deki kodu iPhone’unun kamerasıyla tara."
+          }
+        }
+      }
+    },
     "Schalte ein, was du möchtest. Du kannst alles jederzeit in den Einstellungen ändern.": {
       "localizations": {
         "en": {
@@ -19501,52 +20099,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Birine tepki gönderirsen kısa süre sonra yanıt verir."
-          }
-        }
-      }
-    },
-    "Schickt allen deinen genauen Ort mit der Bitte, dich abzuholen.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sends everyone your exact location and asks them to pick you up."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Envía a todos tu ubicación exacta y pide que te recojan."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Envoie à tous ta position exacte en demandant qu’on vienne te chercher."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Invia a tutti la tua posizione esatta chiedendo di venirti a prendere."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stuurt iedereen je exacte locatie met de vraag je op te halen."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wysyła wszystkim twoją dokładną lokalizację z prośbą o odebranie."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Herkese tam konumunu gönderir ve seni almalarını ister."
           }
         }
       }
@@ -21483,52 +22035,6 @@
         }
       }
     },
-    "Sucht ein Café oder einen Park in der Mitte zwischen allen.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Finds a café or a park in the middle between everyone."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Busca un café o un parque en el punto medio entre todos."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trouve un café ou un parc à mi-chemin entre tout le monde."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trova un bar o un parco a metà strada tra tutti."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoekt een café of park in het midden tussen iedereen."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Szuka kawiarni lub parku pośrodku między wszystkimi."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Herkesin ortasında bir kafe veya park bulur."
-          }
-        }
-      }
-    },
     "Symbol": {
       "localizations": {
         "en": {
@@ -22679,6 +23185,52 @@
         }
       }
     },
+    "Vergleicht den Code, wenn ihr euch seht.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare the code when you meet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparad el código cuando os veáis."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparez le code quand vous vous voyez."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confrontate il codice quando vi vedete."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vergelijk de code als jullie elkaar zien."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porównajcie kod, gdy się spotkacie."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Görüştüğünüzde kodu karşılaştırın."
+          }
+        }
+      }
+    },
     "Vergleicht den Sicherheitscode persönlich, bevor ihr euch darauf verlasst: %@": {
       "localizations": {
         "en": {
@@ -22767,6 +23319,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Her adın altındaki güvenlik kodunu o kişinin aygıtıyla yüz yüze karşılaştırın. Eşleşirse kimse fark edilmeden yabancı bir anahtar sokamaz."
+          }
+        }
+      }
+    },
+    "Vergleicht die Sicherheitscodes, wenn ihr euch seht.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare the safety codes when you meet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparad los códigos de seguridad cuando os veáis."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparez les codes de sécurité quand vous vous voyez."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confrontate i codici di sicurezza quando vi vedete."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vergelijk de veiligheidscodes als jullie elkaar zien."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porównajcie kody bezpieczeństwa, gdy się spotkacie."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Görüştüğünüzde güvenlik kodlarını karşılaştırın."
           }
         }
       }
@@ -23043,6 +23641,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yer ortaya gelene kadar haritayı kaydır."
+          }
+        }
+      }
+    },
+    "Verschlüsselt und nur für deine Leuchttürme. Mit „Immer“ auch bei geschlossener App.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encrypted and only for your lighthouses. With “Always”, also when the app is closed."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cifrado y solo para tus faros. Con «Siempre», también con la app cerrada."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiffré et réservé à tes phares. Avec « Toujours », même quand l’app est fermée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crittografato e solo per i tuoi fari. Con «Sempre», anche ad app chiusa."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versleuteld en alleen voor je vuurtorens. Met ‘Altijd’ ook als de app gesloten is."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaszyfrowane i tylko dla twoich latarni. Z „Zawsze” także przy zamkniętej aplikacji."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şifreli ve yalnızca fenerlerin için. “Her Zaman” ile uygulama kapalıyken de."
           }
         }
       }
@@ -23411,6 +24055,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uzun yol: 100 km’den fazla sürüş"
+          }
+        }
+      }
+    },
+    "Weniger": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Less"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moins"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meno"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minder"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mniej"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daha az"
+          }
+        }
+      }
+    },
+    "Wer deinen Code hat, kann dir eine Anfrage schicken.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anyone with your code can send you a request."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quien tenga tu código puede enviarte una solicitud."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quiconque a ton code peut t’envoyer une demande."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi ha il tuo codice può inviarti una richiesta."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie je code heeft, kan je een verzoek sturen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Każdy, kto ma twój kod, może wysłać ci zaproszenie."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kodun olan herkes sana istek gönderebilir."
           }
         }
       }

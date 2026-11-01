@@ -101,7 +101,7 @@ struct PlacesSection: View {
         } header: {
             Text("Orte")
         } footer: {
-            Text("Kommt jemand an oder geht, bekommt der Leuchtturm Bescheid. Das prüft jedes iPhone selbst; die Orte liegen verschlüsselt in iCloud, Apple kann sie nicht lesen. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.")
+            MoreFooter("Ankommen und Gehen meldet jedes iPhone selbst.", more: "Kommt jemand an oder geht, bekommt der Leuchtturm Bescheid. Das prüft jedes iPhone selbst; die Orte liegen verschlüsselt in iCloud, Apple kann sie nicht lesen. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.")
         }
     }
 

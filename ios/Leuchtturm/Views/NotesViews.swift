@@ -92,7 +92,7 @@ struct NewsSection: View {
         let notes = details.notes.filter { $0.kind != .refresh }
         if !notes.isEmpty {
             Section("Neuigkeiten") {
-                ForEach(notes.prefix(5)) { note in
+                ForEach(notes.prefix(3)) { note in
                     if let place = note.location {
                         Button { onShowPlace(place) } label: { row(note) }
                             .tint(.primary)

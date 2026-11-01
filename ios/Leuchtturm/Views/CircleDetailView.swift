@@ -51,7 +51,7 @@ struct CircleDetailView: View {
                 } header: {
                     Text("Mitglieder (\(details.members.count))")
                 } footer: {
-                    Text("Vergleicht den Sicherheitscode unter jedem Namen persönlich mit dem Gerät der Person. Stimmt er überein, kann niemand unbemerkt einen fremden Schlüssel unterschieben.")
+                    MoreFooter("Vergleicht die Sicherheitscodes, wenn ihr euch seht.", more: "Vergleicht den Sicherheitscode unter jedem Namen persönlich mit dem Gerät der Person. Stimmt er überein, kann niemand unbemerkt einen fremden Schlüssel unterschieben.")
                 }
 
                 if details.isOwner && !details.unverifiedUserIDs.isEmpty {

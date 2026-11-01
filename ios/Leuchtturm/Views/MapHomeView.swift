@@ -125,7 +125,8 @@ struct MapHomeView: View {
     private var drawer: some View {
         PeopleSheet(
             details: details, circle: selected, sheet: $sheet, path: $drawerPath,
-            onFocus: { focus($0) }, onShowPlace: showPlace, onSelectCircle: { selectedCircleID = $0.circleID }
+            onFocus: { focus($0) }, onShowPlace: showPlace, onSelectCircle: { selectedCircleID = $0.circleID },
+            expanded: isRegular || detent != PeopleSheet.peek
         )
     }
 
@@ -316,25 +317,29 @@ struct MapHomeView: View {
     }
 
     private var buttonColumn: some View {
-        GlassEffectContainer(spacing: 10) {
-            VStack(spacing: 10) {
-                #if DEBUG
-                if model.isSimulation {
-                    MapButton("Simulation", systemImage: "testtube.2", tint: .orange) { sheet = .simulation }
-                }
-                #endif
-                MapButton("SOS", systemImage: "sos", tint: .red) { sheet = .sos }
-                MapButton("Mein Standort", systemImage: "location.fill") {
+        VStack(spacing: 12) {
+            #if DEBUG
+            if model.isSimulation {
+                MapButton("Simulation", systemImage: "testtube.2", tint: .orange) { sheet = .simulation }
+            }
+            #endif
+            MapButton("SOS", systemImage: "sos", tint: .red) { sheet = .sos }
+            // Where to look, as one piece of glass.
+            VStack(spacing: 0) {
+                StackButton("Mein Standort", systemImage: "location.fill") {
                     if let me = details?.members.first(where: \.isMe) { focus(me, showDetails: false) }
                 }
-                MapButton("Alle zeigen", systemImage: "person.2.fill") {
+                Divider().frame(width: 26)
+                StackButton("Alle zeigen", systemImage: "person.2.fill") {
                     focusedID = nil
                     frameEveryone()
                 }
-                MapButton(satellite ? "Karte" : "Satellit", systemImage: satellite ? "map.fill" : "globe.europe.africa.fill") {
+                Divider().frame(width: 26)
+                StackButton(satellite ? "Karte" : "Satellit", systemImage: satellite ? "map.fill" : "globe.europe.africa.fill") {
                     satellite.toggle()
                 }
             }
+            .glassEffect(.regular.interactive(), in: .capsule)
         }
         .padding(.top, 8)
         .padding(.trailing)
@@ -407,6 +412,32 @@ private struct FriendsButton: View {
             }
         }
         .accessibilityLabel(requests > 0 ? "Freunde, \(requests) offene Anfragen" : "Freunde")
+    }
+}
+
+/// One button in the glass stack on the map.
+private struct StackButton: View {
+    let label: LocalizedStringResource
+    let systemImage: String
+    let action: () -> Void
+    @ScaledMetric(relativeTo: .title3) private var size = 46
+
+    init(_ label: LocalizedStringResource, systemImage: String, action: @escaping () -> Void) {
+        self.label = label
+        self.systemImage = systemImage
+        self.action = action
+    }
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.title3)
+                .foregroundStyle(.primary)
+                .frame(width: size, height: size)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(label))
     }
 }
 

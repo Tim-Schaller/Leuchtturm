@@ -64,7 +64,7 @@ struct WeekView: View {
                 } header: {
                     Text("🏆 Sicher gefahren")
                 } footer: {
-                    Text("100 Punkte pro Fahrt, Abzug für starkes Bremsen, schnelles Beschleunigen und über 130 km/h. Nach Strecke gewichtet. Nur wer „Fahrten teilen“ eingeschaltet hat.")
+                    MoreFooter("100 Punkte pro Fahrt, Abzug für hartes Fahren.", more: "100 Punkte pro Fahrt, Abzug für starkes Bremsen, schnelles Beschleunigen und über 130 km/h. Nach Strecke gewichtet. Nur wer „Fahrten teilen“ eingeschaltet hat.")
                 }
 
                 let badges = Badge.earned(

@@ -26,9 +26,9 @@ func activeJourney(of memberID: String, in notes: [CircleNote], now: Date = Date
 }
 
 /// What you can do right now, in three groups: getting somewhere, meeting
-/// up, and how your location is shared. Each row says what it does; the
-/// row lights up when tapped, the phone ticks, and "Hol mich ab" shows a
-/// spinner and then a check mark.
+/// up, and how your location is shared. Two tiles per group with a short
+/// line each; a tile gives way when tapped, the phone ticks, and "Hol mich
+/// ab" shows a spinner and then a check mark.
 struct ActionSections: View {
     @Environment(AppModel.self) private var model
     let details: CircleDetails
@@ -43,45 +43,54 @@ struct ActionSections: View {
         let ref = details.ref
         let fog = model.activeFog
         Section("Unterwegs") {
-            ActionRow(title: "Auf dem Weg", subtitle: "Alle sehen, wann du ankommst. Die Ankunft meldet sich von selbst.",
-                      symbol: "figure.walk.motion", color: .blue) { open(.journey(ref, walkHome: false)) }
+            HStack(spacing: 10) {
+                ActionTile(title: "Auf dem Weg", detail: "Ankunftszeit für alle", symbol: "figure.walk.motion", color: .blue) {
+                    open(.journey(ref, walkHome: false))
+                }
                 .disabled(!details.hasKey || model.journey != nil)
-                // On one row only: on a section it would tick once per row.
-                .sensoryFeedback(.impact(weight: .light), trigger: taps)
-                .sensoryFeedback(.success, trigger: successes)
-            ActionRow(title: "Heimweg", subtitle: "Bist du bis zu einer Uhrzeit nicht zu Hause, schlagen die anderen Alarm.",
-                      symbol: "house.and.flag.fill", color: .indigo) { open(.journey(ref, walkHome: true)) }
+                ActionTile(title: "Heimweg", detail: "Alarm, falls du nicht ankommst", symbol: "house.and.flag.fill", color: .indigo) {
+                    open(.journey(ref, walkHome: true))
+                }
                 .disabled(!details.hasKey || model.journey != nil)
+            }
+            .actionRow()
         }
         Section("Treffen") {
-            ActionRow(
-                title: sentPickUp ? "Abgeschickt" : "Hol mich ab",
-                subtitle: fog != nil ? "Im Nebel aus, weil dein genauer Ort dazugehört." : "Schickt allen deinen genauen Ort mit der Bitte, dich abzuholen.",
-                symbol: "car.side.fill", color: .orange, opensSheet: false, working: sendingPickUp, done: sentPickUp
-            ) { sendPickUp() }
-                .disabled(!details.hasKey || fog != nil)
-            ActionRow(title: "Treffpunkt", subtitle: "Sucht ein Café oder einen Park in der Mitte zwischen allen.",
-                      symbol: "point.3.filled.connected.trianglepath.dotted", color: .teal) { open(.meetingPoint(ref)) }
+            HStack(spacing: 10) {
+                ActionTile(
+                    title: sentPickUp ? "Abgeschickt" : "Hol mich ab",
+                    detail: fog != nil ? "Im Nebel aus" : "Dein Ort an alle",
+                    symbol: "car.side.fill", color: .orange, working: sendingPickUp, done: sentPickUp
+                ) { sendPickUp() }
+                    .disabled(!details.hasKey || fog != nil)
+                ActionTile(title: "Treffpunkt", detail: "Ein Ort in der Mitte", symbol: "point.3.filled.connected.trianglepath.dotted", color: .teal) {
+                    open(.meetingPoint(ref))
+                }
                 .disabled(!details.hasKey)
+            }
+            .actionRow()
         }
         Section("Dein Standort") {
-            if let fog {
-                ActionRow(title: "Nebel beenden", subtitle: "Nebel bis \(fog.until.formatted(date: .omitted, time: .shortened)). Danach wieder genau.",
-                          symbol: "cloud.fog.fill", color: .gray, opensSheet: false) {
-                    taps += 1
-                    Task { await model.endFog() }
+            HStack(spacing: 10) {
+                if let fog {
+                    ActionTile(title: "Nebel beenden", detail: "Aktiv bis \(fog.until.formatted(date: .omitted, time: .shortened))",
+                               symbol: "cloud.fog.fill", color: .gray, active: true) {
+                        taps += 1
+                        Task { await model.endFog() }
+                    }
+                } else {
+                    ActionTile(title: "Nebel", detail: "Nur ungefähr zeigen", symbol: "cloud.fog.fill", color: .gray) { open(.fog) }
                 }
-            } else {
-                ActionRow(title: "Nebel", subtitle: "Für eine Weile nur ungefähr zeigen, wo du bist.",
-                          symbol: "cloud.fog.fill", color: .gray) { open(.fog) }
+                if let link = model.liveLink {
+                    ActionTile(title: "Live-Link läuft", detail: "Bis \(link.expires.formatted(date: .omitted, time: .shortened))",
+                               symbol: "link", color: .pink, active: true) { open(.liveLink) }
+                } else {
+                    ActionTile(title: "Live-Link", detail: "1 Stunde für Leute ohne App", symbol: "link", color: .pink) { open(.liveLink) }
+                }
             }
-            if let link = model.liveLink {
-                ActionRow(title: "Live-Link läuft", subtitle: "Bis \(link.expires.formatted(date: .omitted, time: .shortened)). Tippen zum Teilen oder Beenden.",
-                          symbol: "link", color: .pink) { open(.liveLink) }
-            } else {
-                ActionRow(title: "Live-Link", subtitle: "Eine Stunde lang für Leute ohne die App, als Link.",
-                          symbol: "link", color: .pink) { open(.liveLink) }
-            }
+            .actionRow()
+            .sensoryFeedback(.impact(weight: .light), trigger: taps)
+            .sensoryFeedback(.success, trigger: successes)
         }
     }
 
@@ -90,7 +99,7 @@ struct ActionSections: View {
         sheet = target
     }
 
-    /// Sends at once; the row shows that it worked.
+    /// Sends at once; the tile shows that it worked.
     private func sendPickUp() {
         taps += 1
         sendingPickUp = true
@@ -106,56 +115,75 @@ struct ActionSections: View {
     }
 }
 
-/// A row with a coloured symbol, a title and what it does.
-private struct ActionRow: View {
+private extension View {
+    /// Tiles sit on the list's ground, not in a white row.
+    func actionRow() -> some View {
+        listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+    }
+}
+
+/// A tile with a coloured symbol, a title and one short line.
+private struct ActionTile: View {
     let title: LocalizedStringResource
-    let subtitle: LocalizedStringResource
+    let detail: LocalizedStringResource
     let symbol: String
     let color: Color
-    /// Opens a sheet (chevron) or acts right away.
-    var opensSheet = true
     var working = false
     var done = false
+    /// Something is running (fog, live link).
+    var active = false
     let action: () -> Void
     @Environment(\.isEnabled) private var isEnabled
-    @ScaledMetric(relativeTo: .body) private var size = 38
+    @ScaledMetric(relativeTo: .body) private var size = 34
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 14) {
+            VStack(alignment: .leading, spacing: 10) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
+                    RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
                         .fill((done ? Color.green : color).gradient)
                     if working {
-                        ProgressView().tint(.white)
+                        ProgressView().tint(.white).controlSize(.small)
                     } else {
                         Image(systemName: done ? "checkmark" : symbol)
-                            .font(.body.weight(.semibold))
+                            .font(.callout.weight(.semibold))
                             .foregroundStyle(.white)
                             .contentTransition(.symbolEffect(.replace))
                     }
                 }
                 .frame(width: size, height: size)
-                .saturation(isEnabled ? 1 : 0)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.body.weight(.semibold))
-                    Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
-                }
-                .foregroundStyle(isEnabled ? .primary : .secondary)
-                Spacer(minLength: 0)
-                if opensSheet {
-                    Image(systemName: "chevron.right")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.tertiary)
+                    Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+                    Text(detail).font(.caption).foregroundStyle(.secondary).lineLimit(2, reservesSpace: true)
                 }
             }
-            .padding(.vertical, 2)
-            .contentShape(.rect)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(14)
+            .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 22, style: .continuous))
+            .overlay {
+                if active { RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(color, lineWidth: 2) }
+            }
             .animation(.snappy, value: done)
             .animation(.snappy, value: working)
         }
-        .tint(.primary)
+        .buttonStyle(TileStyle())
         .disabled(working)
+    }
+}
+
+/// Gives way while pressed; grey when it cannot be used.
+private struct TileStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1)
+            .brightness(configuration.isPressed ? -0.04 : 0)
+            .saturation(isEnabled ? 1 : 0)
+            .opacity(isEnabled ? 1 : 0.5)
+            .contentShape(.rect(cornerRadius: 22))
+            .hoverEffect(.lift)
+            .animation(.snappy(duration: 0.16), value: configuration.isPressed)
     }
 }
 

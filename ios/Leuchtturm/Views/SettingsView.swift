@@ -62,7 +62,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Standort")
                 } footer: {
-                    Text("Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Leuchttürmen geteilt. Mit Standortzugriff „Immer“ sehen sie dich auch, wenn die App geschlossen ist, ohne dauerhaften blauen Hinweis in der Statusleiste. Mit „Beim Verwenden“ teilt die App nur, solange die App offen ist, weil iOS sonst den Hinweis ständig zeigen würde. Steht dein iPhone still, pausiert die Ortung und spart Akku. Ausschalten entfernt deinen Standort sofort aus allen Leuchttürmen. Der Guten-Morgen-Gruß sagt deinen Leuchttürmen Bescheid, wenn du morgens zum ersten Mal unterwegs bist.")
+                    MoreFooter("Verschlüsselt und nur für deine Leuchttürme. Mit „Immer“ auch bei geschlossener App.", more: "Dein Standort wird auf diesem iPhone verschlüsselt und nur mit deinen Leuchttürmen geteilt. Mit Standortzugriff „Immer“ sehen sie dich auch, wenn die App geschlossen ist, ohne dauerhaften blauen Hinweis in der Statusleiste. Mit „Beim Verwenden“ teilt die App nur, solange die App offen ist, weil iOS sonst den Hinweis ständig zeigen würde. Steht dein iPhone still, pausiert die Ortung und spart Akku. Ausschalten entfernt deinen Standort sofort aus allen Leuchttürmen. Der Guten-Morgen-Gruß sagt deinen Leuchttürmen Bescheid, wenn du morgens zum ersten Mal unterwegs bist.")
                 }
 
                 Section {
@@ -105,7 +105,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Verlauf und Fahrten")
                 } footer: {
-                    Text("Aus, solange du es nicht einschaltest. Dann sehen deine Leuchttürme, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Leuchtturm Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt die App „Alles okay?“. Ohne Antwort bekommen deine Leuchttürme nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.\n\nErinnerungen: Deine eigenen Wege bleiben nur auf diesem iPhone, für „Heute vor einem Jahr“. Wetter: Die App fragt Apple Wetter mit den auf etwa 1 km gerundeten Orten, ohne Namen.")
+                    MoreFooter("Alles aus, bis du es einschaltest. Was du teilst, ist Ende-zu-Ende-verschlüsselt.", more: "Aus, solange du es nicht einschaltest. Dann sehen deine Leuchttürme, wo du an den letzten Tagen unterwegs warst, Ende-zu-Ende-verschlüsselt. Ältere Tage löscht dein iPhone selbst. Ausschalten löscht den ganzen Verlauf sofort.\n\nFahrten erkennt dein iPhone selbst ab 25 km/h und mit dem Bewegungssensor, damit Rad und Bahn nicht zählen. Teilst du sie, sieht dein Leuchtturm Route, Strecke, Höchsttempo, starkes Bremsen und Beschleunigen, während der Fahrt dein Tempo und dich in der Wochen-Bestenliste. Fahrten werden nach 30 Tagen gelöscht, beim Ausschalten sofort.\n\nUnfallerkennung: Hält das Auto schlagartig an, fragt die App „Alles okay?“. Ohne Antwort bekommen deine Leuchttürme nach 60 Sekunden ein SOS mit deinem Ort. Das ist eine Schätzung aus GPS-Daten, kein Notrufdienst.\n\nErinnerungen: Deine eigenen Wege bleiben nur auf diesem iPhone, für „Heute vor einem Jahr“. Wetter: Die App fragt Apple Wetter mit den auf etwa 1 km gerundeten Orten, ohne Namen.")
                 }
 
                 if model.sharesTrips {
@@ -124,7 +124,7 @@ struct SettingsView: View {
                     } header: {
                         Text("Meine Autos")
                     } footer: {
-                        Text("Ist dein iPhone bei einer Fahrt mit CarPlay oder per Bluetooth mit einem dieser Autos verbunden, vermutet die App, dass du gefahren bist. Fahrt ihr zu mehreren, zählt in der Bestenliste nur die Fahrt des Fahrers. Den Namen des Autos sehen deine Leuchttürme bei der Fahrt, Ende-zu-Ende-verschlüsselt.")
+                        MoreFooter("Mit CarPlay oder einem dieser Autos verbunden heißt: Du bist vermutlich gefahren.", more: "Ist dein iPhone bei einer Fahrt mit CarPlay oder per Bluetooth mit einem dieser Autos verbunden, vermutet die App, dass du gefahren bist. Fahrt ihr zu mehreren, zählt in der Bestenliste nur die Fahrt des Fahrers. Den Namen des Autos sehen deine Leuchttürme bei der Fahrt, Ende-zu-Ende-verschlüsselt.")
                     }
                 }
 
@@ -143,9 +143,11 @@ struct SettingsView: View {
                 } header: {
                     Text("Dieses Gerät")
                 } footer: {
-                    Text(model.keysOnDeviceOnly
-                        ? "Deine Schlüssel liegen nur auf diesem Gerät. Ein neues iPhone oder iPad braucht neue Einladungen."
-                        : "Deine Schlüssel reisen mit dem iCloud-Schlüsselbund (von Apple Ende-zu-Ende-verschlüsselt) auf deine anderen Geräte. So funktionieren iPad und ein neues iPhone sofort. Wer es strenger will, schaltet „nur auf diesem Gerät“ ein.")
+                    if model.keysOnDeviceOnly {
+                        Text("Deine Schlüssel liegen nur auf diesem Gerät. Ein neues iPhone oder iPad braucht neue Einladungen.")
+                    } else {
+                        MoreFooter("Deine Schlüssel reisen sicher mit dem iCloud-Schlüsselbund auf deine Geräte.", more: "Deine Schlüssel reisen mit dem iCloud-Schlüsselbund (von Apple Ende-zu-Ende-verschlüsselt) auf deine anderen Geräte. So funktionieren iPad und ein neues iPhone sofort. Wer es strenger will, schaltet „nur auf diesem Gerät“ ein.")
+                    }
                 }
 
                 Section {
@@ -162,7 +164,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Apple TV")
                 } footer: {
-                    Text("Öffne Leuchtturm auf dem Apple TV und scanne den Code mit der Kamera deines iPhones. Das Apple TV zeigt dann die Karte, Ende-zu-Ende-verschlüsselt über deine eigene iCloud. Es braucht dieselbe iCloud wie du und bekommt keine Schlüssel deiner Leuchttürme.")
+                    MoreFooter("Scanne den Code auf dem Apple TV mit der Kamera deines iPhones.", more: "Öffne Leuchtturm auf dem Apple TV und scanne den Code mit der Kamera deines iPhones. Das Apple TV zeigt dann die Karte, Ende-zu-Ende-verschlüsselt über deine eigene iCloud. Es braucht dieselbe iCloud wie du und bekommt keine Schlüssel deiner Leuchttürme.")
                 }
 
                 Section {

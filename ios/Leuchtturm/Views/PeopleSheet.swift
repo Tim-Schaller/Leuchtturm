@@ -23,6 +23,8 @@ struct PeopleSheet: View {
     let onFocus: (CircleMember) -> Void
     let onShowPlace: (SharedLocation) -> Void
     let onSelectCircle: (CircleRef) -> Void
+    /// Pulled up beyond the small peek: the lists get their grey ground.
+    var expanded = true
     /// An invite from the simulation, shown once its sheet has closed.
     @State private var receivedInvite: InviteLink?
     @State private var tab = DrawerTab.people
@@ -33,6 +35,8 @@ struct PeopleSheet: View {
             content
                 .navigationTitle(circle.map { model.title(of: $0) } ?? AppInfo.name)
                 .navigationBarTitleDisplayMode(.inline)
+                // The name is already on the map; the tabs are the header here.
+                .toolbar(.hidden, for: .navigationBar)
                 .navigationDestination(for: DrawerRoute.self) { route in
                     switch route {
                     case let .member(id):
@@ -82,6 +86,7 @@ struct PeopleSheet: View {
             VStack(spacing: 0) {
                 DrawerTabBar(selection: $tab)
                     .padding(.horizontal)
+                    .padding(.top, 22)
                     .padding(.bottom, 8)
                 switch tab {
                 case .people: peopleList(details, circle)
@@ -91,6 +96,8 @@ struct PeopleSheet: View {
                 case .ranking: WeekView(details: details, mode: .ranking)
                 }
             }
+            // One ground from the tabs down, no white band above the grey lists.
+            .background(expanded && tab != .chat ? Color(.systemGroupedBackground) : .clear)
         } else {
             ProgressView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -127,12 +134,12 @@ struct PeopleSheet: View {
                             .disabled(!details.hasKey)
                     }
                 }
-                MemoryCard()
                 if let journey = model.journey, journey.circleID == details.id {
                     Section { JourneyBanner(journey: journey) }
                 }
-                ActionSections(details: details, sheet: $sheet)
                 NewsSection(details: details, onShowPlace: onShowPlace)
+                ActionSections(details: details, sheet: $sheet)
+                MemoryCard()
                 Section {
                     if details.isFriendship {
                         Button("Freunde verwalten", systemImage: "person.2") { sheet = .friends }
@@ -150,10 +157,10 @@ struct PeopleSheet: View {
             .contentMargins(.top, 0, for: .scrollContent)
     }
 
-    /// You first, then everyone by name.
+    /// Everyone by name, you last: the small drawer shows the others first.
     private func sorted(_ members: [CircleMember]) -> [CircleMember] {
         members.sorted { a, b in
-            if a.isMe != b.isMe { return a.isMe }
+            if a.isMe != b.isMe { return b.isMe }
             return (a.name ?? "~").localizedCaseInsensitiveCompare(b.name ?? "~") == .orderedAscending
         }
     }
@@ -407,7 +414,7 @@ struct MemberDetailView: View {
                     }
                 }
             } footer: {
-                Text("Vergleicht den Code persönlich mit dem Gerät der Person. Stimmt er überein, kann niemand unbemerkt einen fremden Schlüssel unterschieben. Installiert jemand die App neu, bekommt er einen neuen Code und muss neu überprüft werden.")
+                MoreFooter("Vergleicht den Code, wenn ihr euch seht.", more: "Vergleicht den Code persönlich mit dem Gerät der Person. Stimmt er überein, kann niemand unbemerkt einen fremden Schlüssel unterschieben. Installiert jemand die App neu, bekommt er einen neuen Code und muss neu überprüft werden.")
             }
         }
         .navigationTitle(member.name ?? "Mitglied")

@@ -155,7 +155,7 @@ struct FriendsView: View {
         } header: {
             Text("Dein Freundescode")
         } footer: {
-            Text("Wer deinen Code hat, kann dir eine Anfrage schicken. Nimmst du sie an, seht ihr euch gegenseitig auf der Karte und könnt chatten, Ende-zu-Ende-verschlüsselt.")
+            MoreFooter("Wer deinen Code hat, kann dir eine Anfrage schicken.", more: "Wer deinen Code hat, kann dir eine Anfrage schicken. Nimmst du sie an, seht ihr euch gegenseitig auf der Karte und könnt chatten, Ende-zu-Ende-verschlüsselt.")
         }
     }
 
@@ -224,7 +224,7 @@ struct FriendsView: View {
         } header: {
             Text("Anfragen")
         } footer: {
-            Text("Nimm nur Anfragen von Leuten an, die du kennst: Ihr teilt dann euren Standort miteinander. Den Sicherheitscode könnt ihr vergleichen, wenn ihr euch seht.")
+            MoreFooter("Nimm nur Anfragen von Leuten an, die du kennst.", more: "Nimm nur Anfragen von Leuten an, die du kennst: Ihr teilt dann euren Standort miteinander. Den Sicherheitscode könnt ihr vergleichen, wenn ihr euch seht.")
         }
     }
 

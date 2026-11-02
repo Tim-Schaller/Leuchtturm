@@ -68,7 +68,7 @@ struct SOSSheet: View {
             .errorAlert()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Schließen") { dismiss() }
+                    Button(role: .close) { dismiss() }
                 }
             }
         }

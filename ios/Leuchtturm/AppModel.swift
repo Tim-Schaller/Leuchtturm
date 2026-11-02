@@ -424,7 +424,9 @@ final class AppModel {
         }
         if sharesTrips && !isSimulation { motion.start() } else { motion.stop() }
         tracker.onVisit = { [weak self] visit in self?.visitStore.add(visit) }
-        Task { _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) }
+        if !Self.isScreenshotDemo {
+            Task { _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) }
+        }
         tracker.start(background: isSharingLocation && !isSimulation) { [weak self] locations in
             Task { await self?.received(locations) }
         }
@@ -1411,4 +1413,15 @@ struct Fog: Codable, Equatable {
     static let sizes: [(radius: Int, label: LocalizedStringResource)] = [
         (1000, "Stadtteil (ca. 2 km)"), (5000, "Stadt (ca. 10 km)"), (25000, "Region (ca. 50 km)"),
     ]
+}
+
+extension AppModel {
+    /// Started with `-simulationDemo` for screenshots: no permission prompt in the way.
+    static var isScreenshotDemo: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.arguments.contains(SimulatedWorld.demoArgument)
+        #else
+        false
+        #endif
+    }
 }

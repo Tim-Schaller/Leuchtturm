@@ -30,12 +30,13 @@ struct PlaceBadge: View {
     let emoji: String
 
     var body: some View {
+        // Smaller and calmer than the people: the places are the stage.
         Text(emoji)
-            .font(.title3)
-            .frame(width: 36, height: 36)
-            .background(.white, in: .rect(cornerRadius: 10))
-            .overlay { RoundedRectangle(cornerRadius: 10).strokeBorder(Color.accentColor, lineWidth: 2) }
-            .shadow(color: .black.opacity(0.2), radius: 3, y: 1)
+            .font(.callout)
+            .frame(width: 30, height: 30)
+            .background(.regularMaterial, in: .circle)
+            .overlay { Circle().strokeBorder(Color.accentColor.opacity(0.7), lineWidth: 1.5) }
+            .shadow(color: .black.opacity(0.15), radius: 2, y: 1)
             .accessibilityHidden(true)
     }
 }
@@ -98,8 +99,6 @@ struct PlacesSection: View {
             }
             Button("Ort hinzufügen", systemImage: "plus.circle") { sheet = .addPlace(details.ref, nil) }
                 .disabled(!details.hasKey)
-        } header: {
-            Text("Orte")
         } footer: {
             MoreFooter("Ankommen und Gehen meldet jedes iPhone selbst.", more: "Kommt jemand an oder geht, bekommt der Leuchtturm Bescheid. Das prüft jedes iPhone selbst; die Orte liegen verschlüsselt in iCloud, Apple kann sie nicht lesen. Vorschläge entstehen aus deinen Aufenthalten, die nur auf diesem iPhone gespeichert sind.")
         }
@@ -185,10 +184,10 @@ private struct ArrivalWatchSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen", role: .cancel) { dismiss() }
+                    Button(role: .close) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Sichern") {
+                    Button(role: .confirm) {
                         guard let place = places.first(where: { $0.id == placeID }) else { return }
                         let parts = Calendar.current.dateComponents([.hour, .minute], from: time)
                         Task {
@@ -273,10 +272,10 @@ struct AddPlaceSheet: View {
             .errorAlert()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen", role: .cancel) { dismiss() }
+                    Button(role: .close) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Sichern", action: save)
+                    Button(role: .confirm, action: save)
                         .disabled(saving || center == nil || name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
@@ -295,6 +294,7 @@ struct AddPlaceSheet: View {
             saving = false
             if added != nil {
                 model.noteRemoteChange()
+                Haptics.success()
                 dismiss()
             }
         }

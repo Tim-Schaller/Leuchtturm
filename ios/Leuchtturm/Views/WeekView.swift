@@ -3,6 +3,26 @@ import LeuchtturmCore
 import MapKit
 import SwiftUI
 
+/// Trips and the leaderboard of the last 7 days, in one tab.
+struct WeekTab: View {
+    let details: CircleDetails
+    @AppStorage("weekShowsRanking") private var showsRanking = false
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("Ansicht", selection: $showsRanking) {
+                Text("Fahrten").tag(false)
+                Text("Bestenliste").tag(true)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.bottom, 6)
+            WeekView(details: details, mode: showsRanking ? .ranking : .trips)
+        }
+        .sensoryFeedback(.selection, trigger: showsRanking)
+    }
+}
+
 /// The last 7 days of the circle: who drove safest, who was out and about
 /// most, and the trips. Only members who share trips or history appear.
 struct WeekView: View {
@@ -21,20 +41,25 @@ struct WeekView: View {
     var body: some View {
         List {
             if let trips, mode == .trips {
-                Section {
-                    if trips.isEmpty {
-                        Text("Noch keine geteilten Fahrten diese Woche.")
-                            .foregroundStyle(.secondary)
+                if trips.isEmpty {
+                    ContentUnavailableView {
+                        Label("Noch keine Fahrten", systemImage: "car")
+                    } description: {
+                        Text("Hier erscheinen die Fahrten der letzten 7 Tage von allen, die „Fahrten teilen“ eingeschaltet haben.")
                     }
-                    ForEach(SharedRide.group(trips)) { ride in
-                        NavigationLink(value: DrawerRoute.ride(ride)) {
-                            RideRow(ride: ride, members: details.members)
+                    .listRowBackground(Color.clear)
+                }
+                let days = Dictionary(grouping: SharedRide.group(trips)) { Calendar.current.startOfDay(for: $0.mainTrip.start) }
+                ForEach(days.keys.sorted(by: >), id: \.self) { day in
+                    Section {
+                        ForEach(days[day] ?? []) { ride in
+                            NavigationLink(value: DrawerRoute.ride(ride)) {
+                                RideRow(ride: ride, members: details.members, places: details.places)
+                            }
                         }
+                    } header: {
+                        Text(ChatView.dayTitle(day))
                     }
-                } header: {
-                    Text("Fahrten der letzten 7 Tage")
-                } footer: {
-                    Text("Nur von Leuten, die „Fahrten teilen“ eingeschaltet haben.")
                 }
             } else if let all = trips {
                 // A car of four counts once: only the driver's trip.
@@ -47,8 +72,7 @@ struct WeekView: View {
                     }
                     ForEach(Array(board.enumerated()), id: \.element.id) { rank, stats in
                         HStack(spacing: 12) {
-                            Text(Self.medal(rank)).font(.title2).frame(width: 34)
-                                .accessibilityLabel("Platz \(rank + 1)")
+                            RankBadge(rank: rank)
                             Avatar(name: member(stats.deviceID)?.name, id: stats.deviceID, size: 38)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(member(stats.deviceID)?.name ?? String(localized: "Mitglied")).font(.headline)
@@ -62,7 +86,7 @@ struct WeekView: View {
                         .accessibilityElement(children: .combine)
                     }
                 } header: {
-                    Text("🏆 Sicher gefahren")
+                    Text("Sicher gefahren")
                 } footer: {
                     MoreFooter("100 Punkte pro Fahrt, Abzug für hartes Fahren.", more: "100 Punkte pro Fahrt, Abzug für starkes Bremsen, schnelles Beschleunigen und über 130 km/h. Nach Strecke gewichtet. Nur wer „Fahrten teilen“ eingeschaltet hat.")
                 }
@@ -74,9 +98,9 @@ struct WeekView: View {
                     Section("Abzeichen der Woche") {
                         ForEach(badges) { badge in
                             HStack(spacing: 12) {
-                                Text(Self.badgeEmoji(badge.kind)).font(.title2).frame(width: 34)
+                                IconSquare(Self.badgeSymbol(badge.kind), tone: Self.badgeTone(badge.kind))
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(Self.badgeTitle(badge.kind)).font(.headline)
+                                    Text(Self.badgeTitle(badge.kind)).font(.subheadline.weight(.semibold))
                                     Text(member(badge.deviceID)?.isMe == true ? String(localized: "Du") : member(badge.deviceID)?.name ?? "")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
@@ -94,8 +118,7 @@ struct WeekView: View {
                     Section {
                         ForEach(Array(walkers.enumerated()), id: \.element.member.id) { rank, entry in
                             HStack(spacing: 12) {
-                                Text(Self.medal(rank)).font(.title2).frame(width: 34)
-                                .accessibilityLabel("Platz \(rank + 1)")
+                                RankBadge(rank: rank)
                                 Avatar(name: entry.member.name, id: entry.member.id, size: 38)
                                 Text(entry.member.isMe ? String(localized: "Du") : entry.member.name ?? String(localized: "Mitglied"))
                                     .font(.headline)
@@ -105,7 +128,7 @@ struct WeekView: View {
                             .accessibilityElement(children: .combine)
                         }
                     } header: {
-                        Text("👟 Am meisten unterwegs")
+                        Text("Am meisten unterwegs")
                     } footer: {
                         Text("Strecke aus dem geteilten Verlauf, auch zu Fuß und mit dem Rad.")
                     }
@@ -138,11 +161,19 @@ struct WeekView: View {
         walkers = entries.sorted { $0.1 > $1.1 }.map { (member: $0.0, meters: $0.1) }
     }
 
-    static func badgeEmoji(_ kind: Badge.Kind) -> String {
+    static func badgeSymbol(_ kind: Badge.Kind) -> String {
         switch kind {
-        case .smoothDriver: "🛡️"
-        case .roadTripper: "🛣️"
-        case .explorer: "🧭"
+        case .smoothDriver: "shield.lefthalf.filled"
+        case .roadTripper: "road.lanes"
+        case .explorer: "safari.fill"
+        }
+    }
+
+    static func badgeTone(_ kind: Badge.Kind) -> Color {
+        switch kind {
+        case .smoothDriver: Theme.Tone.moss
+        case .roadTripper: Theme.Tone.sky
+        case .explorer: Theme.Tone.sun
         }
     }
 
@@ -154,9 +185,6 @@ struct WeekView: View {
         }
     }
 
-    static func medal(_ rank: Int) -> String {
-        ["🥇", "🥈", "🥉"].indices.contains(rank) ? ["🥇", "🥈", "🥉"][rank] : "\(rank + 1)."
-    }
 
     static func km(_ meters: Double) -> String {
         Measurement(value: meters, unit: UnitLength.meters).formatted(.measurement(width: .abbreviated, usage: .road))
@@ -202,30 +230,49 @@ struct RideRow: View {
     @Environment(AppModel.self) private var model
     let ride: SharedRide
     let members: [CircleMember]
+    var places: [CirclePlace] = []
 
     var body: some View {
         let main = ride.mainTrip
         HStack(spacing: 12) {
-            ZStack(alignment: .leading) {
-                ForEach(Array(ride.devices.prefix(3).enumerated()), id: \.offset) { index, id in
-                    Avatar(name: name(id), id: id, size: 32)
-                        .overlay(Circle().stroke(Color(.systemBackground), lineWidth: 2))
-                        .offset(x: CGFloat(index) * 14)
+            RouteThumbnail(route: main.route)
+                .overlay(alignment: .bottomTrailing) {
+                    HStack(spacing: -8) {
+                        ForEach(ride.devices.prefix(3), id: \.self) { id in
+                            Avatar(name: name(id), id: id, size: 22)
+                                .overlay(Circle().stroke(Color(.secondarySystemGroupedBackground), lineWidth: 2))
+                        }
+                    }
+                    .offset(x: 6, y: 6)
                 }
-            }
-            .frame(width: 32 + CGFloat(min(ride.devices.count, 3) - 1) * 14, alignment: .leading)
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(WeekView.km(main.distance)) · \(WeekView.minutes(main.duration))")
                     .font(.subheadline.weight(.semibold))
                 Text(ride.isShared ? RideText.driverLine(ride, name: name) : RideText.single(main, name: name(main.deviceID)))
-                    .font(.caption)
+                    .font(.footnote)
                     .foregroundStyle(.secondary)
-                Text(main.start.formatted(.dateTime.weekday(.wide).hour().minute()))
-                    .font(.caption2)
+                Text(timeAndPlaces(main))
+                    .font(.caption)
                     .foregroundStyle(.tertiary)
+                    .lineLimit(1)
             }
-            Spacer()
+            .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
+            Spacer(minLength: 8)
             ScoreBadge(score: main.score)
+        }
+        .padding(.vertical, 2)
+    }
+
+    /// "08:11 · Zuhause → Büro", with the places the trip started and ended at.
+    private func timeAndPlaces(_ trip: Trip) -> String {
+        let time = trip.start.formatted(date: .omitted, time: .shortened)
+        let from = trip.route.first.flatMap { PersonStatus.place(atLatitude: $0.latitude, longitude: $0.longitude, in: places)?.name }
+        let to = trip.route.last.flatMap { PersonStatus.place(atLatitude: $0.latitude, longitude: $0.longitude, in: places)?.name }
+        switch (from, to) {
+        case let (from?, to?): return "\(time) · \(from) → \(to)"
+        case let (nil, to?): return String(localized: "\(time) · nach \(to)")
+        case let (from?, nil): return String(localized: "\(time) · von \(from)")
+        default: return time
         }
     }
 
@@ -415,7 +462,7 @@ struct ChallengesSection: View {
             Section {
                 ForEach(Array(steps.enumerated()), id: \.element.member.id) { rank, entry in
                     HStack(spacing: 12) {
-                        Text(WeekView.medal(rank)).font(.title2).frame(width: 34)
+                        RankBadge(rank: rank)
                         Avatar(name: entry.member.name, id: entry.member.id, size: 38)
                         Text(entry.member.isMe ? String(localized: "Du") : entry.member.name ?? "").font(.headline)
                         Spacer()
@@ -424,13 +471,13 @@ struct ChallengesSection: View {
                     .accessibilityElement(children: .combine)
                 }
             } header: {
-                Text("🚶 Schritte diese Woche")
+                Text("Schritte diese Woche")
             } footer: {
                 Text("Nur wer „Schritte teilen“ eingeschaltet hat (Daten aus Health).")
             }
         }
 
-        Section("🎯 Challenges der Woche") {
+        Section("Challenges der Woche") {
             challenge(String(localized: "70.000 Schritte"), symbol: "figure.walk",
                       entries: steps.map { ($0.member, Double($0.week) / Double(Self.stepsGoal)) })
             challenge(String(localized: "50 km unterwegs"), symbol: "map",
@@ -443,7 +490,7 @@ struct ChallengesSection: View {
                             Avatar(name: entry.member.name, id: entry.member.id, size: 24)
                             Text(entry.member.isMe ? String(localized: "Du") : entry.member.name ?? "")
                             Spacer()
-                            Text("🔥 \(entry.count)").monospacedDigit()
+                            Label("\(entry.count)", systemImage: "flame.fill").monospacedDigit().foregroundStyle(Theme.Tone.sun)
                         }
                         .font(.subheadline)
                     }
@@ -461,8 +508,16 @@ struct ChallengesSection: View {
             ForEach(entries, id: \.0.id) { member, progress in
                 HStack {
                     Avatar(name: member.name, id: member.id, size: 24)
-                    ProgressView(value: min(progress, 1)).tint(progress >= 1 ? .yellow : .accentColor)
-                    Text(progress >= 1 ? "🏅" : "\(Int(progress * 100)) %").font(.caption).monospacedDigit().frame(width: 44, alignment: .trailing)
+                    ProgressView(value: min(progress, 1)).tint(progress >= 1 ? Theme.Tone.sun : .accentColor)
+                    Group {
+                        if progress >= 1 {
+                            Image(systemName: "checkmark.seal.fill").foregroundStyle(Theme.Tone.sun)
+                        } else {
+                            Text("\(Int(progress * 100)) %").monospacedDigit()
+                        }
+                    }
+                    .font(.caption)
+                    .frame(minWidth: 44, alignment: .trailing)
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("\(member.name ?? ""): \(Int(min(progress, 1) * 100)) Prozent")
@@ -497,9 +552,11 @@ struct MemoryCard: View {
                     Map(initialPosition: Self.position(for: memory.points), interactionModes: []) {
                         SpeedPathContent(path: SpeedPath(memory.points))
                     }
-                    .mapStyle(.standard(emphasis: .muted, pointsOfInterest: .excludingAll))
-                    .frame(height: 150)
-                    .clipShape(.rect(cornerRadius: 14))
+                    // From above and without labels, like a photo: no city
+                    // name lying over the legal note.
+                    .mapStyle(.imagery(elevation: .flat))
+                    .frame(height: 170)
+                    .clipShape(.rect(cornerRadius: Theme.Radius.inner, style: .continuous))
                     Text("\(WeekView.km(WeekView.length(memory.points))) unterwegs · nur auf diesem iPhone gespeichert")
                         .font(.caption).foregroundStyle(.secondary)
                 }
@@ -541,5 +598,61 @@ struct WeatherBadge: View {
             guard model.showsWeather, let location else { entry = nil; return }
             entry = await model.weather.weather(at: location.coordinate)
         }
+    }
+}
+
+/// The shape of a route, drawn on this iPhone from its points: no map
+/// tiles, so nothing is loaded for it.
+struct RouteThumbnail: View {
+    let route: [HistoryDay.Point]
+    var size: CGFloat = 48
+
+    var body: some View {
+        Canvas { context, canvas in
+            guard route.count > 1 else { return }
+            // Equirectangular is fine at this size; keep the aspect ratio.
+            let xs = route.map { $0.longitude * cos($0.latitude * .pi / 180) }, ys = route.map(\.latitude)
+            let (minX, maxX, minY, maxY) = (xs.min()!, xs.max()!, ys.min()!, ys.max()!)
+            let span = max(maxX - minX, maxY - minY, 1e-6)
+            let inset: CGFloat = 8
+            let scale = (canvas.width - 2 * inset) / span
+            let dx = (canvas.width - (maxX - minX) * scale) / 2, dy = (canvas.height - (maxY - minY) * scale) / 2
+            func point(_ i: Int) -> CGPoint {
+                CGPoint(x: dx + (xs[i] - minX) * scale, y: canvas.height - dy - (ys[i] - minY) * scale)
+            }
+            var path = Path()
+            path.move(to: point(0))
+            for i in 1 ..< route.count { path.addLine(to: point(i)) }
+            context.stroke(path, with: .color(.accentColor), style: StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
+            for (i, color) in [(0, Color.accentColor), (route.count - 1, Theme.Tone.coral)] {
+                let p = point(i)
+                context.fill(Path(ellipseIn: CGRect(x: p.x - 3, y: p.y - 3, width: 6, height: 6)), with: .color(color))
+            }
+        }
+        .frame(width: size, height: size)
+        .background(Color.accentColor.opacity(0.08), in: .rect(cornerRadius: Theme.Radius.icon, style: .continuous))
+        .accessibilityHidden(true)
+    }
+}
+
+/// Place 1 to 3 in gold, silver and bronze, then just the number.
+struct RankBadge: View {
+    let rank: Int
+    @ScaledMetric(relativeTo: .subheadline) private var size = 28
+
+    private static let medals = [
+        Color(red: 0.93, green: 0.72, blue: 0.20),
+        Color(red: 0.62, green: 0.67, blue: 0.72),
+        Color(red: 0.78, green: 0.52, blue: 0.32),
+    ]
+
+    var body: some View {
+        Text("\(rank + 1)")
+            .font(.subheadline.weight(.bold))
+            .monospacedDigit()
+            .foregroundStyle(rank < 3 ? .white : .secondary)
+            .frame(width: size, height: size)
+            .background(rank < 3 ? AnyShapeStyle(Self.medals[rank].gradient) : AnyShapeStyle(Color(.tertiarySystemFill)), in: .circle)
+            .accessibilityLabel("Platz \(rank + 1)")
     }
 }

@@ -88,28 +88,62 @@ struct RootView: View {
     }
 }
 
-/// Shows `AppModel.errorMessage`. Attached to the root and to every sheet,
-/// because an alert on the root cannot appear above a presented sheet; only
-/// the one that appeared last shows it.
+/// Shows `AppModel.errorMessage` as a note that slides in at the top and
+/// goes away by itself, instead of an alert that stops everything.
+/// Attached to the root and to every sheet, because the root is covered
+/// by a presented sheet; only the one that appeared last shows it.
 struct ErrorAlert: ViewModifier {
     @Environment(AppModel.self) private var model
     @State private var id = UUID()
+
+    private var message: String? { model.errorPresenters.last == id ? model.errorMessage : nil }
 
     func body(content: Content) -> some View {
         content
             .onAppear { model.errorPresenters.append(id) }
             .onDisappear { model.errorPresenters.removeAll { $0 == id } }
-            .alert(
-                "Hoppla",
-                isPresented: Binding(
-                    get: { model.errorMessage != nil && model.errorPresenters.last == id },
-                    set: { if !$0 { model.errorMessage = nil } }
-                )
-            ) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(model.errorMessage ?? "")
+            .overlay(alignment: .top) {
+                if let message {
+                    ErrorToast(message: message) { model.errorMessage = nil }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .task(id: message) {
+                            try? await Task.sleep(for: .seconds(6))
+                            if model.errorMessage == message { model.errorMessage = nil }
+                        }
+                }
             }
+            .animation(.snappy, value: message)
+            .sensoryFeedback(trigger: message) { _, new in new != nil ? .error : nil }
+    }
+}
+
+private struct ErrorToast: View {
+    let message: String
+    let dismiss: () -> Void
+
+    var body: some View {
+        Button(action: dismiss) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(Theme.Tone.sun)
+                Text(message)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "xmark")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .glassEffect(.regular, in: .rect(cornerRadius: Theme.Radius.card, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(message))
+        .accessibilityHint("Schließt den Hinweis")
     }
 }
 

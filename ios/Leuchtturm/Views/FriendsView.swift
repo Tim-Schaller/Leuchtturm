@@ -64,7 +64,7 @@ struct FriendsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .errorAlert()
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button("Fertig") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button(role: .close) { dismiss() } }
                 ToolbarItem(placement: .topBarLeading) {
                     Menu {
                         Button("Neuen Code erstellen", systemImage: "arrow.triangle.2.circlepath") { confirmNewCode = true }
@@ -315,7 +315,8 @@ private struct FriendRow: View {
                 if let status = friend.member.profile?.status(at: Date()) {
                     Text([status.emoji, status.text].compactMap { $0 }.joined(separator: " ")).font(.subheadline)
                 }
-                Text(LocationStatus.text(for: friend.member, model: model))
+                let status = PersonStatus.of(friend.member, model: model)
+                Text([status.headline, status.detail].compactMap { $0 }.joined(separator: " · "))
                     .font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
                 Text(places)
                     .font(.caption).foregroundStyle(.tint).lineLimit(1)
@@ -356,7 +357,7 @@ private struct FriendCodeQR: View {
             .padding()
             .navigationTitle("Freundescode")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Fertig") { dismiss() } } }
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button(role: .close) { dismiss() } } }
         }
         .presentationDetents([.medium, .large])
     }

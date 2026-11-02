@@ -145,12 +145,16 @@ struct ReactionPicker: View {
                 ForEach(Self.emojis, id: \.self) { emoji in
                     Button(emoji) { send(.reaction, emoji) }
                         .font(.title2)
-                        .frame(maxWidth: .infinity)
-                        .buttonStyle(.borderless)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .buttonStyle(PressStyle())
                 }
             }
-            ForEach(Self.phrases, id: \.self) { phrase in
-                Button(phrase) { send(.text, phrase) }
+            Menu {
+                ForEach(Self.phrases, id: \.self) { phrase in
+                    Button(phrase) { send(.text, phrase) }
+                }
+            } label: {
+                Label("Kurze Nachricht", systemImage: "text.bubble")
             }
         } header: {
             Text("An \(member.name ?? String(localized: "Mitglied")) senden")
@@ -158,16 +162,22 @@ struct ReactionPicker: View {
             if let sent {
                 Label("„\(sent)“ gesendet", systemImage: "checkmark.circle.fill")
                     .foregroundStyle(.tint)
+                    .transition(.blurReplace)
             } else {
-                Text("Ende-zu-Ende-verschlüsselt. Alle im Leuchtturm können es lesen.")
+                Text("Alle im Leuchtturm können es lesen.")
             }
         }
+        .animation(.snappy, value: sent)
         .sensoryFeedback(.success, trigger: sent)
     }
 
     private func send(_ kind: CircleNote.Kind, _ text: String) {
         Task {
-            if await model.send(kind, text: text, to: member.id, in: ref) { sent = text }
+            if await model.send(kind, text: text, to: member.id, in: ref) {
+                sent = text
+                try? await Task.sleep(for: .seconds(4))
+                if sent == text { sent = nil }
+            }
         }
     }
 }

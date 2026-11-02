@@ -20,22 +20,31 @@ struct ChatView: View {
         VStack(spacing: 0) {
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(spacing: 6) {
+                    LazyVStack(spacing: 0) {
                         if messages.isEmpty {
                             ContentUnavailableView("Noch keine Nachrichten", systemImage: "bubble.left.and.bubble.right",
                                                    description: Text("Schreib deinem Leuchtturm. Alles ist Ende-zu-Ende-verschlüsselt."))
                                 .padding(.top, 40)
                         }
-                        ForEach(messages) { message in
+                        ForEach(Self.layout(messages)) { item in
+                            if let day = item.day {
+                                Text(Self.dayTitle(day))
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                    .padding(.top, 14)
+                                    .padding(.bottom, 6)
+                            }
                             MessageRow(
-                                message: message, details: details,
-                                quoted: message.replyTo.flatMap { id in details.messages.first { $0.id == id } },
-                                reactions: reactions[message.id] ?? [],
-                                onReply: { replyTo = message },
-                                onReact: { emoji in send(emoji, reactsTo: message.id) },
-                                onDelete: { delete(message) }
+                                message: item.message, details: details,
+                                quoted: item.message.replyTo.flatMap { id in details.messages.first { $0.id == id } },
+                                reactions: reactions[item.message.id] ?? [],
+                                startsRun: item.startsRun, endsRun: item.endsRun,
+                                onReply: { replyTo = item.message },
+                                onReact: { emoji in send(emoji, reactsTo: item.message.id) },
+                                onDelete: { delete(item.message) }
                             )
-                            .id(message.id)
+                            .padding(.top, item.startsRun && item.day == nil ? 10 : 2)
+                            .id(item.message.id)
                         }
                     }
                     .padding(.horizontal)
@@ -48,6 +57,42 @@ struct ChatView: View {
             }
             ChatComposer(replyTo: $replyTo, details: details)
         }
+    }
+
+    /// A message with where it stands: messages of one person within five
+    /// minutes form a run (name on top, avatar and time at the end), and
+    /// each day starts with its date.
+    struct Item: Identifiable {
+        let message: ChatMessage
+        var day: Date?
+        var startsRun = true
+        var endsRun = true
+        var id: String { message.id }
+    }
+
+    static func layout(_ messages: [ChatMessage]) -> [Item] {
+        var items = messages.map { Item(message: $0) }
+        let calendar = Calendar.current
+        for i in items.indices {
+            let message = items[i].message
+            let previous = i > 0 ? items[i - 1].message : nil
+            if previous.map({ !calendar.isDate($0.timestamp, inSameDayAs: message.timestamp) }) ?? true {
+                items[i].day = message.timestamp
+            }
+            if let previous, items[i].day == nil, previous.senderID == message.senderID,
+               message.timestamp.timeIntervalSince(previous.timestamp) < 300 {
+                items[i].startsRun = false
+                items[i - 1].endsRun = false
+            }
+        }
+        return items
+    }
+
+    static func dayTitle(_ date: Date) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) { return String(localized: "Heute") }
+        if calendar.isDateInYesterday(date) { return String(localized: "Gestern") }
+        return date.formatted(.dateTime.weekday(.wide).day().month(.wide))
     }
 
     private func send(_ emoji: String, reactsTo id: String) {
@@ -70,6 +115,8 @@ private struct MessageRow: View {
     let details: CircleDetails
     let quoted: ChatMessage?
     let reactions: [ChatMessage]
+    var startsRun = true
+    var endsRun = true
     let onReply: () -> Void
     let onReact: (String) -> Void
     let onDelete: () -> Void
@@ -79,10 +126,20 @@ private struct MessageRow: View {
 
     var body: some View {
         HStack(alignment: .bottom, spacing: 8) {
-            if isMine { Spacer(minLength: 48) } else { Avatar(name: sender?.name, id: message.senderID, size: 28) }
+            if isMine {
+                Spacer(minLength: 48)
+            } else if endsRun {
+                Avatar(name: sender?.name, id: message.senderID, size: 28)
+                    .padding(.bottom, 18)
+            } else {
+                Color.clear.frame(width: 28, height: 1)
+            }
             VStack(alignment: isMine ? .trailing : .leading, spacing: 3) {
-                if !isMine {
-                    Text(sender?.name ?? String(localized: "Jemand")).font(.caption2).foregroundStyle(.secondary)
+                if !isMine && startsRun {
+                    Text(sender?.name ?? String(localized: "Jemand"))
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 12)
                 }
                 VStack(alignment: .leading, spacing: 6) {
                     if let quoted {
@@ -94,7 +151,7 @@ private struct MessageRow: View {
                             }
                         }
                         .padding(6)
-                        .background(.background.opacity(0.4), in: .rect(cornerRadius: 8))
+                        .background(isMine ? AnyShapeStyle(.white.opacity(0.2)) : AnyShapeStyle(Color(.tertiarySystemFill)), in: .rect(cornerRadius: 8))
                     }
                     if let data = message.image, let image = UIImage(data: data) {
                         Image(uiImage: image)
@@ -107,10 +164,14 @@ private struct MessageRow: View {
                         Text(message.text).textSelection(.enabled)
                     }
                 }
-                .padding(message.isSticker && quoted == nil ? 0 : 10)
+                .foregroundStyle(isMine && !message.isSticker ? .white : .primary)
+                .tint(isMine ? .white : .accentColor)
+                .padding(.horizontal, message.isSticker && quoted == nil ? 0 : 12)
+                .padding(.vertical, message.isSticker && quoted == nil ? 0 : 8)
                 .background {
                     if !(message.isSticker && quoted == nil) {
-                        RoundedRectangle(cornerRadius: 18).fill(isMine ? AnyShapeStyle(Color.accentColor.opacity(0.22)) : AnyShapeStyle(.thinMaterial))
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(isMine ? AnyShapeStyle(Color.accentColor.gradient) : AnyShapeStyle(Color(.secondarySystemBackground)))
                     }
                 }
                 .contextMenu {
@@ -131,9 +192,17 @@ private struct MessageRow: View {
                     Text(counts.map { $0.1 > 1 ? "\($0.0) \($0.1)" : $0.0 }.joined(separator: " "))
                         .font(.caption)
                         .padding(.horizontal, 8).padding(.vertical, 3)
-                        .glassEffect(.regular, in: .capsule)
+                        .background(Color(.systemBackground), in: .capsule)
+                        .overlay { Capsule().strokeBorder(Color(.separator), lineWidth: 0.5) }
+                        .padding(.top, -10)
+                        .padding(.horizontal, 8)
                 }
-                Text(message.timestamp, format: .dateTime.hour().minute()).font(.caption2).foregroundStyle(.tertiary)
+                if endsRun {
+                    Text(message.timestamp, format: .dateTime.hour().minute())
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .padding(.horizontal, 12)
+                }
             }
             if !isMine { Spacer(minLength: 48) }
         }
@@ -163,7 +232,7 @@ private struct SwipeToReply: ViewModifier {
                 if abs(offset) > 50 { action() }
                 withAnimation(.spring) { offset = 0 }
             })
-            .sensoryFeedback(.impact, trigger: abs(offset) > 50)
+            .sensoryFeedback(trigger: abs(offset) > 50) { _, reached in reached ? .impact : nil }
     }
 }
 
@@ -176,6 +245,7 @@ private struct ChatComposer: View {
     @State private var text = NSAttributedString()
     @State private var photo: PhotosPickerItem?
     @State private var sending = false
+    @State private var sent = 0
 
     var body: some View {
         VStack(spacing: 6) {
@@ -194,7 +264,7 @@ private struct ChatComposer: View {
             }
             HStack(alignment: .bottom, spacing: 8) {
                 PhotosPicker(selection: $photo, matching: .images) {
-                    Image(systemName: "photo").font(.title3).frame(width: 36, height: 36)
+                    Image(systemName: "photo.on.rectangle").font(.title3).frame(width: 44, height: 44)
                 }
                 .accessibilityLabel("Foto senden")
                 StickerTextView(text: $text)
@@ -210,11 +280,21 @@ private struct ChatComposer: View {
                     .padding(.horizontal, 10).padding(.vertical, 2)
                     .glassEffect(.regular, in: .rect(cornerRadius: 18))
                 Button { send() } label: {
-                    Image(systemName: "arrow.up.circle.fill").font(.system(size: 32))
+                    ZStack {
+                        if sending {
+                            ProgressView().frame(width: 36, height: 36)
+                        } else {
+                            Image(systemName: "arrow.up.circle.fill")
+                                .font(.largeTitle)
+                                .symbolRenderingMode(.hierarchical)
+                        }
+                    }
+                    .frame(width: 44, height: 44)
                 }
                 .disabled(sending || text.length == 0)
                 .accessibilityLabel("Senden")
             }
+            .sensoryFeedback(.success, trigger: sent)
             .padding(.horizontal)
             .padding(.bottom, 8)
         }
@@ -247,6 +327,7 @@ private struct ChatComposer: View {
             if ok {
                 text = NSAttributedString()
                 replyTo = nil
+                sent += 1
             }
             sending = false
         }

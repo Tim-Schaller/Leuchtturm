@@ -36,12 +36,13 @@ struct FogSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen", role: .cancel) { dismiss() }
+                    Button(role: .close) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Starten") {
                         Task {
                             await model.startFog(radius: radius, hours: hours)
+                            Haptics.success()
                             dismiss()
                         }
                     }

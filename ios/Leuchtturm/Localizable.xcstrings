@@ -875,52 +875,6 @@
         }
       }
     },
-    "%@ · im Nebel": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · in fog"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · en la niebla"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · dans le brouillard"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · nella nebbia"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · in de mist"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · we mgle"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · siste"
-          }
-        }
-      }
-    },
     "%@ · mitgefahren": {
       "localizations": {
         "en": {
@@ -963,6 +917,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ · yolcu"
+          }
+        }
+      }
+    },
+    "%@ · nach %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · to %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · a %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · vers %2$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · verso %2$@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · naar %2$@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · do: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · varış: %2$@"
+          }
+        }
+      }
+    },
+    "%@ · von %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · from %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · desde %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · depuis %2$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · da %2$@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · van %2$@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · z: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · çıkış: %2$@"
           }
         }
       }
@@ -2577,52 +2623,6 @@
         }
       }
     },
-    "Akku": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Battery"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Batería"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Batterie"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Batteria"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Batterij"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bateria"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pil"
-          }
-        }
-      }
-    },
     "Akku %lld Prozent": {
       "localizations": {
         "en": {
@@ -2757,52 +2757,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ saatine kadar açık"
-          }
-        }
-      }
-    },
-    "Aktualisiert": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Updated"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Actualizado"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mis à jour"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiornato"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bijgewerkt"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zaktualizowano"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Güncellendi"
           }
         }
       }
@@ -2987,6 +2941,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kayıtlı tüm günler GPX dosyası olarak, ör. harita ve spor uygulamaları için. Dosya şifreli değildir."
+          }
+        }
+      }
+    },
+    "Alle im Leuchtturm können es lesen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone in the lighthouse can read it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos en el faro pueden leerlo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout le monde dans le phare peut le lire."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti nel faro possono leggerlo."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iedereen in de vuurtoren kan het lezen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wszyscy w latarni mogą to przeczytać."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fenerdeki herkes okuyabilir."
           }
         }
       }
@@ -3355,6 +3355,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "GPX olarak dışa aktar"
+          }
+        }
+      }
+    },
+    "Am meisten unterwegs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Most on the move"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quién más se mueve"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les plus mobiles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi si muove di più"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meest onderweg"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najwięcej w ruchu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En çok yol yapanlar"
           }
         }
       }
@@ -4003,6 +4049,52 @@
         }
       }
     },
+    "Ansicht": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vista"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vue"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vista"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weergave"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widok"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Görünüm"
+          }
+        }
+      }
+    },
     "Antwort abbrechen": {
       "localizations": {
         "en": {
@@ -4141,52 +4233,6 @@
         }
       }
     },
-    "Apple Karten bekommt dabei diesen Ort. In Leuchtturm selbst sieht Apple die Standorte nicht.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Maps receives this place. Inside Leuchtturm, Apple does not see locations."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Para ello, Mapas de Apple recibe este lugar. Dentro de Leuchtturm, Apple no ve las ubicaciones."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plans reçoit alors ce lieu. Dans Leuchtturm même, Apple ne voit pas les positions."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mappe di Apple riceve questo luogo. All'interno di Leuchtturm, Apple non vede le posizioni."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Kaarten krijgt daarbij deze plek. In Leuchtturm zelf ziet Apple de locaties niet."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mapy Apple otrzymują przy tym to miejsce. W samej aplikacji Leuchtturm Apple nie widzi lokalizacji."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Harita bu yeri alır. Leuchtturm’un kendisinde ise Apple konumları görmez."
-          }
-        }
-      }
-    },
     "Apple TV": {
       "localizations": {
         "en": {
@@ -4275,6 +4321,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apple TV bağlansın mı?"
+          }
+        }
+      }
+    },
+    "Apple sieht aber, welche iCloud-Konten zusammen in einem Leuchtturm sind und wann Daten geschrieben werden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "But Apple can see which iCloud accounts are together in a lighthouse and when data is written."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pero Apple ve qué cuentas de iCloud están juntas en un faro y cuándo se escriben datos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple voit toutefois quels comptes iCloud sont ensemble dans un phare et quand des données sont écrites."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple vede però quali account iCloud sono insieme in un faro e quando vengono scritti dati."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple ziet wel welke iCloud-accounts samen in een vuurtoren zitten en wanneer er gegevens worden geschreven."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple widzi jednak, które konta iCloud są razem w latarni i kiedy zapisywane są dane."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancak Apple, hangi iCloud hesaplarının aynı fenerde olduğunu ve verilerin ne zaman yazıldığını görür."
           }
         }
       }
@@ -5383,6 +5475,52 @@
         }
       }
     },
+    "Bild, Banner und Status": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Picture, banner and status"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto, banner y estado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo, bannière et statut"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto, banner e stato"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto, banner en status"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zdjęcie, baner i status"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotoğraf, afiş ve durum"
+          }
+        }
+      }
+    },
     "Bild, Pin und Status sehen alle in deinen Leuchttürmen, Ende-zu-Ende-verschlüsselt.": {
       "localizations": {
         "en": {
@@ -5885,6 +6023,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kafe"
+          }
+        }
+      }
+    },
+    "Challenges der Woche": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenges of the week"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retos de la semana"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Défis de la semaine"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sfide della settimana"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uitdagingen van de week"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyzwania tygodnia"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftanın görevleri"
           }
         }
       }
@@ -6717,6 +6901,52 @@
         }
       }
     },
+    "Datenschutz und Geräte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy and devices"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacidad y dispositivos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confidentialité et appareils"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy e dispositivi"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy en apparaten"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prywatność i urządzenia"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gizlilik ve cihazlar"
+          }
+        }
+      }
+    },
     "Datenschutzerklärung": {
       "localizations": {
         "en": {
@@ -7085,6 +7315,52 @@
         }
       }
     },
+    "Dein Profil": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your profile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu perfil"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ton profil"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tuo profilo"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je profiel"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twój profil"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profilin"
+          }
+        }
+      }
+    },
     "Dein Standort": {
       "localizations": {
         "en": {
@@ -7449,52 +7725,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anahtarların iCloud Anahtar Zinciri ile (Apple tarafından uçtan uca şifreli) diğer aygıtlarına gider. Böylece iPad ve yeni bir iPhone hemen çalışır. Daha sıkı gizlilik istersen “yalnızca bu aygıtta” seçeneğini aç."
-          }
-        }
-      }
-    },
-    "Deine Schlüssel reisen sicher mit dem iCloud-Schlüsselbund auf deine Geräte.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your keys travel securely to your devices with iCloud Keychain."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tus claves viajan de forma segura a tus dispositivos con el llavero de iCloud."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tes clés voyagent en sécurité vers tes appareils avec le trousseau iCloud."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le tue chiavi viaggiano in sicurezza sui tuoi dispositivi con il portachiavi iCloud."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Je sleutels gaan veilig met de iCloud-sleutelhanger naar je apparaten."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Twoje klucze bezpiecznie trafiają na twoje urządzenia przez pęk kluczy iCloud."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Anahtarların iCloud Anahtar Zinciri ile cihazlarına güvenle taşınır."
           }
         }
       }
@@ -8097,6 +8327,52 @@
         }
       }
     },
+    "Die Daten liegen in Apples Rechenzentren, nicht zwingend in der EU.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The data is stored in Apple's data centers, not necessarily in the EU."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los datos están en los centros de datos de Apple, no necesariamente en la UE."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les données sont stockées dans les centres de données d'Apple, pas forcément dans l'UE."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I dati si trovano nei data center di Apple, non necessariamente nell'UE."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De gegevens staan in de datacenters van Apple, niet per se in de EU."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dane znajdują się w centrach danych Apple, niekoniecznie w UE."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veriler Apple'ın veri merkezlerinde durur, AB'de olmak zorunda değildir."
+          }
+        }
+      }
+    },
     "Die Einladung ist abgelaufen. Bitte um eine neue.": {
       "localizations": {
         "en": {
@@ -8185,6 +8461,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Davet geçersiz ya da geri çekildi."
+          }
+        }
+      }
+    },
+    "Die Karte kommt von Apple Karten: Beim Laden sieht Apple, welchen Ausschnitt du ansiehst, aber nicht, wer wo ist.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The map comes from Apple Maps: when it loads, Apple sees which area you are looking at, but not who is where."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mapa viene de Mapas de Apple: al cargarlo, Apple ve qué zona estás mirando, pero no quién está dónde."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La carte vient de Plans : au chargement, Apple voit quelle zone tu regardes, mais pas qui est où."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La mappa viene da Mappe di Apple: durante il caricamento Apple vede quale zona stai guardando, ma non chi si trova dove."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De kaart komt van Apple Kaarten: bij het laden ziet Apple welk gebied je bekijkt, maar niet wie waar is."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa pochodzi z Map Apple: podczas ładowania Apple widzi, który fragment oglądasz, ale nie kto gdzie jest."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harita Apple Haritalar'dan gelir: Yüklenirken Apple hangi bölgeye baktığını görür, ama kimin nerede olduğunu görmez."
           }
         }
       }
@@ -8419,6 +8741,52 @@
         }
       }
     },
+    "Die anderen sehen deinen letzten Standort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The others see your last location"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los demás ven tu última ubicación"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les autres voient ta dernière position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gli altri vedono la tua ultima posizione"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De anderen zien je laatste locatie"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inni widzą twoją ostatnią lokalizację"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diğerleri son konumunu görür"
+          }
+        }
+      }
+    },
     "Diese Einladung kommt aus der TestFlight- oder App-Store-Version. Du hast eine Testversion mit eigenem iCloud-Bereich; installiere Leuchtturm über TestFlight, um beizutreten.": {
       "localizations": {
         "en": {
@@ -8599,52 +8967,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bu iCloud hesapları paylaşım bağlantısını açtı ama geçerli bir davetleri yok. Yalnızca şifreli verileri görürler."
-          }
-        }
-      }
-    },
-    "Dieses Gerät": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This device"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Este dispositivo"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cet appareil"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questo dispositivo"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dit apparaat"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "To urządzenie"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu aygıt"
           }
         }
       }
@@ -9569,52 +9891,6 @@
         }
       }
     },
-    "Ende-zu-Ende-verschlüsselt. Alle im Leuchtturm können es lesen.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "End-to-end encrypted. Everyone in the lighthouse can read it."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Con cifrado de extremo a extremo. Todos los del faro pueden leerlo."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chiffré de bout en bout. Tout le monde dans le phare peut le lire."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Crittografia end-to-end. Tutti nel faro possono leggerlo."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "End-to-end versleuteld. Iedereen in de vuurtoren kan het lezen."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Szyfrowanie end-to-end. Wszyscy w latarni mogą to przeczytać."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Uçtan uca şifreli. Fenerdeki herkes okuyabilir."
-          }
-        }
-      }
-    },
     "Ende-zu-Ende-verschlüsselt. Wie lange der Verlauf aufbewahrt wird, legt %@ selbst fest.": {
       "localizations": {
         "en": {
@@ -9749,52 +10025,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kaldır"
-          }
-        }
-      }
-    },
-    "Entfernung": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distance"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distancia"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distance"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distanza"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Afstand"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odległość"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Uzaklık"
           }
         }
       }
@@ -10443,52 +10673,6 @@
         }
       }
     },
-    "Fahrten der letzten 7 Tage": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trips of the last 7 days"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trayectos de los últimos 7 días"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trajets des 7 derniers jours"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tragitti degli ultimi 7 giorni"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ritten van de afgelopen 7 dagen"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Przejazdy z ostatnich 7 dni"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Son 7 günün sürüşleri"
-          }
-        }
-      }
-    },
     "Fahrten teilen": {
       "localizations": {
         "en": {
@@ -10669,52 +10853,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hıza göre renkler: yürürken yeşil, şehirde sarı, şehirlerarası yolda turuncu, otoyolda kırmızı, 200 km/h üstünde mor"
-          }
-        }
-      }
-    },
-    "Fertig": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Done"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fine"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gereed"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gotowe"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bitti"
           }
         }
       }
@@ -11225,48 +11363,48 @@
         }
       }
     },
-    "Fährt · %@ · %@": {
+    "Fährt · %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Driving · %@ · %@"
+            "value": "Driving · %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "En coche · %@ · %@"
+            "value": "En coche · %@"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "En voiture · %@ · %@"
+            "value": "En voiture · %@"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alla guida · %@ · %@"
+            "value": "Alla guida · %@"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rijdt · %@ · %@"
+            "value": "Rijdt · %@"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jedzie · %@ · %@"
+            "value": "Jedzie · %@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sürüyor · %@ · %@"
+            "value": "Sürüyor · %@"
           }
         }
       }
@@ -11363,48 +11501,48 @@
         }
       }
     },
-    "Gefragt, Standort kommt gleich": {
+    "Gefragt": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asked, location coming soon"
+            "value": "Asked"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Preguntado, ubicación en camino"
+            "value": "Preguntado"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Demande envoyée, position bientôt là"
+            "value": "Demandé"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chiesto, la posizione arriva a breve"
+            "value": "Chiesto"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gevraagd, locatie komt zo"
+            "value": "Gevraagd"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapytano, lokalizacja zaraz będzie"
+            "value": "Zapytano"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Soruldu, konum birazdan gelir"
+            "value": "Soruldu"
           }
         }
       }
@@ -11543,52 +11681,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tam orta nokta"
-          }
-        }
-      }
-    },
-    "Genauigkeit": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accuracy"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Precisión"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Précision"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Precisione"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nauwkeurigheid"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dokładność"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Doğruluk"
           }
         }
       }
@@ -12605,6 +12697,52 @@
         }
       }
     },
+    "Hier erscheinen die Fahrten der letzten 7 Tage von allen, die „Fahrten teilen“ eingeschaltet haben.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trips from the last 7 days appear here for everyone who turned on “Share trips”."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aquí aparecen los trayectos de los últimos 7 días de todos los que han activado «Compartir trayectos»."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ici apparaissent les trajets des 7 derniers jours de tous ceux qui ont activé « Partager les trajets »."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qui compaiono i tragitti degli ultimi 7 giorni di chi ha attivato “Condividi tragitti”."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hier verschijnen de ritten van de afgelopen 7 dagen van iedereen die ‘Deel ritten’ heeft aangezet."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pojawiają się przejazdy z ostatnich 7 dni wszystkich, którzy włączyli „Udostępniaj przejazdy”."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Sürüşleri paylaş”ı açan herkesin son 7 gündeki sürüşleri burada görünür."
+          }
+        }
+      }
+    },
     "Hier siehst du eine Stunde lang, wo ich bin.": {
       "localizations": {
         "en": {
@@ -12739,52 +12877,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Beni al"
-          }
-        }
-      }
-    },
-    "Hoppla": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oops"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vaya"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oups"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ops"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oeps"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ups"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hay aksi"
           }
         }
       }
@@ -13157,6 +13249,52 @@
         }
       }
     },
+    "Im Nebel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In fog"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la niebla"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dans le brouillard"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nella nebbia"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In de mist"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We mgle"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siste"
+          }
+        }
+      }
+    },
     "Im Nebel aus": {
       "localizations": {
         "en": {
@@ -13245,52 +13383,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Siste tam konum paylaşmazsın. Check-in yapmak için önce Sis’i kapat."
-          }
-        }
-      }
-    },
-    "In Apple Karten öffnen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open in Apple Maps"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abrir en Mapas"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ouvrir dans Plans"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri in Mappe"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open in Apple Kaarten"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otwórz w Mapach Apple"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Harita’da aç"
           }
         }
       }
@@ -13709,6 +13801,52 @@
         }
       }
     },
+    "Keine": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ninguno"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yok"
+          }
+        }
+      }
+    },
     "Keine Fahrten in diesem Zeitraum.": {
       "localizations": {
         "en": {
@@ -14073,6 +14211,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kopyalandı"
+          }
+        }
+      }
+    },
+    "Kurze Nachricht": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick message"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mensaje rápido"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message rapide"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messaggio rapido"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kort bericht"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krótka wiadomość"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısa mesaj"
           }
         }
       }
@@ -14533,52 +14717,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Feneri sil"
-          }
-        }
-      }
-    },
-    "Leuchtturm speichert in iCloud (Apple). Namen von Leuchttürmen und Personen sowie Standorte werden vorher auf dem iPhone verschlüsselt, Apple kann sie nicht lesen. Apple sieht aber, welche iCloud-Konten zusammen in einem Leuchtturm sind und wann Daten geschrieben werden. Die Daten liegen in Apples Rechenzentren, nicht zwingend in der EU. Die Karte selbst kommt von Apple Karten: Beim Laden sieht Apple, welchen Kartenausschnitt du ansiehst, aber nicht, wer wo ist.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leuchtturm stores data in iCloud (Apple). Names of lighthouses and people and locations are encrypted on the iPhone first; Apple cannot read them. Apple does see which iCloud accounts are in a lighthouse together and when data is written. The data is in Apple's data centers, not necessarily in the EU. The map itself comes from Apple Maps: when it loads, Apple sees which map area you look at, but not who is where."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leuchtturm guarda los datos en iCloud (Apple). Los nombres de faros y personas, así como las ubicaciones, se cifran antes en el iPhone; Apple no puede leerlos. Pero Apple sí ve qué cuentas de iCloud están juntas en un faro y cuándo se escriben datos. Los datos están en los centros de datos de Apple, no necesariamente en la UE. El mapa en sí viene de Mapas de Apple: al cargarlo, Apple ve qué zona del mapa estás mirando, pero no quién está dónde."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leuchtturm stocke ses données dans iCloud (Apple). Les noms des phares et des personnes ainsi que les positions sont d'abord chiffrés sur l'iPhone ; Apple ne peut pas les lire. Apple voit cependant quels comptes iCloud sont ensemble dans un phare et quand des données sont écrites. Les données se trouvent dans les centres de données d'Apple, pas forcément dans l'UE. La carte elle-même provient de Plans : au chargement, Apple voit quelle zone de la carte tu regardes, mais pas qui est où."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leuchtturm salva i dati su iCloud (Apple). I nomi dei fari e delle persone, così come le posizioni, vengono prima crittografati sull'iPhone: Apple non può leggerli. Apple vede però quali account iCloud sono insieme in un faro e quando vengono scritti i dati. I dati si trovano nei data center di Apple, non necessariamente nell'UE. La mappa stessa proviene da Mappe di Apple: durante il caricamento Apple vede quale zona della mappa stai guardando, ma non chi si trova dove."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leuchtturm bewaart gegevens in iCloud (Apple). Namen van vuurtorens en personen en locaties worden eerst op de iPhone versleuteld; Apple kan ze niet lezen. Apple ziet wel welke iCloud-accounts samen in een vuurtoren zitten en wanneer gegevens worden geschreven. De gegevens staan in de datacenters van Apple, niet per se in de EU. De kaart zelf komt van Apple Kaarten: bij het laden ziet Apple welk kaartgebied je bekijkt, maar niet wie waar is."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leuchtturm przechowuje dane w iCloud (Apple). Nazwy latarni i osób oraz lokalizacje są najpierw szyfrowane na iPhonie, Apple nie może ich odczytać. Apple widzi jednak, które konta iCloud są razem w jednej latarni i kiedy zapisywane są dane. Dane znajdują się w centrach danych Apple, niekoniecznie w UE. Sama mapa pochodzi z Map Apple: podczas ładowania Apple widzi, jaki fragment mapy oglądasz, ale nie widzi, kto gdzie jest."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leuchtturm verileri iCloud’da (Apple) saklar. Fenerlerin ve kişilerin adları ile konumlar önce iPhone’da şifrelenir, Apple bunları okuyamaz. Ancak Apple hangi iCloud hesaplarının birlikte bir fenerde olduğunu ve verilerin ne zaman yazıldığını görür. Veriler Apple’ın veri merkezlerinde bulunur, zorunlu olarak AB’de değil. Haritanın kendisi Apple Harita’dan gelir: Yüklenirken Apple hangi harita bölgesine baktığını görür, ama kimin nerede olduğunu görmez."
           }
         }
       }
@@ -16101,52 +16239,6 @@
         }
       }
     },
-    "Mit CarPlay oder einem dieser Autos verbunden heißt: Du bist vermutlich gefahren.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Connected to CarPlay or one of these cars means you probably drove."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conectado a CarPlay o a uno de estos coches: probablemente condujiste tú."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Connecté à CarPlay ou à l’une de ces voitures : tu conduisais sans doute."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Collegato a CarPlay o a una di queste auto: probabilmente guidavi tu."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verbonden met CarPlay of een van deze auto’s: je reed waarschijnlijk zelf."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Połączenie z CarPlay lub jednym z tych aut oznacza: prawdopodobnie prowadziłeś(-aś)."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CarPlay’e veya bu arabalardan birine bağlıysan muhtemelen sen sürdün."
-          }
-        }
-      }
-    },
     "Mit Profilbild zeigt der Pin dein Bild; Emoji und Initialen siehst du, wenn du es entfernst.": {
       "localizations": {
         "en": {
@@ -16791,6 +16883,52 @@
         }
       }
     },
+    "Namen von Leuchttürmen und Personen sowie Standorte werden auf dem iPhone verschlüsselt, bevor sie in iCloud landen. Apple kann sie nicht lesen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Names of lighthouses and people as well as locations are encrypted on the iPhone before they reach iCloud. Apple can't read them."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los nombres de los faros y de las personas, así como las ubicaciones, se cifran en el iPhone antes de llegar a iCloud. Apple no puede leerlos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les noms des phares et des personnes ainsi que les positions sont chiffrés sur l'iPhone avant d'arriver dans iCloud. Apple ne peut pas les lire."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I nomi dei fari e delle persone e le posizioni vengono cifrati sull'iPhone prima di arrivare su iCloud. Apple non può leggerli."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namen van vuurtorens en personen en locaties worden op de iPhone versleuteld voordat ze in iCloud belanden. Apple kan ze niet lezen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nazwy latarni i osób oraz lokalizacje są szyfrowane na iPhonie, zanim trafią do iCloud. Apple nie może ich odczytać."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fener ve kişi adları ile konumlar, iCloud'a ulaşmadan önce iPhone'da şifrelenir. Apple bunları okuyamaz."
+          }
+        }
+      }
+    },
     "Nebel": {
       "localizations": {
         "en": {
@@ -16879,52 +17017,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sis’i kapat"
-          }
-        }
-      }
-    },
-    "Nebel bis %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fog until %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Niebla hasta las %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Brouillard jusqu'à %@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nebbia fino alle %@"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mist tot %@"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mgła do %@"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sis · bitiş %@"
           }
         }
       }
@@ -17573,6 +17665,98 @@
         }
       }
     },
+    "Noch kein Apple TV verbunden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Apple TV connected yet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todavía no hay ningún Apple TV conectado."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune Apple TV connectée pour l'instant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna Apple TV ancora collegata."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog geen Apple TV verbonden."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie połączono jeszcze Apple TV."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz bağlı Apple TV yok."
+          }
+        }
+      }
+    },
+    "Noch keine Fahrten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No trips yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay trayectos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore de trajets"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessun tragitto"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog geen ritten"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak przejazdów"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz sürüş yok"
+          }
+        }
+      }
+    },
     "Noch keine Fahrten. Ab 25 km/h erkennt dein iPhone Fahrten, wenn „Fahrten teilen“ oder die Unfallerkennung an ist.": {
       "localizations": {
         "en": {
@@ -18079,6 +18263,52 @@
         }
       }
     },
+    "Nur die Leute in deinen Leuchttürmen sehen das, verschlüsselt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only the people in your lighthouses see this, encrypted."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo las personas de tus faros lo ven, cifrado."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seules les personnes de tes phares le voient, chiffré."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo vedono solo le persone dei tuoi fari, cifrato."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alleen de mensen in je vuurtorens zien dit, versleuteld."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widzą to tylko osoby z twoich latarni, zaszyfrowane."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bunu yalnızca fenerlerindeki kişiler şifreli olarak görür."
+          }
+        }
+      }
+    },
     "Nur dieses Gerät zurücksetzen": {
       "localizations": {
         "en": {
@@ -18401,48 +18631,48 @@
         }
       }
     },
-    "Nur von Leuten, die „Fahrten teilen“ eingeschaltet haben.": {
+    "Nur ungefähr, bis %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Only from people who turned on “Share trips”."
+            "value": "Only roughly, until %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo de quienes tienen activado «Compartir trayectos»."
+            "value": "Solo aproximada, hasta las %@"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uniquement des personnes ayant activé « Partager les trajets »."
+            "value": "Seulement approximatif, jusqu'à %@"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo da chi ha attivato “Condividi tragitti”."
+            "value": "Solo approssimativa, fino alle %@"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alleen van mensen die ‘Deel ritten’ hebben aangezet."
+            "value": "Alleen ongeveer, tot %@"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tylko od osób, które włączyły „Udostępniaj przejazdy”."
+            "value": "Tylko w przybliżeniu, do %@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yalnızca “Sürüşleri paylaş” seçeneğini açmış olanlardan."
+            "value": "Yalnızca yaklaşık · bitiş %@"
           }
         }
       }
@@ -18489,52 +18719,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yalnızca “Adımları paylaş” seçeneğini açanlar (Sağlık’tan veriler)."
-          }
-        }
-      }
-    },
-    "OK": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tamam"
           }
         }
       }
@@ -19041,6 +19225,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld. sıra"
+          }
+        }
+      }
+    },
+    "Profil": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perfil"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profilo"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profiel"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil"
           }
         }
       }
@@ -19643,6 +19873,52 @@
         }
       }
     },
+    "Route": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Directions"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruta"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Itinéraire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indicazioni"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Route"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trasa"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yol tarifi"
+          }
+        }
+      }
+    },
     "SOS": {
       "localizations": {
         "en": {
@@ -19873,52 +20149,6 @@
         }
       }
     },
-    "Scanne den Code auf dem Apple TV mit der Kamera deines iPhones.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scan the code on the Apple TV with your iPhone’s camera."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escanea el código del Apple TV con la cámara de tu iPhone."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scanne le code sur l’Apple TV avec l’appareil photo de ton iPhone."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scansiona il codice sull’Apple TV con la fotocamera del tuo iPhone."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scan de code op de Apple TV met de camera van je iPhone."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zeskanuj kod na Apple TV aparatem iPhone’a."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple TV’deki kodu iPhone’unun kamerasıyla tara."
-          }
-        }
-      }
-    },
     "Schalte ein, was du möchtest. Du kannst alles jederzeit in den Einstellungen ändern.": {
       "localizations": {
         "en": {
@@ -20103,48 +20333,48 @@
         }
       }
     },
-    "Schließen": {
+    "Schließt den Hinweis": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Close"
+            "value": "Closes the notice"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cerrar"
+            "value": "Cierra el aviso"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fermer"
+            "value": "Ferme l'avis"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chiudi"
+            "value": "Chiude l'avviso"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sluit"
+            "value": "Sluit de melding"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zamknij"
+            "value": "Zamyka komunikat"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kapat"
+            "value": "Uyarıyı kapatır"
           }
         }
       }
@@ -20379,6 +20609,52 @@
         }
       }
     },
+    "Schritte diese Woche": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steps this week"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasos esta semana"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre de pas cette semaine"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passi di questa settimana"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stappen deze week"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kroki w tym tygodniu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu haftaki adımlar"
+          }
+        }
+      }
+    },
     "Schritte teilen": {
       "localizations": {
         "en": {
@@ -20517,6 +20793,52 @@
         }
       }
     },
+    "Sicher gefahren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safest drivers"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conducción segura"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conduite sûre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guida più sicura"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veilig gereden"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezpieczna jazda"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En güvenli sürücüler"
+          }
+        }
+      }
+    },
     "Sicher unterwegs: 3 Fahrten mit 100 Punkten": {
       "localizations": {
         "en": {
@@ -20559,6 +20881,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Güvenli sürücü: 100 puanlı 3 sürüş"
+          }
+        }
+      }
+    },
+    "Sicherheit und Schlüssel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Security and keys"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seguridad y claves"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sécurité et clés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sicurezza e chiavi"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beveiliging en sleutels"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezpieczeństwo i klucze"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güvenlik ve anahtarlar"
           }
         }
       }
@@ -20697,52 +21065,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Güvenlik kodu doğrulandı"
-          }
-        }
-      }
-    },
-    "Sichern": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardar"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enregistrer"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salva"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bewaar"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zapisz"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kaydet"
           }
         }
       }
@@ -22311,52 +22633,6 @@
         }
       }
     },
-    "Teilt gerade nur eine ungefähre Gegend (ca. %lld km).": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Currently shares only a rough area (about %lld km)."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ahora solo comparte una zona aproximada (aprox. %lld km)."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ne partage actuellement qu'une zone approximative (env. %lld km)."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Al momento condivide solo una zona approssimativa (circa %lld km)."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deelt nu alleen een globale omgeving (ca. %lld km)."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Udostępnia teraz tylko przybliżoną okolicę (ok. %lld km)."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Şu an yalnızca kabaca bir bölgeyi paylaşıyor (yaklaşık %lld km)."
-          }
-        }
-      }
-    },
     "Teilt noch keinen Standort": {
       "localizations": {
         "en": {
@@ -23369,6 +23645,52 @@
         }
       }
     },
+    "Vergleicht diesen Code mit dem, den die anderen bei dir sehen. Stimmt er überein, kann niemand unbemerkt einen fremden Schlüssel unterschieben.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare this code with the one the others see for you. If they match, nobody can sneak in a foreign key unnoticed."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparad este código con el que los demás ven de ti. Si coincide, nadie puede colar una clave ajena sin que os deis cuenta."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparez ce code avec celui que les autres voient pour toi. S'il correspond, personne ne peut glisser une clé étrangère sans que vous le remarquiez."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confrontate questo codice con quello che gli altri vedono per te. Se coincide, nessuno può infilare una chiave estranea senza che ve ne accorgiate."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vergelijk deze code met de code die de anderen bij jou zien. Komt hij overeen, dan kan niemand ongemerkt een vreemde sleutel binnensmokkelen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porównajcie ten kod z tym, który inni widzą u ciebie. Jeśli się zgadza, nikt nie podrzuci niezauważenie obcego klucza."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu kodu diğerlerinin senin için gördüğü kodla karşılaştırın. Eşleşiyorsa kimse fark edilmeden yabancı bir anahtar sokamaz."
+          }
+        }
+      }
+    },
     "Verlassen": {
       "localizations": {
         "en": {
@@ -23503,52 +23825,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Geçmişi paylaş"
-          }
-        }
-      }
-    },
-    "Verlauf und Fahrten": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "History and trips"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Historial y trayectos"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Historique et trajets"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cronologia e tragitti"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geschiedenis en ritten"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Historia i przejazdy"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geçmiş ve sürüşler"
           }
         }
       }
@@ -23963,52 +24239,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ne?"
-          }
-        }
-      }
-    },
-    "Weckt das iPhone von %@ für einen frischen Standort. Die Person sieht, dass du gefragt hast.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wakes %@'s iPhone for a fresh location. They see that you asked."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Despierta el iPhone de %@ para obtener una ubicación reciente. Esa persona verá que lo has pedido."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Réveille l'iPhone de %@ pour obtenir une position récente. La personne voit que tu as demandé."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sveglia l'iPhone di %@ per una posizione aggiornata. La persona vede che hai chiesto."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wekt de iPhone van %@ voor een verse locatie. Die persoon ziet dat je erom hebt gevraagd."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Budzi iPhone’a, którego używa %@, aby pobrać aktualną lokalizację. Ta osoba zobaczy, że pytasz."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ için güncel bir konum ister ve iPhone’unu uyandırır. Kişi, sorduğunu görür."
           }
         }
       }
@@ -24749,52 +24979,6 @@
         }
       }
     },
-    "Wird in allen deinen Leuchttürmen verschlüsselt aktualisiert.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Updated, encrypted, in all your lighthouses."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se actualiza, cifrado, en todos tus faros."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mis à jour, chiffré, dans tous tes phares."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Viene aggiornato in forma crittografata in tutti i tuoi fari."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wordt versleuteld bijgewerkt in al je vuurtorens."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aktualizowane w postaci zaszyfrowanej we wszystkich twoich latarniach."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tüm fenerlerinde şifreli olarak güncellenir."
-          }
-        }
-      }
-    },
     "Wirklich alles löschen?": {
       "localizations": {
         "en": {
@@ -24975,6 +25159,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verilerim nerede?"
+          }
+        }
+      }
+    },
+    "Woche": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Week"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semana"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semaine"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settimana"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Week"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tydzień"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hafta"
           }
         }
       }
@@ -25393,6 +25623,52 @@
         }
       }
     },
+    "aktualisiert %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "updated %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "actualizado %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mis à jour %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "aggiornato %@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bijgewerkt %@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zaktualizowano %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "güncellendi: %@"
+          }
+        }
+      }
+    },
     "an %@": {
       "localizations": {
         "en": {
@@ -25619,6 +25895,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "sporda"
+          }
+        }
+      }
+    },
+    "ca. %lld km Umkreis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "about %lld km area"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zona de aprox. %lld km"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zone d'env. %lld km"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zona di circa %lld km"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gebied van ca. %lld km"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "obszar ok. %lld km"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yaklaşık %lld km'lik alan"
           }
         }
       }
@@ -27693,6 +28015,52 @@
         }
       }
     },
+    "± %lld m": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "± %lld m"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "± %lld m"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "± %lld m"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "± %lld m"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "± %lld m"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "± %lld m"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "± %lld m"
+          }
+        }
+      }
+    },
     "Öffne Leuchtturm auf dem Apple TV und scanne den Code mit der Kamera deines iPhones. Das Apple TV zeigt dann die Karte, Ende-zu-Ende-verschlüsselt über deine eigene iCloud. Es braucht dieselbe iCloud wie du und bekommt keine Schlüssel deiner Leuchttürme.": {
       "localizations": {
         "en": {
@@ -28015,6 +28383,52 @@
         }
       }
     },
+    "„Wo bist du?“ weckt das iPhone von %@ für einen frischen Standort. „Route“ gibt den Ort an Apple Karten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Where are you?” wakes %@'s iPhone for a fresh location. “Directions” passes the place to Apple Maps."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«¿Dónde estás?» despierta el iPhone de %@ para obtener una ubicación reciente. «Ruta» pasa el lugar a Mapas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "« Où es-tu ? » réveille l'iPhone de %@ pour une position récente. « Itinéraire » transmet le lieu à Plans."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Dove sei?” sveglia l'iPhone di %@ per una posizione aggiornata. “Indicazioni” passa il luogo a Mappe."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "‘Waar ben je?’ wekt de iPhone van %@ voor een verse locatie. ‘Route’ geeft de plek door aan Apple Kaarten."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„Gdzie jesteś?” budzi iPhone'a osoby %@, aby pobrać świeżą lokalizację. „Trasa” przekazuje miejsce do Map Apple."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Neredesin?”, güncel bir konum için %@ adlı kişinin iPhone'unu uyandırır. “Yol tarifi” yeri Apple Haritalar'a iletir."
+          }
+        }
+      }
+    },
     "⏰ %@ ist noch nicht angekommen": {
       "localizations": {
         "en": {
@@ -28287,282 +28701,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "🆘 yardım istiyor: %@"
-          }
-        }
-      }
-    },
-    "🎯 Challenges der Woche": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🎯 Challenges of the week"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🎯 Retos de la semana"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🎯 Défis de la semaine"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🎯 Sfide della settimana"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🎯 Uitdagingen van de week"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🎯 Wyzwania tygodnia"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🎯 Haftanın görevleri"
-          }
-        }
-      }
-    },
-    "🏅": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏅"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏅"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏅"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏅"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏅"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏅"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏅"
-          }
-        }
-      }
-    },
-    "🏆 Sicher gefahren": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏆 Safest drivers"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏆 Conducción segura"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏆 Conduite sûre"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏆 Guida più sicura"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏆 Veilig gereden"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏆 Bezpieczna jazda"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🏆 En güvenli sürücüler"
-          }
-        }
-      }
-    },
-    "👟 Am meisten unterwegs": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "👟 Most on the move"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "👟 Quién más se mueve"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "👟 Les plus mobiles"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "👟 Chi si muove di più"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "👟 Meest onderweg"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "👟 Najwięcej w ruchu"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "👟 En çok yol yapanlar"
-          }
-        }
-      }
-    },
-    "🔥 %lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🔥 %lld"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🔥 %lld"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🔥 %lld"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🔥 %lld"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🔥 %lld"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🔥 %lld"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🔥 %lld"
-          }
-        }
-      }
-    },
-    "🚶 Schritte diese Woche": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🚶 Steps this week"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🚶 Pasos esta semana"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🚶 Nombre de pas cette semaine"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🚶 Passi di questa settimana"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🚶 Stappen deze week"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🚶 Kroki w tym tygodniu"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "🚶 Bu haftaki adımlar"
           }
         }
       }

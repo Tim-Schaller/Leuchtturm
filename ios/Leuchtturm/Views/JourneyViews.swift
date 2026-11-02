@@ -44,11 +44,11 @@ struct ActionSections: View {
         let fog = model.activeFog
         Section("Unterwegs") {
             HStack(spacing: 10) {
-                ActionTile(title: "Auf dem Weg", detail: "Ankunftszeit für alle", symbol: "figure.walk.motion", color: .blue) {
+                ActionTile(title: "Auf dem Weg", detail: "Ankunftszeit für alle", symbol: "figure.walk.motion", color: Theme.Tone.sky) {
                     open(.journey(ref, walkHome: false))
                 }
                 .disabled(!details.hasKey || model.journey != nil)
-                ActionTile(title: "Heimweg", detail: "Alarm, falls du nicht ankommst", symbol: "house.and.flag.fill", color: .indigo) {
+                ActionTile(title: "Heimweg", detail: "Alarm, falls du nicht ankommst", symbol: "house.and.flag.fill", color: Theme.Tone.heather) {
                     open(.journey(ref, walkHome: true))
                 }
                 .disabled(!details.hasKey || model.journey != nil)
@@ -60,10 +60,10 @@ struct ActionSections: View {
                 ActionTile(
                     title: sentPickUp ? "Abgeschickt" : "Hol mich ab",
                     detail: fog != nil ? "Im Nebel aus" : "Dein Ort an alle",
-                    symbol: "car.side.fill", color: .orange, working: sendingPickUp, done: sentPickUp
+                    symbol: "car.side.fill", color: Theme.Tone.sun, working: sendingPickUp, done: sentPickUp
                 ) { sendPickUp() }
                     .disabled(!details.hasKey || fog != nil)
-                ActionTile(title: "Treffpunkt", detail: "Ein Ort in der Mitte", symbol: "point.3.filled.connected.trianglepath.dotted", color: .teal) {
+                ActionTile(title: "Treffpunkt", detail: "Ein Ort in der Mitte", symbol: "point.3.filled.connected.trianglepath.dotted", color: Theme.Tone.lagoon) {
                     open(.meetingPoint(ref))
                 }
                 .disabled(!details.hasKey)
@@ -74,18 +74,18 @@ struct ActionSections: View {
             HStack(spacing: 10) {
                 if let fog {
                     ActionTile(title: "Nebel beenden", detail: "Aktiv bis \(fog.until.formatted(date: .omitted, time: .shortened))",
-                               symbol: "cloud.fog.fill", color: .gray, active: true) {
+                               symbol: "cloud.fog.fill", color: Theme.Tone.stone, active: true) {
                         taps += 1
                         Task { await model.endFog() }
                     }
                 } else {
-                    ActionTile(title: "Nebel", detail: "Nur ungefähr zeigen", symbol: "cloud.fog.fill", color: .gray) { open(.fog) }
+                    ActionTile(title: "Nebel", detail: "Nur ungefähr zeigen", symbol: "cloud.fog.fill", color: Theme.Tone.stone) { open(.fog) }
                 }
                 if let link = model.liveLink {
                     ActionTile(title: "Live-Link läuft", detail: "Bis \(link.expires.formatted(date: .omitted, time: .shortened))",
-                               symbol: "link", color: .pink, active: true) { open(.liveLink) }
+                               symbol: "link", color: Theme.Tone.coral, active: true) { open(.liveLink) }
                 } else {
-                    ActionTile(title: "Live-Link", detail: "1 Stunde für Leute ohne App", symbol: "link", color: .pink) { open(.liveLink) }
+                    ActionTile(title: "Live-Link", detail: "1 Stunde für Leute ohne App", symbol: "link", color: Theme.Tone.coral) { open(.liveLink) }
                 }
             }
             .actionRow()
@@ -141,7 +141,7 @@ private struct ActionTile: View {
             VStack(alignment: .leading, spacing: 10) {
                 ZStack {
                     RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
-                        .fill((done ? Color.green : color).gradient)
+                        .fill((done ? Theme.Tone.moss : color).gradient)
                     if working {
                         ProgressView().tint(.white).controlSize(.small)
                     } else {
@@ -274,7 +274,7 @@ struct JourneySheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .errorAlert()
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Abbrechen", role: .cancel) { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) { Button(role: .close) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Starten", action: start).disabled(working || targetID.isEmpty)
                 }
@@ -304,7 +304,10 @@ struct JourneySheet: View {
         let journey = Journey(isWalkHome: walkHome, circleID: ref.circleID, destination: target.name,
                               latitude: target.coordinate.latitude, longitude: target.coordinate.longitude, deadline: deadline)
         Task {
-            if await model.startJourney(journey) { dismiss() }
+            if await model.startJourney(journey) {
+                Haptics.success()
+                dismiss()
+            }
             working = false
         }
     }
@@ -364,7 +367,7 @@ struct MeetingPointSheet: View {
             }
             .navigationTitle("Treffpunkt")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Abbrechen", role: .cancel) { dismiss() } } }
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button(role: .close) { dismiss() } } }
             .onAppear { middle = computeMiddle() }
             .task(id: category) { await search() }
         }
@@ -390,7 +393,10 @@ struct MeetingPointSheet: View {
 
     private func send(name: String, coordinate: CLLocationCoordinate2D) {
         Task {
-            if await model.sendMeetingPoint(name: name, coordinate: coordinate, in: ref) { dismiss() }
+            if await model.sendMeetingPoint(name: name, coordinate: coordinate, in: ref) {
+                Haptics.success()
+                dismiss()
+            }
         }
     }
 }

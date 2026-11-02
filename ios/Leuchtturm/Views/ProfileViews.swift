@@ -43,7 +43,7 @@ enum BannerStyle: String, CaseIterable, Identifiable {
 /// The top of a person's page: banner with the big avatar.
 struct ProfileHeader: View {
     let member: CircleMember
-    let subtitle: String
+    var subtitle: String?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -58,9 +58,9 @@ struct ProfileHeader: View {
                         (BannerStyle(rawValue: member.profile?.bannerStyle ?? "") ?? .meadow).gradient
                     }
                 }
-                .clipShape(.rect(cornerRadius: 20))
+                .clipShape(.rect(cornerRadius: Theme.Radius.card, style: .continuous))
                 .accessibilityHidden(true)
-            Avatar(name: member.name, id: member.id, size: 84, profile: member.profile)
+            Avatar(name: member.name, id: member.id, size: 84, profile: member.profile, ring: true)
                 .offset(y: -42)
                 .padding(.bottom, -42)
             VStack(spacing: 4) {
@@ -69,9 +69,11 @@ struct ProfileHeader: View {
                         .font(.subheadline.weight(.semibold))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 5)
-                        .glassEffect(.regular, in: .capsule)
+                        .background(Color(.secondarySystemGroupedBackground), in: .capsule)
                 }
-                Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+                if let subtitle {
+                    Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+                }
             }
             .padding(.top, 6)
         }
@@ -118,10 +120,10 @@ struct ProfileEditor: View {
             .errorAlert()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen", role: .cancel) { dismiss() }
+                    Button(role: .close) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Sichern", action: save).disabled(saving || loadingPicture)
+                    Button(role: .confirm, action: save).disabled(saving || loadingPicture)
                 }
             }
             .onAppear {

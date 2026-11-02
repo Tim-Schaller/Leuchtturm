@@ -110,7 +110,7 @@ struct LiveLinkSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Fertig") { dismiss() }
+                    Button(role: .close) { dismiss() }
                 }
             }
         }

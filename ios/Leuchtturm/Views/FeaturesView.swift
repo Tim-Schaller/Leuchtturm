@@ -31,34 +31,34 @@ struct FeaturesSheet: View {
 
                 Section {
                     FeatureRow(
-                        title: "Fahrten", symbol: "car.fill", color: .blue,
+                        title: "Fahrten", symbol: "car.fill", color: Theme.Tone.sky,
                         text: "Erkennt Autofahrten mit Strecke und Tempo, für deinen Wochenrückblick und die Bestenliste.",
                         isOn: Binding(get: { model.sharesTrips }, set: { on in Task { await model.setSharesTrips(on) } })
                     )
                     FeatureRow(
-                        title: "Unfallerkennung", symbol: "car.side.rear.and.collision.and.car.side.front", color: .red,
+                        title: "Unfallerkennung", symbol: "car.side.rear.and.collision.and.car.side.front", color: Theme.Tone.coral,
                         text: "Hält das Auto schlagartig an, fragt die App „Alles okay?“. Ohne Antwort geht nach 60 Sekunden ein SOS raus.",
                         isOn: Binding(get: { model.detectsCrashes }, set: { model.setDetectsCrashes($0) })
                     )
                     FeatureRow(
-                        title: "Verlauf", symbol: "point.topleft.down.to.point.bottomright.curvepath.fill", color: .purple,
+                        title: "Verlauf", symbol: "point.topleft.down.to.point.bottomright.curvepath.fill", color: Theme.Tone.heather,
                         text: "Deine Wege der letzten Tage, für deine Leuchttürme sichtbar.",
                         isOn: Binding(get: { model.sharesHistory }, set: { on in Task { await model.setSharesHistory(on) } })
                     )
                     if StepsMonitor.isAvailable {
                         FeatureRow(
-                            title: "Schritte", symbol: "figure.walk", color: .orange,
+                            title: "Schritte", symbol: "figure.walk", color: Theme.Tone.sun,
                             text: "Deine Schritte aus Apple Health in der Bestenliste.",
                             isOn: Binding(get: { model.sharesSteps }, set: { on in Task { await model.setSharesSteps(on) } })
                         )
                     }
                     FeatureRow(
-                        title: "Erinnerungen", symbol: "sparkles", color: .pink,
+                        title: "Erinnerungen", symbol: "sparkles", color: Theme.Tone.moss,
                         text: "„Heute vor einem Jahr“ mit deinen eigenen Wegen. Bleibt nur auf diesem iPhone.",
                         isOn: Binding(get: { model.keepsMemories }, set: { model.setKeepsMemories($0) })
                     )
                     FeatureRow(
-                        title: "Wetter", symbol: "cloud.sun.fill", color: .cyan,
+                        title: "Wetter", symbol: "cloud.sun.fill", color: Theme.Tone.lagoon,
                         text: "Das Wetter dort, wo die anderen gerade sind.",
                         isOn: Binding(get: { model.showsWeather }, set: { model.setShowsWeather($0) })
                     )
@@ -70,7 +70,7 @@ struct FeaturesSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .errorAlert()
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button("Fertig") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button(role: .close) { dismiss() } }
             }
         }
     }
@@ -86,11 +86,7 @@ private struct FeatureRow: View {
     var body: some View {
         Toggle(isOn: $isOn) {
             HStack(alignment: .top, spacing: 14) {
-                Image(systemName: symbol)
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 36, height: 36)
-                    .background(color.gradient, in: .rect(cornerRadius: 10, style: .continuous))
+                IconSquare(symbol, tone: color)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(title).font(.headline)
                     Text(text).font(.subheadline).foregroundStyle(.secondary)

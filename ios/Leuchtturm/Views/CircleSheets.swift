@@ -47,7 +47,7 @@ struct CreateCircleSheet: View {
             .errorAlert()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen", role: .cancel) { dismiss() }
+                    Button(role: .close) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Erstellen", action: create)
@@ -129,7 +129,7 @@ struct JoinSheet: View {
             .errorAlert()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen", role: .cancel) { dismiss() }
+                    Button(role: .close) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Beitreten", action: join)

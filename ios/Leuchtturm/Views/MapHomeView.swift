@@ -50,6 +50,8 @@ struct MapHomeView: View {
     @AppStorage("mapSatellite") private var satellite = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var details: CircleDetails?
+    /// Another circle was picked and is still loading.
+    @State private var switching = false
     @State private var camera: MapCameraPosition = .userLocation(fallback: .automatic)
     /// How many people were on the map when it last framed everyone. It
     /// frames again only when someone new shows up, otherwise the camera
@@ -116,6 +118,9 @@ struct MapHomeView: View {
             featuresIntroShown = true
             sheet = .features
         }
+        #if DEBUG
+        .task(id: details?.members.count ?? 0) { showDemoScreen() }
+        #endif
         .environment(\.memberColors, memberColors)
         .environment(\.memberProfiles, memberProfiles)
         .task(id: model.externalChanges) { await model.refresh() }
@@ -128,11 +133,14 @@ struct MapHomeView: View {
             onFocus: { focus($0) }, onShowPlace: showPlace, onSelectCircle: { selectedCircleID = $0.circleID },
             expanded: isRegular || detent != PeopleSheet.peek
         )
+        .redacted(reason: switching ? .placeholder : [])
+        .allowsHitTesting(!switching)
+        .animation(.smooth(duration: 0.2), value: switching)
     }
 
     private var mapView: some View {
         Map(position: $camera) {
-            ForEach(details?.places ?? []) { place in
+            ForEach(switching ? [] : details?.places ?? []) { place in
                 MapCircle(center: place.coordinate, radius: Double(place.radius))
                     .foregroundStyle(Color.accentColor.opacity(0.12))
                     .stroke(Color.accentColor.opacity(0.5), lineWidth: 1.5)
@@ -141,7 +149,7 @@ struct MapHomeView: View {
                 }
             }
             // People in fog: only the approximate area.
-            ForEach(details?.members ?? []) { member in
+            ForEach(switching ? [] : details?.members ?? []) { member in
                 if !member.isMe, let location = member.location, let radius = location.fogRadius {
                     let color = memberColors[member.id] ?? Theme.color(for: member.id)
                     MapCircle(center: location.coordinate, radius: Double(radius))
@@ -155,24 +163,31 @@ struct MapHomeView: View {
                     .foregroundStyle(Color.accentColor.opacity(0.12))
                     .stroke(Color.accentColor.opacity(0.6), style: StrokeStyle(lineWidth: 2, dash: [6, 4]))
             }
-            ForEach(details?.members ?? []) { member in
-                if !member.isMe, let location = member.location {
+            ForEach(switching ? [] : details?.members ?? []) { member in
+                if !member.isMe, let location = member.location, let details {
+                    let status = PersonStatus.of(member, places: details.places, notes: details.notes, model: model)
+                    let age = -location.timestamp.timeIntervalSinceNow
                     Annotation(member.name ?? "Unbekannt", coordinate: location.coordinate, anchor: .bottom) {
                         Button { open(member) } label: {
                             MemberPin(
                                 name: member.name, id: member.id, isFocused: focusedID == member.id,
-                                isStale: location.timestamp.timeIntervalSinceNow < -3600
+                                isStale: status.isStale,
+                                // Driving: the speed; an older position: its age.
+                                caption: status.speed ?? (age > 900 ? FreshnessText.text(for: location.timestamp) : nil),
+                                captionSymbol: status.isDriving ? "car.fill" : "clock",
+                                emoji: member.profile?.status(at: .now)?.emoji
                             )
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(member.name ?? "Unbekannt")
+                        .accessibilityLabel(Text(verbatim: "\(member.name ?? String(localized: "Unbekannt")), \(status.headline ?? status.detail)"))
                     }
                     .annotationTitles(.hidden)
                 }
             }
             if let me = model.tracker.location {
                 Annotation("Du", coordinate: me.coordinate, anchor: .bottom) {
-                    MemberPin(name: model.displayName, id: myID, isFocused: focusedID == myID)
+                    MemberPin(name: model.displayName, id: myID, isFocused: focusedID == myID,
+                              emoji: model.myProfile.status(at: .now)?.emoji)
                 }
                 .annotationTitles(.hidden)
             }
@@ -190,10 +205,14 @@ struct MapHomeView: View {
         .safeAreaPadding(.bottom, isRegular ? 0 : 230)
         // Only the top row counts as covered: the button column floats, so
         // MapKit does not squeeze everyone below it.
-        .overlay(alignment: .topTrailing) { buttonColumn }
+        .overlay(alignment: .topTrailing) { buttonColumn.opacity(controlsHidden ? 0 : 1) }
         .safeAreaInset(edge: .top) {
-            topRow.onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { layout.safeTop = $0 }
+            topRow
+                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { layout.safeTop = $0 }
+                .opacity(controlsHidden ? 0 : 1)
+                .allowsHitTesting(!controlsHidden)
         }
+        .animation(.smooth(duration: 0.2), value: controlsHidden)
     }
 
     /// Keeps the selected circle current: polls iCloud every 10 seconds
@@ -205,7 +224,9 @@ struct MapHomeView: View {
             return
         }
         if details?.id != ref.circleID {
-            details = nil
+            // The old circle stays as a grey placeholder until the new one is
+            // there, instead of an empty drawer with a spinner.
+            switching = details != nil
             focusedID = nil
             drawerPath = []
             framedCount = 0
@@ -213,6 +234,7 @@ struct MapHomeView: View {
         while !Task.isCancelled {
             if let loaded = await model.mapDetails(for: ref) {
                 details = loaded
+                switching = false
                 frameIfSomeoneNew()
                 await model.askForFreshPositions(loaded)
             }
@@ -303,7 +325,39 @@ struct MapHomeView: View {
         drawerPath = [.member(member.id)]
     }
 
+    #if DEBUG
+    /// For screenshots: `-demoDetent medium|large`, `-demoMember Anna`,
+    /// `-demoSheet settings|features|friends|sos`.
+    private func showDemoScreen() {
+        let defaults = UserDefaults.standard
+        guard let details, !details.members.isEmpty else { return }
+        switch defaults.string(forKey: "demoDetent") {
+        case "medium": detent = .medium
+        case "large": detent = .large
+        default: break
+        }
+        if let name = defaults.string(forKey: "demoMember"), drawerPath.isEmpty,
+           let member = details.members.first(where: { $0.name == name || ($0.isMe && name == "me") }) {
+            open(member)
+        }
+        if sheet == nil {
+            switch defaults.string(forKey: "demoSheet") {
+            case "settings": sheet = .settings
+            case "features": sheet = .features
+            case "friends": sheet = .friends
+            case "sos": sheet = .sos
+            default: break
+            }
+        }
+    }
+    #endif
+
     // MARK: Controls on the map
+
+    /// The drawer is pulled all the way up: the buttons would peek out under it.
+    private var controlsHidden: Bool { !isRegular && detent == .large }
+    /// One height for everything in the top row.
+    @ScaledMetric(relativeTo: .title3) private var controlHeight = 30
 
     private var topRow: some View {
         HStack(spacing: 10) {
@@ -340,6 +394,7 @@ struct MapHomeView: View {
                 }
             }
             .glassEffect(.regular.interactive(), in: .capsule)
+            .sensoryFeedback(.selection, trigger: satellite)
         }
         .padding(.top, 8)
         .padding(.trailing)
@@ -371,14 +426,18 @@ struct MapHomeView: View {
             HStack(spacing: 6) {
                 Text(selected.map { model.title(of: $0) } ?? AppInfo.name)
                     .font(.headline)
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
                 Image(systemName: "chevron.down")
                     .font(.caption.bold())
+                    .foregroundStyle(.secondary)
             }
-            .padding(.horizontal, 18)
-            .padding(.vertical, 12)
-            .glassEffect(.regular.interactive(), in: .capsule)
+            .frame(height: controlHeight)
+            .padding(.horizontal, 4)
         }
+        .menuStyle(.button)
+        .buttonStyle(.glass)
+        .buttonBorderShape(.capsule)
         .accessibilityLabel("Leuchtturm wählen")
     }
 }

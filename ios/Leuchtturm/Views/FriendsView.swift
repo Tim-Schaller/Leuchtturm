@@ -122,7 +122,7 @@ struct FriendsView: View {
                         ShareLink(item: code.url, message: Text("Füge mich in Leuchtturm hinzu: \(code.description)")) {
                             CodeActionLabel(title: "Teilen", symbol: "square.and.arrow.up")
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.glass)
                         CodeAction(title: "QR-Code", symbol: "qrcode") { showQR = true }
                     }
                 }
@@ -142,7 +142,7 @@ struct FriendsView: View {
                     } label: {
                         if retrying { ProgressView() } else { Text("Nochmal versuchen") }
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
                     .disabled(retrying)
                 }
                 .padding(.vertical, 4)
@@ -194,7 +194,7 @@ struct FriendsView: View {
                             sending = false
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glassProminent)
                     .disabled(sending)
                 }
             }
@@ -214,9 +214,9 @@ struct FriendsView: View {
                     }
                     HStack {
                         Button("Annehmen") { Task { await model.accept(incoming) } }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.glassProminent)
                         Button("Ablehnen", role: .destructive) { model.decline(incoming) }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.glass)
                     }
                 }
                 .padding(.vertical, 4)
@@ -285,7 +285,7 @@ private struct CodeAction: View {
 
     var body: some View {
         Button(action: action) { CodeActionLabel(title: title, symbol: symbol) }
-            .buttonStyle(.bordered)
+            .buttonStyle(.glass)
     }
 }
 
